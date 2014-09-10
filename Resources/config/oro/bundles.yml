@@ -1,0 +1,2 @@
+bundles:
+    - { name: OroCRM\Bundle\MailChimpBundle\OroCRMMailChimpBundle, priority: 102 }

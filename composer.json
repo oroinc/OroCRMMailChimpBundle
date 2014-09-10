@@ -1,0 +1,30 @@
+{
+    "name": "oro/crm-mail-chimp",
+    "description": "OroCRM MailChimp integration",
+    "homepage": "https://github.com/orocrm/OroCRMMailChimpBundle.git",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "name": "Oro, Inc",
+            "homepage": "http://www.orocrm.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "OroCRM\\Bundle\\MailChimpBundle": "src/"
+        }
+    },
+    "target-dir": "src/OroCRM/Bundle/MailChimpBundle",
+    "require": {
+        "php": ">=5.4.9",
+        "oro/platform": "1.x-dev",
+        "oro/crm": "1.x-dev"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    }
+}
