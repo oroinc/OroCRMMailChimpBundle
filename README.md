@@ -1,0 +1,4 @@
+OroCRMMailChimpBundle
+=====================
+
+OroCRM MailChimp Integration
