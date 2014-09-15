@@ -5,9 +5,6 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
-/**
- * @ORM\Entity
- */
 class MailChimpTransport implements TransportInterface
 {
     /**
@@ -22,6 +19,7 @@ class MailChimpTransport implements TransportInterface
      */
     public function getLabel()
     {
+        return 'orocrm.mailchimp.integration_transport.label';
     }
 
     /**
@@ -29,6 +27,7 @@ class MailChimpTransport implements TransportInterface
      */
     public function getSettingsFormType()
     {
+        return 'orocrm_mailchimp_integration_transport_setting_type';
     }
 
     /**

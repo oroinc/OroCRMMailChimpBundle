@@ -1,0 +1,5 @@
+orocrm:
+    mailchimp:
+        form:
+            api_key:
+                tooltip: MailChimp API Key. <br/><a href="http://kb.mailchimp.com/accounts/management/about-api-keys" target="_blank" class="no-hash">About API Keys</a>

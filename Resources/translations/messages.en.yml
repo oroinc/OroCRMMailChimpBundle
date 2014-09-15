@@ -1,0 +1,6 @@
+orocrm:
+    mailchimp:
+        channel_type.label: MailChimp
+        integration_transport:
+            label: MailChimp
+            api_key.label: Api Key
