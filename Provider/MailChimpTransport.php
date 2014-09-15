@@ -3,11 +3,11 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider;
 
 use Guzzle\Plugin\Async\AsyncPlugin;
-use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 use ZfrMailChimp\Client\MailChimpClient;
 
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
+use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 
 class MailChimpTransport implements TransportInterface
 {
@@ -29,12 +29,20 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
-     * Create ZFRMailChimp Client
+     * @return array
+     */
+    public function ping()
+    {
+        return $this->client->ping();
+    }
+
+    /**
+     * Create MailChimp Client.
      *
      * @param string $apiKey
      * @return MailChimpClient $client
      */
-    public function createClient($apiKey)
+    protected function createClient($apiKey)
     {
         $client = new MailChimpClient($apiKey);
         $client->addSubscriber(new AsyncPlugin());
