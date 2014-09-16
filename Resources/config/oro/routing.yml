@@ -1,0 +1,4 @@
+orocrm_mailchimp_bundle:
+    resource:     "@OroCRMMailChimpBundle/Controller"
+    type:         annotation
+    prefix:       /

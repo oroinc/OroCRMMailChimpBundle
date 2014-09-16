@@ -1,0 +1,6 @@
+OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport:
+    properties:
+        apiKey:
+            - NotBlank: ~
+            - Length:
+                min: 32

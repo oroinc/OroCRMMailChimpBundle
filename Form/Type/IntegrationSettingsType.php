@@ -18,7 +18,7 @@ class IntegrationSettingsType extends AbstractType
         $builder
             ->add(
                 'apiKey',
-                'text',
+                'orocrm_mailchimp_api_key_type',
                 [
                     'label' => 'orocrm.mailchimp.integration_transport.api_key.label',
                     'tooltip' => 'orocrm.mailchimp.form.api_key.tooltip',

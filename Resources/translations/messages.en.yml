@@ -3,4 +3,7 @@ orocrm:
         channel_type.label: MailChimp
         integration_transport:
             label: MailChimp
-            api_key.label: Api Key
+            api_key:
+                check.label: Ping Connection
+                label: Api Key
+

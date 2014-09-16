@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider;
 
 use Guzzle\Plugin\Async\AsyncPlugin;
+use OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory;
 use ZfrMailChimp\Client\MailChimpClient;
 
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
@@ -17,6 +18,19 @@ class MailChimpTransport implements TransportInterface
     protected $client;
 
     /**
+     * @var MailChimpClientFactory
+     */
+    protected $mailChimpClientFactory;
+
+    /**
+     * @param MailChimpClientFactory $mailChimpClientFactory
+     */
+    public function __construct(MailChimpClientFactory $mailChimpClientFactory)
+    {
+        $this->mailChimpClientFactory = $mailChimpClientFactory;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function init(Transport $transportEntity)
@@ -25,7 +39,7 @@ class MailChimpTransport implements TransportInterface
         if (!$apiKey) {
             throw new RequiredOptionException('apiKey');
         }
-        $this->client = $this->createClient($apiKey);
+        $this->client = $this->mailChimpClientFactory->create($apiKey);
     }
 
     /**
@@ -34,20 +48,6 @@ class MailChimpTransport implements TransportInterface
     public function ping()
     {
         return $this->client->ping();
-    }
-
-    /**
-     * Create MailChimp Client.
-     *
-     * @param string $apiKey
-     * @return MailChimpClient $client
-     */
-    protected function createClient($apiKey)
-    {
-        $client = new MailChimpClient($apiKey);
-        $client->addSubscriber(new AsyncPlugin());
-
-        return $client;
     }
 
     /**

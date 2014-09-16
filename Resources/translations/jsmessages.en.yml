@@ -1,0 +1,5 @@
+orocrm:
+    mailchimp:
+        integration_transport:
+            api_key:
+                check.message: 'Check Api Key'

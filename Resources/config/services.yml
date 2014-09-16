@@ -1,15 +1,26 @@
 parameters:
+    orocrm_mailchimp.client.factory.class: OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory
+
     # Forms and extensions
-    orocrm_mailchimp.form.type.integration_transport_setting.class: OroCRM\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType
+    orocrm_mailchimp.form.type.integration_transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType
+    orocrm_mailchimp.form.type.api_key_type.class: OroCRM\Bundle\MailChimpBundle\Form\Type\ApiKeyType
 
      # Integration related services
     orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\MailChimpTransport
     orocrm_mailchimp.provider.channel_type.class: OroCRM\Bundle\MailChimpBundle\Provider\ChannelType
 
 services:
+    orocrm_mailchimp.client.factory:
+        class: %orocrm_mailchimp.client.factory.class%
+
     # Forms and extensions
-    orocrm_mailchimp.form.type.integration_transport_setting:
-        class: %orocrm_mailchimp.form.type.integration_transport_setting.class%
+    orocrm_mailchimp.form.type.api_key_type:
+        class: %orocrm_mailchimp.form.type.api_key_type.class%
+        tags:
+            - { name: form.type, alias: "orocrm_mailchimp_api_key_type" }
+
+    orocrm_mailchimp.form.type.integration_transport_settings:
+        class: %orocrm_mailchimp.form.type.integration_transport_settings.class%
         tags:
             - { name: form.type, alias: "orocrm_mailchimp_integration_transport_setting_type" }
 
@@ -21,5 +32,7 @@ services:
 
     orocrm_mailchimp.transport.integration_transport:
         class: %orocrm_mailchimp.transport.integration_transport.class%
+        arguments:
+            - @orocrm_mailchimp.client.factory
         tags:
             - { name: oro_integration.transport, type: mailchimp_api, channel_type: mailchimp }

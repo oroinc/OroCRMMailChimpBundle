@@ -1,0 +1,3 @@
+config:
+    paths:
+        'orocrmmailchimp/js/app/components/api-key-component': 'bundles/orocrmmailchimp/js/app/components/api-key-component.js'
