@@ -57,7 +57,7 @@ class MailChimpTransport implements TransportInterface
     /**
      * @return MailChimpCampaignIterator
      */
-    public function getCampaignIterator()
+    public function getCampaigns()
     {
         return new MailChimpCampaignIterator($this->client);
     }

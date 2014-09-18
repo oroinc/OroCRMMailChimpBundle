@@ -48,7 +48,7 @@ class CampaignConnector extends AbstractMailChimpConnector implements TwoWaySync
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getCampaignIterator();
+        return $this->transport->getCampaigns();
     }
 
     /**
