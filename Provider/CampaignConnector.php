@@ -6,28 +6,10 @@ use Oro\Bundle\IntegrationBundle\Provider\AbstractConnector;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 
-class CampaignConnector extends AbstractConnector implements TwoWaySyncConnectorInterface, ConnectorInterface
+class CampaignConnector extends AbstractMailChimpConnector implements TwoWaySyncConnectorInterface, ConnectorInterface
 {
     const TYPE = 'campaign';
     const JOB_IMPORT = 'mailchimp_campaign_import';
-
-    /**
-     * @var MailChimpTransport
-     */
-    protected $transport;
-
-    /**
-     * @var string
-     */
-    protected $entityName;
-
-    /**
-     * @param string $entityName
-     */
-    public function setEntityName($entityName)
-    {
-        $this->entityName = $entityName;
-    }
 
     /**
      * {@inheritdoc}

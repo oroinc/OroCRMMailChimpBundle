@@ -63,6 +63,16 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
+     * Get list of MailChimp Templates.
+     *
+     * @return array
+     */
+    public function getTemplates()
+    {
+        return $this->client->getTemplates();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getLabel()

@@ -1,6 +1,7 @@
 parameters:
     # Entities
     orocrm_mailchimp.entity.campaign.class: OroCRM\Bundle\MailChimpBundle\Entity\MailChimpCampaign
+    orocrm_mailchimp.entity.template.class: OroCRM\Bundle\MailChimpBundle\Entity\Template
 
     orocrm_mailchimp.client.factory.class: OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory
 
@@ -14,6 +15,7 @@ parameters:
 
     # Connectors
     orocrm_mailchimp.connector.campaign.class: OroCRM\Bundle\MailChimpBundle\Provider\CampaignConnector
+    orocrm_mailchimp.connector.template.class: OroCRM\Bundle\MailChimpBundle\Provider\TemplateConnector
 
     # Data Converter
     orocrm_mailchimp.importexport.data_converter.campaign.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\CampaignDataConverter
@@ -57,6 +59,17 @@ services:
         tags:
             - { name: oro_integration.connector, type: campaign, channel_type: mailchimp }
 
+    orocrm_mailchimp.connector.template:
+        class: %orocrm_mailchimp.connector.template.class%
+        arguments:
+            - @oro_importexport.context_registry
+            - @oro_integration.logger.strategy
+            - @oro_integration.provider.connector_context_mediator
+        calls:
+            - [setEntityName, [%orocrm_mailchimp.entity.template.class%]]
+        tags:
+            - { name: oro_integration.connector, type: template, channel_type: mailchimp }
+
     # Data Converter
     orocrm_mailchimp.importexport.data_converter.campaign:
         class: %orocrm_mailchimp.importexport.data_converter.campaign.class%
@@ -69,3 +82,8 @@ services:
             - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.campaign]]
         tags:
             - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.campaign.class%, alias: orocrm_mailchimp.processor.campaign }
+
+    orocrm_mailchimp.importexport.processor.template:
+            parent: oro_importexport.processor.import_abstract
+            tags:
+                - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.template.class%, alias: orocrm_mailchimp.processor.template }

@@ -8,6 +8,9 @@ orocrm:
                 label: Api Key
 
         connector:
+            template:
+                label: Template Connector
+                job: Template Import
             campaign:
                 label: Campaign Connector
                 job: Import campaigns from MailChimp
