@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider;
+namespace OroCRM\Bundle\MailChimpBundle\Provider\Iterator;
 
 use ZfrMailChimp\Client\MailChimpClient;
 
-class MailChimpIterator implements \Iterator
+abstract class AbstractMailChimpIterator implements \Iterator
 {
     const BATCH_SIZE = 20;
 
@@ -12,11 +12,6 @@ class MailChimpIterator implements \Iterator
      * @var MailChimpClient
      */
     protected $client;
-
-    /**
-     * @var string
-     */
-    protected $method;
 
     /**
      * @var int
@@ -35,12 +30,10 @@ class MailChimpIterator implements \Iterator
 
     /**
      * @param MailChimpClient $client
-     * @param string          $method
      */
-    public function __construct(MailChimpClient $client, $method)
+    public function __construct(MailChimpClient $client)
     {
         $this->client = $client;
-        $this->method = $method;
     }
 
     /**
@@ -50,8 +43,8 @@ class MailChimpIterator implements \Iterator
     {
         $key = $this->offset % self::BATCH_SIZE;
 
-        if ($this->valid() && empty($this->data[$key])) {
-            $result      = $this->client->{$this->method}(['start' => $this->offset, 'limit' => self::BATCH_SIZE]);
+        if ($this->valid() && $key == 0) {
+            $result      = $this->getResult();
             $this->total = $result['total'];
             $this->data  = $result['data'];
         }
@@ -92,4 +85,9 @@ class MailChimpIterator implements \Iterator
         $this->total  = 0;
         $this->data   = [];
     }
+
+    /**
+     * @return array
+     */
+    abstract protected function getResult();
 }

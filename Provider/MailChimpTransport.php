@@ -8,6 +8,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 use OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory;
+use OroCRM\Bundle\MailChimpBundle\Provider\Iterator\MailChimpCampaignIterator;
 
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/
@@ -54,11 +55,11 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
-     * @return MailChimpClient
+     * @return MailChimpCampaignIterator
      */
-    public function getClient()
+    public function getCampaignIterator()
     {
-        return $this->client;
+        return new MailChimpCampaignIterator($this->client);
     }
 
     /**
