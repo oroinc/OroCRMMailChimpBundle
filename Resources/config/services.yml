@@ -1,14 +1,22 @@
 parameters:
+    # Entities
+    orocrm_mailchimp.entity.campaign.class: OroCRM\Bundle\MailChimpBundle\Entity\MailChimpCampaign
+
     orocrm_mailchimp.client.factory.class: OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory
 
     # Forms and extensions
     orocrm_mailchimp.form.type.integration_transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType
     orocrm_mailchimp.form.type.api_key_type.class: OroCRM\Bundle\MailChimpBundle\Form\Type\ApiKeyType
 
-     # Integration related services
+    # Integration related services
     orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\MailChimpTransport
     orocrm_mailchimp.provider.channel_type.class: OroCRM\Bundle\MailChimpBundle\Provider\ChannelType
 
+    # Connectors
+    orocrm_mailchimp.connector.campaign.class: OroCRM\Bundle\MailChimpBundle\Provider\CampaignConnector
+
+    # Data Converter
+    orocrm_mailchimp.importexport.data_converter.campaign.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\CampaignDataConverter
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -36,3 +44,28 @@ services:
             - @orocrm_mailchimp.client.factory
         tags:
             - { name: oro_integration.transport, type: mailchimp_api, channel_type: mailchimp }
+
+    # Connectors
+    orocrm_mailchimp.connector.campaign:
+        class: %orocrm_mailchimp.connector.campaign.class%
+        arguments:
+            - @oro_importexport.context_registry
+            - @oro_integration.logger.strategy
+            - @oro_integration.provider.connector_context_mediator
+        calls:
+            - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
+        tags:
+            - { name: oro_integration.connector, type: campaign, channel_type: mailchimp }
+
+    # Data Converter
+    orocrm_mailchimp.importexport.data_converter.campaign:
+        class: %orocrm_mailchimp.importexport.data_converter.campaign.class%
+        parent: oro_importexport.data_converter.configurable
+
+    # Import
+    orocrm_mailchimp.importexport.processor.campaign:
+        parent: oro_importexport.processor.import_abstract
+        calls:
+            - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.campaign]]
+        tags:
+            - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.campaign.class%, alias: orocrm_mailchimp.processor.campaign }

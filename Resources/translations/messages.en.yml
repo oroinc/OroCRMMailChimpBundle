@@ -4,6 +4,10 @@ orocrm:
         integration_transport:
             label: MailChimp
             api_key:
-                check.label: Ping Connection
+                check.label: Check Connection
                 label: Api Key
 
+        connector:
+            campaign:
+                label: Campaign Connector
+                job: Import campaigns from MailChimp

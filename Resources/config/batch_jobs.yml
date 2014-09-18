@@ -1,0 +1,16 @@
+connector:
+    name: oro_importexport
+    jobs:
+        mailchimp_campaign_import:
+            title: orocrm.mailchimp.connector.campaign.job
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.connector.campaign
+                        processor: oro_importexport.processor.import_delegate
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25

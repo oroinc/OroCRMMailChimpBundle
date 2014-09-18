@@ -2,14 +2,17 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider;
 
-use Guzzle\Plugin\Async\AsyncPlugin;
-use OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory;
 use ZfrMailChimp\Client\MailChimpClient;
 
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
+use OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory;
 
+/**
+ * @link http://apidocs.mailchimp.com/api/2.0/
+ * @link https://bitbucket.org/mailchimp/mailchimp-api-php/
+ */
 class MailChimpTransport implements TransportInterface
 {
     /**
@@ -48,6 +51,14 @@ class MailChimpTransport implements TransportInterface
     public function ping()
     {
         return $this->client->ping();
+    }
+
+    /**
+     * @return MailChimpClient
+     */
+    public function getClient()
+    {
+        return $this->client;
     }
 
     /**
