@@ -1,6 +1,6 @@
 parameters:
     # Entities
-    orocrm_mailchimp.entity.campaign.class: OroCRM\Bundle\MailChimpBundle\Entity\MailChimpCampaign
+    orocrm_mailchimp.entity.campaign.class: OroCRM\Bundle\MailChimpBundle\Entity\Campaign
     orocrm_mailchimp.entity.template.class: OroCRM\Bundle\MailChimpBundle\Entity\Template
 
     orocrm_mailchimp.client.factory.class: OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory
@@ -97,19 +97,24 @@ services:
     orocrm_mailchimp.importexport.strategy.template.add_or_replace:
         parent: oro_importexport.strategy.configurable_add_or_replace
 
+    orocrm_mailchimp.importexport.strategy.campaign.add_or_replace:
+        parent: oro_importexport.strategy.configurable_add_or_replace
+
     # Import
     orocrm_mailchimp.importexport.processor.campaign:
+        class: %orocrm_mailchimp.importexport.processor.import_abstract.class%
         parent: oro_importexport.processor.import_abstract
         calls:
             - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.campaign]]
+            - [setStrategy, [@orocrm_mailchimp.importexport.strategy.campaign.add_or_replace]]
         tags:
             - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.campaign.class%, alias: orocrm_mailchimp.processor.campaign }
 
     orocrm_mailchimp.importexport.processor.template:
-            class: %orocrm_mailchimp.importexport.processor.import_abstract.class%
-            parent: oro_importexport.processor.import_abstract
-            calls:
-                - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.template]]
-                - [setStrategy, [@orocrm_mailchimp.importexport.strategy.template.add_or_replace]]
-            tags:
-                - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.template.class%, alias: orocrm_mailchimp.processor.template }
+        class: %orocrm_mailchimp.importexport.processor.import_abstract.class%
+        parent: oro_importexport.processor.import_abstract
+        calls:
+            - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.template]]
+            - [setStrategy, [@orocrm_mailchimp.importexport.strategy.template.add_or_replace]]
+        tags:
+            - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.template.class%, alias: orocrm_mailchimp.processor.template }

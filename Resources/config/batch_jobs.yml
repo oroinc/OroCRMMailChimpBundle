@@ -15,7 +15,7 @@ connector:
                     parameters:
                         batch_size: 25
 
-        mailchimp_campaign_import:
+        mailchimp_template_import:
             title: orocrm.mailchimp.connector.template.job
             type: import
             steps:
