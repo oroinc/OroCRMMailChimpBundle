@@ -5,6 +5,8 @@ namespace OroCRM\Bundle\MailChimpBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
+use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
 
 /**
@@ -26,7 +28,9 @@ use Oro\Bundle\IntegrationBundle\Model\IntegrationEntityTrait;
  */
 class Template
 {
-    use IntegrationEntityTrait;
+    const TYPE_USER = 'user';
+    const TYPE_GALLERY = 'gallery';
+    const TYPE_BASE = 'base';
 
     /**
      * @var int
@@ -40,8 +44,30 @@ class Template
     /**
      * @var int
      * @ORM\Column(name="origin_id", type="bigint", nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "importexport"={
+     *              "identity"=true
+     *          }
+     *      }
+     * )
      */
     protected $originId;
+
+    /**
+     * @var Channel
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\IntegrationBundle\Entity\Channel")
+     * @ORM\JoinColumn(name="channel_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ConfigField(
+     *      defaultValues={
+     *          "importexport"={
+     *              "identity"=true
+     *          }
+     *      }
+     * )
+     */
+    protected $channel;
 
     /**
      * @var string
@@ -57,7 +83,7 @@ class Template
 
     /**
      * @var bool
-     * @ORM\Column(name="is_active", type="bool")
+     * @ORM\Column(name="is_active", type="boolean")
      */
     protected $active;
 
@@ -232,6 +258,33 @@ class Template
         $this->originId = $originId;
 
         return $this;
+    }
+
+    /**
+     * @param Channel $integration
+     * @return Template
+     */
+    public function setChannel(Channel $integration)
+    {
+        $this->channel = $integration;
+
+        return $this;
+    }
+
+    /**
+     * @return Channel
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannelName()
+    {
+        return $this->channel ? $this->channel->getName() : null;
     }
 
     /**

@@ -6,6 +6,7 @@ use ZfrMailChimp\Client\MailChimpClient;
 
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
+use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 use OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory;
 use OroCRM\Bundle\MailChimpBundle\Provider\Iterator\MailChimpCampaignIterator;
@@ -69,7 +70,18 @@ class MailChimpTransport implements TransportInterface
      */
     public function getTemplates()
     {
-        return $this->client->getTemplates();
+        return $this->client->getTemplates(
+            [
+                'types' => [
+                    Template::TYPE_USER => true,
+                    Template::TYPE_GALLERY => true,
+                    Template::TYPE_BASE => true
+                ],
+                'filters' => [
+                    'include_drag_and_drop' => true
+                ]
+            ]
+        );
     }
 
     /**

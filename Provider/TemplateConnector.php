@@ -9,17 +9,18 @@ class TemplateConnector extends AbstractMailChimpConnector
      */
     protected function getConnectorSource()
     {
-        $result = $this->transport->getTemplates();
-        foreach ($result as $type => $templates) {
+        $templatesList = $this->transport->getTemplates();
+        $result = new \ArrayIterator();
+        foreach ($templatesList as $type => $templates) {
             foreach ($templates as $template) {
                 $template['type'] = $type;
                 $template['origin_id'] = $template['id'];
                 unset($template['id']);
-                $result[] = $template;
+                $result->append($template);
             }
         }
 
-        return new \ArrayIterator($result);
+        return $result;
     }
 
     /**

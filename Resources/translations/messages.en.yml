@@ -14,3 +14,19 @@ orocrm:
             campaign:
                 label: Campaign Connector
                 job: Import campaigns from MailChimp
+
+        template:
+            entity_label: Mailchimp Template
+            entity_plural_label: Mailchimp Templates
+            active.label: Active
+            category.label: Category
+            channel.label: Channel
+            created_at.label: Created At
+            id.label: Id
+            layout.label: Layout
+            name.label: Name
+            origin_id.label: Origin Id
+            preview_image.label: Preview Image
+            type.label: Type
+            updated_at.label: Update At
+
