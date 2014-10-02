@@ -2,9 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use Oro\Bundle\TrackingBundle\ImportExport\DataConverter;
-
-class TemplateDataConverter extends DataConverter
+class TemplateDataConverter extends IntegrationAwareDataConverter
 {
     /**
      * {@inheritdoc}

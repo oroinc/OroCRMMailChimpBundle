@@ -4,6 +4,9 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider;
 
 class TemplateConnector extends AbstractMailChimpConnector
 {
+    const TYPE = 'template';
+    const JOB_IMPORT = 'mailchimp_template_import';
+
     /**
      * {@inheritdoc}
      */
@@ -44,7 +47,7 @@ class TemplateConnector extends AbstractMailChimpConnector
      */
     public function getImportJobName()
     {
-        return 'mailchimp_campaign_import';
+        return self::JOB_IMPORT;
     }
 
     /**
@@ -52,6 +55,6 @@ class TemplateConnector extends AbstractMailChimpConnector
      */
     public function getType()
     {
-        return 'template';
+        return self::TYPE;
     }
 }

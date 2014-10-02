@@ -10,6 +10,7 @@ class CampaignConnector extends AbstractMailChimpConnector implements TwoWaySync
 {
     const TYPE = 'campaign';
     const JOB_IMPORT = 'mailchimp_campaign_import';
+    const JOB_EXPORT = 'mailchimp_campaign_export';
 
     /**
      * {@inheritdoc}
