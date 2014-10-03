@@ -28,3 +28,10 @@ connector:
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
+                remove:
+                    title: remove
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.processed_entities
+                        processor: orocrm_mailchimp.importexport.processor.remove
+                        writer:    orocrm_mailchimp.importexport.writer.template.remove
