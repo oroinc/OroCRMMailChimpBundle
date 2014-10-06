@@ -75,7 +75,7 @@ class MailChimpTransport implements TransportInterface
                 'types' => [
                     Template::TYPE_USER => true,
                     Template::TYPE_GALLERY => true,
-                    Template::TYPE_BASE => false
+                    Template::TYPE_BASE => true
                 ],
                 'filters' => [
                     'include_drag_and_drop' => true

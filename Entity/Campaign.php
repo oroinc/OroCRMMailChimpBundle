@@ -138,7 +138,7 @@ class Campaign
     /**
      * @var EmailCampaign
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign", cascade={"persist"})
      * @ORM\JoinColumn(name="email_campaign_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $emailCampaign;
@@ -147,7 +147,7 @@ class Campaign
      * @var SubscribersList
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
-     * @ORM\JoinColumn(name="email_campaign_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $subscribersList;
 
