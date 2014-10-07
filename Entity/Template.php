@@ -25,7 +25,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
  *  }
  * )
  */
-class Template
+class Template implements OriginAwareInterface
 {
     const TYPE_USER = 'user';
     const TYPE_GALLERY = 'gallery';

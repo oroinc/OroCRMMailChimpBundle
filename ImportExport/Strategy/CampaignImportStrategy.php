@@ -3,14 +3,11 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Doctrine\Common\Util\ClassUtils;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 
-use Oro\Bundle\ImportExportBundle\Strategy\Import\ConfigurableAddOrReplaceStrategy;
 use Oro\Bundle\IntegrationBundle\ImportExport\Helper\DefaultOwnerHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 
-class CampaignImportStrategy extends ConfigurableAddOrReplaceStrategy implements LoggerAwareInterface
+class CampaignImportStrategy extends AbstractImportStrategy
 {
     /**
      * @var DefaultOwnerHelper
@@ -18,24 +15,11 @@ class CampaignImportStrategy extends ConfigurableAddOrReplaceStrategy implements
     protected $ownerHelper;
 
     /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
      * @param DefaultOwnerHelper $ownerHelper
      */
     public function setOwnerHelper(DefaultOwnerHelper $ownerHelper)
     {
         $this->ownerHelper = $ownerHelper;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
     }
 
     /**
@@ -150,6 +134,6 @@ class CampaignImportStrategy extends ConfigurableAddOrReplaceStrategy implements
     {
         $this->ownerHelper->populateChannelOwner($entity->getEmailCampaign(), $entity->getChannel());
 
-        return $entity;
+        return parent::afterProcessEntity($entity);
     }
 }

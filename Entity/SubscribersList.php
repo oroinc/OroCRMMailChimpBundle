@@ -22,7 +22,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
  *  }
  * )
  */
-class SubscribersList
+class SubscribersList implements OriginAwareInterface
 {
     /**
      * @var int
@@ -69,4 +69,23 @@ class SubscribersList
     protected $webId;
 
     protected $name;
+
+    /**
+     * @return string
+     */
+    public function getOriginId()
+    {
+        return $this->originId;
+    }
+
+    /**
+     * @param string $originId
+     * @return SubscribersList
+     */
+    public function setOriginId($originId)
+    {
+        $this->originId = $originId;
+
+        return $this;
+    }
 }

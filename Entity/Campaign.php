@@ -10,10 +10,8 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 
 /**
- * @SuppressWarnings(PHPMD.TooManyMethods)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  * @SuppressWarnings(PHPMD.TooManyFields)
  *
  * @ORM\Entity()
@@ -32,7 +30,7 @@ use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
  *  }
  * )
  */
-class Campaign
+class Campaign implements OriginAwareInterface
 {
     const STATUS_SAVE = 'save';
     const STATUS_SENT = 'sent';
@@ -125,6 +123,27 @@ class Campaign
     /**
      * @var string
      *
+     * @ORM\Column(name="status", type="string", length=255, nullable=false)
+     */
+    protected $status;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="send_time", type="datetime", nullable=true)
+     */
+    protected $sendTime;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_open_date", type="datetime", nullable=true)
+     */
+    protected $lastOpenDate;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="archive_url", type="string", length=255, nullable=true)
      */
     protected $archiveUrl;
@@ -156,62 +175,6 @@ class Campaign
      * @ORM\Column(name="tests_remain", type="integer", nullable=true)
      */
     protected $testsRemain;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
-     */
-    protected $title;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="status", type="string", length=255, nullable=false)
-     */
-    protected $status;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="from_name", type="string", length=255, nullable=true)
-     */
-    protected $fromName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="from_email", type="string", length=255, nullable=true)
-     */
-    protected $fromEmail;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="send_time", type="datetime", nullable=true)
-     */
-    protected $sendTime;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="last_open_date", type="datetime", nullable=true)
-     */
-    protected $lastOpenDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime")
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
-     */
-    protected $updatedAt;
 
     /**
      * @var int
@@ -317,6 +280,20 @@ class Campaign
      * @ORM\Column(name="facebook_likes", type="integer", nullable=true)
      */
     protected $facebookLikes;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    protected $createdAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    protected $updatedAt;
 
     /**
      * Get id
@@ -543,42 +520,6 @@ class Campaign
     public function setForwardsOpens($forwardsOpens)
     {
         $this->forwardsOpens = $forwardsOpens;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFromEmail()
-    {
-        return $this->fromEmail;
-    }
-
-    /**
-     * @param string $fromEmail
-     * @return Campaign
-     */
-    public function setFromEmail($fromEmail)
-    {
-        $this->fromEmail = $fromEmail;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFromName()
-    {
-        return $this->fromName;
-    }
-
-    /**
-     * @param string $fromName
-     * @return Campaign
-     */
-    public function setFromName($fromName)
-    {
-        $this->fromName = $fromName;
         return $this;
     }
 
@@ -813,24 +754,6 @@ class Campaign
     public function setTestsSent($testsSent)
     {
         $this->testsSent = $testsSent;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     * @return Campaign
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
         return $this;
     }
 

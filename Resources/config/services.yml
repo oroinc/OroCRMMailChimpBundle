@@ -56,6 +56,13 @@ services:
             - %orocrm_mailchimp.entity.template.class%
             - 'originId'
 
+    orocrm_mailchimp.importexport.writer.campaign.remove:
+        class: %orocrm_mailchimp.importexport.writer.remove.class%
+        arguments:
+            - @doctrine
+            - %orocrm_mailchimp.entity.campaign.class%
+            - 'originId'
+
     #Serializers
     orocrm_mailchimp.importexport.serializer.datetime:
         class: %orocrm_mailchimp.importexport.serializer.datetime.class%
@@ -134,6 +141,7 @@ services:
 
     # Processors
     orocrm_mailchimp.importexport.processor.campaign:
+        class: %orocrm_mailchimp.importexport.processor.import.class%
         parent: oro_importexport.processor.import_abstract
         calls:
             - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.campaign]]
@@ -150,12 +158,21 @@ services:
         tags:
             - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.template.class%, alias: orocrm_mailchimp.processor.template.import }
 
-    orocrm_mailchimp.importexport.processor.remove:
+    orocrm_mailchimp.importexport.processor.remove.abstract:
         class: %orocrm_mailchimp.importexport.processor.remove.class%
+        abstract: true
         arguments:
             - @oro_importexport.context_registry
             - @oro_entity.doctrine_helper
+
+    orocrm_mailchimp.importexport.processor.template.remove:
+        parent: orocrm_mailchimp.importexport.processor.remove.abstract
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.template.class%]]
             - [setSearchField, ['originId']]
 
+    orocrm_mailchimp.importexport.processor.campaign.remove:
+        parent: orocrm_mailchimp.importexport.processor.remove.abstract
+        calls:
+            - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
+            - [setSearchField, ['originId']]
