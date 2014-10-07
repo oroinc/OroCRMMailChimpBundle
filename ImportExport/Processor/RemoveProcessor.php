@@ -83,7 +83,13 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
         $qb->select('COUNT(e.' . $identifierFieldName . ') as itemsCount')
             ->from($this->entityName, 'e')
             ->andWhere($qb->expr()->notIn('e.' . $this->field, ':items'))
-            ->setParameter('items', (array)$items);
+            ->setParameter('items', (array)$items[$this->field]);
+
+        // Workaround to limit by channel. Channel is not available in second step context.
+        if (array_key_exists('channel', $items)) {
+            $qb->andWhere($qb->expr()->eq('e.channel', ':channel'))
+                ->setParameter('channel', $items['channel']);
+        }
 
         $result = $qb->getQuery()->getArrayResult();
         if ($result) {

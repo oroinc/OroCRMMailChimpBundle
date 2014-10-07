@@ -4,24 +4,10 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Doctrine\Common\Util\ClassUtils;
 
-use Oro\Bundle\IntegrationBundle\ImportExport\Helper\DefaultOwnerHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 
 class CampaignImportStrategy extends AbstractImportStrategy
 {
-    /**
-     * @var DefaultOwnerHelper
-     */
-    protected $ownerHelper;
-
-    /**
-     * @param DefaultOwnerHelper $ownerHelper
-     */
-    public function setOwnerHelper(DefaultOwnerHelper $ownerHelper)
-    {
-        $this->ownerHelper = $ownerHelper;
-    }
-
     /**
      * @param Campaign $entity
      * @return Campaign|null

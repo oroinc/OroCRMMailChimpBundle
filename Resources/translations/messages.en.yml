@@ -11,6 +11,9 @@ orocrm:
             template:
                 label: Template Connector
                 job: Template Import
+            list:
+                label: List Connector
+                job: List Import
             campaign:
                 label: Campaign Connector
                 job: Import campaigns from MailChimp

@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider;
 
+use OroCRM\Bundle\MailChimpBundle\Provider\Iterator\MailChimpListIterator;
 use ZfrMailChimp\Client\MailChimpClient;
 
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
@@ -61,6 +62,14 @@ class MailChimpTransport implements TransportInterface
     public function getCampaigns()
     {
         return new MailChimpCampaignIterator($this->client);
+    }
+
+    /**
+     * @return MailChimpListIterator
+     */
+    public function getLists()
+    {
+        return new MailChimpListIterator($this->client);
     }
 
     /**

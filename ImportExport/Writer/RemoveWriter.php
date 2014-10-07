@@ -40,13 +40,20 @@ class RemoveWriter implements ItemWriterInterface
      */
     public function write(array $items)
     {
-        foreach ($items as $toDelete) {
+        foreach ($items as $writerItem) {
             /** @var EntityManager $em */
             $em = $this->registry->getManagerForClass($this->entityName);
             $qb = $em->createQueryBuilder();
             $qb->delete($this->entityName, 'e')
                 ->andWhere($qb->expr()->notIn('e.' . $this->field, ':items'))
-                ->setParameter('items', $toDelete);
+                ->setParameter('items', (array)$writerItem[$this->field]);
+
+            // Workaround to limit by channel. Channel is not available in second step context.
+            if (array_key_exists('channel', $writerItem)) {
+                $qb->andWhere($qb->expr()->eq('e.channel', ':channel'))
+                    ->setParameter('channel', $writerItem['channel']);
+            }
+
             $qb->getQuery()->execute();
         }
     }

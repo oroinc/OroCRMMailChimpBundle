@@ -2,7 +2,15 @@ parameters:
     # Entities
     orocrm_mailchimp.entity.campaign.class: OroCRM\Bundle\MailChimpBundle\Entity\Campaign
     orocrm_mailchimp.entity.template.class: OroCRM\Bundle\MailChimpBundle\Entity\Template
+    orocrm_mailchimp.entity.subscribers_list.class: OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList
 
+    # Forms and extensions
+    orocrm_mailchimp.form.type.integration_transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType
+    orocrm_mailchimp.form.type.api_key_type.class: OroCRM\Bundle\MailChimpBundle\Form\Type\ApiKeyType
+
+    # Integration related services
+    orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\MailChimpTransport
+    orocrm_mailchimp.provider.channel_type.class: OroCRM\Bundle\MailChimpBundle\Provider\ChannelType
     orocrm_mailchimp.client.factory.class: OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory
 
     # Readers
@@ -17,22 +25,17 @@ parameters:
     # Strategies
     orocrm_mailchimp.importexport.strategy.campaign.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\CampaignImportStrategy
     orocrm_mailchimp.importexport.strategy.template.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\TemplateImportStrategy
-
-    # Forms and extensions
-    orocrm_mailchimp.form.type.integration_transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType
-    orocrm_mailchimp.form.type.api_key_type.class: OroCRM\Bundle\MailChimpBundle\Form\Type\ApiKeyType
-
-    # Integration related services
-    orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\MailChimpTransport
-    orocrm_mailchimp.provider.channel_type.class: OroCRM\Bundle\MailChimpBundle\Provider\ChannelType
+    orocrm_mailchimp.importexport.strategy.list.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\ListImportStrategy
 
     # Connectors
-    orocrm_mailchimp.connector.campaign.class: OroCRM\Bundle\MailChimpBundle\Provider\CampaignConnector
     orocrm_mailchimp.connector.template.class: OroCRM\Bundle\MailChimpBundle\Provider\TemplateConnector
+    orocrm_mailchimp.connector.list.class: OroCRM\Bundle\MailChimpBundle\Provider\ListConnector
+    orocrm_mailchimp.connector.campaign.class: OroCRM\Bundle\MailChimpBundle\Provider\CampaignConnector
 
     # Data Converter
-    orocrm_mailchimp.importexport.data_converter.campaign.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\CampaignDataConverter
     orocrm_mailchimp.importexport.data_converter.template.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\TemplateDataConverter
+    orocrm_mailchimp.importexport.data_converter.list.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\ListDataConverter
+    orocrm_mailchimp.importexport.data_converter.campaign.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\CampaignDataConverter
 
     # Processors
     orocrm_mailchimp.importexport.processor.import.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Processor\ImportProcessor
@@ -54,6 +57,13 @@ services:
         arguments:
             - @doctrine
             - %orocrm_mailchimp.entity.template.class%
+            - 'originId'
+
+    orocrm_mailchimp.importexport.writer.list.remove:
+        class: %orocrm_mailchimp.importexport.writer.remove.class%
+        arguments:
+            - @doctrine
+            - %orocrm_mailchimp.entity.subscribers_list.class%
             - 'originId'
 
     orocrm_mailchimp.importexport.writer.campaign.remove:
@@ -94,17 +104,6 @@ services:
             - { name: oro_integration.transport, type: mailchimp_api, channel_type: mailchimp }
 
     # Connectors
-    orocrm_mailchimp.connector.campaign:
-        class: %orocrm_mailchimp.connector.campaign.class%
-        arguments:
-            - @oro_importexport.context_registry
-            - @oro_integration.logger.strategy
-            - @oro_integration.provider.connector_context_mediator
-        calls:
-            - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
-        tags:
-            - { name: oro_integration.connector, type: campaign, channel_type: mailchimp }
-
     orocrm_mailchimp.connector.template:
         class: %orocrm_mailchimp.connector.template.class%
         arguments:
@@ -116,6 +115,28 @@ services:
         tags:
             - { name: oro_integration.connector, type: template, channel_type: mailchimp }
 
+    orocrm_mailchimp.connector.list:
+        class: %orocrm_mailchimp.connector.list.class%
+        arguments:
+            - @oro_importexport.context_registry
+            - @oro_integration.logger.strategy
+            - @oro_integration.provider.connector_context_mediator
+        calls:
+            - [setEntityName, [%orocrm_mailchimp.entity.subscribers_list.class%]]
+        tags:
+            - { name: oro_integration.connector, type: list, channel_type: mailchimp }
+
+    orocrm_mailchimp.connector.campaign:
+        class: %orocrm_mailchimp.connector.campaign.class%
+        arguments:
+            - @oro_importexport.context_registry
+            - @oro_integration.logger.strategy
+            - @oro_integration.provider.connector_context_mediator
+        calls:
+            - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
+        tags:
+            - { name: oro_integration.connector, type: campaign, channel_type: mailchimp }
+
     # Data Converter
     orocrm_mailchimp.importexport.data_converter.campaign:
         class: %orocrm_mailchimp.importexport.data_converter.campaign.class%
@@ -125,11 +146,22 @@ services:
         class: %orocrm_mailchimp.importexport.data_converter.template.class%
         parent: oro_importexport.data_converter.configurable
 
+    orocrm_mailchimp.importexport.data_converter.list:
+        class: %orocrm_mailchimp.importexport.data_converter.list.class%
+        parent: oro_importexport.data_converter.configurable
+
     # Strategy
     orocrm_mailchimp.importexport.strategy.template.add_or_replace:
         class: %orocrm_mailchimp.importexport.strategy.template.class%
         parent: oro_importexport.strategy.configurable_add_or_replace
         calls:
+            - [setLogger, [@oro_integration.logger.strategy]]
+
+    orocrm_mailchimp.importexport.strategy.list:
+        class: %orocrm_mailchimp.importexport.strategy.list.class%
+        parent: oro_importexport.strategy.configurable_add_or_replace
+        calls:
+            - [setOwnerHelper, [@oro_integration.helper.default_owner_helper]]
             - [setLogger, [@oro_integration.logger.strategy]]
 
     orocrm_mailchimp.importexport.strategy.campaign:
@@ -148,6 +180,15 @@ services:
             - [setStrategy, [@orocrm_mailchimp.importexport.strategy.campaign]]
         tags:
             - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.campaign.class%, alias: orocrm_mailchimp.processor.campaign }
+
+    orocrm_mailchimp.importexport.processor.list:
+        class: %orocrm_mailchimp.importexport.processor.import.class%
+        parent: oro_importexport.processor.import_abstract
+        calls:
+            - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.list]]
+            - [setStrategy, [@orocrm_mailchimp.importexport.strategy.list]]
+        tags:
+            - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.subscribers_list.class%, alias: orocrm_mailchimp.processor.list }
 
     orocrm_mailchimp.importexport.processor.template:
         class: %orocrm_mailchimp.importexport.processor.import.class%
@@ -169,6 +210,12 @@ services:
         parent: orocrm_mailchimp.importexport.processor.remove.abstract
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.template.class%]]
+            - [setSearchField, ['originId']]
+
+    orocrm_mailchimp.importexport.processor.list.remove:
+        parent: orocrm_mailchimp.importexport.processor.remove.abstract
+        calls:
+            - [setEntityName, [%orocrm_mailchimp.entity.subscribers_list.class%]]
             - [setSearchField, ['originId']]
 
     orocrm_mailchimp.importexport.processor.campaign.remove:
