@@ -8,10 +8,10 @@ use Akeneo\Bundle\BatchBundle\Item\ExecutionContext;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 use Oro\Bundle\ImportExportBundle\Strategy\Import\ConfigurableAddOrReplaceStrategy;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
-use Psr\Log\LoggerInterface;
 
 class TemplateImportStrategy extends ConfigurableAddOrReplaceStrategy implements
     StepExecutionAwareInterface,

@@ -4,11 +4,11 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Doctrine\Common\Util\ClassUtils;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 use Oro\Bundle\ImportExportBundle\Strategy\Import\ConfigurableAddOrReplaceStrategy;
 use Oro\Bundle\IntegrationBundle\ImportExport\Helper\DefaultOwnerHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use Psr\Log\LoggerInterface;
 
 class CampaignImportStrategy extends ConfigurableAddOrReplaceStrategy implements LoggerAwareInterface
 {
