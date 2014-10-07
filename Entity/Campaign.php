@@ -34,6 +34,12 @@ use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
  */
 class Campaign
 {
+    const STATUS_SAVE = 'save';
+    const STATUS_SENT = 'sent';
+    const STATUS_SENDING = 'sending';
+    const STATUS_PAUSED = 'paused';
+    const STATUS_SCHEDULE = 'schedule';
+
     /**
      * @var int
      *
@@ -87,6 +93,22 @@ class Campaign
     protected $template;
 
     /**
+     * @var SubscribersList
+     *
+     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
+     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $subscribersList;
+
+    /**
+     * @var EmailCampaign
+     *
+     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign", cascade={"persist"})
+     * @ORM\JoinColumn(name="email_campaign_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $emailCampaign;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="content_type", type="string", length=50, nullable=true)
@@ -134,22 +156,6 @@ class Campaign
      * @ORM\Column(name="tests_remain", type="integer", nullable=true)
      */
     protected $testsRemain;
-
-    /**
-     * @var EmailCampaign
-     *
-     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign", cascade={"persist"})
-     * @ORM\JoinColumn(name="email_campaign_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $emailCampaign;
-
-    /**
-     * @var SubscribersList
-     *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
-     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $subscribersList;
 
     /**
      * @var string

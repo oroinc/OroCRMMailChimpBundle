@@ -77,7 +77,8 @@ class CampaignImportStrategy extends ConfigurableAddOrReplaceStrategy
                 $existingEmailCampaign,
                 $itemData['emailCampaign']
             );
-            $existingEntity->setEmailCampaign($existingEmailCampaign);
+        } else {
+            $existingEntity->setEmailCampaign($entity->getEmailCampaign());
         }
 
         // Replace Template if required
