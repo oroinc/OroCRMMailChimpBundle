@@ -3,12 +3,14 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Doctrine\Common\Util\ClassUtils;
+use Psr\Log\LoggerAwareInterface;
 
 use Oro\Bundle\ImportExportBundle\Strategy\Import\ConfigurableAddOrReplaceStrategy;
 use Oro\Bundle\IntegrationBundle\ImportExport\Helper\DefaultOwnerHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
+use Psr\Log\LoggerInterface;
 
-class CampaignImportStrategy extends ConfigurableAddOrReplaceStrategy
+class CampaignImportStrategy extends ConfigurableAddOrReplaceStrategy implements LoggerAwareInterface
 {
     /**
      * @var DefaultOwnerHelper
@@ -16,11 +18,24 @@ class CampaignImportStrategy extends ConfigurableAddOrReplaceStrategy
     protected $ownerHelper;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @param DefaultOwnerHelper $ownerHelper
      */
     public function setOwnerHelper(DefaultOwnerHelper $ownerHelper)
     {
         $this->ownerHelper = $ownerHelper;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -39,8 +54,16 @@ class CampaignImportStrategy extends ConfigurableAddOrReplaceStrategy
 
         $existingEntity = $this->findExistingEntity($entity, $fields);
         if ($existingEntity) {
+            if ($this->logger) {
+                $this->logger->info('Syncing Existing MailChimp Campaign [origin_id=' . $entity->getOriginId() . ']');
+            }
+
             $entity = $this->importExistingCampaign($entity, $existingEntity);
         } else {
+            if ($this->logger) {
+                $this->logger->info('Adding new MailChimp Campaign [origin_id=' . $entity->getOriginId() . ']');
+            }
+
             $entity = $this->processEntity($entity, true, true, $this->context->getValue('itemData'));
         }
 

@@ -6,10 +6,16 @@ use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Item\ExecutionContext;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+
+use Psr\Log\LoggerAwareInterface;
+
 use Oro\Bundle\ImportExportBundle\Strategy\Import\ConfigurableAddOrReplaceStrategy;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
+use Psr\Log\LoggerInterface;
 
-class TemplateImportStrategy extends ConfigurableAddOrReplaceStrategy implements StepExecutionAwareInterface
+class TemplateImportStrategy extends ConfigurableAddOrReplaceStrategy implements
+    StepExecutionAwareInterface,
+    LoggerAwareInterface
 {
     /**
      * @var StepExecution
@@ -17,11 +23,36 @@ class TemplateImportStrategy extends ConfigurableAddOrReplaceStrategy implements
     protected $stepExecution;
 
     /**
-     * @param StepExecution $stepExecution
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * {@inheritdoc}
      */
     public function setStepExecution(StepExecution $stepExecution)
     {
         $this->stepExecution = $stepExecution;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param Template $entity
+     * @return Template
+     */
+    protected function beforeProcessEntity($entity)
+    {
+        if ($this->logger) {
+            $this->logger->info('Syncing MailChimp Template [origin_id=' . $entity->getOriginId() . ']');
+        }
+        return parent::beforeProcessEntity($entity);
     }
 
     /**
