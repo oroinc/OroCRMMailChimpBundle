@@ -5,7 +5,7 @@ orocrm:
             label: MailChimp
             api_key:
                 check.label: Check Connection
-                label: Api Key
+                label: API Key
 
         connector:
             template:
@@ -17,6 +17,12 @@ orocrm:
             campaign:
                 label: Campaign Connector
                 job: Import campaigns from MailChimp
+
+        mailchimptransport:
+            entity_label: MailChimp Transport
+            entity_plural_label: MailChimp Transports
+            id.label: ID
+            api_key.label: API Key
 
         template:
             entity_label: Mailchimp Template
@@ -33,3 +39,78 @@ orocrm:
             type.label: Type
             updated_at.label: Update At
 
+        campaign:
+            entity_label: Campaign
+            entity_plural_label: Campaigns
+            abuse_reports.label: Abuse Reports
+            archive_url.label: Archive URL
+            archive_url_long.label: Archive URL Long
+            channel.label: Channel
+            clicks.label: Clicks
+            content_type.label: Content Type
+            created_at.label: Created At
+            email_campaign.label: Email Campaign
+            emails_sent.label: Emails Sent
+            facebook_likes.label: Facebook Likes
+            forwards.label: Forwards
+            forwards_opens.label: Forwards Opens
+            hard_bounces.label: Hard Bounces
+            id.label: Id
+            last_open_date.label: Last Open Date
+            opens.label: Opens
+            origin_id.label: Campaign Number
+            recipient_likes.label: Recipient Likes
+            send_time.label: Send Time
+            soft_bounces.label: Soft Bounces
+            status.label: Status
+            subscribers_list.label: Subscribers List
+            syntax_errors.label: Syntax Errors
+            template.label: Template
+            tests_remain.label: Tests Remain
+            tests_sent.label: Tests Sent
+            type.label: Type
+            unique_clicks.label: Unique Clicks
+            unique_likes.label: Unique Likes
+            unique_opens.label: Unique Opens
+            unsubscribes.label: Unsubscribes
+            updated_at.label: Updated At
+            users_who_clicked.label: Users Who Clicked
+            web_id.label: Web ID
+
+        subscriberslist:
+            entity_label: Subscribers List
+            entity_plural_label: Subscribers Lists
+            avg_sub_rate.label: Average Subscribe Rate
+            avg_usub_rate.label: Average Unsubscribe Rate
+            beamer_address.label: Beamer Address
+            campaign_count.label: Campaign Count
+            channel.label: Channel
+            cleaned_count.label: Cleaned Count
+            cleaned_count_since_send.label: Cleaned Count Since Send
+            click_rate.label: Click Rate
+            created_at.label: Created At
+            default_from_email.label: Default From Email
+            default_from_name.label: Default From Name
+            default_language.label: Default Language
+            default_subject.label: Default Subject
+            email_type_option.label: Email Type Option
+            group_count.label: Group Count
+            grouping_count.label: Grouping Count
+            id.label: ID
+            list_rating.label: List Rating
+            marketing_list.label: Marketing List
+            member_count.label: Active Members Count
+            member_count_since_send.label: Active Members Count Since Send
+            merge_var_count.label: Merge Vars Count
+            name.label: Name
+            open_rate.label: Open Rate
+            origin_id.label: Subscribers List Number
+            subscribe_url_long.label: Subscribe URL Long
+            subscribe_url_short.label: Subscribe URL Short
+            target_sub_rate.label: Target Subscription Rate
+            unsubscribe_count.label: Unsubscribed Count
+            unsubscribe_count_since_send.label: Unsubscribed Count Since Send
+            updated_at.label: Updated At
+            use_awesome_bar.label: Use Awesome Bar
+            visibility.label: Visibility
+            web_id.label: Web ID
