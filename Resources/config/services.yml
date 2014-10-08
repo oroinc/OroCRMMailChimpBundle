@@ -140,15 +140,12 @@ services:
     # Data Converter
     orocrm_mailchimp.importexport.data_converter.campaign:
         class: %orocrm_mailchimp.importexport.data_converter.campaign.class%
-        parent: oro_importexport.data_converter.configurable
 
     orocrm_mailchimp.importexport.data_converter.template:
         class: %orocrm_mailchimp.importexport.data_converter.template.class%
-        parent: oro_importexport.data_converter.configurable
 
     orocrm_mailchimp.importexport.data_converter.list:
         class: %orocrm_mailchimp.importexport.data_converter.list.class%
-        parent: oro_importexport.data_converter.configurable
 
     # Strategy
     orocrm_mailchimp.importexport.strategy.template.add_or_replace:
@@ -172,32 +169,35 @@ services:
             - [setLogger, [@oro_integration.logger.strategy]]
 
     # Processors
+    orocrm_mailchimp.importexport.processor.import_abstract:
+        parent: oro_importexport.processor.import_abstract
+        abstract: true
+        calls:
+            - [setContextRegistry, [@oro_importexport.context_registry]]
+
     orocrm_mailchimp.importexport.processor.campaign:
         class: %orocrm_mailchimp.importexport.processor.import.class%
-        parent: oro_importexport.processor.import_abstract
+        parent: orocrm_mailchimp.importexport.processor.import_abstract
         calls:
             - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.campaign]]
             - [setStrategy, [@orocrm_mailchimp.importexport.strategy.campaign]]
-        tags:
-            - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.campaign.class%, alias: orocrm_mailchimp.processor.campaign }
+            - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
 
     orocrm_mailchimp.importexport.processor.list:
         class: %orocrm_mailchimp.importexport.processor.import.class%
-        parent: oro_importexport.processor.import_abstract
+        parent: orocrm_mailchimp.importexport.processor.import_abstract
         calls:
             - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.list]]
             - [setStrategy, [@orocrm_mailchimp.importexport.strategy.list]]
-        tags:
-            - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.subscribers_list.class%, alias: orocrm_mailchimp.processor.list }
+            - [setEntityName, [%orocrm_mailchimp.entity.subscribers_list.class%]]
 
     orocrm_mailchimp.importexport.processor.template:
         class: %orocrm_mailchimp.importexport.processor.import.class%
-        parent: oro_importexport.processor.import_abstract
+        parent: orocrm_mailchimp.importexport.processor.import_abstract
         calls:
             - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.template]]
             - [setStrategy, [@orocrm_mailchimp.importexport.strategy.template.add_or_replace]]
-        tags:
-            - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.template.class%, alias: orocrm_mailchimp.processor.template.import }
+            - [setEntityName, [%orocrm_mailchimp.entity.template.class%]]
 
     orocrm_mailchimp.importexport.processor.remove.abstract:
         class: %orocrm_mailchimp.importexport.processor.remove.class%

@@ -7,10 +7,12 @@ use Symfony\Component\Serializer\Exception\RuntimeException;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\DateTimeNormalizer as BaseNormalizer;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\DenormalizerInterface;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\NormalizerInterface;
-use Oro\Bundle\ImportExportBundle\Serializer\Serializer;
+use OroCRM\Bundle\MailChimpBundle\Provider\ChannelType;
 
 class DateTimeSerializer implements NormalizerInterface, DenormalizerInterface
 {
+    const CHANNEL_TYPE_KEY = 'channelType';
+
     public function __construct()
     {
         $this->magentoNormalizer = new BaseNormalizer('Y-m-d H:i:s', 'Y-m-d', 'H:i:s', 'UTC');
@@ -43,8 +45,8 @@ class DateTimeSerializer implements NormalizerInterface, DenormalizerInterface
     public function supportsDenormalization($data, $type, $format = null, array $context = array())
     {
         return $this->magentoNormalizer->supportsDenormalization($data, $type, $format, $context)
-            && !empty($context[Serializer::PROCESSOR_ALIAS_KEY])
-            && strpos($context[Serializer::PROCESSOR_ALIAS_KEY], 'orocrm_mailchimp') !== false;
+            && !empty($context[self::CHANNEL_TYPE_KEY])
+            && strpos($context[self::CHANNEL_TYPE_KEY], ChannelType::TYPE) !== false;
     }
 
     /**
@@ -53,7 +55,7 @@ class DateTimeSerializer implements NormalizerInterface, DenormalizerInterface
     public function supportsNormalization($data, $format = null, array $context = array())
     {
         return $this->magentoNormalizer->supportsNormalization($data, $format, $context)
-            && !empty($context[Serializer::PROCESSOR_ALIAS_KEY])
-            && strpos($context[Serializer::PROCESSOR_ALIAS_KEY], 'orocrm_mailchimp') !== false;
+            && !empty($context[self::CHANNEL_TYPE_KEY])
+            && strpos($context[self::CHANNEL_TYPE_KEY], ChannelType::TYPE) !== false;
     }
 }
