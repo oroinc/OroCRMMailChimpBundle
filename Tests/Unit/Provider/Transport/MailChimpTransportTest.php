@@ -1,12 +1,17 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider;
+namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport as MailChimpTransportEntity;
-use OroCRM\Bundle\MailChimpBundle\Provider\MailChimpTransport;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $clientFactory;
+
     /**
      * @var MailChimpTransport
      */
@@ -14,7 +19,11 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->transport = new MailChimpTransport();
+        $this->clientFactory = $this->getMockBuilder(
+            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClientFactory'
+        )->disableOriginalConstructor()->getMock();
+
+        $this->transport = new MailChimpTransport($this->clientFactory);
     }
 
     public function testGetSettingsEntityFQCN()
@@ -24,7 +33,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLabel()
     {
-        $this->assertEquals('orocrm.mailchimp.transport.rest.label', $this->transport->getLabel());
+        $this->assertEquals('orocrm.mailchimp.integration_transport.label', $this->transport->getLabel());
     }
 
     public function testGetSettingsFormType()

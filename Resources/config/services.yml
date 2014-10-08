@@ -9,9 +9,10 @@ parameters:
     orocrm_mailchimp.form.type.api_key_type.class: OroCRM\Bundle\MailChimpBundle\Form\Type\ApiKeyType
 
     # Integration related services
-    orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\MailChimpTransport
+    orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport
     orocrm_mailchimp.provider.channel_type.class: OroCRM\Bundle\MailChimpBundle\Provider\ChannelType
-    orocrm_mailchimp.client.factory.class: OroCRM\Bundle\MailChimpBundle\Model\MailChimpClientFactory
+    orocrm_mailchimp.client.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient
+    orocrm_mailchimp.client.factory.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory
 
     # Readers
     orocrm_mailchimp.importexport.reader.processed_entities.class:  OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\ProcessedEntities
@@ -44,6 +45,8 @@ parameters:
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
+        arguments:
+            - %orocrm_mailchimp.client.class%
 
     # Readers
     orocrm_mailchimp.importexport.reader.processed_entities:

@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Iterator;
+namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-class MailChimpCampaignIterator extends AbstractMailChimpIterator
+class CampaignIterator extends AbstractMailChimpIterator
 {
     /**
      * {@inheritdoc}

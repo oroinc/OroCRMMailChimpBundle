@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Iterator;
+namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use ZfrMailChimp\Client\MailChimpClient;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 abstract class AbstractMailChimpIterator implements \Iterator
 {
