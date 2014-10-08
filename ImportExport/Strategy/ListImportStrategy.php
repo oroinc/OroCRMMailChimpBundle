@@ -68,7 +68,7 @@ class ListImportStrategy extends AbstractImportStrategy
             $this->importExistingEntity(
                 $entity->getMarketingList(),
                 $existingMarketingList,
-                $itemData['emailCampaign']
+                $itemData['marketingList']
             );
         } else {
             $existingEntity->setMarketingList($entity->getMarketingList());
@@ -78,14 +78,21 @@ class ListImportStrategy extends AbstractImportStrategy
     }
 
     /**
-     * Set MarketingList owner.
+     * Update MarketingList.
      *
      * @param SubscribersList $entity
      * @return SubscribersList
      */
     protected function afterProcessEntity($entity)
     {
+        // Set marketing list owner
         $this->ownerHelper->populateChannelOwner($entity->getMarketingList(), $entity->getChannel());
+
+        // Update existing marketing list relations
+        $itemData = $this->context->getValue('itemData');
+        $marketingList = $entity->getMarketingList();
+        $marketingListFields = $this->fieldHelper->getFields(ClassUtils::getClass($marketingList), true);
+        $this->updateRelations($marketingList, $marketingListFields, $itemData['marketingList']);
 
         return parent::afterProcessEntity($entity);
     }
