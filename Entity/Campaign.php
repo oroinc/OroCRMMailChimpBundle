@@ -123,7 +123,7 @@ class Campaign implements OriginAwareInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="status", type="string", length=255, nullable=false)
+     * @ORM\Column(name="status", type="string", length=16, nullable=false)
      */
     protected $status;
 

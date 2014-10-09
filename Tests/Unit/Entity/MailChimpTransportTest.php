@@ -1,4 +1,5 @@
 <?php
+
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Symfony\Component\HttpFoundation\ParameterBag;

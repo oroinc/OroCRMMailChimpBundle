@@ -21,12 +21,12 @@ orocrm:
         mailchimptransport:
             entity_label: MailChimp Transport
             entity_plural_label: MailChimp Transports
-            id.label: ID
+            id.label: Id
             api_key.label: API Key
 
         template:
-            entity_label: Mailchimp Template
-            entity_plural_label: Mailchimp Templates
+            entity_label: Template
+            entity_plural_label: Templates
             active.label: Active
             category.label: Category
             channel.label: Channel
@@ -58,7 +58,7 @@ orocrm:
             id.label: Id
             last_open_date.label: Last Open Date
             opens.label: Opens
-            origin_id.label: Campaign Number
+            origin_id.label: Origin Id
             recipient_likes.label: Recipient Likes
             send_time.label: Send Time
             soft_bounces.label: Soft Bounces
@@ -104,7 +104,7 @@ orocrm:
             merge_var_count.label: Merge Vars Count
             name.label: Name
             open_rate.label: Open Rate
-            origin_id.label: Subscribers List Number
+            origin_id.label: Origin Id
             subscribe_url_long.label: Subscribe URL Long
             subscribe_url_short.label: Subscribe URL Short
             target_sub_rate.label: Target Subscription Rate
@@ -113,4 +113,33 @@ orocrm:
             updated_at.label: Updated At
             use_awesome_bar.label: Use Awesome Bar
             visibility.label: Visibility
-            web_id.label: Web ID
+            web_id.label: Web Id
+
+        member:
+            entity_label: Member
+            entity_plural_label: Members
+            cc.label: Country Code
+            channel.label: Channel
+            company.label: Company
+            confirmed_at.label: Confirmed At
+            confirmed_ip_address.label: Confirmed IP Address
+            created_at.label: Created At
+            dst_offset.label: DST Offset
+            email.label: Email
+            euid.label: euid
+            first_name.label: First Name
+            gmt_offset.label: GMT Offset
+            id.label: ID
+            last_changed_at.label: Last Changed At
+            last_name.label: Last Name
+            latitude.label: Latitude
+            leid.label: leid
+            longitude.label: Longitude
+            member_rating.label: Member Rating
+            opted_in_at.label: Opted In At
+            opted_in_ip_address.label: Opted In IP Address
+            origin_id.label: Origin Id
+            region.label: Region
+            status.label: Status
+            timezone.label: Timezone
+            updated_at.label: Updated At
