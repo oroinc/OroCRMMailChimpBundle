@@ -75,7 +75,7 @@ orocrm:
             unsubscribes.label: Unsubscribes
             updated_at.label: Updated At
             users_who_clicked.label: Users Who Clicked
-            web_id.label: Web ID
+            web_id.label: Web Id
 
         subscriberslist:
             entity_label: Subscribers List
@@ -96,7 +96,7 @@ orocrm:
             email_type_option.label: Email Type Option
             group_count.label: Group Count
             grouping_count.label: Grouping Count
-            id.label: ID
+            id.label: Id
             list_rating.label: List Rating
             marketing_list.label: Marketing List
             member_count.label: Active Members Count
@@ -129,7 +129,7 @@ orocrm:
             euid.label: euid
             first_name.label: First Name
             gmt_offset.label: GMT Offset
-            id.label: ID
+            id.label: Id
             last_changed_at.label: Last Changed At
             last_name.label: Last Name
             latitude.label: Latitude

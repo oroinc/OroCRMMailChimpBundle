@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Exception;
 
-class RequiredOptionException extends \Exception
+class RequiredOptionException extends \Exception implements MailChimpException
 {
     /**
      * @param string $optionName

@@ -33,7 +33,6 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**#@+
      * @const string Status of member
      */
-    const STATUS_PENDING = 'pending';
     const STATUS_SUBSCRIBED = 'subscribed';
     const STATUS_UNSUBSCRIBED = 'unsubscribed';
     const STATUS_CLEANED = 'cleaned';

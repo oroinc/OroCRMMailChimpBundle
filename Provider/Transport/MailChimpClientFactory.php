@@ -30,7 +30,7 @@ class MailChimpClientFactory
      * Create MailChimp Client.
      *
      * @param string $apiKey
-     * @return MailChimpClient $client
+     * @return MailChimpClient
      */
     public function create($apiKey)
     {

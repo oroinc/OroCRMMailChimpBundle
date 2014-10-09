@@ -2,7 +2,11 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+
+use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\IntegrationBundle\Provider\AbstractConnector;
+
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 abstract class AbstractMailChimpConnector extends AbstractConnector
@@ -13,9 +17,22 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
     protected $transport;
 
     /**
+     * @var ManagerRegistry
+     */
+    protected $managerRegistry;
+
+    /**
      * @var string
      */
     protected $entityName;
+
+    /**
+     * @param ManagerRegistry $managerRegistry
+     */
+    public function setManagerRegistry(ManagerRegistry $managerRegistry)
+    {
+        $this->managerRegistry = $managerRegistry;
+    }
 
     /**
      * @param string $entityName
@@ -23,5 +40,24 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
     public function setEntityName($entityName)
     {
         $this->entityName = $entityName;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getLastSyncDate()
+    {
+        $channel = $this->contextMediator->getChannel($this->getContext());
+        $repository = $this->managerRegistry->getRepository('OroIntegrationBundle:Status');
+
+        /**
+         * @var Status $status
+         */
+        $status = $repository->findOneBy(
+            array('code' => Status::STATUS_COMPLETED, 'channel' => $channel, 'connector' => $this->getType()),
+            array('date' => 'DESC')
+        );
+
+        return $status ? $status->getDate() : null;
     }
 }

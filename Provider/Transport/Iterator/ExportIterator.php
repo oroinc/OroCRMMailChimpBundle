@@ -11,27 +11,27 @@ class ExportIterator implements \Iterator
     /**
      * @var MailChimpClient
      */
-    private $client;
+    protected $client;
 
     /**
      * @var EntityBodyInterface
      */
-    private $body;
+    protected $body;
 
     /**
      * @var string
      */
-    private $methodName;
+    protected $methodName;
 
     /**
      * @var array
      */
-    private $parameters;
+    protected $parameters;
 
     /**
      * @var array|null
      */
-    private $header;
+    protected $header;
 
     /**
      * @var mixed

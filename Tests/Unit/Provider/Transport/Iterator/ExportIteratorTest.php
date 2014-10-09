@@ -29,7 +29,7 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider optionsDataProvider
+     * @dataProvider iteratorDataProvider
      * @param string $methodName
      * @param array $parameters
      * @param array $expectedLines
@@ -69,7 +69,7 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider optionsDataProvider
+     * @dataProvider iteratorDataProvider
      * @param string $methodName
      * @param array $parameters
      * @param array $expectedLines
@@ -140,7 +140,7 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
     /**
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function optionsDataProvider()
+    public function iteratorDataProvider()
     {
         return [
             'with content' => [

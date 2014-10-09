@@ -79,7 +79,7 @@ class MailChimpClient extends BaseClient
     protected function getExportAPIMethodUrl($methodName)
     {
         // The URL depends on the API key
-        $parts = explode('-', $this->apiKey);
+        $parts = array_pad(explode('-', $this->apiKey), 2, '');
 
         return sprintf(
             'https://%s.api.mailchimp.com/export/%s/%s',

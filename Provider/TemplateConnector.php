@@ -9,6 +9,7 @@ class TemplateConnector extends AbstractMailChimpConnector
 
     /**
      * {@inheritdoc}
+     * @todo Move this logic to iterator. Method should't call API, request should be done during iteration.
      */
     protected function getConnectorSource()
     {

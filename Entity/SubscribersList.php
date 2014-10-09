@@ -13,10 +13,10 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.TooManyFields)
- *
- * @ORM\Entity
+ *\
+ * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository")
  * @ORM\Table(
- *      name="orocrm_mailchimp_subscribers"
+ *      name="orocrm_mailchimp_list"
  * )
  * @ORM\HasLifecycleCallbacks()
  * @Config(

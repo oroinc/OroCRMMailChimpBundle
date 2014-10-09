@@ -103,16 +103,23 @@ services:
         class: %orocrm_mailchimp.transport.integration_transport.class%
         arguments:
             - @orocrm_mailchimp.client.factory
+            - @doctrine
         tags:
             - { name: oro_integration.transport, type: mailchimp_api, channel_type: mailchimp }
 
     # Connectors
-    orocrm_mailchimp.connector.template:
-        class: %orocrm_mailchimp.connector.template.class%
+    orocrm_mailchimp.connector.abstract:
+        abstract: true
         arguments:
             - @oro_importexport.context_registry
             - @oro_integration.logger.strategy
             - @oro_integration.provider.connector_context_mediator
+        calls:
+            - [setManagerRegistry, [@doctrine]]
+
+    orocrm_mailchimp.connector.template:
+        class: %orocrm_mailchimp.connector.template.class%
+        parent: orocrm_mailchimp.connector.abstract
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.template.class%]]
         tags:
@@ -120,10 +127,7 @@ services:
 
     orocrm_mailchimp.connector.list:
         class: %orocrm_mailchimp.connector.list.class%
-        arguments:
-            - @oro_importexport.context_registry
-            - @oro_integration.logger.strategy
-            - @oro_integration.provider.connector_context_mediator
+        parent: orocrm_mailchimp.connector.abstract
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.subscribers_list.class%]]
         tags:
@@ -131,10 +135,7 @@ services:
 
     orocrm_mailchimp.connector.campaign:
         class: %orocrm_mailchimp.connector.campaign.class%
-        arguments:
-            - @oro_importexport.context_registry
-            - @oro_integration.logger.strategy
-            - @oro_integration.provider.connector_context_mediator
+        parent: orocrm_mailchimp.connector.abstract
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
         tags:

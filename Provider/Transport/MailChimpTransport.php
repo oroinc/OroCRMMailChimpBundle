@@ -2,17 +2,17 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use ZfrMailChimp\Client\MailChimpClient;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExportIterator;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MembersIterator;
 
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/
@@ -20,6 +20,15 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExportIterator;
  */
 class MailChimpTransport implements TransportInterface
 {
+    /**#@+
+     * @const string Constants related to datetime representation in MailChimp
+     */
+    const DATETIME_FORMAT = 'Y-m-d H:i:s';
+    const DATE_FORMAT = 'Y-m-d';
+    const TIME_FORMAT = 'H:i:s';
+    const TIMEZONE = 'UTC';
+    /**#@-*/
+
     /**
      * @var MailChimpClient
      */
@@ -31,11 +40,18 @@ class MailChimpTransport implements TransportInterface
     protected $mailChimpClientFactory;
 
     /**
-     * @param MailChimpClientFactory $mailChimpClientFactory
+     * @var ManagerRegistry
      */
-    public function __construct(MailChimpClientFactory $mailChimpClientFactory)
+    protected $managerRegistry;
+
+    /**
+     * @param MailChimpClientFactory $mailChimpClientFactory
+     * @param ManagerRegistry $managerRegistry
+     */
+    public function __construct(MailChimpClientFactory $mailChimpClientFactory, ManagerRegistry $managerRegistry)
     {
         $this->mailChimpClientFactory = $mailChimpClientFactory;
+        $this->managerRegistry = $managerRegistry;
     }
 
     /**
@@ -61,7 +77,7 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @link http://apidocs.mailchimp.com/api/2.0/campaigns/list.php
-     * @return CampaignIterator
+     * @return \Iterator
      */
     public function getCampaigns()
     {
@@ -70,7 +86,7 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @link http://apidocs.mailchimp.com/api/2.0/lists/list.php
-     * @return ListIterator
+     * @return \Iterator
      */
     public function getLists()
     {
@@ -78,12 +94,29 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
+     * Get all members from MailChimp that requires update.
+     *
      * @link http://apidocs.mailchimp.com/export/1.0/list.func.php
-     * @return ExportIterator
+     *
+     * @param \DateTime|null $since
+     * @return \Iterator
      */
-    public function getMembers(SubscribersList $list)
+    public function getMembersToSync(\DateTime $since = null)
     {
+        $subscribersLists = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:SubscribersList')
+            ->getAllSubscribersListIterator();
 
+        $parameters = ['status' => [Member::STATUS_SUBSCRIBED, Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED]];
+
+        if ($since) {
+            $since = clone $since;
+            $since->sub(new \DateInterval('PT1S'));
+            $since->setTimezone(new \DateTimeZone('UTC'));
+
+            $parameters['since'] = $since->format(self::DATETIME_FORMAT);
+        }
+
+        return new MembersIterator($subscribersLists, $this->client, $parameters);
     }
 
     /**
