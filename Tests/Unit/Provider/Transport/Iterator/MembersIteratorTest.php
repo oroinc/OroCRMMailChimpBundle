@@ -38,8 +38,10 @@ class MembersIteratorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider iteratorDataProvider
      * @param array $parameters
+     * @param array $expectedValueMap
+     * @param array $expected
      */
-    public function testIteratorWithSingleStatusWorks(array $parameters, array $expectedValueMap, $expected)
+    public function testIteratorWorks(array $parameters, array $expectedValueMap, array $expected)
     {
         $list = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
         $list->expects($this->atLeastOnce())
@@ -65,13 +67,8 @@ class MembersIteratorTest extends \PHPUnit_Framework_TestCase
     public function iteratorDataProvider()
     {
         $memberFoo = ['email' => 'foo@example.com'];
-        $expectedMemberFoo = ['email' => 'foo@example.com', 'list_id' => self::TEST_LIST_ID];
-
         $memberBar = ['email' => 'bar@example.com'];
-        $expectedMemberBar = ['email' => 'bar@example.com', 'list_id' => self::TEST_LIST_ID];
-
         $memberBaz = ['email' => 'baz@example.com'];
-        $expectedMemberBaz = ['email' => 'baz@example.com', 'list_id' => self::TEST_LIST_ID];
 
         return [
             'empty status' => [
@@ -79,24 +76,32 @@ class MembersIteratorTest extends \PHPUnit_Framework_TestCase
                 'expectedValueMap' => [
                     [
                         MailChimpClient::EXPORT_LIST,
-                        ['include_empty' => true, 'id' => self::TEST_LIST_ID],
+                        ['include_empty' => true, 'status' => Member::STATUS_SUBSCRIBED, 'id' => self::TEST_LIST_ID],
                         new \ArrayIterator([$memberFoo, $memberBar, $memberBaz])
                     ]
                 ],
-                'expected' => [$expectedMemberFoo, $expectedMemberBar, $expectedMemberBaz]
+                'expected' => [
+                    $this->passMember($memberFoo, Member::STATUS_SUBSCRIBED),
+                    $this->passMember($memberBar, Member::STATUS_SUBSCRIBED),
+                    $this->passMember($memberBaz, Member::STATUS_SUBSCRIBED),
+                ]
             ],
             'single status' => [
-                'parameters' => ['status' => Member::STATUS_SUBSCRIBED],
+                'parameters' => ['status' => Member::STATUS_UNSUBSCRIBED],
                 'expectedValueMap' => [
                     [
                         MailChimpClient::EXPORT_LIST,
-                        ['status' => Member::STATUS_SUBSCRIBED, 'id' => self::TEST_LIST_ID],
+                        ['status' => Member::STATUS_UNSUBSCRIBED, 'id' => self::TEST_LIST_ID],
                         new \ArrayIterator([$memberFoo, $memberBar, $memberBaz])
                     ]
                 ],
-                'expected' => [$expectedMemberFoo, $expectedMemberBar, $expectedMemberBaz]
+                'expected' => [
+                    $this->passMember($memberFoo, Member::STATUS_UNSUBSCRIBED),
+                    $this->passMember($memberBar, Member::STATUS_UNSUBSCRIBED),
+                    $this->passMember($memberBaz, Member::STATUS_UNSUBSCRIBED),
+                ]
             ],
-            'single statuses' => [
+            'multiple statuses' => [
                 'parameters' => ['status' => [Member::STATUS_SUBSCRIBED, Member::STATUS_UNSUBSCRIBED]],
                 'expectedValueMap' => [
                     [
@@ -110,8 +115,19 @@ class MembersIteratorTest extends \PHPUnit_Framework_TestCase
                         new \ArrayIterator([$memberBaz])
                     ],
                 ],
-                'expected' => [$expectedMemberFoo, $expectedMemberBar, $expectedMemberBaz]
+                'expected' => [
+                    $this->passMember($memberFoo, Member::STATUS_SUBSCRIBED),
+                    $this->passMember($memberBar, Member::STATUS_SUBSCRIBED),
+                    $this->passMember($memberBaz, Member::STATUS_UNSUBSCRIBED),
+                ]
             ],
         ];
+    }
+
+    protected function passMember(array $member, $status)
+    {
+        $member['list_id'] = self::TEST_LIST_ID;
+        $member['status'] = $status;
+        return $member;
     }
 }

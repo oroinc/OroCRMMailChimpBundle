@@ -16,7 +16,7 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
  *\
  * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository")
  * @ORM\Table(
- *      name="orocrm_mailchimp_list"
+ *      name="orocrm_mailchimp_subscribers_list"
  * )
  * @ORM\HasLifecycleCallbacks()
  * @Config(

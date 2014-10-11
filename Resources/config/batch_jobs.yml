@@ -63,3 +63,17 @@ connector:
                         reader:    orocrm_mailchimp.importexport.reader.processed_entities
                         processor: orocrm_mailchimp.importexport.processor.list.remove
                         writer:    orocrm_mailchimp.importexport.writer.list.remove
+
+        mailchimp_member_import:
+            title: orocrm.mailchimp.connector.member.job
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.connector.member
+                        processor: orocrm_mailchimp.importexport.processor.member
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25

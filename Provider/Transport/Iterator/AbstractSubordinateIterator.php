@@ -94,7 +94,9 @@ abstract class AbstractSubordinateIterator implements \Iterator
         if (!$this->subordinateIterator) {
             $mainIteratorElement = $this->mainIterator->current();
             $this->subordinateIterator = $this->createSubordinateIterator($mainIteratorElement);
-            $this->subordinateIterator->rewind();
+            if (!$this->subordinateIterator->valid()) { // Iterator could be already rewound
+                $this->subordinateIterator->rewind();
+            }
         }
 
         if (!$this->subordinateIterator->valid()) {

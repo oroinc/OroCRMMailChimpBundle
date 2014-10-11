@@ -5,6 +5,8 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport;
 use Guzzle\Http\Message\Response;
 use ZfrMailChimp\Client\MailChimpClient as BaseClient;
 
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Exception\BadResponseException;
+
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/
  * @link http://apidocs.mailchimp.com/export/1.0/
@@ -64,10 +66,26 @@ class MailChimpClient extends BaseClient
     public function export($methodName, array $parameters)
     {
         $url = $this->getExportAPIMethodUrl($methodName);
-        $parameters = array_merge(['api_key' => $this->apiKey], $parameters);
+        $parameters = array_merge(['apikey' => $this->apiKey], $parameters);
 
-        $request = $this->get($url, $parameters);
-        return $request->send();
+        $request = $this->createRequest(
+            'POST',
+            $url,
+            ['Content-Type' => 'application/json'],
+            json_encode($parameters)
+        );
+
+        $response = $request->send();
+
+        if (0 !== strpos($response->getContentType(), 'text/html')) {
+            throw BadResponseException::factory(
+                $request,
+                $response,
+                'Invalid response, expected content type is text/html'
+            );
+        }
+
+        return $response;
     }
 
     /**
@@ -82,7 +100,7 @@ class MailChimpClient extends BaseClient
         $parts = array_pad(explode('-', $this->apiKey), 2, '');
 
         return sprintf(
-            'https://%s.api.mailchimp.com/export/%s/%s',
+            'https://%s.api.mailchimp.com/export/%s/%s/',
             end($parts),
             self::EXPORT_API_VERSION,
             $methodName

@@ -48,9 +48,11 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $id;
 
     /**
+     * Mapped to field "leid": The Member id used in our web app, allows you to create a link directly to it
+     *
      * @var string
      *
-     * @ORM\Column(name="origin_id", type="string", length=32, nullable=false)
+     * @ORM\Column(name="origin_id", type="bigint", nullable=false)
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
@@ -227,15 +229,6 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $lastChangedAt;
 
     /**
-     * The Member id used in our web app, allows you to create a link directly to it
-     *
-     * @var integer
-     *
-     * @ORM\Column(name="leid", type="integer", nullable=true)
-     */
-    protected $leid;
-
-    /**
      * The unique id for an email address (not list related) - the email "id" returned from listMemberInfo,
      * Webhooks, Campaigns, etc.
      *
@@ -244,6 +237,14 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @ORM\Column(name="euid", type="string", length=255, nullable=true)
      */
     protected $euid;
+
+    /**
+     * @var SubscribersList
+     *
+     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
+     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $subscribersList;
 
     /**
      * Local created date time
@@ -542,7 +543,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      */
     public function getLeid()
     {
-        return $this->leid;
+        return $this->getOriginId();
     }
 
     /**
@@ -551,7 +552,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      */
     public function setLeid($leid)
     {
-        $this->leid = $leid;
+        $this->setOriginId($leid);
 
         return $this;
     }
@@ -685,6 +686,25 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     public function setTimezone($timezone)
     {
         $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    /**
+     * @return SubscribersList
+     */
+    public function getSubscribersList()
+    {
+        return $this->subscribersList;
+    }
+
+    /**
+     * @param SubscribersList $subscribersList
+     * @return Member
+     */
+    public function setSubscribersList($subscribersList)
+    {
+        $this->subscribersList = $subscribersList;
 
         return $this;
     }

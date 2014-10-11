@@ -72,10 +72,10 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
     }
 
     /**
-     * @param array $items
+     * @param array $item
      * @return int
      */
-    protected function getItemsToRemoveCount($items)
+    protected function getItemsToRemoveCount(array $item)
     {
         $em = $this->doctrineHelper->getEntityManager($this->entityName);
         $identifierFieldName = $this->doctrineHelper->getSingleEntityIdentifierFieldName($this->entityName);
@@ -83,12 +83,12 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
         $qb->select('COUNT(e.' . $identifierFieldName . ') as itemsCount')
             ->from($this->entityName, 'e')
             ->andWhere($qb->expr()->notIn('e.' . $this->field, ':items'))
-            ->setParameter('items', (array)$items[$this->field]);
+            ->setParameter('items', (array)$item[$this->field]);
 
         // Workaround to limit by channel. Channel is not available in second step context.
-        if (array_key_exists('channel', $items)) {
+        if (array_key_exists('channel', $item)) {
             $qb->andWhere($qb->expr()->eq('e.channel', ':channel'))
-                ->setParameter('channel', $items['channel']);
+                ->setParameter('channel', $item['channel']);
         }
 
         $result = $qb->getQuery()->getArrayResult();

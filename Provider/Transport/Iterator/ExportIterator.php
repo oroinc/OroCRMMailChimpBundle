@@ -114,6 +114,7 @@ class ExportIterator implements \Iterator
         if (!$this->body) {
             $response = $this->client->export($this->methodName, $this->parameters);
             $this->body = $response->getBody();
+            $this->body->seek(0);
             $line = $this->body->readLine();
             if (is_string($line)) {
                 $this->header = json_decode($line);

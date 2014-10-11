@@ -35,7 +35,7 @@ class MemberTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('originId', 123456789),
-            array('channel', $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel')),
+            array('channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')),
             array('email', 'email@example.com'),
             array('status', Member::STATUS_CLEANED),
             array('firstName', 'John'),
@@ -56,11 +56,11 @@ class MemberTest extends \PHPUnit_Framework_TestCase
             array('region', 'ua'),
             array('lastChangedAt', new \DateTime()),
             array('lastChangedAt', null),
-            array('leid', 123),
             array('euid', '123'),
             array('createdAt', new \DateTime()),
             array('updatedAt', new \DateTime()),
             array('updatedAt', null),
+            array('subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')),
         );
     }
 

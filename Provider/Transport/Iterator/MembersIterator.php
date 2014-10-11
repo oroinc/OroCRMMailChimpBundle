@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
@@ -18,11 +19,6 @@ class MembersIterator extends AbstractSubordinateIterator
     protected $parameters;
 
     /**
-     * @var integer
-     */
-    protected $currentSubscribersListOriginId;
-
-    /**
      * @param \Iterator $subscribersLists
      * @param MailChimpClient $client
      * @param array $parameters
@@ -32,17 +28,9 @@ class MembersIterator extends AbstractSubordinateIterator
         parent::__construct($subscribersLists);
         $this->client = $client;
         $this->parameters = $parameters;
-    }
-
-    public function current()
-    {
-        $result = parent::current();
-
-        if (is_array($result)) {
-            $result['list_id'] = $this->currentSubscribersListOriginId;
+        if (!isset($this->parameters['status'])) {
+            $this->parameters['status'] = Member::STATUS_SUBSCRIBED;
         }
-
-        return $result;
     }
 
     /**
@@ -53,7 +41,6 @@ class MembersIterator extends AbstractSubordinateIterator
      */
     protected function createSubordinateIterator($subscribersList)
     {
-        $this->currentSubscribersListOriginId = $subscribersList->getOriginId();
         if (!$subscribersList instanceof SubscribersList) {
             throw new \InvalidArgumentException(
                 sprintf(
@@ -66,24 +53,43 @@ class MembersIterator extends AbstractSubordinateIterator
 
         $parameters = $this->parameters;
         $parameters['id'] = $subscribersList->getOriginId();
-        if (isset($parameters['status']) && is_array($parameters['status'])) {
+        if (is_array($parameters['status'])) {
             // If we need members with many statuses, we will bo separate requests for them.
             $result = new \AppendIterator();
             foreach ($parameters['status'] as $status) {
                 $parameters['status'] = $status;
-                $result->append($this->createExportIterator(MailChimpClient::EXPORT_LIST, $parameters));
+                $result->append($this->createExportMembersIterator($subscribersList, $parameters));
             }
         } else {
-            $result = $this->createExportIterator(MailChimpClient::EXPORT_LIST, $parameters);
+            $result = $this->createExportMembersIterator($subscribersList, $parameters);
         }
 
         return $result;
     }
 
     /**
+     * @param SubscribersList $subscribersList
+     * @param array $parameters
+     * @return \Iterator
+     */
+    protected function createExportMembersIterator(SubscribersList $subscribersList, $parameters)
+    {
+        return new \CallbackFilterIterator(
+            $this->createExportIterator(MailChimpClient::EXPORT_LIST, $parameters),
+            function (&$current) use ($subscribersList, $parameters) {
+                if (is_array($current)) {
+                    $current['list_id'] = $subscribersList->getOriginId();
+                    $current['status'] = $parameters['status'];
+                }
+                return true;
+            }
+        );
+    }
+
+    /**
      * @param string $method
      * @param array $parameters
-     * @return ExportIterator
+     * @return \Iterator
      */
     protected function createExportIterator($method, array $parameters)
     {
