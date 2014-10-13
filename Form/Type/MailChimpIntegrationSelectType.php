@@ -55,6 +55,8 @@ class MailChimpIntegrationSelectType extends AbstractType
         $qb = $this->registry->getRepository(self::ENTITY)
             ->createQueryBuilder('c')
             ->andWhere('c.type = :mailChimpType')
+            ->andWhere('c.enabled = :enabled')
+            ->setParameter('enabled', true)
             ->setParameter('mailChimpType', 'mailchimp')
             ->orderBy('c.name', 'ASC');
         $query = $this->aclHelper->apply($qb);

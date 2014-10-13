@@ -15,7 +15,7 @@ class MailChimpTransport implements TransportInterface
      */
     public function send(EmailCampaign $campaign, $entity, array $from, array $to)
     {
-        // TODO: Implement send
+        // TODO: Implement send CRM-1980
     }
 
     /**
