@@ -123,7 +123,7 @@ services:
     orocrm_mailchimp.form.type.transport_settings:
         class: %orocrm_mailchimp.form.type.transport_settings.class%
         tags:
-            - { name: form.type, alias: "orocrm_campaign_internal_transport_settings" }
+            - { name: form.type, alias: "orocrm_mailchimp_email_transport_settings" }
 
     # Integration related services
     orocrm_mailchimp.provider.channel_type:

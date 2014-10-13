@@ -148,6 +148,8 @@ orocrm:
             updated_at.label: Updated At
 
         emailcampaign:
-            integration.label: Integration
-            template.label: Template
             transport.mailchimp: MailChimp
+            integration.placeholder: Choose integration
+            integration.label: Integration
+            template.placeholder: Choose MailChimp template
+            template.label: Template

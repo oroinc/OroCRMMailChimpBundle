@@ -37,7 +37,9 @@ class MailChimpIntegrationSelectType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => self::ENTITY,
+                'empty_value' => 'orocrm.mailchimp.emailcampaign.integration.placeholder',
+                'class' => self::ENTITY,
+                'property' => 'name',
                 'choices' => $this->getMailChimpIntegrations()
             ]
         );
@@ -52,19 +54,12 @@ class MailChimpIntegrationSelectType extends AbstractType
     {
         $qb = $this->registry->getRepository(self::ENTITY)
             ->createQueryBuilder('c')
-            ->select(['c.id', 'c.name'])
             ->andWhere('c.type = :mailChimpType')
             ->setParameter('mailChimpType', 'mailchimp')
             ->orderBy('c.name', 'ASC');
         $query = $this->aclHelper->apply($qb);
 
-        $channels = $query->getArrayResult();
-        $result = [];
-        foreach ($channels as $channel) {
-            $result[$channel['id']] = $channel['name'];
-        }
-
-        return $result;
+        return $query->getResult();
     }
 
     /**
@@ -72,7 +67,7 @@ class MailChimpIntegrationSelectType extends AbstractType
      */
     public function getParent()
     {
-        return 'choice';
+        return 'entity';
     }
 
     /**

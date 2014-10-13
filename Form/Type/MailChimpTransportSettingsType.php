@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class MailChimpTransportSettingsType extends AbstractTransportSettingsType
 {
-    const NAME = 'orocrm_campaign_internal_transport_settings';
+    const NAME = 'orocrm_mailchimp_email_transport_settings';
 
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class MailChimpTransportSettingsType extends AbstractTransportSettingsType
     {
         $builder
             ->add(
-                'integration',
+                'channel',
                 'orocrm_mailchimp_integration_select',
                 [
                     'label' => 'orocrm.mailchimp.emailcampaign.integration.label',
@@ -30,11 +30,6 @@ class MailChimpTransportSettingsType extends AbstractTransportSettingsType
                 [
                     'label' => 'orocrm.mailchimp.emailcampaign.template.label',
                     'required' => true,
-                    /*
-                    'depends_on_parent_field' => 'marketingList',
-                    'data_route' => 'orocrm_api_get_emailcampaign_email_templates',
-                    'data_route_parameter' => 'id'
-                    */
                 ]
             );
 
