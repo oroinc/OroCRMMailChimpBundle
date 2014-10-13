@@ -12,6 +12,7 @@ use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
 class MailChimpIntegrationSelectType extends AbstractType
 {
     const NAME = 'orocrm_mailchimp_integration_select';
+    const ENTITY = 'Oro\Bundle\IntegrationBundle\Entity\Channel';
 
     /**
      * @var ManagerRegistry
@@ -36,7 +37,7 @@ class MailChimpIntegrationSelectType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => 'OroIntegrationBundle:Channel',
+                'data_class' => self::ENTITY,
                 'choices' => $this->getMailChimpIntegrations()
             ]
         );
@@ -49,14 +50,21 @@ class MailChimpIntegrationSelectType extends AbstractType
      */
     protected function getMailChimpIntegrations()
     {
-        $qb = $this->registry->getRepository('OroIntegrationBundle:Channel')
+        $qb = $this->registry->getRepository(self::ENTITY)
             ->createQueryBuilder('c')
-            ->andWhere('type = :mailChimpType')
+            ->select(['c.id', 'c.name'])
+            ->andWhere('c.type = :mailChimpType')
             ->setParameter('mailChimpType', 'mailchimp')
             ->orderBy('c.name', 'ASC');
         $query = $this->aclHelper->apply($qb);
 
-        return $query->getArrayResult();
+        $channels = $query->getArrayResult();
+        $result = [];
+        foreach ($channels as $channel) {
+            $result[$channel['id']] = $channel['name'];
+        }
+
+        return $result;
     }
 
     /**

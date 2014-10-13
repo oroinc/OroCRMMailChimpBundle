@@ -16,7 +16,9 @@ class MailchimpTemplateSelectType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => 'OroCRM\Bundle\MailChimpBundle\OroCRMMailChimpBundle\Entity\Template',
+                'class' => 'OroCRM\Bundle\MailChimpBundle\Entity\Template',
+                'property' => 'name',
+                'group_by' => 'category'
             ]
         );
     }

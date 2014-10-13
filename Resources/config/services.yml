@@ -5,9 +5,13 @@ parameters:
     orocrm_mailchimp.entity.subscribers_list.class: OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList
     orocrm_mailchimp.entity.member.class: OroCRM\Bundle\MailChimpBundle\Entity\Member
 
+    orocrm_mailchimp.transport.mailchimp.class: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport
+
     # Forms and extensions
     orocrm_mailchimp.form.type.integration_transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType
     orocrm_mailchimp.form.type.integration_select.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpIntegrationSelectType
+    orocrm_mailchimp.form.type.template_select.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailchimpTemplateSelectType
+    orocrm_mailchimp.form.type.transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType
     orocrm_mailchimp.form.type.api_key_type.class: OroCRM\Bundle\MailChimpBundle\Form\Type\ApiKeyType
 
     # Integration related services
@@ -52,6 +56,11 @@ services:
         class: %orocrm_mailchimp.client.factory.class%
         arguments:
             - %orocrm_mailchimp.client.class%
+
+    orocrm_mailchimp.transport.mailchimp:
+        class: %orocrm_mailchimp.transport.mailchimp.class%
+        tags:
+            - { name: "orocrm_campaign.email_transport" }
 
     # Readers
     orocrm_mailchimp.importexport.reader.processed_entities:
@@ -105,6 +114,16 @@ services:
             - @oro_security.acl_helper
         tags:
             - { name: form.type, alias: "orocrm_mailchimp_integration_select" }
+
+    orocrm_mailchimp.form.type.template_select:
+        class: %orocrm_mailchimp.form.type.template_select.class%
+        tags:
+            - { name: form.type, alias: "orocrm_mailchimp_template_select" }
+
+    orocrm_mailchimp.form.type.transport_settings:
+        class: %orocrm_mailchimp.form.type.transport_settings.class%
+        tags:
+            - { name: form.type, alias: "orocrm_campaign_internal_transport_settings" }
 
     # Integration related services
     orocrm_mailchimp.provider.channel_type:

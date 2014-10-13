@@ -146,3 +146,8 @@ orocrm:
             status.label: Status
             timezone.label: Timezone
             updated_at.label: Updated At
+
+        emailcampaign:
+            integration.label: Integration
+            template.label: Template
+            transport.mailchimp: MailChimp
