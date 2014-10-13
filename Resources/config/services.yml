@@ -7,6 +7,7 @@ parameters:
 
     # Forms and extensions
     orocrm_mailchimp.form.type.integration_transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType
+    orocrm_mailchimp.form.type.integration_select.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpIntegrationSelectType
     orocrm_mailchimp.form.type.api_key_type.class: OroCRM\Bundle\MailChimpBundle\Form\Type\ApiKeyType
 
     # Integration related services
@@ -97,6 +98,14 @@ services:
         tags:
             - { name: form.type, alias: "orocrm_mailchimp_integration_transport_setting_type" }
 
+    orocrm_mailchimp.form.type.integration_select:
+        class: %orocrm_mailchimp.form.type.integration_select.class%
+        arguments:
+            - @doctrine
+            - @oro_security.acl_helper
+        tags:
+            - { name: form.type, alias: "orocrm_mailchimp_integration_select" }
+
     # Integration related services
     orocrm_mailchimp.provider.channel_type:
             class: %orocrm_mailchimp.provider.channel_type.class%
@@ -171,6 +180,7 @@ services:
         class: %orocrm_mailchimp.importexport.strategy.template.class%
         parent: oro_importexport.strategy.configurable_add_or_replace
         calls:
+            - [setOwnerHelper, [@oro_integration.helper.default_owner_helper]]
             - [setLogger, [@oro_integration.logger.strategy]]
 
     orocrm_mailchimp.importexport.strategy.list:

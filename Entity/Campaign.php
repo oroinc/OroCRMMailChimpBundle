@@ -7,12 +7,15 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 
 /**
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  *
  * @ORM\Entity()
  * @ORM\Table(
@@ -24,6 +27,15 @@ use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
  * @ORM\HasLifecycleCallbacks()
  * @Config(
  *  defaultValues={
+ *      "ownership"={
+ *          "owner_type"="ORGANIZATION",
+ *          "owner_field_name"="owner",
+ *          "owner_column_name"="owner_id"
+ *      },
+ *      "security"={
+ *          "type"="ACL",
+ *          "group_name"=""
+ *      },
  *      "entity"={
  *          "icon"="icon-envelope"
  *      }
@@ -75,6 +87,14 @@ class Campaign implements OriginAwareInterface
      * )
      */
     protected $channel;
+
+    /**
+     * @var Organization
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\Organization")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $owner;
 
     /**
      * @var int
@@ -322,6 +342,25 @@ class Campaign implements OriginAwareInterface
     public function getChannel()
     {
         return $this->channel;
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param Organization $owner
+     * @return Campaign
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 
     /**

@@ -63,6 +63,8 @@ abstract class AbstractImportStrategy extends ConfigurableAddOrReplaceStrategy i
      */
     protected function afterProcessEntity($entity)
     {
+        $this->ownerHelper->populateChannelOwner($entity, $entity->getChannel());
+
         $jobContext = $this->getJobContext();
         $processedEntities = (array)$jobContext->get('processed_entities');
         $processedEntities['originId'][] = $entity->getOriginId();

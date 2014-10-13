@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
@@ -21,6 +22,15 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
  * @ORM\HasLifecycleCallbacks()
  * @Config(
  *  defaultValues={
+ *      "ownership"={
+ *          "owner_type"="ORGANIZATION",
+ *          "owner_field_name"="owner",
+ *          "owner_column_name"="owner_id"
+ *      },
+ *      "security"={
+ *          "type"="ACL",
+ *          "group_name"=""
+ *      },
  *      "entity"={
  *          "icon"="icon-group"
  *      }
@@ -66,6 +76,14 @@ class SubscribersList implements OriginAwareInterface
      * )
      */
     protected $channel;
+
+    /**
+     * @var Organization
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\Organization")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $owner;
 
     /**
      * @var MarketingList
@@ -324,6 +342,25 @@ class SubscribersList implements OriginAwareInterface
     public function setChannel($channel)
     {
         $this->channel = $channel;
+        return $this;
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param Organization $owner
+     * @return SubscribersList
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+
         return $this;
     }
 

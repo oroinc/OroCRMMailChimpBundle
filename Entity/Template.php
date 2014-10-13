@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 
 /**
  * @ORM\Entity
@@ -19,6 +20,15 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
  * @ORM\HasLifecycleCallbacks()
  * @Config(
  *  defaultValues={
+ *      "ownership"={
+ *          "owner_type"="ORGANIZATION",
+ *          "owner_field_name"="owner",
+ *          "owner_column_name"="owner_id"
+ *      },
+ *      "security"={
+ *          "type"="ACL",
+ *          "group_name"=""
+ *      },
  *      "entity"={
  *          "icon"="icon-file-alt"
  *      }
@@ -67,6 +77,14 @@ class Template implements OriginAwareInterface
      * )
      */
     protected $channel;
+
+    /**
+     * @var Organization
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\Organization")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $owner;
 
     /**
      * @var string
@@ -276,6 +294,25 @@ class Template implements OriginAwareInterface
     public function getChannel()
     {
         return $this->channel;
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param Organization $owner
+     * @return Template
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 
     /**
