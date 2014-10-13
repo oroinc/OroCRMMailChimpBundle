@@ -19,10 +19,7 @@ class ListImportStrategy extends AbstractImportStrategy
         $this->cachedEntities = array();
         $entity = $this->beforeProcessEntity($entity);
 
-        $entityName = ClassUtils::getClass($entity);
-        $fields = $this->fieldHelper->getFields($entityName, true);
-
-        $existingEntity = $this->findExistingEntity($entity, $fields);
+        $existingEntity = $this->findExistingEntity($entity);
         if ($existingEntity) {
             if ($this->logger) {
                 $this->logger->info('Syncing Existing MailChimp List [origin_id=' . $entity->getOriginId() . ']');
