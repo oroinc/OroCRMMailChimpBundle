@@ -54,6 +54,9 @@ parameters:
     # MergeVar related services
     orocrm_mailchimp.merge_var.provider.class: OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProvider
 
+    # Workflow actions
+    orocrm_mailchimp.workflow.action.remove_entity.class: OroCRM\Bundle\MailChimpBundle\Model\Action\RemoveEntity
+
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -295,3 +298,11 @@ services:
     orocrm_mailchimp.merge_var.provider:
         class: %orocrm_mailchimp.merge_var.provider.class%
 
+    # Workflow actions
+    orocrm_mailchimp.workflow.action.remove_entity:
+        class: %orocrm_mailchimp.workflow.action.remove_entity.class%
+        arguments:
+            - @oro_workflow.context_accessor
+            - @doctrine
+        tags:
+            - { name: oro_workflow.action, alias: remove_entity }

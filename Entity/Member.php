@@ -10,6 +10,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\LocaleBundle\Model\FirstNameInterface;
 use Oro\Bundle\LocaleBundle\Model\LastNameInterface;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListItem;
 
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/lists/member-info.php
@@ -35,6 +36,9 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  *      "security"={
  *          "type"="ACL",
  *          "group_name"=""
+ *      },
+ *      "form"={
+ *          "grid_name"="orocrm-mailchimp-member-grid",
  *      },
  *  }
  * )
@@ -93,6 +97,13 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     * @ConfigField(
+     *      defaultValues={
+     *          "entity"={
+     *              "contact_information"="email"
+     *          }
+     *      }
+     * )
      */
     protected $email;
 
@@ -100,6 +111,13 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
+     * @ConfigField(
+     *      defaultValues={
+     *          "entity"={
+     *              "contact_information"="phone"
+     *          }
+     *      }
+     * )
      */
     protected $phone;
 
@@ -255,6 +273,14 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @ORM\Column(name="merge_var_values", type="json_array", nullable=true)
      */
     protected $mergeVarValues;
+
+    /**
+     * @var MarketingListItem
+     *
+     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MarketingListBundle\Entity\MarketingListItem", cascade={"persist"})
+     * @ORM\JoinColumn(name="marketing_list_item_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $marketingListItem;
 
     /**
      * @var SubscribersList
@@ -755,6 +781,25 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     }
 
     /**
+     * @return MarketingListItem
+     */
+    public function getMarketingListItem()
+    {
+        return $this->marketingListItem;
+    }
+
+    /**
+     * @param MarketingListItem $marketingListItem
+     * @return Member
+     */
+    public function setMarketingListItem(MarketingListItem $marketingListItem = null)
+    {
+        $this->marketingListItem = $marketingListItem;
+
+        return $this;
+    }
+
+    /**
      * @return SubscribersList
      */
     public function getSubscribersList()
@@ -766,7 +811,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @param SubscribersList $subscribersList
      * @return Member
      */
-    public function setSubscribersList($subscribersList)
+    public function setSubscribersList(SubscribersList $subscribersList = null)
     {
         $this->subscribersList = $subscribersList;
 
