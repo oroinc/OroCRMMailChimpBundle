@@ -30,7 +30,7 @@ class TemplateIterator implements \Iterator
      */
     public function current()
     {
-        $this->insureIterator();
+        $this->ensureIterator();
 
         return $this->iterator->current();
     }
@@ -40,7 +40,7 @@ class TemplateIterator implements \Iterator
      */
     public function next()
     {
-        $this->insureIterator();
+        $this->ensureIterator();
 
         $this->iterator->next();
     }
@@ -50,7 +50,7 @@ class TemplateIterator implements \Iterator
      */
     public function key()
     {
-        $this->insureIterator();
+        $this->ensureIterator();
 
         return $this->iterator->key();
     }
@@ -60,7 +60,7 @@ class TemplateIterator implements \Iterator
      */
     public function valid()
     {
-        $this->insureIterator();
+        $this->ensureIterator();
 
         return $this->iterator->valid();
     }
@@ -70,7 +70,7 @@ class TemplateIterator implements \Iterator
      */
     public function rewind()
     {
-        $this->insureIterator();
+        $this->ensureIterator();
 
         $this->iterator->rewind();
     }
@@ -79,9 +79,9 @@ class TemplateIterator implements \Iterator
     /**
      * {@inheritdoc}
      */
-    public function getIterator()
+    public function initIterator()
     {
-        $templatesList = $this->client->getTemplates(
+        $templatesList = (array)$this->client->getTemplates(
             [
                 'types' => [
                     Template::TYPE_USER => true,
@@ -104,16 +104,16 @@ class TemplateIterator implements \Iterator
             }
         }
 
-        return $iterator;
+        $this->iterator = $iterator;
     }
 
     /**
      * Check iterator existence.
      */
-    private function insureIterator()
+    private function ensureIterator()
     {
         if (!$this->iterator) {
-            $this->iterator = $this->getIterator();
+            $this->initIterator();
         }
     }
 }
