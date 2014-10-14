@@ -2,18 +2,18 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
-class MemberTest extends \PHPUnit_Framework_TestCase
+class SubscribersListTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Member
+     * @var SubscribersList
      */
     protected $target;
 
     public function setUp()
     {
-        $this->target = new Member();
+        $this->target = new SubscribersList();
     }
 
     /**
@@ -36,35 +36,24 @@ class MemberTest extends \PHPUnit_Framework_TestCase
         return [
             ['originId', 123456789],
             ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
-            ['email', 'email@example.com'],
-            ['phone', '555-666-777'],
-            ['status', Member::STATUS_CLEANED],
-            ['firstName', 'John'],
-            ['lastName', 'Doe'],
-            ['company', 'Doe Joe Ltd.'],
-            ['memberRating', 2],
-            ['optedInAt', new \DateTime()],
-            ['optedInAt', null],
-            ['optedInIpAddress', '5.6.7.8'],
-            ['confirmedAt', new \DateTime()],
-            ['confirmedIpAddress', null],
-            ['latitude', '3910.57962'],
-            ['longitude', '3910.57962'],
-            ['gmtOffset', '3'],
-            ['dstOffset', '3'],
-            ['timezone', 'America/Los_Angeles'],
-            ['cc', 'us'],
-            ['region', 'ua'],
-            ['lastChangedAt', new \DateTime()],
-            ['lastChangedAt', null],
-            ['euid', '123'],
-            ['createdAt', new \DateTime()],
-            ['updatedAt', new \DateTime()],
-            ['updatedAt', null],
-            ['subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
-            ['mergeVarValues', ['Email Address' => 'test@example.com']],
+            [
+                'mergeVarFields',
+                $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface')
+            ],
+            ['mergeVarConfig', [['foo' => 'bar']]],
             ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
         ];
+    }
+
+    public function testSetMergeVarConfigResetsMergeVarFields()
+    {
+        $this->target->setMergeVarFields(
+            $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface')
+        );
+
+        $this->target->setMergeVarConfig([]);
+
+        $this->assertNull($this->target->getMergeVarFields());
     }
 
     public function testPrePersist()

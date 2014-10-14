@@ -10,7 +10,7 @@ class CampaignIterator extends AbstractMailChimpIterator
     protected function getResult()
     {
         return $this->client->getCampaigns(
-            ['start' => (int)$this->offset / self::BATCH_SIZE, 'limit' => self::BATCH_SIZE]
+            ['start' => (int)$this->offset / $this->batchSize, 'limit' => $this->batchSize]
         );
     }
 }

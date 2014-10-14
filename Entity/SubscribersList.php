@@ -8,6 +8,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
+use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFieldsInterface;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
@@ -285,6 +286,18 @@ class SubscribersList implements OriginAwareInterface
      * @ORM\Column(name="click_rate", type="float", nullable=true)
      */
     protected $clickRate;
+
+    /**
+     * @var MergeVarFieldsInterface|null
+     */
+    protected $mergeVarFields;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="merge_var_config", type="json_array", nullable=true)
+     */
+    protected $mergeVarConfig;
 
     /**
      * @var \DateTime
@@ -884,6 +897,45 @@ class SubscribersList implements OriginAwareInterface
     public function setClickRate($clickRate)
     {
         $this->clickRate = $clickRate;
+        return $this;
+    }
+
+    /**
+     * @return MergeVarFieldsInterface|null
+     */
+    public function getMergeVarFields()
+    {
+        return $this->mergeVarFields;
+    }
+
+    /**
+     * @param $mergeVarFields|null MergeVarFieldsInterface
+     * @return SubscribersList
+     */
+    public function setMergeVarFields(MergeVarFieldsInterface $mergeVarFields = null)
+    {
+        $this->mergeVarFields = $mergeVarFields;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMergeVarConfig()
+    {
+        return $this->mergeVarConfig;
+    }
+
+    /**
+     * @param array $data
+     * @return SubscribersList
+     */
+    public function setMergeVarConfig(array $data = [])
+    {
+        $this->mergeVarFields = null;
+        $this->mergeVarConfig = $data;
+
         return $this;
     }
 

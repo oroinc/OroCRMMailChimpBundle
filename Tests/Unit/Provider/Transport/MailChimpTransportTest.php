@@ -115,7 +115,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
         $result = $this->transport->getMembersToSync($since);
 
         $this->assertInstanceOf(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MembersIterator',
+            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MemberIterator',
             $result
         );
 

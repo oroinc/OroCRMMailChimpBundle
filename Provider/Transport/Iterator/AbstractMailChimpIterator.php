@@ -16,24 +16,36 @@ abstract class AbstractMailChimpIterator implements \Iterator
     /**
      * @var int
      */
-    protected $offset = 0;
+    protected $batchSize;
+
+    /**
+     * @var mixed
+     */
+    protected $current = null;
 
     /**
      * @var int
      */
-    protected $total = 0;
+    protected $offset = -1;
 
     /**
-     * @var array
+     * @var int
      */
-    protected $data = [];
+    protected $total = -1;
+
+    /**
+     * @var array|null
+     */
+    protected $data;
 
     /**
      * @param MailChimpClient $client
+     * @param int $batchSize
      */
-    public function __construct(MailChimpClient $client)
+    public function __construct(MailChimpClient $client, $batchSize = self::BATCH_SIZE)
     {
         $this->client = $client;
+        $this->batchSize = $batchSize;
     }
 
     /**
@@ -41,15 +53,7 @@ abstract class AbstractMailChimpIterator implements \Iterator
      */
     public function current()
     {
-        $key = $this->offset % self::BATCH_SIZE;
-
-        if ($this->valid() && $key == 0) {
-            $result      = $this->getResult();
-            $this->total = $result['total'];
-            $this->data  = $result['data'];
-        }
-
-        return $this->data[$key];
+        return $this->current;
     }
 
     /**
@@ -57,7 +61,7 @@ abstract class AbstractMailChimpIterator implements \Iterator
      */
     public function valid()
     {
-        return $this->offset == 0 || $this->offset < $this->total;
+        return $this->total > 0 && $this->offset < $this->total;
     }
 
     /**
@@ -65,7 +69,16 @@ abstract class AbstractMailChimpIterator implements \Iterator
      */
     public function next()
     {
-        $this->offset++;
+        $this->offset += 1;
+        $key = $this->offset % $this->batchSize;
+
+        if (($this->valid() || ($this->total == -1)) && $key == 0) {
+            $result      = $this->getResult();
+            $this->total = $result['total'];
+            $this->data  = $result['data'];
+        }
+
+        $this->current = isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
     /**
@@ -81,9 +94,12 @@ abstract class AbstractMailChimpIterator implements \Iterator
      */
     public function rewind()
     {
-        $this->offset = 0;
-        $this->total  = 0;
-        $this->data   = [];
+        $this->current = null;
+        $this->offset  = -1;
+        $this->total   = -1;
+        $this->data    = null;
+
+        $this->next();
     }
 
     /**

@@ -41,6 +41,7 @@ orocrm:
             preview_image.label: Preview Image
             type.label: Type
             updated_at.label: Update At
+            owner.label: Owner
 
         campaign:
             entity_label: Campaign
@@ -79,6 +80,7 @@ orocrm:
             updated_at.label: Updated At
             users_who_clicked.label: Users Who Clicked
             web_id.label: Web Id
+            owner.label: Owner
 
         subscriberslist:
             entity_label: Subscribers List
@@ -117,6 +119,9 @@ orocrm:
             use_awesome_bar.label: Use Awesome Bar
             visibility.label: Visibility
             web_id.label: Web Id
+            merge_vars_data.label: Merge Vars
+            owner.label: Owner
+            merge_var_schema.label: Merge Var Schema
 
         member:
             entity_label: Member
@@ -146,6 +151,9 @@ orocrm:
             status.label: Status
             timezone.label: Timezone
             updated_at.label: Updated At
+            owner.label: Owner
+            merge_var_values.label: Merge Var Values
+            subscribers_list.label: Subscribers List
 
         emailcampaign:
             transport.mailchimp: MailChimp

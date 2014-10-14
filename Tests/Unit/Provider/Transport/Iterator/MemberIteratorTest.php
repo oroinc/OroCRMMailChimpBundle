@@ -5,7 +5,7 @@ namespace ForumGroup\Bundle\SalesForceMigrationBundle\Tests\Unit\Provider\Transp
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
-class MembersIteratorTest extends \PHPUnit_Framework_TestCase
+class MemberIteratorTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_LIST_ID = 100;
 
@@ -29,7 +29,7 @@ class MembersIteratorTest extends \PHPUnit_Framework_TestCase
     protected function createIterator(\Iterator $subscriberLists, array $parameters)
     {
         return $this->getMock(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MembersIterator',
+            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MemberIterator',
             ['createExportIterator'],
             [$subscriberLists, $this->client, $parameters]
         );

@@ -2,12 +2,16 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use Doctrine\Common\Util\ClassUtils;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
 
 class MemberImportStrategy extends AbstractImportStrategy
 {
+    /**
+     * @var MergeVarProviderInterface
+     */
+    protected $mergeVarProvider;
+
     /**
      * @param Member $entity
      * @return Member|null
@@ -83,5 +87,39 @@ class MemberImportStrategy extends AbstractImportStrategy
         }
 
         return $this->processEntity($entity, false, false, $data);
+    }
+
+    /**
+     * Set EmailCampaign owner.
+     *
+     * @param Member $entity
+     * @return Member
+     */
+    protected function afterProcessEntity($entity)
+    {
+        $this->assignMergeVarValues($entity);
+
+        return parent::afterProcessEntity($entity);
+    }
+
+    /**
+     * Assign MergeVar values to properties of Member
+     *
+     * @param Member $member
+     */
+    protected function assignMergeVarValues(Member $member)
+    {
+        $this->mergeVarProvider->assignMergeVarValues(
+            $member,
+            $this->mergeVarProvider->getMergeVarFields($member->getSubscribersList())
+        );
+    }
+
+    /**
+     * @param MergeVarProviderInterface $mergeVarProvider
+     */
+    public function setMergeVarProvider(MergeVarProviderInterface $mergeVarProvider)
+    {
+        $this->mergeVarProvider = $mergeVarProvider;
     }
 }

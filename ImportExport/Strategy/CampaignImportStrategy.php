@@ -2,8 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use Doctrine\Common\Util\ClassUtils;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 
 class CampaignImportStrategy extends AbstractImportStrategy

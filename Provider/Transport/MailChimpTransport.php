@@ -12,7 +12,7 @@ use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MembersIterator;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberIterator;
 
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/
@@ -116,7 +116,7 @@ class MailChimpTransport implements TransportInterface
             $parameters['since'] = $since->format(self::DATETIME_FORMAT);
         }
 
-        return new MembersIterator($subscribersLists, $this->client, $parameters);
+        return new MemberIterator($subscribersLists, $this->client, $parameters);
     }
 
     /**

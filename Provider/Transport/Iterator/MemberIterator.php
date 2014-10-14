@@ -6,7 +6,7 @@ use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
-class MembersIterator extends AbstractSubordinateIterator
+class MemberIterator extends AbstractSubordinateIterator
 {
     /**
      * @var MailChimpClient
@@ -58,10 +58,10 @@ class MembersIterator extends AbstractSubordinateIterator
             $result = new \AppendIterator();
             foreach ($parameters['status'] as $status) {
                 $parameters['status'] = $status;
-                $result->append($this->createExportMembersIterator($subscribersList, $parameters));
+                $result->append($this->createExportMemberIterator($subscribersList, $parameters));
             }
         } else {
-            $result = $this->createExportMembersIterator($subscribersList, $parameters);
+            $result = $this->createExportMemberIterator($subscribersList, $parameters);
         }
 
         return $result;
@@ -72,7 +72,7 @@ class MembersIterator extends AbstractSubordinateIterator
      * @param array $parameters
      * @return \Iterator
      */
-    protected function createExportMembersIterator(SubscribersList $subscribersList, $parameters)
+    protected function createExportMemberIterator(SubscribersList $subscribersList, $parameters)
     {
         return new \CallbackFilterIterator(
             $this->createExportIterator(MailChimpClient::EXPORT_LIST, $parameters),

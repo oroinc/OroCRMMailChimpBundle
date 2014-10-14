@@ -51,6 +51,9 @@ parameters:
     orocrm_mailchimp.importexport.processor.import.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Processor\ImportProcessor
     orocrm_mailchimp.importexport.processor.remove.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Processor\RemoveProcessor
 
+    # MergeVar related services
+    orocrm_mailchimp.merge_var.provider.class: OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProvider
+
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -215,6 +218,7 @@ services:
         calls:
             - [setOwnerHelper, [@oro_integration.helper.default_owner_helper]]
             - [setLogger, [@oro_integration.logger.strategy]]
+            - [setMergeVarProvider, [@orocrm_mailchimp.merge_var.provider]]
 
     orocrm_mailchimp.importexport.strategy.campaign:
         class: %orocrm_mailchimp.importexport.strategy.campaign.class%
@@ -286,3 +290,8 @@ services:
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
             - [setSearchField, ['originId']]
+
+    # MergeVar related services
+    orocrm_mailchimp.merge_var.provider:
+        class: %orocrm_mailchimp.merge_var.provider.class%
+

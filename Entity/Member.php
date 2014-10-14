@@ -9,11 +9,13 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\LocaleBundle\Model\FirstNameInterface;
 use Oro\Bundle\LocaleBundle\Model\LastNameInterface;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/lists/member-info.php
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  *
  * @ORM\Entity
  * @ORM\Table(
@@ -24,7 +26,16 @@ use Oro\Bundle\LocaleBundle\Model\LastNameInterface;
  *  defaultValues={
  *      "entity"={
  *          "icon"="icon-user"
- *      }
+ *      },
+ *      "ownership"={
+ *          "owner_type"="ORGANIZATION",
+ *          "owner_field_name"="owner",
+ *          "owner_column_name"="owner_id"
+ *      },
+ *      "security"={
+ *          "type"="ACL",
+ *          "group_name"=""
+ *      },
  *  }
  * )
  */
@@ -86,6 +97,13 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $email;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="phone", type="string", length=255, nullable=true)
+     */
+    protected $phone;
+
+    /**
      * The subscription status for this email address, either pending, subscribed, unsubscribed, or cleaned
      *
      * @var string
@@ -107,13 +125,6 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
      */
     protected $lastName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="company", type="string", length=255, nullable=true)
-     */
-    protected $company;
 
     /**
      * The rating of the subscriber. This will be 1 - 5
@@ -239,12 +250,27 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $euid;
 
     /**
+     * @var array
+     *
+     * @ORM\Column(name="merge_var_values", type="json_array", nullable=true)
+     */
+    protected $mergeVarValues;
+
+    /**
      * @var SubscribersList
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
      * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $subscribersList;
+
+    /**
+     * @var Organization
+     *
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\Organization")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $owner;
 
     /**
      * Local created date time
@@ -420,6 +446,25 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     public function setEmail($email)
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param string $phone
+     * @return Member
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
 
         return $this;
     }
@@ -691,6 +736,25 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     }
 
     /**
+     * @return array
+     */
+    public function getMergeVarValues()
+    {
+        return $this->mergeVarValues;
+    }
+
+    /**
+     * @param array|null $data
+     * @return SubscribersList
+     */
+    public function setMergeVarValues(array $data = null)
+    {
+        $this->mergeVarValues = $data;
+
+        return $this;
+    }
+
+    /**
      * @return SubscribersList
      */
     public function getSubscribersList()
@@ -705,6 +769,25 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     public function setSubscribersList($subscribersList)
     {
         $this->subscribersList = $subscribersList;
+
+        return $this;
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param Organization $owner
+     * @return Campaign
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
 
         return $this;
     }
