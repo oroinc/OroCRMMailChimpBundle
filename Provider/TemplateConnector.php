@@ -9,22 +9,10 @@ class TemplateConnector extends AbstractMailChimpConnector
 
     /**
      * {@inheritdoc}
-     * @todo Move this logic to iterator. Method should't call API, request should be done during iteration.
      */
     protected function getConnectorSource()
     {
-        $templatesList = $this->transport->getTemplates();
-        $result = new \ArrayIterator();
-        foreach ($templatesList as $type => $templates) {
-            foreach ($templates as $template) {
-                $template['type'] = $type;
-                $template['origin_id'] = $template['id'];
-                unset($template['id']);
-                $result->append($template);
-            }
-        }
-
-        return $result;
+        return $this->transport->getTemplates();
     }
 
     /**

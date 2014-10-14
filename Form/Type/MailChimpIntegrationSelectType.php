@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
+use OroCRM\Bundle\MailChimpBundle\Provider\ChannelType;
 
 class MailChimpIntegrationSelectType extends AbstractType
 {
@@ -57,7 +58,7 @@ class MailChimpIntegrationSelectType extends AbstractType
             ->andWhere('c.type = :mailChimpType')
             ->andWhere('c.enabled = :enabled')
             ->setParameter('enabled', true)
-            ->setParameter('mailChimpType', 'mailchimp')
+            ->setParameter('mailChimpType', ChannelType::TYPE)
             ->orderBy('c.name', 'ASC');
         $query = $this->aclHelper->apply($qb);
 

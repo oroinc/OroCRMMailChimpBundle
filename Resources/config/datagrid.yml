@@ -51,16 +51,63 @@ datagrid:
                 lastChangedAt: { data_name: m.lastChangedAt }
         properties:
             id: ~
-#            view_link:
-#                type: url
-#                route: orocrm_marketing_list_view
-#                params: [ id ]
-#        actions:
-#            view:
-#                type:         navigate
-#                label:        oro.grid.action.view
-#                link:         view_link
-#                icon:         eye-open
-#                acl_recource: orocrm_marketing_list_view
-#                rowAction:    true
-#
+    orocrm_mailchimp_templates_grid:
+        extended_entity_name: %orocrm_mailchimp.entity.template.class%
+        channel_limitation:
+            channel_relation_path: .channel
+        options:
+            entityHint: MailChimp templates
+        source:
+            type: orm
+            acl_resource: orocrm_email_campaign_view
+            query:
+                select:
+                    - t.id
+                    - t.name
+                    - t.category
+                    - t.type
+                    - t.layout
+                from:
+                    - { table: %orocrm_mailchimp.entity.template.class%, alias: t }
+                where:
+                    and:
+                        - t.active = true
+                        - t.owner = @oro_security.security_facade->getOrganizationId
+        columns:
+            name:
+                label: orocrm.mailchimp.template.name.label
+            category:
+                label: orocrm.mailchimp.template.category.label
+            type:
+                label: orocrm.mailchimp.template.type.label
+            layout:
+                label: orocrm.mailchimp.template.layout.label
+        sorters:
+            columns:
+                name:
+                    data_name: t.name
+                category:
+                    data_name: t.category
+                type:
+                    data_name: t.type
+                layout:
+                    data_name: t.layout
+            default:
+                category: ASC
+                name: ASC
+        filters:
+            columns:
+                name:
+                    type: string
+                    data_name: t.name
+                category:
+                    type: string
+                    data_name: t.category
+                type:
+                    type: string
+                    data_name: t.type
+                layout:
+                    type: string
+                    data_name: t.layout
+        properties:
+            id: ~

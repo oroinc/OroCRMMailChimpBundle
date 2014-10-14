@@ -16,10 +16,8 @@ class MailchimpTemplateSelectType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'class' => 'OroCRM\Bundle\MailChimpBundle\Entity\Template',
-                'empty_value' => '',
-                'property' => 'name',
-                'group_by' => 'category',
+                'autocomplete_alias' => 'mailchimp_templates',
+                'grid_name' => 'orocrm_mailchimp_templates_grid',
                 'configs' => [
                     'placeholder' => 'orocrm.mailchimp.emailcampaign.template.placeholder'
                 ]
@@ -40,6 +38,6 @@ class MailchimpTemplateSelectType extends AbstractType
      */
     public function getParent()
     {
-        return 'genemu_jqueryselect2_entity';
+        return 'oro_entity_create_or_select_inline_channel_aware';
     }
 }
