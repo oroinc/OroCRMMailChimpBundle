@@ -13,6 +13,10 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  * @ORM\Entity
  * @ORM\Table(
  *      name="orocrm_mailchimp_template",
+ *      indexes={
+ *          @ORM\Index(name="mc_template_category", columns={"category"}),
+ *          @ORM\Index(name="mc_template_name", columns={"name"})
+ *      },
  *      uniqueConstraints={
  *          @ORM\UniqueConstraint(name="mc_template_oid_cid_unq", columns={"origin_id", "channel_id"})
  *     }

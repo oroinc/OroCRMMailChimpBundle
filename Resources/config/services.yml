@@ -13,6 +13,7 @@ parameters:
     orocrm_mailchimp.form.type.template_select.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailchimpTemplateSelectType
     orocrm_mailchimp.form.type.transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType
     orocrm_mailchimp.form.type.api_key_type.class: OroCRM\Bundle\MailChimpBundle\Form\Type\ApiKeyType
+    orocrm_mailchimp.form.autocomplete.template.search_handler.class: OroCRM\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler
 
     # Integration related services
     orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport
@@ -127,6 +128,17 @@ services:
         class: %orocrm_mailchimp.form.type.transport_settings.class%
         tags:
             - { name: form.type, alias: "orocrm_mailchimp_email_transport_settings" }
+
+    orocrm_mailchimp.form.autocomplete.template.search_handler:
+        class: %orocrm_mailchimp.form.autocomplete.template.search_handler.class%
+        arguments:
+            - %orocrm_mailchimp.entity.template.class%
+            - ["name"]
+        calls:
+            - [initDoctrinePropertiesByManagerRegistry, ["@doctrine"]]
+            - [setAclHelper,["@oro_security.acl_helper"]]
+        tags:
+            - { name: oro_form.autocomplete.search_handler, alias: "mailchimp_templates", acl_resource: "orocrm_email_campaign_view" }
 
     # Integration related services
     orocrm_mailchimp.provider.channel_type:
