@@ -924,14 +924,15 @@ class SubscribersList implements OriginAwareInterface
      */
     public function getMergeVarConfig()
     {
-        return $this->mergeVarConfig;
+
+        return (array)$this->mergeVarConfig;
     }
 
     /**
      * @param array $data
      * @return SubscribersList
      */
-    public function setMergeVarConfig(array $data = [])
+    public function setMergeVarConfig(array $data = null)
     {
         $this->mergeVarFields = null;
         $this->mergeVarConfig = $data;

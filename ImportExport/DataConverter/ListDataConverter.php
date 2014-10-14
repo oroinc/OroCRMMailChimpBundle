@@ -6,8 +6,7 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType;
 
 class ListDataConverter extends IntegrationAwareDataConverter
 {
-    // TODO: Replace this with OroCRM\Bundle\MailChimpBundle\Entity\Subscriber item when it will be created
-    const MARKETING_LIST_TARGET_ENTITY = 'OroCRM\Bundle\ContactBundle\Entity\Contact';
+    const MARKETING_LIST_TARGET_ENTITY = 'OroCRM\\Bundle\\MailChimpBundle\\Entity\\Member';
 
     /**
      * {@inheritdoc}
