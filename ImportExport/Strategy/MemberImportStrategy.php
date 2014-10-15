@@ -73,23 +73,6 @@ class MemberImportStrategy extends AbstractImportStrategy
     }
 
     /**
-     * Update related entity.
-     *
-     * @param object|null $entity
-     * @param object $importedEntity
-     * @param array|null $data
-     * @return null|object
-     */
-    protected function updateRelatedEntity($entity, $importedEntity, $data)
-    {
-        if (!$entity) {
-            $entity = $importedEntity;
-        }
-
-        return $this->processEntity($entity, false, false, $data);
-    }
-
-    /**
      * Set EmailCampaign owner.
      *
      * @param Member $entity

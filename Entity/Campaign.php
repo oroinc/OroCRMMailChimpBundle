@@ -50,6 +50,12 @@ class Campaign implements OriginAwareInterface
     const STATUS_PAUSED = 'paused';
     const STATUS_SCHEDULE = 'schedule';
 
+    const TYPE_REGULAR = 'regular';
+    const TYPE_PLAINTEXT = 'plaintext';
+    const TYPE_ABSPLIT = 'absplit';
+    const TYPE_RSS = 'rss';
+    const TYPE_AUTO = 'auto';
+
     /**
      * @var int
      *
@@ -101,6 +107,30 @@ class Campaign implements OriginAwareInterface
      * @ORM\Column(name="web_id", type="bigint", nullable=false)
      */
     protected $webId;
+
+    /**
+     * @var string
+     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     */
+    protected $title;
+
+    /**
+     * @var string
+     * @ORM\Column(name="subject", type="string", length=255, nullable=false)
+     */
+    protected $subject;
+
+    /**
+     * @var string
+     * @ORM\Column(name="from_email", type="string", length=255, nullable=false)
+     */
+    protected $fromEmail;
+
+    /**
+     * @var string
+     * @ORM\Column(name="from_name", type="string", length=255, nullable=false)
+     */
+    protected $fromName;
 
     /**
      * @var EmailCampaign
@@ -379,6 +409,78 @@ class Campaign implements OriginAwareInterface
     {
         $this->emailCampaign = $emailCampaign;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFromEmail()
+    {
+        return $this->fromEmail;
+    }
+
+    /**
+     * @param string $fromEmail
+     * @return Campaign
+     */
+    public function setFromEmail($fromEmail)
+    {
+        $this->fromEmail = $fromEmail;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFromName()
+    {
+        return $this->fromName;
+    }
+
+    /**
+     * @param string $fromName
+     * @return Campaign
+     */
+    public function setFromName($fromName)
+    {
+        $this->fromName = $fromName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
+     * @param string $subject
+     * @return Campaign
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     * @return Campaign
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
         return $this;
     }
 
