@@ -61,6 +61,7 @@ class MemberTest extends \PHPUnit_Framework_TestCase
             ['createdAt', new \DateTime()],
             ['updatedAt', new \DateTime()],
             ['updatedAt', null],
+            ['marketingListItem', $this->getMock('OroCRM\\Bundle\\MarketingListBundle\\Entity\\MarketingListItem')],
             ['subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
             ['mergeVarValues', ['Email Address' => 'test@example.com']],
             ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],

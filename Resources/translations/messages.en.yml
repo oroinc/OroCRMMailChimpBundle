@@ -134,6 +134,7 @@ orocrm:
             created_at.label: Created At
             dst_offset.label: DST Offset
             email.label: Email
+            phone.label: Phone
             euid.label: euid
             first_name.label: First Name
             gmt_offset.label: GMT Offset

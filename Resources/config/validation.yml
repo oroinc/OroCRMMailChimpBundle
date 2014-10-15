@@ -4,3 +4,10 @@ OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport:
             - NotBlank: ~
             - Length:
                 min: 32
+
+OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings:
+    properties:
+        channel:
+            - NotBlank: ~
+        template:
+            - NotBlank: ~

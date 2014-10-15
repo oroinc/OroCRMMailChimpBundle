@@ -1,0 +1,113 @@
+datagrid:
+    orocrm-mailchimp-member-grid:
+        extended_entity_name: OroCRM\Bundle\MailChimpBundle\Entity\Member
+        source:
+            type: orm
+            query:
+                select:
+                    - m.id
+                    - m.firstName
+                    - m.lastName
+                    - m.email
+                    - m.memberRating
+                    - m.lastChangedAt
+                from:
+                    - { table: OroCRM\Bundle\MailChimpBundle\Entity\Member, alias: m }
+        columns:
+            email:
+                label: orocrm.mailchimp.member.email.label
+            firstName:
+                label: orocrm.mailchimp.member.first_name.label
+            lastName:
+                label: orocrm.mailchimp.member.last_name.label
+            memberRating:
+                label: orocrm.mailchimp.member.member_rating.label
+            lastChangedAt:
+                label: orocrm.mailchimp.member.last_changed_at.label
+                frontend_type: datetime
+        filters:
+            columns:
+                email:
+                    type:       string
+                    data_name:  m.email
+                firstName:
+                    type:       string
+                    data_name:  m.firstName
+                lastName:
+                    type:       string
+                    data_name:  m.lastName
+                memberRating:
+                    type:       number
+                    data_name:  m.memberRating
+                lastChangedAt:
+                    type:       datetime
+                    data_name:  m.lastChangedAt
+        sorters:
+            columns:
+                email:         { data_name: m.email }
+                firstName:     { data_name: m.firstName }
+                lastName:      { data_name: m.lastName }
+                memberRating:  { data_name: m.memberRating }
+                lastChangedAt: { data_name: m.lastChangedAt }
+        properties:
+            id: ~
+    orocrm_mailchimp_templates_grid:
+        extended_entity_name: %orocrm_mailchimp.entity.template.class%
+        channel_limitation:
+            channel_relation_path: .channel
+        options:
+            entityHint: MailChimp templates
+        source:
+            type: orm
+            acl_resource: orocrm_email_campaign_view
+            query:
+                select:
+                    - t.id
+                    - t.name
+                    - t.category
+                    - t.type
+                    - t.layout
+                from:
+                    - { table: %orocrm_mailchimp.entity.template.class%, alias: t }
+                where:
+                    and:
+                        - t.active = true
+                        - t.owner = @oro_security.security_facade->getOrganizationId
+        columns:
+            name:
+                label: orocrm.mailchimp.template.name.label
+            category:
+                label: orocrm.mailchimp.template.category.label
+            type:
+                label: orocrm.mailchimp.template.type.label
+            layout:
+                label: orocrm.mailchimp.template.layout.label
+        sorters:
+            columns:
+                name:
+                    data_name: t.name
+                category:
+                    data_name: t.category
+                type:
+                    data_name: t.type
+                layout:
+                    data_name: t.layout
+            default:
+                category: ASC
+                name: ASC
+        filters:
+            columns:
+                name:
+                    type: string
+                    data_name: t.name
+                category:
+                    type: string
+                    data_name: t.category
+                type:
+                    type: string
+                    data_name: t.type
+                layout:
+                    type: string
+                    data_name: t.layout
+        properties:
+            id: ~

@@ -42,7 +42,7 @@ class ListDataConverter extends IntegrationAwareDataConverter
             'target_sub_rate' => 'targetSubRate',
             'open_rate' => 'openRate',
             'click_rate' => 'clickRate',
-            'merge_vars' => 'mergeVarSchema',
+            'merge_vars' => 'mergeVarConfig',
         ];
     }
 

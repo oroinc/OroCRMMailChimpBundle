@@ -30,6 +30,7 @@ class MailChimpTransportSettingsType extends AbstractTransportSettingsType
                 [
                     'label' => 'orocrm.mailchimp.emailcampaign.template.label',
                     'required' => true,
+                    'channel_field' => 'channel'
                 ]
             );
 
