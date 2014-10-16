@@ -4,23 +4,40 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity\Repository;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\EntityManager;
 
 class SubscribersListRepositoryTest extends \PHPUnit_Framework_TestCase
 {
+    const TEST_ENTITY_CLASS = 'FooEntityClass';
+    const ID = 'id';
+
     /**
      * @var SubscribersListRepository
      */
     protected $repository;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var EntityManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $entityManager;
+
+    /**
+     * @var QueryBuilder|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $queryBuilder;
 
     protected function setUp()
     {
         $this->entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
+            ->setMethods(array('createQueryBuilder'))
+            ->getMock();
+
+        $this->queryBuilder = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
+            ->disableOriginalConstructor()
+            ->setMethods(array('select', 'from', 'where', 'orderBy', 'setParameter', 'getQuery'))
             ->getMock();
 
         $this->repository = new SubscribersListRepository(
@@ -35,40 +52,19 @@ class SubscribersListRepositoryTest extends \PHPUnit_Framework_TestCase
         unset($this->repository);
     }
 
-    /**
-     *
-     */
     public function testGetAllSubscribersListIterator()
     {
-//        $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
-//            ->disableOriginalConstructor()
-//            ->getMock();
-//        $qb->expects($this->exactly(2))
-//            ->method('select')
-//            ->will($this->returnSelf());
-//        $qb->expects($this->once())
-//            ->method('from')
-//            ->will($this->returnSelf());
-//        $qb->expects($this->once())
-//            ->method('where')
-//            ->will($this->returnSelf());
-//        $qb->expects($this->once())
-//            ->method('orWhere')
-//            ->will($this->returnSelf());
-//        $qb->expects($this->once())
-//            ->method('andWhere')
-//            ->will($this->returnSelf());
-//        $qb->expects($this->once())
-//            ->method('orderBy')
-//            ->will($this->returnSelf());
-//        $qb->expects($this->exactly(2))
-//            ->method('setParameter')
-//            ->will($this->returnSelf());
+        $this->queryBuilder->expects($this->exactly(2))
+            ->method('select')
+            ->will($this->returnSelf());
+        $this->queryBuilder->expects($this->once())
+            ->method('from')
+            ->will($this->returnSelf());
 
-//        $this->entityManager->expects($this->once())
-//            ->method('createQueryBuilder')
-//            ->will($this->returnValue($qb));
-//
-//        $this->repository->getAllSubscribersListIterator();
+        $this->entityManager->expects($this->once())
+            ->method('createQueryBuilder')
+            ->will($this->returnValue($this->queryBuilder));
+
+        $this->repository->getAllSubscribersListIterator();
     }
 }
