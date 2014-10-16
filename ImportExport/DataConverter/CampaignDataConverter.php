@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport;
 
 class CampaignDataConverter extends IntegrationAwareDataConverter
 {
@@ -15,6 +16,9 @@ class CampaignDataConverter extends IntegrationAwareDataConverter
             // MailChimp campaign fields
             'id' => 'originId',
             'web_id' => 'webId',
+            'title' => 'title',
+            'subject' => 'subject',
+            'type' => 'type',
             'template_id' => 'template:originId',
             'list_id' => 'subscribersList:originId',
             'content_type' => 'contentType',
@@ -66,7 +70,7 @@ class CampaignDataConverter extends IntegrationAwareDataConverter
         $importedRecord['emailCampaign:sentAt'] = $importedRecord['send_time'];
         $importedRecord['emailCampaign:senderEmail'] = $importedRecord['from_email'];
         $importedRecord['emailCampaign:senderName'] = $importedRecord['from_name'];
-        $importedRecord['emailCampaign:transport'] = 'mailchimp';
+        $importedRecord['emailCampaign:transport'] = MailChimpTransport::NAME;
 
         return parent::convertToImportFormat($importedRecord, $skipNullValues);
     }

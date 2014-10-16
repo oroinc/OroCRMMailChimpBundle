@@ -36,6 +36,10 @@ class CampaignTest extends \PHPUnit_Framework_TestCase
         return [
             ['originId', 123456789],
             ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
+            ['title', 'Test title'],
+            ['subject', 'Test subject'],
+            ['fromName', 'John Doe'],
+            ['fromEmail', 'text@example.com'],
             ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
             ['webId', 123425223],
             ['template', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Template')],

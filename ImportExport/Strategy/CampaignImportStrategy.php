@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
+use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 
 class CampaignImportStrategy extends AbstractImportStrategy
 {
@@ -63,7 +64,8 @@ class CampaignImportStrategy extends AbstractImportStrategy
             $this->importExistingEntity(
                 $entity->getEmailCampaign(),
                 $existingEmailCampaign,
-                $itemData['emailCampaign']
+                $itemData['emailCampaign'],
+                ['transportSettings']
             );
         } else {
             $existingEntity->setEmailCampaign($entity->getEmailCampaign());
@@ -89,23 +91,6 @@ class CampaignImportStrategy extends AbstractImportStrategy
     }
 
     /**
-     * Update related entity.
-     *
-     * @param object|null $entity
-     * @param object $importedEntity
-     * @param array|null $data
-     * @return null|object
-     */
-    protected function updateRelatedEntity($entity, $importedEntity, $data)
-    {
-        if (!$entity) {
-            $entity = $importedEntity;
-        }
-
-        return $this->processEntity($entity, false, false, $data);
-    }
-
-    /**
      * Set EmailCampaign owner.
      *
      * @param Campaign $entity
@@ -114,6 +99,19 @@ class CampaignImportStrategy extends AbstractImportStrategy
     protected function afterProcessEntity($entity)
     {
         $this->ownerHelper->populateChannelOwner($entity->getEmailCampaign(), $entity->getChannel());
+
+        // Update related Email Campaign transport settings
+        $emailCampaign = $entity->getEmailCampaign();
+        if ($emailCampaign) {
+            $transportSettings = $emailCampaign->getTransportSettings();
+            if (!$transportSettings) {
+                $transportSettings = new MailChimpTransportSettings();
+                $emailCampaign->setTransportSettings($transportSettings);
+                $this->processEntity($transportSettings, false, true);
+            }
+            $transportSettings->setChannel($entity->getChannel());
+            $transportSettings->setTemplate($entity->getTemplate());
+        }
 
         return parent::afterProcessEntity($entity);
     }
