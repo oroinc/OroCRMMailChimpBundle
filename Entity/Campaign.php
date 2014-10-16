@@ -110,25 +110,25 @@ class Campaign implements OriginAwareInterface
 
     /**
      * @var string
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     * @ORM\Column(name="title", type="string", length=255, nullable=true)
      */
     protected $title;
 
     /**
      * @var string
-     * @ORM\Column(name="subject", type="string", length=255, nullable=false)
+     * @ORM\Column(name="subject", type="string", length=255, nullable=true)
      */
     protected $subject;
 
     /**
      * @var string
-     * @ORM\Column(name="from_email", type="string", length=255, nullable=false)
+     * @ORM\Column(name="from_email", type="string", length=255, nullable=true)
      */
     protected $fromEmail;
 
     /**
      * @var string
-     * @ORM\Column(name="from_name", type="string", length=255, nullable=false)
+     * @ORM\Column(name="from_name", type="string", length=255, nullable=true)
      */
     protected $fromName;
 

@@ -26,7 +26,7 @@ definitions:
                         class: OroCRM\Bundle\MarketingListBundle\Entity\MarketingListRemovedItem
                         where:
                             entityId: $id
-                            marketingList: $marketingListItem
+                            marketingList: $subscribersList.marketingList.id
                         attribute: $.marketingListRemovedItem
                     - @create_entity: # create OroCRM Marketing List Removed Item
                         conditions: # if Member status equals "cleaned" and Marketing List Removed Item doesn't exist
@@ -50,7 +50,7 @@ definitions:
                         class: OroCRM\Bundle\MarketingListBundle\Entity\MarketingListUnsubscribedItem
                         where:
                             entityId: $id
-                            marketingList: $marketingListItem
+                            marketingList: $subscribersList.marketingList.id
                         attribute: $.marketingListUnsubscribedItem
                     - @create_entity: # create OroCRM Marketing List Unsubscribed Item
                         conditions: # if Member status equals "unsubscribed" and Marketing List Unsubscribed Item doesn't exist
@@ -78,3 +78,4 @@ triggers:
         -
             event:    update
             queued:   true
+            field:    status

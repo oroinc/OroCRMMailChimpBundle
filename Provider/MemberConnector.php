@@ -48,7 +48,7 @@ class MemberConnector extends AbstractMailChimpConnector implements TwoWaySyncCo
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getMembersToSync(null);
+        return $this->transport->getMembersToSync($this->getLastSyncDate());
     }
 
     /**
