@@ -55,8 +55,16 @@ parameters:
     # MergeVar related services
     orocrm_mailchimp.merge_var.provider.class: OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProvider
 
-    # Workflow actions
+    # Service for locking processes
+    orocrm_mailchimp.lock.class: OroCRM\Bundle\MailChimpBundle\Model\Lock\Lock
+
+    # Workflow actions and conditions
+    orocrm_mailchimp.workflow.condition.is_locked.class: OroCRM\Bundle\MailChimpBundle\Model\Condition\IsLocked
+    orocrm_mailchimp.workflow.action.lock.class: OroCRM\Bundle\MailChimpBundle\Model\Action\Lock
+    orocrm_mailchimp.workflow.action.unlock.class: OroCRM\Bundle\MailChimpBundle\Model\Action\Unlock
     orocrm_mailchimp.workflow.action.remove_entity.class: OroCRM\Bundle\MailChimpBundle\Model\Action\RemoveEntity
+    orocrm_mailchimp.workflow.action.populate_integration_owner.class: OroCRM\Bundle\MailChimpBundle\Model\Action\PopulateIntegrationOwner
+    orocrm_mailchimp.workflow.action.assign_constant_value.class: OroCRM\Bundle\MailChimpBundle\Model\Action\AssignConstantValue
 
 services:
     orocrm_mailchimp.client.factory:
@@ -310,7 +318,36 @@ services:
     orocrm_mailchimp.merge_var.provider:
         class: %orocrm_mailchimp.merge_var.provider.class%
 
-    # Workflow actions
+    # Service for locking processes
+    orocrm_mailchimp.lock:
+        class: %orocrm_mailchimp.lock.class%
+        shared: true
+
+    # Workflow actions and conditions
+    orocrm_mailchimp.workflow.condition.is_locked:
+            class: %orocrm_mailchimp.workflow.condition.is_locked.class%
+            arguments:
+                - @oro_workflow.context_accessor
+                - @orocrm_mailchimp.lock
+            tags:
+                - { name: oro_workflow.condition, alias: is_locked }
+
+    orocrm_mailchimp.workflow.action.lock:
+        class: %orocrm_mailchimp.workflow.action.lock.class%
+        arguments:
+            - @oro_workflow.context_accessor
+            - @orocrm_mailchimp.lock
+        tags:
+            - { name: oro_workflow.action, alias: lock }
+
+    orocrm_mailchimp.workflow.action.unlock:
+        class: %orocrm_mailchimp.workflow.action.unlock.class%
+        arguments:
+            - @oro_workflow.context_accessor
+            - @orocrm_mailchimp.lock
+        tags:
+            - { name: oro_workflow.action, alias: unlock }
+
     orocrm_mailchimp.workflow.action.remove_entity:
         class: %orocrm_mailchimp.workflow.action.remove_entity.class%
         arguments:
@@ -318,3 +355,18 @@ services:
             - @doctrine
         tags:
             - { name: oro_workflow.action, alias: remove_entity }
+
+    orocrm_mailchimp.workflow.action.populate_integration_owner:
+        class: %orocrm_mailchimp.workflow.action.populate_integration_owner.class%
+        arguments:
+            - @oro_workflow.context_accessor
+            - @oro_integration.helper.default_owner_helper
+        tags:
+            - { name: oro_workflow.action, alias: populate_integration_owner }
+
+    orocrm_mailchimp.workflow.action.assign_constant_value:
+        class: %orocrm_mailchimp.workflow.action.assign_constant_value.class%
+        arguments:
+            - @oro_workflow.context_accessor
+        tags:
+            - { name: oro_workflow.action, alias: assign_constant_value }

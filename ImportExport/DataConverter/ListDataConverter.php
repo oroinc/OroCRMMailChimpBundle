@@ -2,12 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType;
-
 class ListDataConverter extends IntegrationAwareDataConverter
 {
-    const MARKETING_LIST_TARGET_ENTITY = 'OroCRM\\Bundle\\MailChimpBundle\\Entity\\Member';
-
     /**
      * {@inheritdoc}
      */
@@ -55,12 +51,6 @@ class ListDataConverter extends IntegrationAwareDataConverter
             $importedRecord = array_merge($importedRecord, $importedRecord['stats']);
             unset($importedRecord['stats']);
         }
-        $channel = $this->context->getOption('channel');
-
-        $importedRecord['marketingList:channel:id'] = $channel;
-        $importedRecord['marketingList:name'] = $importedRecord['name'];
-        $importedRecord['marketingList:entity'] = self::MARKETING_LIST_TARGET_ENTITY;
-        $importedRecord['marketingList:type:name'] = MarketingListType::TYPE_MANUAL;
 
         return parent::convertToImportFormat($importedRecord, $skipNullValues);
     }

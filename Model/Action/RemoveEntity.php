@@ -16,6 +16,8 @@ use Oro\Bundle\WorkflowBundle\Model\ContextAccessor;
  */
 class RemoveEntity extends AbstractAction
 {
+    const NAME = 'remove_entity';
+
     /**
      * @var mixed
      */
@@ -46,7 +48,8 @@ class RemoveEntity extends AbstractAction
         if (!is_object($value)) {
             throw new InvalidParameterException(
                 sprintf(
-                    'Action "remove_entity" expects reference to entity as parameter, %s is given.',
+                    'Action "%s" expects reference to entity as parameter, %s is given.',
+                    self::NAME,
                     gettype($value)
                 )
             );
@@ -65,7 +68,8 @@ class RemoveEntity extends AbstractAction
         } else {
             throw new InvalidParameterException(
                 sprintf(
-                    'Options must have 1 element, but %d given',
+                    'Parameters of "%s" action must have 1 element, but %d given',
+                    self::NAME,
                     count($options)
                 )
             );

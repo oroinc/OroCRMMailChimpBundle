@@ -8,6 +8,12 @@ definitions:
                 conditions:
                     @not_empty: $subscribersList.marketingList
                 actions:
+                    - @assign_constant_value:
+                        attribute: $.statusCleaned
+                        value: OroCRM\Bundle\MailChimpBundle\Entity\Member::STATUS_CLEANED
+                    - @assign_constant_value:
+                        attribute: $.statusUnsubscribed
+                        value: OroCRM\Bundle\MailChimpBundle\Entity\Member::STATUS_UNSUBSCRIBED
                     - @create_datetime:
                         attribute: $.lastContactedAt
                     - @create_entity: # create OroCRM Marketing List Item
@@ -31,7 +37,7 @@ definitions:
                     - @create_entity: # create OroCRM Marketing List Removed Item
                         conditions: # if Member status equals "cleaned" and Marketing List Removed Item doesn't exist
                             @and:
-                                - @equal: [$status, 'cleaned']
+                                - @equal: [$status, $.statusCleaned]
                                 - @empty: $.marketingListRemovedItem
                         parameters:
                             class:     OroCRM\Bundle\MarketingListBundle\Entity\MarketingListRemovedItem
@@ -42,7 +48,7 @@ definitions:
                     - @remove_entity: # remove OroCRM Marketing List Removed Item
                         conditions: # if Member status not equals "cleaned" and Marketing List Removed Item exists
                             @and:
-                                - @not_equal: [$status, 'cleaned']
+                                - @not_equal: [$status, $.statusCleaned]
                                 - @not_empty: $.marketingListRemovedItem
                         parameters: [$.marketingListRemovedItem]
                     # Create or remove Marketing List Unsubscribed Item depending on status of member
@@ -55,7 +61,7 @@ definitions:
                     - @create_entity: # create OroCRM Marketing List Unsubscribed Item
                         conditions: # if Member status equals "unsubscribed" and Marketing List Unsubscribed Item doesn't exist
                             @and:
-                                - @equal: [$status, 'unsubscribed']
+                                - @equal: [$status, $.statusUnsubscribed]
                                 - @empty: $.marketingListUnsubscribedItem
                         parameters:
                             class:     OroCRM\Bundle\MarketingListBundle\Entity\MarketingListUnsubscribedItem
@@ -66,9 +72,43 @@ definitions:
                     - @remove_entity: # remove OroCRM Marketing List Unsubscribed Item
                         conditions: # if Member status not equals "unsubscribed" and Marketing List Unsubscribed Item exists
                             @and:
-                                - @not_equal: [$status, 'unsubscribed']
+                                - @not_equal: [$status, $.statusUnsubscribed]
                                 - @not_empty: $.marketingListUnsubscribedItem
                         parameters: [$.marketingListUnsubscribedItem]
+
+    create_marketing_list_for_new_mailchimp_list:
+        label:   'Create OroCRM Marketing List Item for MailChimp List'
+        enabled: true
+        entity:  OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList
+        actions_configuration:
+            # Create OroCRM Marketing List, if it's not exist and if channel is available and enabled
+            - @tree:
+                conditions:
+                    @and:
+                        - @empty: $marketingList
+                        - @not_empty: $channel
+                        - @eq: [$channel.enabled, true]
+                actions:
+                    # create OroCRM Marketing List and connect it with MailChimp List
+                    - @create_entity:
+                        parameters:
+                            class:     OroCRM\Bundle\MarketingListBundle\Entity\MarketingList
+                            attribute: $marketingList
+                            data:
+                                name:          $name
+                                entity:        OroCRM\Bundle\MailChimpBundle\Entity\Member
+                    # Set OroCRM Marketing List to manual
+                    - @assign_constant_value:
+                        attribute: $.manualTypeCode
+                        value: OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType::TYPE_MANUAL
+                    - @find_entity:
+                        class: OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType
+                        identifier: $.manualTypeCode
+                        attribute: $marketingList.type
+                    # Set OroCRM Marketing List to owner based on integration channel
+                    - @populate_integration_owner:
+                        attribute: $marketingList
+                        integration: $channel
 
 triggers:
     synchronize_marketing_list_item_for_mailchimp_member:
@@ -79,3 +119,7 @@ triggers:
             event:    update
             queued:   true
             field:    status
+    create_marketing_list_for_new_mailchimp_list:
+        -
+            event:    create
+            queued:   true

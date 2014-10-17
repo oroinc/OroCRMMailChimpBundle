@@ -41,7 +41,7 @@ class ListImportStrategy extends AbstractImportStrategy
     }
 
     /**
-     * Update existing MailChimp Email List.
+     * Update existing MailChimp List.
      *
      * @param SubscribersList $entity
      * @param SubscribersList $existingEntity
@@ -59,38 +59,6 @@ class ListImportStrategy extends AbstractImportStrategy
             ['channel', 'marketingList']
         );
 
-        // Update related MarketingList
-        $existingMarketingList = $existingEntity->getMarketingList();
-        if ($existingMarketingList) {
-            $this->importExistingEntity(
-                $entity->getMarketingList(),
-                $existingMarketingList,
-                $itemData['marketingList']
-            );
-        } else {
-            $existingEntity->setMarketingList($entity->getMarketingList());
-        }
-
         return $existingEntity;
-    }
-
-    /**
-     * Update MarketingList.
-     *
-     * @param SubscribersList $entity
-     * @return SubscribersList
-     */
-    protected function afterProcessEntity($entity)
-    {
-        // Set marketing list owner
-        $this->ownerHelper->populateChannelOwner($entity->getMarketingList(), $entity->getChannel());
-
-        // Update existing marketing list relations
-        $itemData = $this->context->getValue('itemData');
-        $marketingList = $entity->getMarketingList();
-        $marketingListFields = $this->fieldHelper->getFields(ClassUtils::getClass($marketingList), true);
-        $this->updateRelations($marketingList, $marketingListFields, $itemData['marketingList']);
-
-        return parent::afterProcessEntity($entity);
     }
 }
