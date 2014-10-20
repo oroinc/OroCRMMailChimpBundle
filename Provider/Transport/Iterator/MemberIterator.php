@@ -54,7 +54,7 @@ class MemberIterator extends AbstractSubordinateIterator
         $parameters = $this->parameters;
         $parameters['id'] = $subscribersList->getOriginId();
         if (is_array($parameters['status'])) {
-            // If we need members with many statuses, we will bo separate requests for them.
+            // If we need members with many statuses, we will do separate requests for them.
             $result = new \AppendIterator();
             foreach ($parameters['status'] as $status) {
                 $parameters['status'] = $status;

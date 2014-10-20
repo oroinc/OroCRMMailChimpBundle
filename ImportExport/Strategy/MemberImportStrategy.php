@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
 
 class MemberImportStrategy extends AbstractImportStrategy
@@ -20,7 +21,9 @@ class MemberImportStrategy extends AbstractImportStrategy
     {
         $this->assertEnvironment($entity);
 
+        /** @var Member $entity */
         $entity = $this->beforeProcessEntity($entity);
+        /** @var Member $existingEntity */
         $existingEntity = $this->findExistingEntity($entity);
         if ($existingEntity) {
             if ($this->logger) {
@@ -62,6 +65,7 @@ class MemberImportStrategy extends AbstractImportStrategy
         );
 
         // Replace subscribers list if required
+        /** @var SubscribersList $subscribersList */
         $subscribersList = $this->updateRelatedEntity(
             $existingEntity->getSubscribersList(),
             $entity->getSubscribersList(),
@@ -92,9 +96,15 @@ class MemberImportStrategy extends AbstractImportStrategy
      */
     protected function assignMergeVarValues(Member $member)
     {
+        $subscribersList = $member->getSubscribersList();
+
+        if (!$subscribersList) {
+            return;
+        }
+
         $this->mergeVarProvider->assignMergeVarValues(
             $member,
-            $this->mergeVarProvider->getMergeVarFields($member->getSubscribersList())
+            $this->mergeVarProvider->getMergeVarFields($subscribersList)
         );
     }
 

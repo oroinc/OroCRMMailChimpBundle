@@ -66,7 +66,7 @@ class CampaignDataConverter extends IntegrationAwareDataConverter
 
         $importedRecord['emailCampaign:name'] = $importedRecord['title'];
         $importedRecord['emailCampaign:schedule'] = EmailCampaign::SCHEDULE_MANUAL;
-        $importedRecord['emailCampaign:sent'] = $importedRecord['status'] == 'sent';
+        $importedRecord['emailCampaign:sent'] = $importedRecord['status'] === 'sent';
         $importedRecord['emailCampaign:sentAt'] = $importedRecord['send_time'];
         $importedRecord['emailCampaign:senderEmail'] = $importedRecord['from_email'];
         $importedRecord['emailCampaign:senderName'] = $importedRecord['from_name'];

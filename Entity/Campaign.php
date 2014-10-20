@@ -133,7 +133,7 @@ class Campaign implements OriginAwareInterface
     protected $fromName;
 
     /**
-     * @var EmailCampaign
+     * @var Template
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Template")
      * @ORM\JoinColumn(name="template_id", referencedColumnName="id", onDelete="SET NULL")
@@ -845,7 +845,7 @@ class Campaign implements OriginAwareInterface
     }
 
     /**
-     * @return EmailCampaign
+     * @return Template
      */
     public function getTemplate()
     {
@@ -853,7 +853,7 @@ class Campaign implements OriginAwareInterface
     }
 
     /**
-     * @param EmailCampaign $template
+     * @param Template $template
      * @return Campaign
      */
     public function setTemplate($template)

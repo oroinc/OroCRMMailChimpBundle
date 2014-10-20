@@ -56,6 +56,6 @@ class CampaignConnector extends AbstractMailChimpConnector implements TwoWaySync
      */
     public function getExportJobName()
     {
-        return;
+        throw new \BadMethodCallException();
     }
 }

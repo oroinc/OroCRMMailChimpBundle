@@ -56,6 +56,6 @@ class ListConnector extends AbstractMailChimpConnector implements TwoWaySyncConn
      */
     public function getExportJobName()
     {
-        return;
+        throw new \BadMethodCallException();
     }
 }
