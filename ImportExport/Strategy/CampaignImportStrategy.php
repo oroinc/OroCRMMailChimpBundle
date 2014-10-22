@@ -4,6 +4,8 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
+use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
+use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 
 class CampaignImportStrategy extends AbstractImportStrategy
 {
@@ -72,6 +74,7 @@ class CampaignImportStrategy extends AbstractImportStrategy
         }
 
         // Replace Template if required
+        /** @var Template $template */
         $template = $this->updateRelatedEntity(
             $existingEntity->getTemplate(),
             $entity->getTemplate(),
@@ -80,6 +83,7 @@ class CampaignImportStrategy extends AbstractImportStrategy
         $existingEntity->setTemplate($template);
 
         // Replace subscribers list if required
+        /** @var SubscribersList $subscribersList */
         $subscribersList = $this->updateRelatedEntity(
             $existingEntity->getSubscribersList(),
             $entity->getSubscribersList(),

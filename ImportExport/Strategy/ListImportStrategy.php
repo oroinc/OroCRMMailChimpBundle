@@ -2,8 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use Doctrine\Common\Util\ClassUtils;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 class ListImportStrategy extends AbstractImportStrategy
@@ -17,8 +15,10 @@ class ListImportStrategy extends AbstractImportStrategy
         $this->assertEnvironment($entity);
 
         $this->cachedEntities = array();
+        /** @var SubscribersList $entity */
         $entity = $this->beforeProcessEntity($entity);
 
+        /** @var SubscribersList $existingEntity */
         $existingEntity = $this->findExistingEntity($entity);
         if ($existingEntity) {
             if ($this->logger) {

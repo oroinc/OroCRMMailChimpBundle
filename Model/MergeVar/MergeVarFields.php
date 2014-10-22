@@ -10,7 +10,7 @@ class MergeVarFields implements MergeVarFieldsInterface
     protected $mergeVars;
 
     /**
-     * @param array $mergeVars
+     * @param MergeVarInterface[] $mergeVars
      */
     public function __construct(array $mergeVars)
     {

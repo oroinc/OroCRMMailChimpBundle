@@ -84,8 +84,6 @@ abstract class AbstractImportStrategy extends ConfigurableAddOrReplaceStrategy i
      */
     protected function updateRelatedEntity($existingEntity, $importedEntity, array $data = null)
     {
-        $result = null;
-
         if ($importedEntity) {
             $result = $importedEntity;
         } else {

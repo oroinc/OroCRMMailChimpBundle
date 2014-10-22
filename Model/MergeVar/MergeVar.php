@@ -46,7 +46,7 @@ class MergeVar implements MergeVarInterface
      */
     public function isFirstName()
     {
-        return $this->getTag() == self::TAG_FIRST_NAME;
+        return $this->getTag() === self::TAG_FIRST_NAME;
     }
 
     /**
@@ -54,7 +54,7 @@ class MergeVar implements MergeVarInterface
      */
     public function isLastName()
     {
-        return $this->getTag() == self::TAG_LAST_NAME;
+        return $this->getTag() === self::TAG_LAST_NAME;
     }
 
     /**
@@ -62,7 +62,7 @@ class MergeVar implements MergeVarInterface
      */
     public function isEmail()
     {
-        return $this->getTag() == self::TAG_EMAIL;
+        return $this->getTag() === self::TAG_EMAIL;
     }
 
     /**
@@ -70,7 +70,7 @@ class MergeVar implements MergeVarInterface
      */
     public function isPhone()
     {
-        return $this->getFieldType() == self::FIELD_TYPE_PHONE;
+        return $this->getFieldType() === self::FIELD_TYPE_PHONE;
     }
 
     /**

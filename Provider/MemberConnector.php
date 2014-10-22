@@ -56,6 +56,6 @@ class MemberConnector extends AbstractMailChimpConnector implements TwoWaySyncCo
      */
     public function getExportJobName()
     {
-        return;
+        throw new \BadMethodCallException();
     }
 }

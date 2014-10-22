@@ -60,7 +60,7 @@ class MemberDataConverter extends IntegrationAwareDataConverter
     protected function isMergeVarValueColumn($name)
     {
         $headerConversionRules = $this->getHeaderConversionRules();
-        return !isset($headerConversionRules[$name]) && $name != 'subscribersList:channel:id';
+        return !isset($headerConversionRules[$name]) && $name !== 'subscribersList:channel:id';
     }
 
     /**
