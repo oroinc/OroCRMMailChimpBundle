@@ -27,18 +27,18 @@ class SyncTest extends WebTestCase
         $this->clientFactory = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory')
             ->disableOriginalConstructor()
             ->setMethods(
-                array('create',)
+                ['create']
             )
             ->getMock();
         $this->client = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
             ->disableOriginalConstructor()
             ->setMethods(
-                array('export', 'getLists', 'getListMergeVars')
+                ['export', 'getLists', 'getListMergeVars']
             )
             ->getMock();
         $transport = new MailChimpTransport($this->clientFactory, $this->getContainer()->get('doctrine'));
         $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
-        $this->loadFixtures(array('OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadChannelData'));
+        $this->loadFixtures(['OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadChannelData']);
     }
 
     /**
@@ -54,7 +54,7 @@ class SyncTest extends WebTestCase
             ->will($this->returnValue($this->client));
 
         if (isset($params['--integration-id'])) {
-            $params['--integration-id'] = '' . $this->getReference(
+            $params['--integration-id'] = (string)$this->getReference(
                 'mailchimp_transport:test_transport' . $params['--integration-id']
             )->getId();
         }
@@ -62,13 +62,16 @@ class SyncTest extends WebTestCase
         foreach ($expectedList as $expected) {
             $this->assertContains($expected, $result);
         }
-        if ($assertMethod != null) {
+        if ($assertMethod) {
             $listRepo = $this->getContainer()->get('doctrine')->getRepository('OroCRMMailChimpBundle:' . $entity);
             $list = $listRepo->findAll();
             $this->$assertMethod($assertCount, count($list));
         }
     }
 
+    /**
+     * @return array
+     */
     public function commandOptionsProvider()
     {
         return [

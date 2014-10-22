@@ -4,23 +4,26 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 
 class LoadTransportData extends AbstractFixture implements ContainerAwareInterface
 {
-    protected $transportData = array(
-        array(
+    /**
+     * @var array Transports configuration
+     */
+    protected $transportData = [
+        [
             'reference' => 'mailchimp_transport:test_transport1',
             'apiKey' => 'f9e179585f382c4def28653b1cbddba5-us9',
-        ),
-        array(
+        ],
+        [
             'reference' => 'mailchimp_transport:test_transport2',
             'apiKey' => 'f9e179585f382c4def28653b1cbddba5-us9',
-        )
-    );
+        ]
+    ];
 
     /**
      * @var ContainerInterface
@@ -34,24 +37,15 @@ class LoadTransportData extends AbstractFixture implements ContainerAwareInterfa
      * @param array $data
      * @param array $excludeProperties
      */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = array())
+    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
     {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
         foreach ($data as $property => $value) {
             if (in_array($property, $excludeProperties)) {
                 continue;
             }
-            PropertyAccess::createPropertyAccessor()->setValue($entity, $property, $value);
+            $propertyAccessor->setValue($entity, $property, $value);
         }
-    }
-
-    public function a($i)
-    {
-        return $i * 2;
-    }
-
-    public function b($i)
-    {
-        return $i * 2;
     }
 
     /**
@@ -69,7 +63,7 @@ class LoadTransportData extends AbstractFixture implements ContainerAwareInterfa
     {
         foreach ($this->transportData as $data) {
             $entity = new MailChimpTransport();
-            $this->setEntityPropertyValues($entity, $data, array('reference'));
+            $this->setEntityPropertyValues($entity, $data, ['reference']);
             $this->setReference($data['reference'], $entity);
             $manager->persist($entity);
         }

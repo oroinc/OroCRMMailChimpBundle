@@ -5,16 +5,19 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 
 class LoadChannelData extends AbstractFixture implements DependentFixtureInterface, ContainerAwareInterface
 {
-    protected $channelData = array(
-        array(
+    /**
+     * @var array Channels configuration
+     */
+    protected $channelData = [
+        [
             'name' => 'mailchimp1',
             'type' => 'mailchimp',
             'transport' => 'mailchimp_transport:test_transport1',
@@ -24,8 +27,8 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
             'synchronizationSettings' => [
                 'isTwoWaySyncEnabled' => true
             ],
-        ),
-        array(
+        ],
+        [
             'name' => 'mailchimp2',
             'type' => 'mailchimp',
             'transport' => 'mailchimp_transport:test_transport2',
@@ -35,8 +38,8 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
             'synchronizationSettings' => [
                 'isTwoWaySyncEnabled' => true
             ],
-        )
-    );
+        ]
+    ];
 
     /**
      * @var ContainerInterface
@@ -50,13 +53,14 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
      * @param array $data
      * @param array $excludeProperties
      */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = array())
+    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
     {
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
         foreach ($data as $property => $value) {
             if (in_array($property, $excludeProperties)) {
                 continue;
             }
-            PropertyAccess::createPropertyAccessor()->setValue($entity, $property, $value);
+            $propertyAccessor->setValue($entity, $property, $value);
         }
     }
 
@@ -79,7 +83,7 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
             $entity = new Channel();
             $data['transport'] = $this->getReference($data['transport']);
             $entity->setDefaultUserOwner($admin);
-            $this->setEntityPropertyValues($entity, $data, array('reference', 'synchronizationSettings'));
+            $this->setEntityPropertyValues($entity, $data, ['reference', 'synchronizationSettings']);
             $this->setReference($data['reference'], $entity);
             if (isset($data['synchronizationSettings'])) {
                 foreach ($data['synchronizationSettings'] as $key => $value) {
@@ -97,7 +101,7 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
     public function getDependencies()
     {
         return array(
-            'OroCRM\\Bundle\\MailChimpBundle\\Tests\\Functional\\DataFixtures\\LoadTransportData'
+            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadTransportData'
         );
     }
 }
