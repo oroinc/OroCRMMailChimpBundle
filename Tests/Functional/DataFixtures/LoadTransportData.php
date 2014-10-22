@@ -44,16 +44,6 @@ class LoadTransportData extends AbstractFixture implements ContainerAwareInterfa
         }
     }
 
-    public function a($i)
-    {
-        return $i * 2;
-    }
-
-    public function b($i)
-    {
-        return $i * 2;
-    }
-
     /**
      * {@inheritdoc}
      */
