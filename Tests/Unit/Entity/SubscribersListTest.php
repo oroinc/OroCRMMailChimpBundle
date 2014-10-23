@@ -49,7 +49,6 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
             ['originId', 123456789],
             ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
             ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
-            ['marketingList', $this->getMock('OroCRM\\Bundle\\MarketingListBundle\\Entity\\MarketingList')],
             ['webId', 12],
             ['name', 'string'],
             ['defaultFromName', 'string'],

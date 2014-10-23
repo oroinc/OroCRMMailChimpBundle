@@ -76,40 +76,6 @@ definitions:
                                 - @not_empty: $.marketingListUnsubscribedItem
                         parameters: [$.marketingListUnsubscribedItem]
 
-    create_marketing_list_for_new_mailchimp_list:
-        label:   'Create OroCRM Marketing List Item for MailChimp List'
-        enabled: true
-        entity:  OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList
-        actions_configuration:
-            # Create OroCRM Marketing List, if it's not exist and if channel is available and enabled
-            - @tree:
-                conditions:
-                    @and:
-                        - @empty: $marketingList
-                        - @not_empty: $channel
-                        - @eq: [$channel.enabled, true]
-                actions:
-                    # create OroCRM Marketing List and connect it with MailChimp List
-                    - @create_entity:
-                        parameters:
-                            class:     OroCRM\Bundle\MarketingListBundle\Entity\MarketingList
-                            attribute: $marketingList
-                            data:
-                                name:          $name
-                                entity:        OroCRM\Bundle\MailChimpBundle\Entity\Member
-                    # Set OroCRM Marketing List to manual
-                    - @assign_constant_value:
-                        attribute: $.manualTypeCode
-                        value: OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType::TYPE_MANUAL
-                    - @find_entity:
-                        class: OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType
-                        identifier: $.manualTypeCode
-                        attribute: $marketingList.type
-                    # Set OroCRM Marketing List to owner based on integration channel
-                    - @populate_integration_owner:
-                        attribute: $marketingList
-                        integration: $channel
-
 triggers:
     synchronize_marketing_list_item_for_mailchimp_member:
         -

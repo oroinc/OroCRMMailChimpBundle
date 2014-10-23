@@ -9,7 +9,6 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFieldsInterface;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
@@ -85,14 +84,6 @@ class SubscribersList implements OriginAwareInterface
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $owner;
-
-    /**
-     * @var MarketingList
-     *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MarketingListBundle\Entity\MarketingList", cascade={"persist"})
-     * @ORM\JoinColumn(name="marketing_list_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $marketingList;
 
     /**
      * @var int
@@ -373,25 +364,6 @@ class SubscribersList implements OriginAwareInterface
     public function setOwner($owner)
     {
         $this->owner = $owner;
-
-        return $this;
-    }
-
-    /**
-     * @return MarketingList
-     */
-    public function getMarketingList()
-    {
-        return $this->marketingList;
-    }
-
-    /**
-     * @param MarketingList $marketingList
-     * @return SubscribersList
-     */
-    public function setMarketingList($marketingList)
-    {
-        $this->marketingList = $marketingList;
 
         return $this;
     }
