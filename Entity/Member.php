@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
@@ -65,7 +67,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**
      * Mapped to field "leid": The Member id used in our web app, allows you to create a link directly to it
      *
-     * @var string
+     * @var integer
      *
      * @ORM\Column(name="origin_id", type="bigint", nullable=false)
      * @ConfigField(
@@ -299,8 +301,14 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $owner;
 
     /**
-     * Local created date time
+     * @var Collection|ArrayCollection|Segment[] $segments
      *
+     * @ORM\ManyToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Segment", inversedBy="members")
+     * @ORM\JoinTable(name="orocrm_mailchimp_segment_member")
+     */
+    protected $segments;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
@@ -308,13 +316,19 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $createdAt;
 
     /**
-     * Local updated date time
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     protected $updatedAt;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->segments = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -325,7 +339,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     }
 
     /**
-     * @return string
+     * @return integer
      */
     public function getOriginId()
     {
@@ -333,7 +347,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     }
 
     /**
-     * @param string $originId
+     * @param integer $originId
      * @return Member
      */
     public function setOriginId($originId)
@@ -377,25 +391,6 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     public function setCc($cc)
     {
         $this->cc = $cc;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
-
-    /**
-     * @param string $company
-     * @return Member
-     */
-    public function setCompany($company)
-    {
-        $this->company = $company;
 
         return $this;
     }
@@ -895,5 +890,42 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     public function preUpdate()
     {
         $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+    }
+
+    /**
+     * Add segment
+     *
+     * @param Segment $segment
+     * @return Member
+     */
+    public function addSegment(Segment $segment)
+    {
+        if (!$this->segments->contains($segment)) {
+            $this->segments->add($segment);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove segment
+     *
+     * @param Segment $segment
+     */
+    public function removeSegment(Segment $segment)
+    {
+        if ($this->segments->contains($segment)) {
+            $this->segments->removeElement($segment);
+        }
+    }
+
+    /**
+     * Get segments
+     *
+     * @return Collection
+     */
+    public function getSegments()
+    {
+        return $this->segments;
     }
 }
