@@ -24,7 +24,9 @@ class SyncTest extends WebTestCase
     protected function setUp()
     {
         $this->initClient();
-        $this->clientFactory = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory')
+        $this->clientFactory = $this->getMockBuilder(
+            'OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory'
+        )
             ->disableOriginalConstructor()
             ->setMethods(
                 ['create']
@@ -95,7 +97,7 @@ class SyncTest extends WebTestCase
                             'default_language' => 'en',
                             'list_rating' => 0,
                             'subscribe_url_short' => 'http://eepurl.com/55JSn',
-                            'subscribe_url_long' => 'http://orocrm.us9.list-manage.com/subscribe?u=30a1fbd85fafe93f6446fef6e&id=f04749dd92',
+                            'subscribe_url_long' => 'http://orocrm.us9.list-manage.com/subscribe?u=30a1fbd85f',
                             'beamer_address' => 'us9-b538643d4f-cb1fc7e5b4@inbound.mailchimp.com',
                             'visibility' => 'pub',
                             'stats' =>

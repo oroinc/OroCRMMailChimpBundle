@@ -66,6 +66,9 @@ parameters:
     orocrm_mailchimp.workflow.action.populate_integration_owner.class: OroCRM\Bundle\MailChimpBundle\Model\Action\PopulateIntegrationOwner
     orocrm_mailchimp.workflow.action.assign_constant_value.class: OroCRM\Bundle\MailChimpBundle\Model\Action\AssignConstantValue
 
+    # EmailCampaign Voter
+    orocrm_mailchimp.email_campaign.security.acl.voter.entity.class: OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter
+
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -370,3 +373,11 @@ services:
             - @oro_workflow.context_accessor
         tags:
             - { name: oro_workflow.action, alias: assign_constant_value }
+
+    orocrm_mailchimp.email_campaign.security.acl.voter.entity:
+        class: %orocrm_mailchimp.email_campaign.security.acl.voter.entity.class%
+        arguments:
+            - @doctrine
+            - @oro_entity.doctrine_helper
+        tags:
+            - { name: security.voter, priority: 500 }
