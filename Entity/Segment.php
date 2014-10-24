@@ -146,25 +146,6 @@ class Segment
     protected $updatedAt;
 
     /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param \DateTime $createdAt
-     * @return Member
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -275,7 +256,7 @@ class Segment
     }
 
     /**
-     * @return string
+     * @return integer
      */
     public function getOriginId()
     {
@@ -283,7 +264,7 @@ class Segment
     }
 
     /**
-     * @param string $originId
+     * @param integer $originId
      * @return Member
      */
     public function setOriginId($originId)
@@ -303,7 +284,7 @@ class Segment
 
     /**
      * @param Channel $channel
-     * @return Member
+     * @return Segment
      */
     public function setChannel($channel)
     {
@@ -361,12 +342,14 @@ class Segment
     /**
      * Add members
      *
-     * @param Member $members
+     * @param Member $member
      * @return Segment
      */
-    public function addMember(Member $members)
+    public function addMember(Member $member)
     {
-        $this->members[] = $members;
+        if (!$this->members->contains($member)) {
+            $this->members->add($member);
+        }
 
         return $this;
     }
@@ -374,11 +357,13 @@ class Segment
     /**
      * Remove members
      *
-     * @param Member $members
+     * @param Member $member
      */
-    public function removeMember(Member $members)
+    public function removeMember(Member $member)
     {
-        $this->members->removeElement($members);
+        if ($this->members->contains($member)) {
+            $this->members->removeElement($member);
+        }
     }
 
     /**
@@ -410,6 +395,24 @@ class Segment
         return $this;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     * @return Segment
+     */
+    public function setCreatedAt(\DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
 
     /**
      * @return \DateTime

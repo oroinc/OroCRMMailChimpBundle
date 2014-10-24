@@ -67,7 +67,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**
      * Mapped to field "leid": The Member id used in our web app, allows you to create a link directly to it
      *
-     * @var string
+     * @var integer
      *
      * @ORM\Column(name="origin_id", type="bigint", nullable=false)
      * @ConfigField(
@@ -339,7 +339,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     }
 
     /**
-     * @return string
+     * @return integer
      */
     public function getOriginId()
     {
@@ -347,7 +347,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     }
 
     /**
-     * @param string $originId
+     * @param integer $originId
      * @return Member
      */
     public function setOriginId($originId)
@@ -893,26 +893,30 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     }
 
     /**
-     * Add segments
+     * Add segment
      *
-     * @param Segment $segments
+     * @param Segment $segment
      * @return Member
      */
-    public function addSegment(Segment $segments)
+    public function addSegment(Segment $segment)
     {
-        $this->segments[] = $segments;
+        if (!$this->segments->contains($segment)) {
+            $this->segments->add($segment);
+        }
 
         return $this;
     }
 
     /**
-     * Remove segments
+     * Remove segment
      *
-     * @param Segment $segments
+     * @param Segment $segment
      */
-    public function removeSegment(Segment $segments)
+    public function removeSegment(Segment $segment)
     {
-        $this->segments->removeElement($segments);
+        if ($this->segments->contains($segment)) {
+            $this->segments->removeElement($segment);
+        }
     }
 
     /**

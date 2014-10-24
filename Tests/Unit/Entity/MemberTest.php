@@ -104,6 +104,9 @@ class MemberTest extends \PHPUnit_Framework_TestCase
         $this->target->addSegment($segment);
         $this->assertEquals(new ArrayCollection([$segment]), $this->target->getSegments());
 
+        $this->target->addSegment($segment);
+        $this->assertEquals(new ArrayCollection([$segment]), $this->target->getSegments());
+
         $this->target->removeSegment($segment);
         $this->assertEmpty($this->target->getSegments());
     }

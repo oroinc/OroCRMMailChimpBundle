@@ -78,6 +78,9 @@ class SegmentTest extends \PHPUnit_Framework_TestCase
         $this->entity->addMember($member);
         $this->assertEquals(new ArrayCollection([$member]), $this->entity->getMembers());
 
+        $this->entity->addMember($member);
+        $this->assertEquals(new ArrayCollection([$member]), $this->entity->getMembers());
+
         $this->entity->removeMember($member);
         $this->assertEmpty($this->entity->getMembers());
     }
