@@ -13,7 +13,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\SegmentRepository")
  * @ORM\Table(name="orocrm_mailchimp_segment")
  * @ORM\HasLifecycleCallbacks()
  * @Config(
@@ -35,6 +35,10 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
  */
 class Segment implements OriginAwareInterface
 {
+    const STATUS_NOT_SYNCED = 'not_synced';
+    const STATUS_IN_PROGRESS = 'ip_progress';
+    const STATUS_SYNCED = 'synced';
+
     /**
      * @var int
      *
@@ -46,14 +50,14 @@ class Segment implements OriginAwareInterface
 
     /**
      * @var string
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
     protected $name;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="origin_id", type="bigint", nullable=false)
+     * @ORM\Column(name="origin_id", type="bigint", nullable=true)
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
@@ -113,7 +117,7 @@ class Segment implements OriginAwareInterface
 
     /**
      * @var string
-     * @ORM\Column(name="sync_status", type="integer")
+     * @ORM\Column(name="sync_status", type="string", length=255, nullable=false)
      */
     protected $syncStatus;
 

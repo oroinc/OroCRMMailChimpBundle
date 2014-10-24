@@ -76,6 +76,45 @@ definitions:
                                 - @not_empty: $.marketingListUnsubscribedItem
                         parameters: [$.marketingListUnsubscribedItem]
 
+    create_segment_for_new_marketing_list:
+        label:   orocrm.mailchimp.process.create_segment_for_new_marketing_list
+        enabled: true
+        entity:  OroCRM\Bundle\MarketingListBundle\Entity\MarketingList
+        actions_configuration:
+            - @tree:
+                actions:
+                    - @assign_constant_value:
+                        attribute: $.transport
+                        value: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport::NAME
+                    - @find_entity:
+                        class: OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign
+                        where:
+                            marketingList: $id
+                        attribute: $.emailCampaign
+                    - @find_entity:
+                        conditions:
+                            @and:
+                                - @not_empty: $.emailCampaign
+                                - @equal: [$.emailCampaign.transport, $.transport]
+                        class: OroCRM\Bundle\MailChimpBundle\Entity\Segment
+                        where:
+                            marketingList: $id
+                        attribute: $.segmentExists
+                    - @assign_constant_value:
+                        attribute: $.syncStatus
+                        value: OroCRM\Bundle\MailChimpBundle\Entity\Segment::STATUS_NOT_SYNCED
+                    - @create_entity:
+                        conditions:
+                            @and:
+                                - @empty: $.segmentExists
+                        parameters:
+                            class: OroCRM\Bundle\MailChimpBundle\Entity\Segment
+                            attribute: $.segment
+                            data:
+                                marketingList: $.data
+                                owner: $owner
+                                syncStatus: $.syncStatus
+
 triggers:
     synchronize_marketing_list_item_for_mailchimp_member:
         -
@@ -85,3 +124,10 @@ triggers:
             event:    update
             queued:   true
             field:    status
+    create_segment_for_new_marketing_list:
+        -
+            event:    create
+            queued:   true
+        -
+            event:    update
+            queued:   true
