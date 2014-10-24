@@ -33,7 +33,7 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
  *  }
  * )
  */
-class Segment
+class Segment implements OriginAwareInterface
 {
     /**
      * @var int

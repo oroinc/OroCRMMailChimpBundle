@@ -85,7 +85,3 @@ triggers:
             event:    update
             queued:   true
             field:    status
-    create_marketing_list_for_new_mailchimp_list:
-        -
-            event:    create
-            queued:   true
