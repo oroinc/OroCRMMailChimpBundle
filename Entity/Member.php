@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
@@ -299,8 +301,14 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $owner;
 
     /**
-     * Local created date time
+     * @var Collection|ArrayCollection|Segment[] $segments
      *
+     * @ORM\ManyToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Segment", inversedBy="members")
+     * @ORM\JoinTable(name="orocrm_mailchimp_segment_member")
+     */
+    protected $segments;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
@@ -308,13 +316,19 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $createdAt;
 
     /**
-     * Local updated date time
-     *
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     protected $updatedAt;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->segments = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -377,25 +391,6 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     public function setCc($cc)
     {
         $this->cc = $cc;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
-
-    /**
-     * @param string $company
-     * @return Member
-     */
-    public function setCompany($company)
-    {
-        $this->company = $company;
 
         return $this;
     }
@@ -895,5 +890,38 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     public function preUpdate()
     {
         $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+    }
+
+    /**
+     * Add segments
+     *
+     * @param Segment $segments
+     * @return Member
+     */
+    public function addSegment(Segment $segments)
+    {
+        $this->segments[] = $segments;
+
+        return $this;
+    }
+
+    /**
+     * Remove segments
+     *
+     * @param Segment $segments
+     */
+    public function removeSegment(Segment $segments)
+    {
+        $this->segments->removeElement($segments);
+    }
+
+    /**
+     * Get segments
+     *
+     * @return Collection
+     */
+    public function getSegments()
+    {
+        return $this->segments;
     }
 }

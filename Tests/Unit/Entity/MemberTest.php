@@ -2,6 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
+use OroCRM\Bundle\MailChimpBundle\Entity\Segment;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 
 class MemberTest extends \PHPUnit_Framework_TestCase
@@ -41,7 +44,6 @@ class MemberTest extends \PHPUnit_Framework_TestCase
             ['status', Member::STATUS_CLEANED],
             ['firstName', 'John'],
             ['lastName', 'Doe'],
-            ['company', 'Doe Joe Ltd.'],
             ['memberRating', 2],
             ['optedInAt', new \DateTime()],
             ['optedInAt', null],
@@ -92,5 +94,17 @@ class MemberTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->target->getUpdatedAt());
         $this->target->preUpdate();
         $this->assertInstanceOf('\DateTime', $this->target->getUpdatedAt());
+    }
+
+    public function testSegments()
+    {
+        $this->assertEquals(new ArrayCollection(), $this->target->getSegments());
+        $segment = new Segment();
+
+        $this->target->addSegment($segment);
+        $this->assertEquals(new ArrayCollection([$segment]), $this->target->getSegments());
+
+        $this->target->removeSegment($segment);
+        $this->assertEmpty($this->target->getSegments());
     }
 }
