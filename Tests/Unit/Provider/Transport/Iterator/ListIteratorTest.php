@@ -60,7 +60,7 @@ class ListIteratorTest extends \PHPUnit_Framework_TestCase
     public function iteratorDataProvider()
     {
         return [
-            'tow pages' => [
+            'two pages' => [
                 'listValueMap' => [
                     [
                         ['start' => 0, 'limit' => 2],

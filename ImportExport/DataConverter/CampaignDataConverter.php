@@ -63,14 +63,10 @@ class CampaignDataConverter extends IntegrationAwareDataConverter
         $channel = $this->context->getOption('channel');
         $importedRecord['template:channel:id'] = $channel;
         $importedRecord['subscribersList:channel:id'] = $channel;
-
-        $importedRecord['emailCampaign:name'] = $importedRecord['title'];
-        $importedRecord['emailCampaign:schedule'] = EmailCampaign::SCHEDULE_MANUAL;
-        $importedRecord['emailCampaign:sent'] = $importedRecord['status'] === 'sent';
-        $importedRecord['emailCampaign:sentAt'] = $importedRecord['send_time'];
-        $importedRecord['emailCampaign:senderEmail'] = $importedRecord['from_email'];
-        $importedRecord['emailCampaign:senderName'] = $importedRecord['from_name'];
-        $importedRecord['emailCampaign:transport'] = MailChimpTransport::NAME;
+        if (isset($importedRecord['saved_segment'], $importedRecord['saved_segment']['id'])) {
+            $importedRecord['segment:originId'] = $importedRecord['saved_segment']['id'];
+            $importedRecord['segment:channel:id'] = $channel;
+        }
 
         return parent::convertToImportFormat($importedRecord, $skipNullValues);
     }

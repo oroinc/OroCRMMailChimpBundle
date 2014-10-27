@@ -44,6 +44,7 @@ class CampaignTest extends \PHPUnit_Framework_TestCase
             ['webId', 123425223],
             ['template', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Template')],
             ['subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
+            ['segment', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Segment')],
             ['emailCampaign', $this->getMock('OroCRM\\Bundle\\CampaignBundle\\Entity\\EmailCampaign')],
             ['contentType', 'Content Type'],
             ['contentType', null],

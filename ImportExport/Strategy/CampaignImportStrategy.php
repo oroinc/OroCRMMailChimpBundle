@@ -3,7 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
+use OroCRM\Bundle\MailChimpBundle\Entity\Segment;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 
@@ -57,21 +57,8 @@ class CampaignImportStrategy extends AbstractImportStrategy
             $entity,
             $existingEntity,
             $itemData,
-            ['channel', 'template', 'subscribersList', 'emailCampaign']
+            ['channel', 'template', 'subscribersList', 'segment', 'emailCampaign']
         );
-
-        // Update related Email Campaign
-        $existingEmailCampaign = $existingEntity->getEmailCampaign();
-        if ($existingEmailCampaign) {
-            $this->importExistingEntity(
-                $entity->getEmailCampaign(),
-                $existingEmailCampaign,
-                $itemData['emailCampaign'],
-                ['transportSettings']
-            );
-        } else {
-            $existingEntity->setEmailCampaign($entity->getEmailCampaign());
-        }
 
         // Replace Template if required
         /** @var Template $template */
@@ -91,32 +78,15 @@ class CampaignImportStrategy extends AbstractImportStrategy
         );
         $existingEntity->setSubscribersList($subscribersList);
 
+        // Replace segment if required
+        /** @var Segment $segment */
+        $segment = $this->updateRelatedEntity(
+            $existingEntity->getSegment(),
+            $entity->getSegment(),
+            $itemData['segment']
+        );
+        $existingEntity->setSegment($segment);
+
         return $existingEntity;
-    }
-
-    /**
-     * Set EmailCampaign owner.
-     *
-     * @param Campaign $entity
-     * @return Campaign
-     */
-    protected function afterProcessEntity($entity)
-    {
-        $this->ownerHelper->populateChannelOwner($entity->getEmailCampaign(), $entity->getChannel());
-
-        // Update related Email Campaign transport settings
-        $emailCampaign = $entity->getEmailCampaign();
-        if ($emailCampaign) {
-            $transportSettings = $emailCampaign->getTransportSettings();
-            if (!$transportSettings) {
-                $transportSettings = new MailChimpTransportSettings();
-                $emailCampaign->setTransportSettings($transportSettings);
-                $this->processEntity($transportSettings, false, true);
-            }
-            $transportSettings->setChannel($entity->getChannel());
-            $transportSettings->setTemplate($entity->getTemplate());
-        }
-
-        return parent::afterProcessEntity($entity);
     }
 }

@@ -78,11 +78,20 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @link http://apidocs.mailchimp.com/api/2.0/campaigns/list.php
+     * @param string|null $status Constant of \OroCRM\Bundle\MailChimpBundle\Entity\Campaign::STATUS_XXX
+     * @param bool|null $usesSegment
      * @return \Iterator
      */
-    public function getCampaigns()
+    public function getCampaigns($status = null, $usesSegment = null)
     {
-        return new CampaignIterator($this->client);
+        $filters = [];
+        if (null !== $status) {
+            $filters['status'] = $status;
+        }
+        if (null !== $usesSegment) {
+            $filters['uses_segment'] = (bool)$usesSegment;
+        }
+        return new CampaignIterator($this->client, $filters);
     }
 
     /**

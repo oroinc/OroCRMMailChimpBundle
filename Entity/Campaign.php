@@ -143,6 +143,14 @@ class Campaign implements OriginAwareInterface
     /**
      * @var SubscribersList
      *
+     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Segment")
+     * @ORM\JoinColumn(name="segment_id", referencedColumnName="id", onDelete="SET NULL")
+     */
+    protected $segment;
+
+    /**
+     * @var SubscribersList
+     *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
      * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
      */
@@ -405,7 +413,7 @@ class Campaign implements OriginAwareInterface
      * @param EmailCampaign $emailCampaign
      * @return Campaign
      */
-    public function setEmailCampaign(EmailCampaign $emailCampaign)
+    public function setEmailCampaign(EmailCampaign $emailCampaign = null)
     {
         $this->emailCampaign = $emailCampaign;
 
@@ -809,6 +817,24 @@ class Campaign implements OriginAwareInterface
     }
 
     /**
+     * @return Segment
+     */
+    public function getSegment()
+    {
+        return $this->segment;
+    }
+
+    /**
+     * @param Segment $segment
+     * @return Campaign
+     */
+    public function setSegment(Segment $segment = null)
+    {
+        $this->segment = $segment;
+        return $this;
+    }
+
+    /**
      * @return SubscribersList
      */
     public function getSubscribersList()
@@ -820,7 +846,7 @@ class Campaign implements OriginAwareInterface
      * @param SubscribersList $subscribersList
      * @return Campaign
      */
-    public function setSubscribersList($subscribersList)
+    public function setSubscribersList(SubscribersList $subscribersList = null)
     {
         $this->subscribersList = $subscribersList;
         return $this;
