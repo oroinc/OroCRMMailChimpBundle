@@ -69,7 +69,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      *
      * @var integer
      *
-     * @ORM\Column(name="origin_id", type="bigint", nullable=false)
+     * @ORM\Column(name="origin_id", type="bigint", nullable=true)
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={

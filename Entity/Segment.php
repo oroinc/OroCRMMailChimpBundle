@@ -36,7 +36,7 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 class Segment implements OriginAwareInterface
 {
     const STATUS_NOT_SYNCED = 'not_synced';
-    const STATUS_IN_PROGRESS = 'ip_progress';
+    const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_SYNCED = 'synced';
 
     /**
