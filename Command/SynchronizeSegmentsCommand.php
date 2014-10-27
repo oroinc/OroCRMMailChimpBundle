@@ -2,12 +2,14 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Command;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SegmentRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-
-use Oro\Bundle\CronBundle\Command\CronCommandInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
+use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
+use Oro\Bundle\CronBundle\Command\CronCommandInterface;
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SegmentRepository;
 
 class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCommandInterface
 {
@@ -25,8 +27,7 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
     protected function configure()
     {
         $this
-            ->setName('oro:cron:mailchimp:sync-segment')
-            ->setDescription('Send email campaigns');
+            ->setName('oro:cron:mailchimp:sync-segment');
     }
 
     /**
@@ -35,20 +36,32 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $iterator = $this->getSegmentRepository()->getSegmentsWithDynamicMarketingList();
-        $segmentSyncService = $this->getContainer()->get('orocrm_mailchimp.segment.sync');
+        $jobExecutor = $this->getJobExecutor();
 
         foreach ($iterator as $segment) {
-            $segmentSyncService->sync($segment);
+            $jobExecutor->executeJob(
+                ProcessorRegistry::TYPE_IMPORT,
+                'mailchimp_marketing_list_subscribe',
+                ['import' => ['segment' => $segment]]
+            );
         }
     }
 
     /**
      * @return SegmentRepository
      */
-    public function getSegmentRepository()
+    protected function getSegmentRepository()
     {
         return $this->getContainer()->get('doctrine')->getRepository(
             $this->getContainer()->getParameter('orocrm_mailchimp.entity.segment.class')
         );
+    }
+
+    /**
+     * @return JobExecutor
+     */
+    protected function getJobExecutor()
+    {
+        return $this->getContainer()->get('oro_importexport.job_executor');
     }
 }

@@ -1,0 +1,13 @@
+workflows:
+    marketing_list:
+        attributes:
+            mailchimp_integration:
+                label:  orocrm.mailchimp.emailcampaign.integration.label
+                type: entity
+                options:
+                    class: Oro\Bundle\IntegrationBundle\Entity\Channel
+            mailchimp_list:
+                label:  orocrm.mailchimp.subscriberslist.entity_label
+                type: entity
+                options:
+                    class: OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList
