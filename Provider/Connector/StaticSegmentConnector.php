@@ -1,22 +1,22 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider;
+namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 
-class ListConnector extends AbstractMailChimpConnector implements TwoWaySyncConnectorInterface, ConnectorInterface
+class StaticSegmentConnector extends AbstractMailChimpConnector implements TwoWaySyncConnectorInterface, ConnectorInterface
 {
-    const TYPE = 'list';
-    const JOB_IMPORT = 'mailchimp_list_import';
-    const JOB_EXPORT = 'mailchimp_list_export';
+    const TYPE = 'staticSegment';
+    const JOB_IMPORT = 'mailchimp_static_segment_import';
+    const JOB_EXPORT = 'mailchimp_static_segment_export';
 
     /**
      * {@inheritdoc}
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.connector.list.label';
+        return 'orocrm.mailchimp.connector.staticSegment.label';
     }
 
     /**
@@ -48,7 +48,7 @@ class ListConnector extends AbstractMailChimpConnector implements TwoWaySyncConn
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getLists();
+        return $this->transport->getSegmentsToSync($this->getLastSyncDate());
     }
 
     /**

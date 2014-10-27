@@ -7,18 +7,18 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\Segment;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
 class SegmentTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Segment
+     * @var StaticSegment
      */
     protected $entity;
 
     public function setUp()
     {
-        $this->entity = new Segment();
+        $this->entity = new StaticSegment();
     }
 
     public function testId()

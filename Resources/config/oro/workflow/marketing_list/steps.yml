@@ -1,0 +1,7 @@
+workflows:
+    marketing_list:
+        steps:
+            connected:
+                label: 'MailChimp Connected'
+                allowed_transitions:
+                    - refresh

@@ -13,8 +13,8 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
- * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\SegmentRepository")
- * @ORM\Table(name="orocrm_mailchimp_segment")
+ * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository")
+ * @ORM\Table(name="orocrm_mailchimp_static_segment")
  * @ORM\HasLifecycleCallbacks()
  * @Config(
  *  defaultValues={
@@ -33,7 +33,7 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
  *  }
  * )
  */
-class Segment implements OriginAwareInterface
+class StaticSegment implements OriginAwareInterface
 {
     const STATUS_NOT_SYNCED = 'not_synced';
     const STATUS_IN_PROGRESS = 'in_progress';
@@ -150,6 +150,20 @@ class Segment implements OriginAwareInterface
     protected $updatedAt;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="last_rest", type="datetime", nullable=true)
+     */
+    protected $lastReset;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="member_count", type="integer", nullable=true)
+     */
+    protected $memberCount;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -171,7 +185,7 @@ class Segment implements OriginAwareInterface
      * Set name
      *
      * @param string $name
-     * @return Segment
+     * @return StaticSegment
      */
     public function setName($name)
     {
@@ -194,7 +208,7 @@ class Segment implements OriginAwareInterface
      * Set syncStatus
      *
      * @param integer $syncStatus
-     * @return Segment
+     * @return StaticSegment
      */
     public function setSyncStatus($syncStatus)
     {
@@ -217,7 +231,7 @@ class Segment implements OriginAwareInterface
      * Set lastSynced
      *
      * @param \DateTime $lastSynced
-     * @return Segment
+     * @return StaticSegment
      */
     public function setLastSynced($lastSynced)
     {
@@ -240,7 +254,7 @@ class Segment implements OriginAwareInterface
      * Set remoteRemove
      *
      * @param boolean $remoteRemove
-     * @return Segment
+     * @return StaticSegment
      */
     public function setRemoteRemove($remoteRemove)
     {
@@ -269,7 +283,7 @@ class Segment implements OriginAwareInterface
 
     /**
      * @param integer $originId
-     * @return Member
+     * @return StaticSegment
      */
     public function setOriginId($originId)
     {
@@ -288,7 +302,7 @@ class Segment implements OriginAwareInterface
 
     /**
      * @param Channel $channel
-     * @return Segment
+     * @return StaticSegment
      */
     public function setChannel($channel)
     {
@@ -301,7 +315,7 @@ class Segment implements OriginAwareInterface
      * Set marketingList
      *
      * @param MarketingList $marketingList
-     * @return Segment
+     * @return StaticSegment
      */
     public function setMarketingList(MarketingList $marketingList = null)
     {
@@ -324,7 +338,7 @@ class Segment implements OriginAwareInterface
      * Set subscribersList
      *
      * @param SubscribersList $subscribersList
-     * @return Segment
+     * @return StaticSegment
      */
     public function setSubscribersList(SubscribersList $subscribersList = null)
     {
@@ -347,7 +361,7 @@ class Segment implements OriginAwareInterface
      * Add members
      *
      * @param Member $member
-     * @return Segment
+     * @return StaticSegment
      */
     public function addMember(Member $member)
     {
@@ -390,7 +404,7 @@ class Segment implements OriginAwareInterface
 
     /**
      * @param Organization $owner
-     * @return Campaign
+     * @return StaticSegment
      */
     public function setOwner($owner)
     {
@@ -409,7 +423,7 @@ class Segment implements OriginAwareInterface
 
     /**
      * @param \DateTime $createdAt
-     * @return Segment
+     * @return StaticSegment
      */
     public function setCreatedAt(\DateTime $createdAt)
     {
@@ -428,7 +442,7 @@ class Segment implements OriginAwareInterface
 
     /**
      * @param \DateTime $updatedAt
-     * @return Member
+     * @return StaticSegment
      */
     public function setUpdatedAt(\DateTime $updatedAt = null)
     {
@@ -457,5 +471,48 @@ class Segment implements OriginAwareInterface
     public function preUpdate()
     {
         $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastReset()
+    {
+        return $this->lastReset;
+    }
+
+    /**
+     * @param \DateTime $lastReset
+     *
+     * @return StaticSegment
+     */
+    public function setLastReset(\DateTime $lastReset = null)
+    {
+        $this->lastReset = $lastReset;
+
+        return $this;
+    }
+
+    /**
+     * Set memberCount
+     *
+     * @param integer $memberCount
+     * @return StaticSegment
+     */
+    public function setMemberCount($memberCount)
+    {
+        $this->memberCount = $memberCount;
+
+        return $this;
+    }
+
+    /**
+     * Get memberCount
+     *
+     * @return integer 
+     */
+    public function getMemberCount()
+    {
+        return $this->memberCount;
     }
 }

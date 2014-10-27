@@ -1,0 +1,36 @@
+workflows:
+    marketing_list:
+        transitions:
+            __start__:
+                label: 'Connect to MailChimp'
+                step_to: connected
+                is_start: true
+                is_hidden: false
+                is_unavailable_hidden: true
+                transition_definition: connect_definition
+                frontend_options:
+                    icon: 'icon-exchange'
+                    class: 'btn-primary'
+                form_options:
+                    attribute_fields:
+                        mailchimp_integration:
+                            form_type: 'orocrm_mailchimp_integration_select'
+                            options:
+                                required: true
+                                constraints:
+                                    - NotBlank: ~
+                        mailchimp_list:
+                            form_type: 'orocrm_mailchimp_list_select'
+                            options:
+                                required: true
+                                constraints:
+                                    - NotBlank: ~
+                                channel_field: 'mailchimp_integration'
+            refresh:
+                label: 'Sync to MailChimp'
+                step_to: connected
+                is_unavailable_hidden: true
+                frontend_options:
+                    icon: 'icon-refresh'
+                    class: 'btn-primary'
+                transition_definition: refresh_definition

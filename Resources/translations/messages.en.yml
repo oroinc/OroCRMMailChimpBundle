@@ -20,6 +20,9 @@ orocrm:
             campaign:
                 label: Campaign Connector
                 job: Import campaigns from MailChimp
+            staticSegment:
+                label: Static Segment Connector
+                job: Import statics segments from MailChimp
 
         mailchimptransport:
             entity_label: MailChimp Transport
@@ -159,6 +162,7 @@ orocrm:
         emailcampaign:
             transport.mailchimp: MailChimp
             integration.placeholder: Choose integration
+            list.placeholder: Choose list
             integration.label: Integration
             template.placeholder: Choose MailChimp template
             template.label: Template

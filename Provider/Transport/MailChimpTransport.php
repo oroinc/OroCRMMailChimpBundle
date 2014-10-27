@@ -8,11 +8,11 @@ use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberIterator;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentListIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
 
 /**
@@ -138,6 +138,18 @@ class MailChimpTransport implements TransportInterface
     public function getTemplates()
     {
         return new TemplateIterator($this->client);
+    }
+
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segments.php
+     */
+    public function getSegmentsToSync()
+    {
+        $subscribersLists = $this->managerRegistry
+            ->getRepository('OroCRMMailChimpBundle:SubscribersList')
+            ->getAllSubscribersListIterator();
+
+        return new StaticSegmentListIterator($subscribersLists, $this->client);
     }
 
     /**

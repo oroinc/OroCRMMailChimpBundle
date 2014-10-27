@@ -301,12 +301,12 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $owner;
 
     /**
-     * @var Collection|ArrayCollection|Segment[] $segments
+     * @var Collection|ArrayCollection|StaticSegment[] $segments
      *
-     * @ORM\ManyToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Segment", inversedBy="members")
-     * @ORM\JoinTable(name="orocrm_mailchimp_segment_member")
+     * @ORM\ManyToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment", inversedBy="members")
+     * @ORM\JoinTable(name="orocrm_mailchimp_static_segment_member")
      */
-    protected $segments;
+    protected $staticSegments;
 
     /**
      * @var \DateTime
@@ -895,10 +895,10 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**
      * Add segment
      *
-     * @param Segment $segment
+     * @param StaticSegment $segment
      * @return Member
      */
-    public function addSegment(Segment $segment)
+    public function addStaticSegment(StaticSegment $segment)
     {
         if (!$this->segments->contains($segment)) {
             $this->segments->add($segment);
@@ -910,9 +910,9 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**
      * Remove segment
      *
-     * @param Segment $segment
+     * @param StaticSegment $segment
      */
-    public function removeSegment(Segment $segment)
+    public function removeStaticSegment(StaticSegment $segment)
     {
         if ($this->segments->contains($segment)) {
             $this->segments->removeElement($segment);
@@ -922,9 +922,9 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**
      * Get segments
      *
-     * @return Collection
+     * @return Collection|StaticSegment[]
      */
-    public function getSegments()
+    public function getStaticSegments()
     {
         return $this->segments;
     }

@@ -9,7 +9,7 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;
-use OroCRM\Bundle\MailChimpBundle\Entity\Segment;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
@@ -31,7 +31,7 @@ class MarketingListReader extends IteratorBasedReader
     /**
      * @var string
      */
-    protected $segmentClassName;
+    protected $staticSegmentClassName;
 
     /**
      * @var string
@@ -58,9 +58,9 @@ class MarketingListReader extends IteratorBasedReader
     /**
      * @param string $segmentClassName
      */
-    public function setSegmentClassName($segmentClassName)
+    public function setStaticSegmentClassName($segmentClassName)
     {
-        $this->segmentClassName = $segmentClassName;
+        $this->staticSegmentClassName = $segmentClassName;
     }
 
     /**
@@ -82,15 +82,15 @@ class MarketingListReader extends IteratorBasedReader
             );
         }
 
-        /** @var Segment $segment */
+        /** @var StaticSegment $segment */
         $segment = $context->getOption(self::OPTION_SEGMENT);
 
-        if (!is_a($segment, $this->segmentClassName)) {
+        if (!is_a($segment, $this->staticSegmentClassName)) {
             throw new InvalidConfigurationException(
                 sprintf(
                     'Option "%s" value must be instance of "%s", "%s" given.',
                     self::OPTION_SEGMENT,
-                    $this->segmentClassName,
+                    $this->staticSegmentClassName,
                     is_object($segment) ? get_class($segment) : gettype($segment)
                 )
             );
