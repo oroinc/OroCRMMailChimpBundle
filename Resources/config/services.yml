@@ -4,6 +4,7 @@ parameters:
     orocrm_mailchimp.entity.template.class: OroCRM\Bundle\MailChimpBundle\Entity\Template
     orocrm_mailchimp.entity.subscribers_list.class: OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList
     orocrm_mailchimp.entity.member.class: OroCRM\Bundle\MailChimpBundle\Entity\Member
+    orocrm_mailchimp.entity.segment.class: OroCRM\Bundle\MailChimpBundle\Entity\Segment
 
     orocrm_mailchimp.transport.mailchimp.class: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport
 
@@ -23,6 +24,7 @@ parameters:
 
     # Readers
     orocrm_mailchimp.importexport.reader.processed_entities.class:  OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\ProcessedEntities
+    orocrm_mailchimp.importexport.reader.marketing_list.class:  OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\MarketingListReader
 
     # Writers
     orocrm_mailchimp.importexport.writer.remove.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\RemoveWriter
@@ -51,6 +53,7 @@ parameters:
     # Processors
     orocrm_mailchimp.importexport.processor.import.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Processor\ImportProcessor
     orocrm_mailchimp.importexport.processor.remove.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Processor\RemoveProcessor
+    orocrm_mailchimp.importexport.processor.members_sync.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Processor\MemberSyncProcessor
 
     # MergeVar related services
     orocrm_mailchimp.merge_var.provider.class: OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProvider
@@ -69,9 +72,6 @@ parameters:
     # EmailCampaign Voter
     orocrm_mailchimp.email_campaign.security.acl.voter.entity.class: OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter
 
-    # Segment sync
-    orocrm_mailchimp.segment.sync.class: OroCRM\Bundle\MailChimpBundle\Model\Segment\Sync
-
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -88,6 +88,15 @@ services:
         class: %orocrm_mailchimp.importexport.reader.processed_entities.class%
         arguments:
             - @oro_importexport.context_registry
+
+    orocrm_mailchimp.importexport.reader.marketing_list:
+        class: %orocrm_mailchimp.importexport.reader.marketing_list.class%
+        arguments:
+            - @oro_importexport.context_registry
+        calls:
+            - [setMarketingListProvider, [@orocrm_marketing_list.provider.marketing_list]]
+            - [setContactInformationFieldsProvider, [@orocrm_marketing_list.provider.contact_information_fields]]
+            - [setClassName, [%orocrm_mailchimp.entity.segment.class%]]
 
     # Writers
     orocrm_mailchimp.importexport.writer.template.remove:
@@ -152,7 +161,7 @@ services:
             - %orocrm_mailchimp.entity.template.class%
             - ["name"]
         calls:
-            - [initDoctrinePropertiesByManagerRegistry, ["@doctrine"]]
+            - [initDoctrinePropertiesByManagerRegistry, [@doctrine]]
             - [setAclHelper,["@oro_security.acl_helper"]]
         tags:
             - { name: oro_form.autocomplete.search_handler, alias: "mailchimp_templates", acl_resource: "orocrm_email_campaign_view" }
@@ -320,6 +329,14 @@ services:
             - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
             - [setSearchField, ['originId']]
 
+    orocrm_mailchimp.importexport.processor.members_sync:
+        class: %orocrm_mailchimp.importexport.processor.members_sync.class%
+        parent: oro_importexport.processor.import_abstract
+        calls:
+            - [setContactInformationFieldsProvider, [@orocrm_marketing_list.provider.contact_information_fields]]
+        tags:
+            - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.member.class%, alias: orocrm_mailchimp.subscribe_members }
+
     # MergeVar related services
     orocrm_mailchimp.merge_var.provider:
         class: %orocrm_mailchimp.merge_var.provider.class%
@@ -384,10 +401,3 @@ services:
             - @oro_entity.doctrine_helper
         tags:
             - { name: security.voter, priority: 500 }
-    
-    # Segment sync
-    orocrm_mailchimp.segment.sync:
-        class: %orocrm_mailchimp.segment.sync.class%
-        arguments:
-            - @orocrm_marketing_list.provider.marketing_list
-            - @orocrm_marketing_list.provider.contact_information_fields
