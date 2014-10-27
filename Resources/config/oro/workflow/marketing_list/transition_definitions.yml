@@ -1,0 +1,40 @@
+workflows:
+    marketing_list:
+        transition_definitions:
+            connect_definition:
+                pre_conditions: # applicable only for marketing lists with email fields
+                    @and:
+                        - @has_active_mailchimp_integration: ~
+                        - @has_contact_information:
+                            marketing_list: $marketingList
+                            type: 'email'
+                conditions: # if opportunity.status = "in_progress"
+                    @and:
+                        - @not_empty:
+                            message: 'MailChimp integration must be selected'
+                            parameters: $mailchimp_integration
+                        - @not_empty:
+                            message: 'MailChimp List must be selected'
+                            parameters: $mailchimp_list
+                # Post
+            refresh_definition:
+                conditions: # if opportunity.status = "in_progress", required data is entered and reason = "won"
+                    @and:
+                        - @has_active_mailchimp_integration: ~
+                        - @has_contact_information:
+                            marketing_list: $marketingList
+                            type: 'email'
+                    # TODO: Do not allow refresh for segments that are already scheduled for sync or in sync to be synced
+                    # TODO: Do not allow refresh when connected integration marked as inactive
+#                post_actions: # update opportunity properties, set opportunity.status = "won"
+#                    - @find_entity:
+#                        class: OroCRM\Bundle\SalesBundle\Entity\OpportunityStatus
+#                        identifier: 'won'
+#                        attribute: $opportunity.status
+#                    - @find_entity:
+#                        class: OroCRM\Bundle\SalesBundle\Entity\OpportunityCloseReason
+#                        identifier: 'won'
+#                        attribute: $close_reason
+#                    - @assign_value:
+#                        - [$probability, 1]
+#                        - [$close_reason_name, 'won']

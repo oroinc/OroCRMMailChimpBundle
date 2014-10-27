@@ -11,9 +11,11 @@ parameters:
     orocrm_mailchimp.form.type.integration_transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType
     orocrm_mailchimp.form.type.integration_select.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpIntegrationSelectType
     orocrm_mailchimp.form.type.template_select.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailchimpTemplateSelectType
+    orocrm_mailchimp.form.type.list_select.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailchimpListSelectType
     orocrm_mailchimp.form.type.transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType
     orocrm_mailchimp.form.type.api_key_type.class: OroCRM\Bundle\MailChimpBundle\Form\Type\ApiKeyType
     orocrm_mailchimp.form.autocomplete.template.search_handler.class: OroCRM\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler
+    orocrm_mailchimp.form.autocomplete.list.search_handler.class: OroCRM\Bundle\MailChimpBundle\Autocomplete\ListSearchHandler
 
     # Integration related services
     orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport
@@ -60,6 +62,7 @@ parameters:
 
     # Workflow actions and conditions
     orocrm_mailchimp.workflow.condition.is_locked.class: OroCRM\Bundle\MailChimpBundle\Model\Condition\IsLocked
+    orocrm_mailchimp.workflow.condition.has_active_mailchimp_integration.class: OroCRM\Bundle\MailChimpBundle\Model\Condition\HasActiveMailChimpIntegration
     orocrm_mailchimp.workflow.action.lock.class: OroCRM\Bundle\MailChimpBundle\Model\Action\Lock
     orocrm_mailchimp.workflow.action.unlock.class: OroCRM\Bundle\MailChimpBundle\Model\Action\Unlock
     orocrm_mailchimp.workflow.action.remove_entity.class: OroCRM\Bundle\MailChimpBundle\Model\Action\RemoveEntity
@@ -141,6 +144,11 @@ services:
         tags:
             - { name: form.type, alias: "orocrm_mailchimp_template_select" }
 
+    orocrm_mailchimp.form.type.list_select:
+        class: %orocrm_mailchimp.form.type.list_select.class%
+        tags:
+            - { name: form.type, alias: "orocrm_mailchimp_list_select" }
+
     orocrm_mailchimp.form.type.transport_settings:
         class: %orocrm_mailchimp.form.type.transport_settings.class%
         tags:
@@ -156,6 +164,17 @@ services:
             - [setAclHelper,["@oro_security.acl_helper"]]
         tags:
             - { name: oro_form.autocomplete.search_handler, alias: "mailchimp_templates", acl_resource: "orocrm_email_campaign_view" }
+
+    orocrm_mailchimp.form.autocomplete.list.search_handler:
+        class: %orocrm_mailchimp.form.autocomplete.list.search_handler.class%
+        arguments:
+            - %orocrm_mailchimp.entity.subscribers_list.class%
+            - ["name"]
+        calls:
+            - [initDoctrinePropertiesByManagerRegistry, ["@doctrine"]]
+            - [setAclHelper,["@oro_security.acl_helper"]]
+        tags:
+            - { name: oro_form.autocomplete.search_handler, alias: "mailchimp_lists", acl_resource: "orocrm_email_campaign_view" }
 
     # Integration related services
     orocrm_mailchimp.provider.channel_type:
@@ -331,12 +350,20 @@ services:
 
     # Workflow actions and conditions
     orocrm_mailchimp.workflow.condition.is_locked:
-            class: %orocrm_mailchimp.workflow.condition.is_locked.class%
-            arguments:
-                - @oro_workflow.context_accessor
-                - @orocrm_mailchimp.lock
-            tags:
-                - { name: oro_workflow.condition, alias: is_locked }
+        class: %orocrm_mailchimp.workflow.condition.is_locked.class%
+        arguments:
+            - @oro_workflow.context_accessor
+            - @orocrm_mailchimp.lock
+        tags:
+            - { name: oro_workflow.condition, alias: is_locked }
+
+    orocrm_mailchimp.workflow.condition.has_active_mailchimp_integration:
+        class: %orocrm_mailchimp.workflow.condition.has_active_mailchimp_integration.class%
+        arguments:
+            - @doctrine
+            - @oro_security.acl_helper
+        tags:
+            - { name: oro_workflow.condition, alias: has_active_mailchimp_integration }
 
     orocrm_mailchimp.workflow.action.lock:
         class: %orocrm_mailchimp.workflow.action.lock.class%

@@ -2,21 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Autocomplete;
 
-use Oro\Bundle\FormBundle\Autocomplete\SearchHandler;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 
-class TemplateSearchHandler extends SearchHandler
+class TemplateSearchHandler extends IntegrationAwareSearchHandler
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function checkAllDependenciesInjected()
-    {
-        if (!$this->entityRepository || !$this->idFieldName) {
-            throw new \RuntimeException('Search handler is not fully configured');
-        }
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -39,23 +28,6 @@ class TemplateSearchHandler extends SearchHandler
                 'more'    => false
             );
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function findById($query)
-    {
-        $parts = explode(';', $query);
-        $id = $parts[0];
-        $channelId = !empty($parts[1]) ? $parts[1] : false;
-
-        $criteria = [$this->idFieldName => $id];
-        if (false !== $channelId) {
-            $criteria['channel'] = $channelId;
-        }
-
-        return $this->entityRepository->findOneBy($criteria, null);
     }
 
     /**
