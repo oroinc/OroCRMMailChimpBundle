@@ -96,7 +96,8 @@ services:
         calls:
             - [setMarketingListProvider, [@orocrm_marketing_list.provider.marketing_list]]
             - [setContactInformationFieldsProvider, [@orocrm_marketing_list.provider.contact_information_fields]]
-            - [setClassName, [%orocrm_mailchimp.entity.segment.class%]]
+            - [setSegmentClassName, [%orocrm_mailchimp.entity.segment.class%]]
+            - [setMemberClassName, [%orocrm_mailchimp.entity.member.class%]]
 
     # Writers
     orocrm_mailchimp.importexport.writer.template.remove:

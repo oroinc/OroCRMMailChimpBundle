@@ -31,7 +31,12 @@ class MarketingListReader extends IteratorBasedReader
     /**
      * @var string
      */
-    protected $className;
+    protected $segmentClassName;
+
+    /**
+     * @var string
+     */
+    protected $memberClassName;
 
     /**
      * @param MarketingListProvider $marketingListProvider
@@ -51,11 +56,19 @@ class MarketingListReader extends IteratorBasedReader
     }
 
     /**
-     * @param string $className
+     * @param string $segmentClassName
      */
-    public function setClassName($className)
+    public function setSegmentClassName($segmentClassName)
     {
-        $this->className = $className;
+        $this->segmentClassName = $segmentClassName;
+    }
+
+    /**
+     * @param string $memberClassName
+     */
+    public function setMemberClassName($memberClassName)
+    {
+        $this->memberClassName = $memberClassName;
     }
 
     /**
@@ -69,14 +82,15 @@ class MarketingListReader extends IteratorBasedReader
             );
         }
 
+        /** @var Segment $segment */
         $segment = $context->getOption(self::OPTION_SEGMENT);
 
-        if (!$segment instanceof Segment) {
+        if (!is_a($segment, $this->segmentClassName)) {
             throw new InvalidConfigurationException(
                 sprintf(
                     'Option "%s" value must be instance of "%s", "%s" given.',
                     self::OPTION_SEGMENT,
-                    $this->className,
+                    $this->segmentClassName,
                     is_object($segment) ? get_class($segment) : gettype($segment)
                 )
             );
@@ -101,6 +115,11 @@ class MarketingListReader extends IteratorBasedReader
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
         );
 
+        $memberContactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
+            $this->memberClassName,
+            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
+        );
+
         /** @var From $from */
         $fromParts = $qb->getDQLPart('from');
         $from = reset($fromParts);
@@ -108,14 +127,20 @@ class MarketingListReader extends IteratorBasedReader
         $expr = $qb->expr()->orX();
         array_walk(
             $contactInformationFields,
-            function ($field) use ($expr, $qb, $from) {
-                $expr->add(
-                    $qb->expr()->eq(sprintf('%s.%s', $from->getAlias(), $field), 'mmb.email')
-                );
+            function ($field) use ($expr, $qb, $from, $memberContactInformationFields) {
+                $property = sprintf('%s.%s', $from->getAlias(), $field);
+                foreach ($memberContactInformationFields as $memberContactInformationField) {
+                    $expr->add(
+                        $qb->expr()->eq(
+                            $property,
+                            sprintf('mmb.%s', $memberContactInformationField)
+                        )
+                    );
+                }
             }
         );
 
-        $qb->leftJoin('OroCRMMailChimpBundle:Member', 'mmb', Join::WITH, $expr);
+        $qb->leftJoin($this->memberClassName, 'mmb', Join::WITH, $expr);
 
         return new BufferedQueryResultIterator($qb);
     }
