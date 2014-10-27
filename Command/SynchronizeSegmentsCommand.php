@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
 use Oro\Bundle\CronBundle\Command\CronCommandInterface;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SegmentRepository;
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 
 class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCommandInterface
 {
@@ -35,7 +35,7 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $iterator = $this->getSegmentRepository()->getSegmentsWithDynamicMarketingList();
+        $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsWithDynamicMarketingList();
         $jobExecutor = $this->getJobExecutor();
 
         foreach ($iterator as $segment) {
@@ -48,12 +48,12 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
     }
 
     /**
-     * @return SegmentRepository
+     * @return StaticSegmentRepository
      */
-    protected function getSegmentRepository()
+    protected function getStaticSegmentRepository()
     {
         return $this->getContainer()->get('doctrine')->getRepository(
-            $this->getContainer()->getParameter('orocrm_mailchimp.entity.segment.class')
+            $this->getContainer()->getParameter('orocrm_mailchimp.entity.static_segment.class')
         );
     }
 
