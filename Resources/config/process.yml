@@ -96,19 +96,19 @@ definitions:
                             @and:
                                 - @not_empty: $.emailCampaign
                                 - @equal: [$.emailCampaign.transport, $.transport]
-                        class: OroCRM\Bundle\MailChimpBundle\Entity\Segment
+                        class: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
                         where:
                             marketingList: $id
                         attribute: $.segmentExists
                     - @assign_constant_value:
                         attribute: $.syncStatus
-                        value: OroCRM\Bundle\MailChimpBundle\Entity\Segment::STATUS_NOT_SYNCED
+                        value: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_NOT_SYNCED
                     - @create_entity:
                         conditions:
                             @and:
                                 - @empty: $.segmentExists
                         parameters:
-                            class: OroCRM\Bundle\MailChimpBundle\Entity\Segment
+                            class: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
                             attribute: $.segment
                             data:
                                 marketingList: $.data

@@ -18,7 +18,7 @@ class StaticSegmentDataConverter extends IntegrationAwareDataConverter
             'last_update' => 'updatedAt',
             'created_date' => 'createdAt',
             'last_reset' => 'lastReset',
-            'member_count' => 'lastReset',
+            'member_count' => 'memberCount',
             'sync_status' => 'syncStatus',
             StaticSegmentIterator::SUBSCRIBERS_LIST_ID => 'subscribersList:originId',
             'subscribers_list_channel_id' => 'subscribersList:channel:id',
