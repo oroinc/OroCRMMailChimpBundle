@@ -143,10 +143,10 @@ class Campaign implements OriginAwareInterface
     /**
      * @var SubscribersList
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Segment")
-     * @ORM\JoinColumn(name="segment_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment")
+     * @ORM\JoinColumn(name="static_segment_id", referencedColumnName="id", onDelete="SET NULL")
      */
-    protected $segment;
+    protected $staticSegment;
 
     /**
      * @var SubscribersList
@@ -817,20 +817,20 @@ class Campaign implements OriginAwareInterface
     }
 
     /**
-     * @return Segment
+     * @return StaticSegment
      */
-    public function getSegment()
+    public function getStaticSegment()
     {
-        return $this->segment;
+        return $this->staticSegment;
     }
 
     /**
-     * @param Segment $segment
+     * @param StaticSegment $segment
      * @return Campaign
      */
-    public function setSegment(Segment $segment = null)
+    public function setStaticSegment(StaticSegment $segment = null)
     {
-        $this->segment = $segment;
+        $this->staticSegment = $segment;
         return $this;
     }
 

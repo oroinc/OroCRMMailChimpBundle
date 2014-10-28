@@ -17,6 +17,9 @@ class CampaignTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $property
+     * @param mixed $value
+     *
      * @dataProvider settersAndGettersDataProvider
      */
     public function testSettersAndGetters($property, $value)
@@ -44,7 +47,7 @@ class CampaignTest extends \PHPUnit_Framework_TestCase
             ['webId', 123425223],
             ['template', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Template')],
             ['subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
-            ['segment', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Segment')],
+            ['staticSegment', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')],
             ['emailCampaign', $this->getMock('OroCRM\\Bundle\\CampaignBundle\\Entity\\EmailCampaign')],
             ['contentType', 'Content Type'],
             ['contentType', null],

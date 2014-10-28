@@ -3,7 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\Segment;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 
@@ -17,7 +17,7 @@ class CampaignImportStrategy extends AbstractImportStrategy
     {
         $this->assertEnvironment($entity);
 
-        $this->cachedEntities = array();
+        $this->cachedEntities = [];
         $entity = $this->beforeProcessEntity($entity);
 
         $existingEntity = $this->findExistingEntity($entity);
@@ -57,7 +57,7 @@ class CampaignImportStrategy extends AbstractImportStrategy
             $entity,
             $existingEntity,
             $itemData,
-            ['channel', 'template', 'subscribersList', 'segment', 'emailCampaign']
+            ['channel', 'template', 'subscribersList', 'staticSegment', 'emailCampaign']
         );
 
         // Replace Template if required
@@ -78,14 +78,14 @@ class CampaignImportStrategy extends AbstractImportStrategy
         );
         $existingEntity->setSubscribersList($subscribersList);
 
-        // Replace segment if required
-        /** @var Segment $segment */
-        $segment = $this->updateRelatedEntity(
-            $existingEntity->getSegment(),
-            $entity->getSegment(),
-            $itemData['segment']
+        // Replace StaticSegment if required
+        /** @var StaticSegment $staticSegment */
+        $staticSegment = $this->updateRelatedEntity(
+            $existingEntity->getStaticSegment(),
+            $entity->getStaticSegment(),
+            $itemData['staticSegment']
         );
-        $existingEntity->setSegment($segment);
+        $existingEntity->setStaticSegment($staticSegment);
 
         return $existingEntity;
     }

@@ -2,9 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
-use OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport;
-
 class CampaignDataConverter extends IntegrationAwareDataConverter
 {
     /**
@@ -64,8 +61,8 @@ class CampaignDataConverter extends IntegrationAwareDataConverter
         $importedRecord['template:channel:id'] = $channel;
         $importedRecord['subscribersList:channel:id'] = $channel;
         if (isset($importedRecord['saved_segment'], $importedRecord['saved_segment']['id'])) {
-            $importedRecord['segment:originId'] = $importedRecord['saved_segment']['id'];
-            $importedRecord['segment:channel:id'] = $channel;
+            $importedRecord['staticSegment:originId'] = $importedRecord['saved_segment']['id'];
+            $importedRecord['staticSegment:channel:id'] = $channel;
         }
 
         return parent::convertToImportFormat($importedRecord, $skipNullValues);
