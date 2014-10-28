@@ -10,7 +10,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
 use Oro\Bundle\CronBundle\Command\CronCommandInterface;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
 
 class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCommandInterface
 {
@@ -44,15 +46,36 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $segments = $input->getOption('segments');
+        /** @var StaticSegment[] $iterator */
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsWithDynamicMarketingList($segments);
         $jobExecutor = $this->getJobExecutor();
 
         foreach ($iterator as $segment) {
-            $jobExecutor->executeJob(
+            $jobOptions = [ProcessorRegistry::TYPE_IMPORT => [StaticSegmentAwareInterface::OPTION_SEGMENT => $segment]];
+
+            $output->write(sprintf('Segment #%s Members: ', $segment->getId()));
+            $jobResult = $jobExecutor->executeJob(
                 ProcessorRegistry::TYPE_IMPORT,
                 'mailchimp_marketing_list_subscribe',
-                ['import' => ['segment' => $segment]]
+                $jobOptions
             );
+            $output->writeln($jobResult->isSuccessful() ? 'Success' : 'Failed');
+
+            $output->write(sprintf('Segment #%s Members Add State: ', $segment->getId()));
+            $jobResult = $jobExecutor->executeJob(
+                ProcessorRegistry::TYPE_IMPORT,
+                'mailchimp_static_segment_member_add_state',
+                $jobOptions
+            );
+            $output->writeln($jobResult->isSuccessful() ? 'Success' : 'Failed');
+
+            $output->write(sprintf('Segment #%s Members Remove State: ', $segment->getId()));
+            $jobResult = $jobExecutor->executeJob(
+                ProcessorRegistry::TYPE_IMPORT,
+                'mailchimp_static_segment_member_remove_state',
+                $jobOptions
+            );
+            $output->writeln($jobResult->isSuccessful() ? 'Success' : 'Failed');
         }
     }
 

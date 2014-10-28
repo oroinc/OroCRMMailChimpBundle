@@ -301,12 +301,11 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $owner;
 
     /**
-     * @var Collection|ArrayCollection|StaticSegment[] $segments
+     * @var Collection|ArrayCollection|Member[]
      *
-     * @ORM\ManyToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment", inversedBy="members")
-     * @ORM\JoinTable(name="orocrm_mailchimp_static_segment_member")
+     * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="member")
      */
-    protected $staticSegments;
+    protected $segmentMembers;
 
     /**
      * @var \DateTime
@@ -893,39 +892,39 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     }
 
     /**
-     * Add segment
+     * Add segmentMembers
      *
-     * @param StaticSegment $segment
+     * @param StaticSegmentMember $segmentMembers
      * @return Member
      */
-    public function addStaticSegment(StaticSegment $segment)
+    public function addSegmentMember(StaticSegmentMember $segmentMembers)
     {
-        if (!$this->segments->contains($segment)) {
-            $this->segments->add($segment);
+        if (!$this->segmentMembers->contains($segmentMembers)) {
+            $this->segmentMembers->add($segmentMembers);
         }
 
         return $this;
     }
 
     /**
-     * Remove segment
+     * Remove segmentMembers
      *
-     * @param StaticSegment $segment
+     * @param StaticSegmentMember $segmentMembers
      */
-    public function removeStaticSegment(StaticSegment $segment)
+    public function removeSegmentMember(StaticSegmentMember $segmentMembers)
     {
-        if ($this->segments->contains($segment)) {
-            $this->segments->removeElement($segment);
+        if ($this->segmentMembers->contains($segmentMembers)) {
+            $this->segmentMembers->removeElement($segmentMembers);
         }
     }
 
     /**
-     * Get segments
+     * Get segmentMembers
      *
-     * @return Collection|StaticSegment[]
+     * @return Collection
      */
-    public function getStaticSegments()
+    public function getSegmentMembers()
     {
-        return $this->segments;
+        return $this->segmentMembers;
     }
 }

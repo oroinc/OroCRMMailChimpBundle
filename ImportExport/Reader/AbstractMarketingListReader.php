@@ -4,19 +4,26 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Query\Expr\From;
+use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
-class MarketingListReader extends IteratorBasedReader
+abstract class AbstractMarketingListReader extends IteratorBasedReader implements StaticSegmentAwareInterface
 {
-    const OPTION_SEGMENT = 'segment';
+    const MEMBER_ALIAS = 'mmb';
+
+    /**
+     * @var \Iterator
+     */
+    protected $sourceIterator;
 
     /**
      * @var MarketingListProvider
@@ -37,6 +44,16 @@ class MarketingListReader extends IteratorBasedReader
      * @var string
      */
     protected $memberClassName;
+
+    /**
+     * @var StaticSegment
+     */
+    protected $segment;
+
+    /**
+     * @var MarketingList
+     */
+    protected $marketingList;
 
     /**
      * @param MarketingListProvider $marketingListProvider
@@ -76,37 +93,38 @@ class MarketingListReader extends IteratorBasedReader
      */
     protected function initializeFromContext(ContextInterface $context)
     {
-        if (!$context->hasOption(self::OPTION_SEGMENT)) {
+        if (!$context->hasOption(StaticSegmentAwareInterface::OPTION_SEGMENT)) {
             throw new InvalidConfigurationException(
-                sprintf('Configuration reader must contain "%s".', self::OPTION_SEGMENT)
+                sprintf('Configuration reader must contain "%s".', StaticSegmentAwareInterface::OPTION_SEGMENT)
             );
         }
 
-        /** @var StaticSegment $segment */
-        $segment = $context->getOption(self::OPTION_SEGMENT);
+        $this->segment = $this->getStaticSegment();
 
-        if (!is_a($segment, $this->staticSegmentClassName)) {
+        if (!is_a($this->segment, $this->staticSegmentClassName)) {
             throw new InvalidConfigurationException(
                 sprintf(
                     'Option "%s" value must be instance of "%s", "%s" given.',
-                    self::OPTION_SEGMENT,
+                    StaticSegmentAwareInterface::OPTION_SEGMENT,
                     $this->staticSegmentClassName,
-                    is_object($segment) ? get_class($segment) : gettype($segment)
+                    is_object($this->segment) ? get_class($this->segment) : gettype($this->segment)
                 )
             );
         }
 
-        $marketingList = $segment->getMarketingList();
+        $this->marketingList = $this->segment->getMarketingList();
 
-        $this->setSourceIterator($this->getSubscribeIterator($marketingList));
+        if (!$this->getSourceIterator()) {
+            $this->setSourceIterator($this->getQueryIterator());
+        }
     }
 
     /**
      * @param MarketingList $marketingList
      *
-     * @return \Iterator
+     * @return QueryBuilder
      */
-    protected function getSubscribeIterator(MarketingList $marketingList)
+    protected function getIteratorQueryBuilder(MarketingList $marketingList)
     {
         $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
 
@@ -133,15 +151,26 @@ class MarketingListReader extends IteratorBasedReader
                     $expr->add(
                         $qb->expr()->eq(
                             $property,
-                            sprintf('mmb.%s', $memberContactInformationField)
+                            sprintf('%s.%s', self::MEMBER_ALIAS, $memberContactInformationField)
                         )
                     );
                 }
             }
         );
 
-        $qb->leftJoin($this->memberClassName, 'mmb', Join::WITH, $expr);
-
-        return new BufferedQueryResultIterator($qb);
+        return $qb->join($this->memberClassName, self::MEMBER_ALIAS, Join::WITH, $expr);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStaticSegment()
+    {
+        return $this->getContext()->getOption(StaticSegmentAwareInterface::OPTION_SEGMENT);
+    }
+
+    /**
+     * @return BufferedQueryResultIterator
+     */
+    abstract protected function getQueryIterator();
 }

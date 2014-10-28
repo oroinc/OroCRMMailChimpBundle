@@ -100,8 +100,36 @@ connector:
                     title: import
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
-                        reader:    orocrm_mailchimp.importexport.reader.marketing_list
+                        reader:    orocrm_mailchimp.importexport.reader.marketing_list_subscribe
                         processor: orocrm_mailchimp.importexport.processor.members_sync
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25
+
+        mailchimp_static_segment_member_add_state:
+            title: orocrm.mailchimp.job.static_segment_member_add_state
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.static_segment_member_add_state
+                        processor: orocrm_mailchimp.importexport.processor.static_segment_member_add_state
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25
+
+        mailchimp_static_segment_member_remove_state:
+            title: orocrm.mailchimp.job.static_segment_member_add_state
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.static_segment_member_remove_state
+                        processor: orocrm_mailchimp.importexport.processor.static_segment_member_remove_state
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25

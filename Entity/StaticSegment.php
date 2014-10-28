@@ -102,10 +102,9 @@ class StaticSegment implements OriginAwareInterface
     /**
      * @var Collection|ArrayCollection|Member[]
      *
-     * @ORM\ManyToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Member", mappedBy="segments")
-     * @ORM\JoinTable(name="orocrm_mailchimp_segment_member")
+     * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="staticSegment")
      */
-    protected $members;
+    protected $segmentMembers;
 
     /**
      * @var Organization
@@ -358,43 +357,6 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
-     * Add members
-     *
-     * @param Member $member
-     * @return StaticSegment
-     */
-    public function addMember(Member $member)
-    {
-        if (!$this->members->contains($member)) {
-            $this->members->add($member);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove members
-     *
-     * @param Member $member
-     */
-    public function removeMember(Member $member)
-    {
-        if ($this->members->contains($member)) {
-            $this->members->removeElement($member);
-        }
-    }
-
-    /**
-     * Get members
-     *
-     * @return Collection
-     */
-    public function getMembers()
-    {
-        return $this->members;
-    }
-
-    /**
      * @return Organization
      */
     public function getOwner()
@@ -514,5 +476,42 @@ class StaticSegment implements OriginAwareInterface
     public function getMemberCount()
     {
         return $this->memberCount;
+    }
+
+    /**
+     * Add segmentMembers
+     *
+     * @param StaticSegmentMember $segmentMembers
+     * @return StaticSegment
+     */
+    public function addSegmentMember(StaticSegmentMember $segmentMembers)
+    {
+        if (!$this->segmentMembers->contains($segmentMembers)) {
+            $this->segmentMembers->add($segmentMembers);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove segmentMembers
+     *
+     * @param StaticSegmentMember $segmentMembers
+     */
+    public function removeSegmentMember(StaticSegmentMember $segmentMembers)
+    {
+        if ($this->segmentMembers->contains($segmentMembers)) {
+            $this->segmentMembers->removeElement($segmentMembers);
+        }
+    }
+
+    /**
+     * Get segmentMembers
+     *
+     * @return Collection
+     */
+    public function getSegmentMembers()
+    {
+        return $this->segmentMembers;
     }
 }
