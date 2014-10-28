@@ -203,3 +203,4 @@ orocrm:
 
         workflow:
             segment_name: Segment Name
+            sync_message: Marketing List scheduled for sync with MailChimp Segment "%segment_name%"

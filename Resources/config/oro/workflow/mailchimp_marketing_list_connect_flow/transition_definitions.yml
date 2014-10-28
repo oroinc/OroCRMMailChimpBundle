@@ -62,3 +62,8 @@ workflows:
                         arguments:
                             - 'oro:cron:mailchimp:sync-segment'
                             - [$.result.segmentArguments]
+                    - @flash_message:
+                        message: 'orocrm.mailchimp.workflow.sync_message'
+                        message_parameters:
+                            segment_name: $static_segment.name
+                        type: 'success'
