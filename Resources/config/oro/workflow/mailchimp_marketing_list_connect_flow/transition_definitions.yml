@@ -48,7 +48,8 @@ workflows:
                         - @has_contact_information:
                             marketing_list: $marketing_list
                             type: 'email'
-                post_actions: #schedule segment sync
+                post_actions: #schedule segment sync and set sync status to not_synced
+                    - @assign_value: [$static_segment.syncStatus, 'not_synced']
                     - @format_string:
                         attribute: $.result.segmentArguments
                         string: '--segments=%segment_id%'
