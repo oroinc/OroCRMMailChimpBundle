@@ -30,6 +30,13 @@ orocrm:
             id.label: Id
             api_key.label: API Key
 
+        mailchimptransportsettings:
+            entity_label: MailChimp Transport Settings
+            entity_plural_label: MailChimp Transports Settings
+            channel.label: Channel
+            id.label: Id
+            template.label: Template
+
         template:
             entity_label: Template
             entity_plural_label: Templates
@@ -84,6 +91,11 @@ orocrm:
             users_who_clicked.label: Users Who Clicked
             web_id.label: Web Id
             owner.label: Owner
+            from_email.label: From Email
+            from_name.label: From Name
+            subject.label: Subject
+            title.label: Title
+            static_segment.label: Static Segment
 
         subscriberslist:
             entity_label: Subscribers List
@@ -110,6 +122,7 @@ orocrm:
             member_count.label: Active Members Count
             member_count_since_send.label: Active Members Count Since Send
             merge_var_count.label: Merge Vars Count
+            merge_var_config.label: Merge Vars Config
             name.label: Name
             open_rate.label: Open Rate
             origin_id.label: Origin Id
@@ -158,6 +171,8 @@ orocrm:
             owner.label: Owner
             merge_var_values.label: Merge Var Values
             subscribers_list.label: Subscribers List
+            marketing_list_item.label: Marketing List Item
+            static_segments.label: Static Segments
 
         emailcampaign:
             transport.mailchimp: MailChimp
@@ -166,3 +181,22 @@ orocrm:
             integration.label: Integration
             template.placeholder: Choose MailChimp template
             template.label: Template
+
+        staticsegment:
+            entity_label: Static Segment
+            entity_plural_label: Static Segments
+            channel.label: Channel
+            created_at.label: Created At
+            id.label: Id
+            last_reset.label: Last Reset
+            last_synced.label: Last Synced
+            marketing_list.label: Marketing List
+            member_count.label: Member Count
+            members.label: Members
+            name.label: Name
+            origin_id.label: Origin Id
+            owner.label: Owner
+            remote_remove.label: Remove Removed
+            subscribers_list.label: SubscribersList
+            sync_status.label: Sync Status
+            updated_at.label: Updated At
