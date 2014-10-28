@@ -2,6 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentIterator;
+
 class StaticSegmentDataConverter extends IntegrationAwareDataConverter
 {
     /**
@@ -16,6 +19,9 @@ class StaticSegmentDataConverter extends IntegrationAwareDataConverter
             'created_date' => 'createdAt',
             'last_reset' => 'lastReset',
             'member_count' => 'lastReset',
+            'sync_status' => 'syncStatus',
+            StaticSegmentIterator::SUBSCRIBERS_LIST_ID => 'subscribersList:originId',
+            'subscribers_list_channel_id' => 'subscribersList:channel:id',
         ];
     }
 
@@ -24,6 +30,9 @@ class StaticSegmentDataConverter extends IntegrationAwareDataConverter
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
+        $importedRecord['sync_status'] = StaticSegment::STATUS_NOT_SYNCED;
+        $importedRecord['subscribers_list_channel_id'] = $this->context->getOption('channel');
+
         return parent::convertToImportFormat($importedRecord, $skipNullValues);
     }
 

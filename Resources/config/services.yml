@@ -31,7 +31,7 @@ parameters:
     # Writers
     orocrm_mailchimp.importexport.writer.remove.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\RemoveWriter
 
-    #Serializers
+    # Serializers
     orocrm_mailchimp.importexport.serializer.datetime.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer\DateTimeSerializer
 
     # Strategies
@@ -39,6 +39,7 @@ parameters:
     orocrm_mailchimp.importexport.strategy.template.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\TemplateImportStrategy
     orocrm_mailchimp.importexport.strategy.list.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\ListImportStrategy
     orocrm_mailchimp.importexport.strategy.member.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberImportStrategy
+    orocrm_mailchimp.importexport.strategy.static_segment.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\StaticSegmentImportStrategy
 
     # Connectors
     orocrm_mailchimp.connector.template.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\TemplateConnector
@@ -298,6 +299,13 @@ services:
             - [setOwnerHelper, [@oro_integration.helper.default_owner_helper]]
             - [setLogger, [@oro_integration.logger.strategy]]
 
+    orocrm_mailchimp.importexport.strategy.static_segment:
+        class: %orocrm_mailchimp.importexport.strategy.static_segment.class%
+        parent: oro_importexport.strategy.configurable_add_or_replace
+        calls:
+            - [setOwnerHelper, [@oro_integration.helper.default_owner_helper]]
+            - [setLogger, [@oro_integration.logger.strategy]]
+
     # Processors
     orocrm_mailchimp.importexport.processor.import_abstract:
         parent: oro_importexport.processor.import_abstract
@@ -342,7 +350,7 @@ services:
         parent: orocrm_mailchimp.importexport.processor.import_abstract
         calls:
             - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.static_segment]]
-            #- [setStrategy, [@orocrm_mailchimp.importexport.strategy.static_segment]]
+            - [setStrategy, [@orocrm_mailchimp.importexport.strategy.static_segment]]
             - [setEntityName, [%orocrm_mailchimp.entity.static_segment.class%]]
 
     orocrm_mailchimp.importexport.processor.remove.abstract:

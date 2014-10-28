@@ -152,7 +152,7 @@ class StaticSegment implements OriginAwareInterface
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="last_rest", type="datetime", nullable=true)
+     * @ORM\Column(name="last_reset", type="datetime", nullable=true)
      */
     protected $lastReset;
 
