@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
@@ -27,7 +28,14 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
     protected function configure()
     {
         $this
-            ->setName('oro:cron:mailchimp:sync-segment');
+            ->setName('oro:cron:mailchimp:sync-segment')
+            ->setDescription('Synchronize static segments with MailChimp')
+            ->addOption(
+                'segments',
+                null,
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'MailChimp static Segments to sync'
+            );
     }
 
     /**
@@ -35,7 +43,8 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsWithDynamicMarketingList();
+        $segments = $input->getOption('segments');
+        $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsWithDynamicMarketingList($segments);
         $jobExecutor = $this->getJobExecutor();
 
         foreach ($iterator as $segment) {

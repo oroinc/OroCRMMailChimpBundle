@@ -11,9 +11,10 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType;
 class StaticSegmentRepository extends EntityRepository
 {
     /**
+     * @param array|null $segments
      * @return \Iterator
      */
-    public function getStaticSegmentsWithDynamicMarketingList()
+    public function getStaticSegmentsWithDynamicMarketingList($segments = null)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
 
@@ -23,6 +24,11 @@ class StaticSegmentRepository extends EntityRepository
             ->leftJoin('staticSegment.marketingList', 'ml')
             ->where($qb->expr()->eq('ml.type', ':type'))
             ->setParameter('type', MarketingListType::TYPE_DYNAMIC, Type::STRING);
+
+        if ($segments) {
+            $qb->andWhere('staticSegment.id IN(:segments)')
+                ->setParameter('segments', $segments);
+        }
 
         return new BufferedQueryResultIterator($qb);
     }

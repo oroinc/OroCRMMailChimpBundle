@@ -16,8 +16,8 @@ workflows:
                         - @not_empty:
                             message: 'MailChimp List must be selected'
                             parameters: $mailchimp_list
-                post_actions:
-                    - @create_entity: # create StaticSegment
+                post_actions: # create StaticSegment and schedule segment sync
+                    - @create_entity:
                         class: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
                         attribute: $static_segment
                         flush: true
@@ -27,6 +27,18 @@ workflows:
                             channel:         $mailchimp_integration
                             subscribersList: $mailchimp_list
                             syncStatus:      'not_synced'
+                    - @format_string:
+                        attribute: $.result.segmentArguments
+                        string: '--segments=%segment_id%'
+                        arguments:
+                            segment_id: $static_segment.id
+                    - @create_entity:
+                        class: JMS\JobQueueBundle\Entity\Job
+                        attribute: $.result.syncJob
+                        flush: true
+                        arguments:
+                            - 'oro:cron:mailchimp:sync-segment'
+                            - [$.result.segmentArguments]
             refresh_definition:
                 conditions: # allow refresh of marketing list with email fields for active integration when segment is synced
                     @and:
@@ -36,15 +48,16 @@ workflows:
                         - @has_contact_information:
                             marketing_list: $marketing_list
                             type: 'email'
-#                post_actions: # update opportunity properties, set opportunity.status = "won"
-#                    - @find_entity:
-#                        class: OroCRM\Bundle\SalesBundle\Entity\OpportunityStatus
-#                        identifier: 'won'
-#                        attribute: $opportunity.status
-#                    - @find_entity:
-#                        class: OroCRM\Bundle\SalesBundle\Entity\OpportunityCloseReason
-#                        identifier: 'won'
-#                        attribute: $close_reason
-#                    - @assign_value:
-#                        - [$probability, 1]
-#                        - [$close_reason_name, 'won']
+                post_actions: #schedule segment sync
+                    - @format_string:
+                        attribute: $.result.segmentArguments
+                        string: '--segments=%segment_id%'
+                        arguments:
+                            segment_id: $static_segment.id
+                    - @create_entity:
+                        class: JMS\JobQueueBundle\Entity\Job
+                        attribute: $.result.syncJob
+                        flush: true
+                        arguments:
+                            - 'oro:cron:mailchimp:sync-segment'
+                            - [$.result.segmentArguments]
