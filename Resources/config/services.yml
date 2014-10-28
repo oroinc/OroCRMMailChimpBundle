@@ -68,7 +68,6 @@ parameters:
 
     # Workflow actions and conditions
     orocrm_mailchimp.workflow.condition.is_locked.class: OroCRM\Bundle\MailChimpBundle\Model\Condition\IsLocked
-    orocrm_mailchimp.workflow.condition.has_active_mailchimp_integration.class: OroCRM\Bundle\MailChimpBundle\Model\Condition\HasActiveMailChimpIntegration
     orocrm_mailchimp.workflow.action.lock.class: OroCRM\Bundle\MailChimpBundle\Model\Action\Lock
     orocrm_mailchimp.workflow.action.unlock.class: OroCRM\Bundle\MailChimpBundle\Model\Action\Unlock
     orocrm_mailchimp.workflow.action.remove_entity.class: OroCRM\Bundle\MailChimpBundle\Model\Action\RemoveEntity
@@ -403,14 +402,6 @@ services:
             - @orocrm_mailchimp.lock
         tags:
             - { name: oro_workflow.condition, alias: is_locked }
-
-    orocrm_mailchimp.workflow.condition.has_active_mailchimp_integration:
-        class: %orocrm_mailchimp.workflow.condition.has_active_mailchimp_integration.class%
-        arguments:
-            - @doctrine
-            - @oro_security.acl_helper
-        tags:
-            - { name: oro_workflow.condition, alias: has_active_mailchimp_integration }
 
     orocrm_mailchimp.workflow.action.lock:
         class: %orocrm_mailchimp.workflow.action.lock.class%

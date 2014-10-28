@@ -200,3 +200,6 @@ orocrm:
             subscribers_list.label: SubscribersList
             sync_status.label: Sync Status
             updated_at.label: Updated At
+
+        workflow:
+            segment_name: Segment Name

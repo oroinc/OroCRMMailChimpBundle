@@ -1,5 +1,5 @@
 workflows:
-    marketing_list:
+    mailchimp_marketing_list_connect_flow:
         transitions:
             __start__:
                 label: 'Connect to MailChimp'
@@ -13,6 +13,14 @@ workflows:
                     class: 'btn-primary'
                 form_options:
                     attribute_fields:
+                        segment_name:
+                            options:
+                                required: true
+                                constraints:
+                                    - NotBlank: ~
+                                    - Length:
+                                        max: 100
+                                        maxMessage: "Segment name cannot be longer than {{ limit }} characters long"
                         mailchimp_integration:
                             form_type: 'orocrm_mailchimp_integration_select'
                             options:
@@ -26,6 +34,8 @@ workflows:
                                 constraints:
                                     - NotBlank: ~
                                 channel_field: 'mailchimp_integration'
+                    attribute_default_values:
+                        segment_name: $marketing_list.name
             refresh:
                 label: 'Sync to MailChimp'
                 step_to: connected

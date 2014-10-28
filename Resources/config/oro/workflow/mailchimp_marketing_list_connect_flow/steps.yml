@@ -1,5 +1,5 @@
 workflows:
-    marketing_list:
+    mailchimp_marketing_list_connect_flow:
         steps:
             connected:
                 label: 'MailChimp Connected'

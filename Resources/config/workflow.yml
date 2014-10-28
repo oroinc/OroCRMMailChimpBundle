@@ -1,2 +1,2 @@
 imports:
-    - { resource: 'oro/workflow/marketing_list.yml' }
+    - { resource: 'oro/workflow/mailchimp_marketing_list_connect_flow.yml' }
