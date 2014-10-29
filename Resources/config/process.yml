@@ -3,6 +3,7 @@ definitions:
         label:   'Synchronizes OroCRM Marketing List Item for MailChimp Member'
         enabled: true
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\Member
+        exclude_definitions: [synchronize_marketing_list_item_for_mailchimp_member]
         actions_configuration:
             - @tree:
                 conditions:
@@ -75,7 +76,55 @@ definitions:
                                 - @not_equal: [$status, $.statusUnsubscribed]
                                 - @not_empty: $.marketingListUnsubscribedItem
                         parameters: [$.marketingListUnsubscribedItem]
-
+    create_email_campaign_for_mailchimp_campaign:
+        label:   Create Email Campaign for MailChimp Campaign
+        enabled: true
+        entity:  OroCRM\Bundle\MailChimpBundle\Entity\Campaign
+        exclude_definitions: [create_email_campaign_for_mailchimp_campaign]
+        actions_configuration:
+            - @tree:
+                actions:
+                    # Prepare constants values
+                    - @assign_constant_value:
+                        attribute: $.statusSent
+                        value: OroCRM\Bundle\MailChimpBundle\Entity\Campaign::STATUS_SENT
+                    - @assign_constant_value:
+                        attribute: $.scheduleManual
+                        value: OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign::SCHEDULE_MANUAL
+                    - @assign_constant_value:
+                        attribute: $.mailchimpTransport
+                        value: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport::NAME
+                    # Create OroCRM EmailCampaign
+                    - @tree:
+                        # If OroCRM EmailCampaign not exists and
+                        # MailChimp Campaign relates to OroCRM MarketingList and
+                        # MailChimp Campaign has "sent" status
+                        conditions:
+                            @and:
+                                - @empty: $emailCampaign
+                                - @not_empty: $staticSegment
+                                - @not_empty: $staticSegment.marketingList
+                                - @equal: [$status, 'sent']
+                        actions:
+                            - @create_entity: # Create OroCRM EmailCampaign
+                                class:     OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign
+                                attribute: $emailCampaign
+                                data:
+                                    name: $title
+                                    schedule: $.scheduleManual
+                                    sent: true
+                                    sentAt: $sendTime
+                                    senderEmail: $fromEmail
+                                    senderName: $fromName
+                                    transport: $.mailchimpTransport
+                                    owner: $channel.defaultUserOwner
+                                    organization: $channel.defaultUserOwner.organization
+                            - @create_entity: # Create MailChimpTransportSettings
+                                class:     OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings
+                                attribute: $emailCampaign.transportSettings
+                                data:
+                                    channel: $channel
+                                    template: $template
 triggers:
     synchronize_marketing_list_item_for_mailchimp_member:
         -
@@ -85,3 +134,7 @@ triggers:
             event:    update
             queued:   true
             field:    status
+    create_email_campaign_for_mailchimp_campaign:
+        -
+            event:    create
+            queued:   true

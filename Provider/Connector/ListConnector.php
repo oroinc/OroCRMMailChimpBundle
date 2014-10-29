@@ -3,9 +3,8 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
-use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 
-class ListConnector extends AbstractMailChimpConnector implements TwoWaySyncConnectorInterface, ConnectorInterface
+class ListConnector extends AbstractMailChimpConnector implements ConnectorInterface
 {
     const TYPE = 'list';
     const JOB_IMPORT = 'mailchimp_list_import';
@@ -49,13 +48,5 @@ class ListConnector extends AbstractMailChimpConnector implements TwoWaySyncConn
     protected function getConnectorSource()
     {
         return $this->transport->getLists();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getExportJobName()
-    {
-        throw new \BadMethodCallException();
     }
 }

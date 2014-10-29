@@ -10,6 +10,7 @@ parameters:
     orocrm_mailchimp.transport.mailchimp.class: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport
 
     # Forms and extensions
+    orocrm_mailchimp.form.extension.channel_connectors.class: OroCRM\Bundle\MailChimpBundle\Form\Extension\ChannelConnectorsExtension
     orocrm_mailchimp.form.type.integration_transport_settings.class: OroCRM\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType
     orocrm_mailchimp.form.type.integration_select.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpIntegrationSelectType
     orocrm_mailchimp.form.type.template_select.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MailchimpTemplateSelectType
@@ -48,8 +49,8 @@ parameters:
     orocrm_mailchimp.connector.template.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\TemplateConnector
     orocrm_mailchimp.connector.list.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\ListConnector
     orocrm_mailchimp.connector.member.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberConnector
-    orocrm_mailchimp.connector.campaign.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\CampaignConnector
     orocrm_mailchimp.connector.static_segment.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector
+    orocrm_mailchimp.connector.campaign.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\CampaignConnector
 
     # Data Converter
     orocrm_mailchimp.importexport.data_converter.template.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\TemplateDataConverter
@@ -151,6 +152,11 @@ services:
             - { name: oro_importexport.normalizer }
 
     # Forms and extensions
+    orocrm_mailchimp.form.extension.channel_connectors:
+        class: %orocrm_mailchimp.form.extension.channel_connectors.class%
+        tags:
+            - { name: form.type_extension, alias: oro_integration_channel_form }
+
     orocrm_mailchimp.form.type.api_key_type:
         class: %orocrm_mailchimp.form.type.api_key_type.class%
         tags:
@@ -254,14 +260,6 @@ services:
         tags:
             - { name: oro_integration.connector, type: member, channel_type: mailchimp }
 
-    orocrm_mailchimp.connector.campaign:
-        class: %orocrm_mailchimp.connector.campaign.class%
-        parent: orocrm_mailchimp.connector.abstract
-        calls:
-            - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
-        tags:
-            - { name: oro_integration.connector, type: campaign, channel_type: mailchimp }
-
     orocrm_mailchimp.connector.static_segment:
         class: %orocrm_mailchimp.connector.static_segment.class%
         parent: orocrm_mailchimp.connector.abstract
@@ -269,6 +267,14 @@ services:
             - [setEntityName, [%orocrm_mailchimp.entity.static_segment.class%]]
         tags:
             - { name: oro_integration.connector, type: static_segment, channel_type: mailchimp }
+
+    orocrm_mailchimp.connector.campaign:
+        class: %orocrm_mailchimp.connector.campaign.class%
+        parent: orocrm_mailchimp.connector.abstract
+        calls:
+            - [setEntityName, [%orocrm_mailchimp.entity.campaign.class%]]
+        tags:
+            - { name: oro_integration.connector, type: campaign, channel_type: mailchimp }
 
     # Data Converter
     orocrm_mailchimp.importexport.data_converter.campaign:
