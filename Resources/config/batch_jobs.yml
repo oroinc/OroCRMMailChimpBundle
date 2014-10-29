@@ -133,3 +133,17 @@ connector:
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
+
+        mailchimp_member_export:
+            title: orocrm.mailchimp.job.member.export
+            type:  export
+            steps:
+                export:
+                    title: export
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.member_export
+                        processor: orocrm_mailchimp.importexport.processor.export_member
+                        writer:    orocrm_mailchimp.importexport.writer.member
+                    parameters:
+                        batch_size: 10000
