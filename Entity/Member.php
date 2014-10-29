@@ -822,7 +822,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
 
     /**
      * @param Organization $owner
-     * @return Campaign
+     * @return Member
      */
     public function setOwner($owner)
     {
