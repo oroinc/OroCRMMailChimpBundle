@@ -158,7 +158,7 @@ abstract class AbstractMarketingListReader extends IteratorBasedReader implement
             }
         );
 
-        return $qb->join($this->memberClassName, self::MEMBER_ALIAS, Join::WITH, $expr);
+        return $qb->leftJoin($this->memberClassName, self::MEMBER_ALIAS, Join::WITH, $expr);
     }
 
     /**

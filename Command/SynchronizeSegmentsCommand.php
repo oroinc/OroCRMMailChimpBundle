@@ -50,32 +50,22 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsWithDynamicMarketingList($segments);
         $jobExecutor = $this->getJobExecutor();
 
+        $jobs = [
+            'mailchimp_marketing_list_subscribe' => 'Subscribe Members',
+            'mailchimp_static_segment_member_add_state' => 'Add Segment Members',
+            'mailchimp_static_segment_member_remove_state' => 'Remove Segment Members',
+        ];
+
         foreach ($iterator as $segment) {
             $jobOptions = [ProcessorRegistry::TYPE_IMPORT => [StaticSegmentAwareInterface::OPTION_SEGMENT => $segment]];
 
-            $output->write(sprintf('Segment #%s Members: ', $segment->getId()));
-            $jobResult = $jobExecutor->executeJob(
-                ProcessorRegistry::TYPE_IMPORT,
-                'mailchimp_marketing_list_subscribe',
-                $jobOptions
-            );
-            $output->writeln($jobResult->isSuccessful() ? 'Success' : 'Failed');
-
-            $output->write(sprintf('Segment #%s Members Add State: ', $segment->getId()));
-            $jobResult = $jobExecutor->executeJob(
-                ProcessorRegistry::TYPE_IMPORT,
-                'mailchimp_static_segment_member_add_state',
-                $jobOptions
-            );
-            $output->writeln($jobResult->isSuccessful() ? 'Success' : 'Failed');
-
-            $output->write(sprintf('Segment #%s Members Remove State: ', $segment->getId()));
-            $jobResult = $jobExecutor->executeJob(
-                ProcessorRegistry::TYPE_IMPORT,
-                'mailchimp_static_segment_member_remove_state',
-                $jobOptions
-            );
-            $output->writeln($jobResult->isSuccessful() ? 'Success' : 'Failed');
+            $output->writeln(sprintf('<info>Segment #%s: </info>', $segment->getId()));
+            foreach ($jobs as $job => $message) {
+                $jobResult = $jobExecutor->executeJob(ProcessorRegistry::TYPE_IMPORT, $job, $jobOptions);
+                $output->writeln(
+                    sprintf('    <info>%s: %s</info>', $message, $jobResult->isSuccessful() ? 'Success' : 'Failed')
+                );
+            }
         }
     }
 
