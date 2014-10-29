@@ -3,12 +3,18 @@
 namespace OroCRM\Bundle\MailChimpBundle\Transport;
 
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use OroCRM\Bundle\CampaignBundle\Transport\TransportInterface;
 use OroCRM\Bundle\CampaignBundle\Transport\VisibilityTransportInterface;
 use OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType;
 
-class MailChimpTransport implements VisibilityTransportInterface
+class MailChimpTransport implements TransportInterface, VisibilityTransportInterface
 {
     const NAME = 'mailchimp';
+
+    /**
+     * @var bool
+     */
+    protected $visibility = false;
 
     /**
      * {@inheritdoc}
@@ -51,12 +57,18 @@ class MailChimpTransport implements VisibilityTransportInterface
     }
 
     /**
-     * Determination of transport options in the form of creation.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isVisibleInForm()
     {
-        return false;
+        return $this->visibility;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setVisibility($visible)
+    {
+        $this->visibility = $visible;
     }
 }
