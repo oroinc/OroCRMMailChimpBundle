@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider;
+namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -54,8 +54,8 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
          * @var Status $status
          */
         $status = $repository->findOneBy(
-            array('code' => Status::STATUS_COMPLETED, 'channel' => $channel, 'connector' => $this->getType()),
-            array('date' => 'DESC')
+            ['code' => Status::STATUS_COMPLETED, 'channel' => $channel, 'connector' => $this->getType()],
+            ['date' => 'DESC']
         );
 
         return $status ? $status->getDate() : null;

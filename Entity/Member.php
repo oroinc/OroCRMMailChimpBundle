@@ -301,12 +301,11 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $owner;
 
     /**
-     * @var Collection|ArrayCollection|Segment[] $segments
+     * @var Collection|ArrayCollection|Member[]
      *
-     * @ORM\ManyToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Segment", inversedBy="members")
-     * @ORM\JoinTable(name="orocrm_mailchimp_segment_member")
+     * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="member")
      */
-    protected $segments;
+    protected $segmentMembers;
 
     /**
      * @var \DateTime
@@ -893,39 +892,39 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     }
 
     /**
-     * Add segment
+     * Add segmentMembers
      *
-     * @param Segment $segment
+     * @param StaticSegmentMember $segmentMembers
      * @return Member
      */
-    public function addSegment(Segment $segment)
+    public function addSegmentMember(StaticSegmentMember $segmentMembers)
     {
-        if (!$this->segments->contains($segment)) {
-            $this->segments->add($segment);
+        if (!$this->segmentMembers->contains($segmentMembers)) {
+            $this->segmentMembers->add($segmentMembers);
         }
 
         return $this;
     }
 
     /**
-     * Remove segment
+     * Remove segmentMembers
      *
-     * @param Segment $segment
+     * @param StaticSegmentMember $segmentMembers
      */
-    public function removeSegment(Segment $segment)
+    public function removeSegmentMember(StaticSegmentMember $segmentMembers)
     {
-        if ($this->segments->contains($segment)) {
-            $this->segments->removeElement($segment);
+        if ($this->segmentMembers->contains($segmentMembers)) {
+            $this->segmentMembers->removeElement($segmentMembers);
         }
     }
 
     /**
-     * Get segments
+     * Get segmentMembers
      *
      * @return Collection
      */
-    public function getSegments()
+    public function getSegmentMembers()
     {
-        return $this->segments;
+        return $this->segmentMembers;
     }
 }

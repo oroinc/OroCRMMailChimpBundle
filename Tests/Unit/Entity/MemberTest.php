@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Segment;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 
 class MemberTest extends \PHPUnit_Framework_TestCase
@@ -21,6 +21,8 @@ class MemberTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider settersAndGettersDataProvider
+     * @param string $property
+     * @param mixed $value
      */
     public function testSettersAndGetters($property, $value)
     {
@@ -98,16 +100,16 @@ class MemberTest extends \PHPUnit_Framework_TestCase
 
     public function testSegments()
     {
-        $this->assertEquals(new ArrayCollection(), $this->target->getSegments());
-        $segment = new Segment();
+        $this->assertEquals(new ArrayCollection(), $this->target->getStaticSegments());
+        $segment = new StaticSegment();
 
-        $this->target->addSegment($segment);
-        $this->assertEquals(new ArrayCollection([$segment]), $this->target->getSegments());
+        $this->target->addStaticSegment($segment);
+        $this->assertEquals(new ArrayCollection([$segment]), $this->target->getStaticSegments());
 
-        $this->target->addSegment($segment);
-        $this->assertEquals(new ArrayCollection([$segment]), $this->target->getSegments());
+        $this->target->addStaticSegment($segment);
+        $this->assertEquals(new ArrayCollection([$segment]), $this->target->getStaticSegments());
 
-        $this->target->removeSegment($segment);
-        $this->assertEmpty($this->target->getSegments());
+        $this->target->removeStaticSegment($segment);
+        $this->assertEmpty($this->target->getStaticSegments());
     }
 }

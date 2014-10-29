@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport as MailChimpTransportEntity;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
@@ -90,6 +91,62 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 
         $this->clientFactory->expects($this->never())->method($this->anything());
         $this->transport->init($transportEntity);
+    }
+
+    /**
+     * @dataProvider getCampaignsDataProvider
+     *
+     * @param string|null $status
+     * @param bool|null $usesSegment
+     * @param array $expectedFilters
+     */
+    public function testGetCampaigns($status, $usesSegment, array $expectedFilters)
+    {
+        $this->initTransport();
+        $result = $this->transport->getCampaigns($status, $usesSegment);
+
+        $this->assertInstanceOf(
+            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\CampaignIterator',
+            $result
+        );
+
+        $this->assertAttributeSame($expectedFilters, 'filters', $result);
+    }
+
+    /**
+     * @return array
+     */
+    public function getCampaignsDataProvider()
+    {
+        return [
+            [
+                'status' => null,
+                'usesSegment' => null,
+                'filters' => [],
+            ],
+            [
+                'status' => Campaign::STATUS_SENT,
+                'usesSegment' => null,
+                'filters' => [
+                    'status' => Campaign::STATUS_SENT
+                ],
+            ],
+            [
+                'status' => null,
+                'usesSegment' => true,
+                'filters' => [
+                    'uses_segment' => true
+                ],
+            ],
+            [
+                'status' => Campaign::STATUS_SENT,
+                'usesSegment' => true,
+                'filters' => [
+                    'status' => Campaign::STATUS_SENT,
+                    'uses_segment' => true
+                ],
+            ],
+        ];
     }
 
     public function testGetMembersToSync()

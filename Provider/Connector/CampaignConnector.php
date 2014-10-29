@@ -1,9 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider;
+namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
+use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 
 class CampaignConnector extends AbstractMailChimpConnector implements TwoWaySyncConnectorInterface, ConnectorInterface
 {
@@ -48,7 +49,7 @@ class CampaignConnector extends AbstractMailChimpConnector implements TwoWaySync
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getCampaigns();
+        return $this->transport->getCampaigns(Campaign::STATUS_SENT, true);
     }
 
     /**

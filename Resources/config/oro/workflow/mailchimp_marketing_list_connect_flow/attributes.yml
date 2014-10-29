@@ -1,0 +1,21 @@
+workflows:
+    mailchimp_marketing_list_connect_flow:
+        attributes:
+            static_segment:
+                label: orocrm.mailchimp.staticsegment.entity_label
+                type: entity
+                options:
+                    class: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
+            mailchimp_integration:
+                label: orocrm.mailchimp.emailcampaign.integration.label
+                type: entity
+                options:
+                    class: Oro\Bundle\IntegrationBundle\Entity\Channel
+            mailchimp_list:
+                label: orocrm.mailchimp.subscriberslist.entity_label
+                type: entity
+                options:
+                    class: OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList
+            segment_name:
+                label: orocrm.mailchimp.workflow.segment_name
+                type: string

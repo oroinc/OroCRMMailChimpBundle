@@ -4,12 +4,15 @@ namespace OroCRM\Bundle\MailChimpBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
 use Oro\Bundle\CronBundle\Command\CronCommandInterface;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SegmentRepository;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
 
 class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCommandInterface
 {
@@ -27,7 +30,14 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
     protected function configure()
     {
         $this
-            ->setName('oro:cron:mailchimp:sync-segment');
+            ->setName('oro:cron:mailchimp:sync-segment')
+            ->setDescription('Synchronize static segments with MailChimp')
+            ->addOption(
+                'segments',
+                null,
+                InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+                'MailChimp static Segments to sync'
+            );
     }
 
     /**
@@ -35,25 +45,47 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $iterator = $this->getSegmentRepository()->getSegmentsWithDynamicMarketingList();
+        $segments = $input->getOption('segments');
+        /** @var StaticSegment[] $iterator */
+        $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsWithDynamicMarketingList($segments);
         $jobExecutor = $this->getJobExecutor();
 
         foreach ($iterator as $segment) {
-            $jobExecutor->executeJob(
+            $jobOptions = [ProcessorRegistry::TYPE_IMPORT => [StaticSegmentAwareInterface::OPTION_SEGMENT => $segment]];
+
+            $output->write(sprintf('Segment #%s Members: ', $segment->getId()));
+            $jobResult = $jobExecutor->executeJob(
                 ProcessorRegistry::TYPE_IMPORT,
                 'mailchimp_marketing_list_subscribe',
-                ['import' => ['segment' => $segment]]
+                $jobOptions
             );
+            $output->writeln($jobResult->isSuccessful() ? 'Success' : 'Failed');
+
+            $output->write(sprintf('Segment #%s Members Add State: ', $segment->getId()));
+            $jobResult = $jobExecutor->executeJob(
+                ProcessorRegistry::TYPE_IMPORT,
+                'mailchimp_static_segment_member_add_state',
+                $jobOptions
+            );
+            $output->writeln($jobResult->isSuccessful() ? 'Success' : 'Failed');
+
+            $output->write(sprintf('Segment #%s Members Remove State: ', $segment->getId()));
+            $jobResult = $jobExecutor->executeJob(
+                ProcessorRegistry::TYPE_IMPORT,
+                'mailchimp_static_segment_member_remove_state',
+                $jobOptions
+            );
+            $output->writeln($jobResult->isSuccessful() ? 'Success' : 'Failed');
         }
     }
 
     /**
-     * @return SegmentRepository
+     * @return StaticSegmentRepository
      */
-    protected function getSegmentRepository()
+    protected function getStaticSegmentRepository()
     {
         return $this->getContainer()->get('doctrine')->getRepository(
-            $this->getContainer()->getParameter('orocrm_mailchimp.entity.segment.class')
+            $this->getContainer()->getParameter('orocrm_mailchimp.entity.static_segment.class')
         );
     }
 

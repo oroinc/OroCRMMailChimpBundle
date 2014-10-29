@@ -3,7 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 
@@ -17,7 +17,7 @@ class CampaignImportStrategy extends AbstractImportStrategy
     {
         $this->assertEnvironment($entity);
 
-        $this->cachedEntities = array();
+        $this->cachedEntities = [];
         $entity = $this->beforeProcessEntity($entity);
 
         $existingEntity = $this->findExistingEntity($entity);
@@ -57,21 +57,8 @@ class CampaignImportStrategy extends AbstractImportStrategy
             $entity,
             $existingEntity,
             $itemData,
-            ['channel', 'template', 'subscribersList', 'emailCampaign']
+            ['channel', 'template', 'subscribersList', 'staticSegment', 'emailCampaign']
         );
-
-        // Update related Email Campaign
-        $existingEmailCampaign = $existingEntity->getEmailCampaign();
-        if ($existingEmailCampaign) {
-            $this->importExistingEntity(
-                $entity->getEmailCampaign(),
-                $existingEmailCampaign,
-                $itemData['emailCampaign'],
-                ['transportSettings']
-            );
-        } else {
-            $existingEntity->setEmailCampaign($entity->getEmailCampaign());
-        }
 
         // Replace Template if required
         /** @var Template $template */
@@ -91,32 +78,15 @@ class CampaignImportStrategy extends AbstractImportStrategy
         );
         $existingEntity->setSubscribersList($subscribersList);
 
+        // Replace StaticSegment if required
+        /** @var StaticSegment $staticSegment */
+        $staticSegment = $this->updateRelatedEntity(
+            $existingEntity->getStaticSegment(),
+            $entity->getStaticSegment(),
+            $itemData['staticSegment']
+        );
+        $existingEntity->setStaticSegment($staticSegment);
+
         return $existingEntity;
-    }
-
-    /**
-     * Set EmailCampaign owner.
-     *
-     * @param Campaign $entity
-     * @return Campaign
-     */
-    protected function afterProcessEntity($entity)
-    {
-        $this->ownerHelper->populateChannelOwner($entity->getEmailCampaign(), $entity->getChannel());
-
-        // Update related Email Campaign transport settings
-        $emailCampaign = $entity->getEmailCampaign();
-        if ($emailCampaign) {
-            $transportSettings = $emailCampaign->getTransportSettings();
-            if (!$transportSettings) {
-                $transportSettings = new MailChimpTransportSettings();
-                $emailCampaign->setTransportSettings($transportSettings);
-                $this->processEntity($transportSettings, false, true);
-            }
-            $transportSettings->setChannel($entity->getChannel());
-            $transportSettings->setTemplate($entity->getTemplate());
-        }
-
-        return parent::afterProcessEntity($entity);
     }
 }
