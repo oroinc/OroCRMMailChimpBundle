@@ -5,7 +5,9 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 
-class StaticSegmentConnector extends AbstractMailChimpConnector implements TwoWaySyncConnectorInterface, ConnectorInterface
+class StaticSegmentConnector extends AbstractMailChimpConnector implements
+    TwoWaySyncConnectorInterface,
+    ConnectorInterface
 {
     const TYPE = 'staticSegment';
     const JOB_IMPORT = 'mailchimp_static_segment_import';

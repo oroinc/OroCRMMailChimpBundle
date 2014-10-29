@@ -323,6 +323,10 @@ services:
             - [setOwnerHelper, [@oro_integration.helper.default_owner_helper]]
             - [setLogger, [@oro_integration.logger.strategy]]
 
+    orocrm_mailchimp.importexport.strategy.static_segment_member_add_state:
+        parent: oro_importexport.strategy.configurable_add_or_replace
+
+
     orocrm_mailchimp.importexport.strategy.static_segment_member_remove_state:
         parent: oro_importexport.strategy.configurable_add_or_replace
 
@@ -409,6 +413,8 @@ services:
     orocrm_mailchimp.importexport.processor.static_segment_member_add_state:
         class: %orocrm_mailchimp.importexport.processor.static_segment_member_add_state.class%
         parent: orocrm_mailchimp.importexport.processor.import_abstract
+        calls:
+            - [setStrategy, [@orocrm_mailchimp.importexport.strategy.static_segment_member_add_state]]
         tags:
             - { name: oro_importexport.processor, type: import, entity: %orocrm_mailchimp.entity.static_segment_member.class%, alias: orocrm_mailchimp.static_segment_member_add_state }
 
