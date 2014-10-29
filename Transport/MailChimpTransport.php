@@ -12,11 +12,6 @@ class MailChimpTransport implements TransportInterface, VisibilityTransportInter
     const NAME = 'mailchimp';
 
     /**
-     * @var bool
-     */
-    protected $visibility = false;
-
-    /**
      * {@inheritdoc}
      */
     public function send(EmailCampaign $campaign, $entity, array $from, array $to)
@@ -61,14 +56,6 @@ class MailChimpTransport implements TransportInterface, VisibilityTransportInter
      */
     public function isVisibleInForm()
     {
-        return $this->visibility;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setVisibility($visible)
-    {
-        $this->visibility = $visible;
+        return false;
     }
 }
