@@ -3,10 +3,9 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
-use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 
-class CampaignConnector extends AbstractMailChimpConnector implements TwoWaySyncConnectorInterface, ConnectorInterface
+class CampaignConnector extends AbstractMailChimpConnector implements ConnectorInterface
 {
     const TYPE = 'campaign';
     const JOB_IMPORT = 'mailchimp_campaign_import';
@@ -50,13 +49,5 @@ class CampaignConnector extends AbstractMailChimpConnector implements TwoWaySync
     protected function getConnectorSource()
     {
         return $this->transport->getCampaigns(Campaign::STATUS_SENT, true);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getExportJobName()
-    {
-        throw new \BadMethodCallException();
     }
 }

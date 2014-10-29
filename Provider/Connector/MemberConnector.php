@@ -3,9 +3,8 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
-use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 
-class MemberConnector extends AbstractMailChimpConnector implements TwoWaySyncConnectorInterface, ConnectorInterface
+class MemberConnector extends AbstractMailChimpConnector implements ConnectorInterface
 {
     const TYPE = 'member';
     const JOB_IMPORT = 'mailchimp_member_import';
@@ -49,13 +48,5 @@ class MemberConnector extends AbstractMailChimpConnector implements TwoWaySyncCo
     protected function getConnectorSource()
     {
         return $this->transport->getMembersToSync($this->getLastSyncDate());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getExportJobName()
-    {
-        throw new \BadMethodCallException();
     }
 }
