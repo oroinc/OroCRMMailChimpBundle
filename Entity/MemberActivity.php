@@ -78,6 +78,13 @@ class MemberActivity
     /**
      * @var string
      *
+     * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     */
+    protected $email;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="action", type="string", length=25, nullable=false)
      */
     protected $action;
@@ -164,6 +171,25 @@ class MemberActivity
     public function setMember($member)
     {
         $this->member = $member;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     * @return MemberActivity
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
 
         return $this;
     }

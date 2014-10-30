@@ -78,6 +78,20 @@ connector:
                     parameters:
                         batch_size: 25
 
+        mailchimp_member_activity_import:
+            title: orocrm.mailchimp.connector.member_activity.job
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.connector.member_activity
+                        processor: orocrm_mailchimp.importexport.processor.member_activity
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25
+
         mailchimp_static_segment_import:
             title: orocrm.mailchimp.connector.static_segment.job
             type: import
