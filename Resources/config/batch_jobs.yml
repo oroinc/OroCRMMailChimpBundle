@@ -146,4 +146,4 @@ connector:
                         processor: orocrm_mailchimp.importexport.processor.export_member
                         writer:    orocrm_mailchimp.importexport.writer.member
                     parameters:
-                        batch_size: 10000
+                        batch_size: 50

@@ -8,7 +8,7 @@ use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 
-class MemberExportIterator extends IteratorBasedReader
+class MemberExportReader extends IteratorBasedReader
 {
     /**
      * @var string
@@ -41,6 +41,8 @@ class MemberExportIterator extends IteratorBasedReader
      */
     protected function initializeFromContext(ContextInterface $context)
     {
+        /** @todo: add iterator based on AbstractSubordinateIterator */
+
         if (!$this->getSourceIterator()) {
             $qb = $this->doctrineHelper
                 ->getEntityManager($this->memberClassName)
@@ -49,8 +51,10 @@ class MemberExportIterator extends IteratorBasedReader
 
             $qb
                 ->select('mmb')
+                ->join('mmb.subscribersList', 'subscribersList')
                 ->where($qb->expr()->eq('mmb.status', ':status'))
-                ->setParameter('status', Member::STATUS_UNSUBSCRIBED);
+                ->setParameter('status', Member::STATUS_UNSUBSCRIBED)
+                ->orderBy('subscribersList.originId');
 
             $iterator = new BufferedQueryResultIterator($qb);
 

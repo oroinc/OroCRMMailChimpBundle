@@ -153,6 +153,18 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/batch-subscribe.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function batchSubscribe(array $args)
+    {
+        return $this->client->batchSubscribe($args);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getLabel()

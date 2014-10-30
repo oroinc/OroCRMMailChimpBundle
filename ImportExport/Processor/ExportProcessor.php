@@ -31,11 +31,11 @@ class ExportProcessor extends BaseExportProcessor implements StepExecutionAwareI
         $this->setImportExportContext($this->contextRegistry->getByStepExecution($stepExecution));
     }
 
-//    /**
-//     * {@inheritdoc}
-//     */
-//    public function process($item)
-//    {
-//
-//    }
+    /**
+     * {@inheritdoc}
+     */
+    public function process($item)
+    {
+        return $item;
+    }
 }
