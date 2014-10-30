@@ -95,6 +95,12 @@ parameters:
     # EmailCampaign Voter
     orocrm_mailchimp.email_campaign.security.acl.voter.entity.class: OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter
 
+    # Placeholder filter
+    orocrm_mailchimp.placeholder.filter.class: OroCRM\Bundle\MailChimpBundle\Placeholder\PlaceholderFilter
+
+    # Twig Extensions
+    orocrm_mailchimp.twig.extension.class: OroCRM\Bundle\MailChimpBundle\Twig\MailChimpExtension
+
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -590,3 +596,14 @@ services:
             - @oro_entity.doctrine_helper
         tags:
             - { name: security.voter, priority: 500 }
+
+    orocrm_mailchimp.placeholder.filter:
+        class: %orocrm_mailchimp.placeholder.filter.class%
+
+    # Twig extensions
+    orocrm_mailchimp.twig.extension:
+        class: %orocrm_mailchimp.twig.extension.class%
+        arguments:
+            - @doctrine
+        tags:
+            - { name: twig.extension }

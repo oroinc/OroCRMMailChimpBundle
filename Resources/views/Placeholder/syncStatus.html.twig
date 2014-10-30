@@ -1,0 +1,53 @@
+<div class="responsive-cell">
+    <div class="box-type1">
+        <div class="title">
+            <span class="widget-title">{{ "Sync Status"|trans }}</span>
+        </div>
+
+        <div class="row-fluid">
+            {% set static_segments = orocrm_mailchimp_email_campaign(entity) %}
+            Found: {{ static_segments|length }} <br />
+            <div class="responsive-block">
+            {% for static_segment in orocrm_mailchimp_email_campaign(entity) %}
+                <div class="control-group">
+                    <label class="control-label">ID</label>
+                    <div class="controls">
+                        <div class="control-label">{{ static_segment.id }}</div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">MailChimp List</label>
+                    <div class="controls">
+                        <div class="control-label">{{ static_segment.subscribersList.name }}</div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Segment Name</label>
+                    <div class="controls">
+                        <div class="control-label">{{ static_segment.name }}</div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Last sync</label>
+                    <div class="controls">
+                        <div class="control-label">
+                            {% if static_segment.lastSynced is null %}
+                                -
+                            {% else %}
+                                {{ static_segment.lastSynced }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Sync status</label>
+                    <div class="controls">
+                        <div class="control-label">{{ static_segment.syncStatus }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
