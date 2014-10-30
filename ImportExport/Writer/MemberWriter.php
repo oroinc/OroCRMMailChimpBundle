@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Psr\Log\LoggerInterface;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
@@ -13,37 +15,64 @@ class MemberWriter extends AbstractExportWriter
     protected $transport;
 
     /**
-     * @param Member[] $items
-     *
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function write(array $items)
     {
-        $itemsByLists = [];
+        /** @var Member $item */
+        $item = reset($items);
+        $this->transport->init($item->getChannel()->getTransport());
 
-        foreach ($items as $item) {
-            $itemsByLists[$item->getSubscribersList()->getOriginId()][] = $item;
-        }
+        $emails = array_map(
+            function (Member $member) {
+                return ['email' => ['email' => $member->getEmail()]];
+            },
+            $items
+        );
 
-        foreach ($itemsByLists as $listId => $items) {
-            $item = reset($items);
-            $this->transport->init($item->getChannel()->getTransport());
+        $subscribersList = $item->getSubscribersList();
+        $originId = $subscribersList->getOriginId();
 
-            $emails = array_map(
-                function (Member $member) {
-                    return ['email' => ['email' => $member->getEmail()]];
-                },
-                $items
+        $response = $this->transport->batchSubscribe(
+            [
+                'id' => $originId,
+                'batch' => $emails,
+                'double_optin' => false
+            ]
+        );
+
+        if ($this->logger && is_array($response)) {
+            $this->logger->info(
+                sprintf(
+                    'List #%s [origin_id=%s]: [%s] add, [%s] update, [%s] error',
+                    $subscribersList->getId(),
+                    $originId,
+                    $response['add_count'],
+                    $response['update_count'],
+                    $response['error_count']
+                )
             );
 
-            /** @todo: add result logging */
-            $this->transport->batchSubscribe(
-                [
-                    'id' => $listId,
-                    'batch' => $emails,
-                    'double_optin' => false
-                ]
-            );
+            if ($response['errors']) {
+                foreach ($response['errors'] as $error) {
+                    $this->logger->warning(
+                        sprintf('[Error #%s] %s', $error['code'], $error['error'])
+                    );
+                }
+            }
         }
     }
 }

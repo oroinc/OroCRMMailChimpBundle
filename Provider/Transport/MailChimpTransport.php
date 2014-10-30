@@ -158,9 +158,16 @@ class MailChimpTransport implements TransportInterface
             ->getRepository('OroCRMMailChimpBundle:SubscribersList')
             ->getAllSubscribersListIterator();
 
-        return new StaticSegmentListIterator($subscribersLists, $this->client);
+        $iterator = new StaticSegmentListIterator($subscribersLists);
+        $iterator->setClient($this->client);
+
+        return $iterator;
     }
 
+    /**
+     * @param \DateTime $since
+     * @return MemberActivityIterator
+     */
     public function getMemberActivitiesToSync(\DateTime $since = null)
     {
         $sentCampaigns = $this->managerRegistry

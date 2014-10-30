@@ -154,10 +154,24 @@ connector:
             steps:
                 export:
                     title: export
-                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.member_export
                         processor: orocrm_mailchimp.importexport.processor.export_member
                         writer:    orocrm_mailchimp.importexport.writer.member
                     parameters:
-                        batch_size: 50
+                        batch_size: 2000
+
+        mailchimp_static_segment_export:
+            title: orocrm.mailchimp.job.member.static_segment
+            type:  export
+            steps:
+                export:
+                    title: export
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.static_segment_export
+                        processor: orocrm_mailchimp.importexport.processor.export_static_segment
+                        writer:    orocrm_mailchimp.importexport.writer.static_segment
+                    parameters:
+                        batch_size: 2000

@@ -63,7 +63,6 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-
         $contactInformationFieldsValues = $this->getContactInformationFieldsValues($importedRecord);
 
         $staticSegment = $this->getStaticSegment();

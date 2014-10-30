@@ -7,16 +7,16 @@ class StaticSegmentIterator extends AbstractMailChimpIterator
     const SUBSCRIBERS_LIST_ID = 'subscribers_list_id';
 
     /**
-     * @var int
+     * @var string
      */
-    protected $listId;
+    protected $subscriberListId;
 
     /**
-     * @param int $listId
+     * @param string $listId
      */
-    public function setListId($listId)
+    public function setSubscriberListId($listId)
     {
-        $this->listId = $listId;
+        $this->subscriberListId = $listId;
     }
 
     /**
@@ -33,7 +33,7 @@ class StaticSegmentIterator extends AbstractMailChimpIterator
 
             $this->data = array_map(
                 function ($item) {
-                    $item[self::SUBSCRIBERS_LIST_ID] = $this->listId;
+                    $item[self::SUBSCRIBERS_LIST_ID] = $this->subscriberListId;
 
                     return $item;
                 },
@@ -53,7 +53,7 @@ class StaticSegmentIterator extends AbstractMailChimpIterator
             [
                 'start' => (int)$this->offset / $this->batchSize,
                 'limit' => $this->batchSize,
-                'id' => $this->listId
+                'id' => $this->subscriberListId
             ]
         );
 
