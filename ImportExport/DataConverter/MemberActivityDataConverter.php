@@ -12,7 +12,6 @@ class MemberActivityDataConverter extends IntegrationAwareDataConverter
         return [
             'timestamp' => 'activityTime',
             'campaign_id' => 'campaign:id',
-            'email' => 'member:email'
         ];
     }
 
@@ -22,7 +21,7 @@ class MemberActivityDataConverter extends IntegrationAwareDataConverter
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
         $channel = $this->context->getOption('channel');
-        $importedRecord['member:channel:id'] = $channel;
+        $importedRecord['member:email'] = $importedRecord['email'];
 
         return parent::convertToImportFormat($importedRecord, $skipNullValues);
     }

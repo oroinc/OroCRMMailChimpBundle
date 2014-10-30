@@ -367,6 +367,7 @@ services:
             - @oro_importexport.strategy.import.helper
             - @oro_importexport.field.field_helper
             - @oro_importexport.field.database_helper
+            - @oro_entity.doctrine_helper
         calls:
             - [setOwnerHelper, [@oro_integration.helper.default_owner_helper]]
             - [setLogger, [@oro_integration.logger.strategy]]

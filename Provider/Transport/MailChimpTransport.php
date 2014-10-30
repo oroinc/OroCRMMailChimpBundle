@@ -168,7 +168,7 @@ class MailChimpTransport implements TransportInterface
             ->getSentCampaigns();
 
         $parameters = ['include_empty' => true];
-        if (false && $since) {
+        if ($since) {
             $parameters['since'] = $this->getSinceForApi($since);
         }
 

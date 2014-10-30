@@ -60,7 +60,7 @@ class MemberActivity
     protected $campaign;
 
     /**
-     * @var Channel
+     * @var Member
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Member")
      * @ORM\JoinColumn(name="member_id", referencedColumnName="id", onDelete="CASCADE")
@@ -157,7 +157,7 @@ class MemberActivity
     }
 
     /**
-     * @return Channel
+     * @return Member
      */
     public function getMember()
     {
@@ -165,7 +165,7 @@ class MemberActivity
     }
 
     /**
-     * @param Channel $member
+     * @param Member $member
      * @return MemberActivity
      */
     public function setMember($member)

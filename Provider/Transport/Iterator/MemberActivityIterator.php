@@ -71,12 +71,8 @@ class MemberActivityIterator extends AbstractSubordinateIterator
             $this->createExportIterator(MailChimpClient::EXPORT_CAMPAIGN_SUBSCRIBER_ACTIVITY, $parameters),
             function (&$current) use ($campaign, $parameters) {
                 $current[self::CAMPAIGN_KEY] = $campaign->getId();
-                if (array_key_exists(self::ACTION_KEY, $current)) {
+                if (!array_key_exists(self::ACTION_KEY, $current)) {
                     $current[self::ACTION_KEY] = self::SEND_ACTION;
-                }
-
-                if (!array_key_exists(self::TIMESTAMP_KEY, $current)) {
-                    $current[self::TIMESTAMP_KEY] = $campaign->getSendTime();
                 }
 
                 return true;
