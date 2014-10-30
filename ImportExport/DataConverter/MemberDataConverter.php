@@ -12,6 +12,8 @@ class MemberDataConverter extends IntegrationAwareDataConverter
         return [
             'status' => 'status',
             'list_id' => 'subscribersList:originId',
+            'channel_id' => 'channel:id',
+            'subscribersList_id' => 'subscribersList:id',
             'MEMBER_RATING' => 'memberRating',
             'OPTIN_TIME' => 'optedInAt',
             'OPTIN_IP' => 'optedInIpAddress',
@@ -36,8 +38,10 @@ class MemberDataConverter extends IntegrationAwareDataConverter
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        $channel = $this->context->getOption('channel');
-        $importedRecord['subscribersList:channel:id'] = $channel;
+        if ($this->context->hasOption('channel')) {
+            $channel = $this->context->getOption('channel');
+            $importedRecord['subscribersList:channel:id'] = $channel;
+        }
 
         $mergeVarValues = [];
 

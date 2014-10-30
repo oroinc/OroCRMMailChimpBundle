@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
 
+use Doctrine\ORM\AbstractQuery;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 
 class MarketingListSubscribeReader extends AbstractMarketingListReader
@@ -15,6 +16,9 @@ class MarketingListSubscribeReader extends AbstractMarketingListReader
 
         $qb->andWhere($qb->expr()->isNull(self::MEMBER_ALIAS));
 
-        return new BufferedQueryResultIterator($qb);
+        $iterator = new BufferedQueryResultIterator($qb);
+        $iterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
+
+        return $iterator;
     }
 }

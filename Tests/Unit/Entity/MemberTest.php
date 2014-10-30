@@ -2,9 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 
 class MemberTest extends \PHPUnit_Framework_TestCase
@@ -65,7 +62,6 @@ class MemberTest extends \PHPUnit_Framework_TestCase
             ['createdAt', new \DateTime()],
             ['updatedAt', new \DateTime()],
             ['updatedAt', null],
-            ['marketingListItem', $this->getMock('OroCRM\\Bundle\\MarketingListBundle\\Entity\\MarketingListItem')],
             ['subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
             ['mergeVarValues', ['Email Address' => 'test@example.com']],
             ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
@@ -96,20 +92,5 @@ class MemberTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->target->getUpdatedAt());
         $this->target->preUpdate();
         $this->assertInstanceOf('\DateTime', $this->target->getUpdatedAt());
-    }
-
-    public function testSegments()
-    {
-        $this->assertEquals(new ArrayCollection(), $this->target->getStaticSegments());
-        $segment = new StaticSegment();
-
-        $this->target->addStaticSegment($segment);
-        $this->assertEquals(new ArrayCollection([$segment]), $this->target->getStaticSegments());
-
-        $this->target->addStaticSegment($segment);
-        $this->assertEquals(new ArrayCollection([$segment]), $this->target->getStaticSegments());
-
-        $this->target->removeStaticSegment($segment);
-        $this->assertEmpty($this->target->getStaticSegments());
     }
 }

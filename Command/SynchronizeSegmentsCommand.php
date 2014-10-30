@@ -51,20 +51,23 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
         $jobExecutor = $this->getJobExecutor();
 
         $jobs = [
-            'mailchimp_marketing_list_subscribe' => 'Subscribe Members',
-            'mailchimp_static_segment_member_add_state' => 'Add Segment Members',
-            'mailchimp_static_segment_member_remove_state' => 'Remove Segment Members',
+//            'mailchimp_marketing_list_subscribe' => ProcessorRegistry::TYPE_IMPORT,
+//            'mailchimp_static_segment_member_add_state' => ProcessorRegistry::TYPE_IMPORT,
+//            'mailchimp_static_segment_member_remove_state' => ProcessorRegistry::TYPE_IMPORT,
+            'mailchimp_member_export' => ProcessorRegistry::TYPE_EXPORT,
         ];
 
         foreach ($iterator as $segment) {
-            $jobOptions = [ProcessorRegistry::TYPE_IMPORT => [StaticSegmentAwareInterface::OPTION_SEGMENT => $segment]];
-
-            $output->writeln(sprintf('<info>Segment #%s: </info>', $segment->getId()));
-            foreach ($jobs as $job => $message) {
-                $jobResult = $jobExecutor->executeJob(ProcessorRegistry::TYPE_IMPORT, $job, $jobOptions);
-                $output->writeln(
-                    sprintf('    <info>%s: %s</info>', $message, $jobResult->isSuccessful() ? 'Success' : 'Failed')
+            $output->writeln(sprintf('<info>Process Static Segment #%s</info>', $segment->getId()));
+            foreach ($jobs as $job => $type) {
+                $jobResult = $jobExecutor->executeJob(
+                    $type,
+                    $job,
+                    [$type => [StaticSegmentAwareInterface::OPTION_SEGMENT => $segment]]
                 );
+                if (!$jobResult->isSuccessful()) {
+                    $output->writeln($jobResult->getFailureExceptions());
+                }
             }
         }
     }

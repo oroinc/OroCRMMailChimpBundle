@@ -70,21 +70,6 @@ class SegmentTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    public function testSegments()
-    {
-        $this->assertEquals(new ArrayCollection(), $this->entity->getMembers());
-        $member = new Member();
-
-        $this->entity->addMember($member);
-        $this->assertEquals(new ArrayCollection([$member]), $this->entity->getMembers());
-
-        $this->entity->addMember($member);
-        $this->assertEquals(new ArrayCollection([$member]), $this->entity->getMembers());
-
-        $this->entity->removeMember($member);
-        $this->assertEmpty($this->entity->getMembers());
-    }
-
     public function testPrePersist()
     {
         $this->assertNull($this->entity->getCreatedAt());

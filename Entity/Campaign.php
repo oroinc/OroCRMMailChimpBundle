@@ -17,7 +17,7 @@ use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository")
  * @ORM\Table(
  *      name="orocrm_mailchimp_campaign",
  *      uniqueConstraints={

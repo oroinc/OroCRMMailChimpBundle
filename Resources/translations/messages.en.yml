@@ -23,6 +23,9 @@ orocrm:
             staticSegment:
                 label: Static Segment Connector
                 job: Import statics segments from MailChimp
+            member_activity:
+                label: Member Activity Connector
+                job: Import Member Activities from MailChimp
 
         mailchimptransport:
             entity_label: MailChimp Transport

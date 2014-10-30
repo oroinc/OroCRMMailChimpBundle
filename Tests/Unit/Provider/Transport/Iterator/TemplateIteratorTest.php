@@ -46,18 +46,7 @@ class TemplateIteratorTest extends \PHPUnit_Framework_TestCase
 
         $this->client->expects($this->once())
             ->method('getTemplates')
-            ->with(
-                [
-                    'types' => [
-                        Template::TYPE_USER => true,
-                        Template::TYPE_GALLERY => true,
-                        Template::TYPE_BASE => true
-                    ],
-                    'filters' => [
-                        'include_drag_and_drop' => true
-                    ]
-                ]
-            )
+            ->with($this->isType('array'))
             ->will($this->returnValue($rawTemplates));
 
         $actual = [];

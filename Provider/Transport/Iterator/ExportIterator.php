@@ -3,7 +3,6 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Guzzle\Http\EntityBodyInterface;
-
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class ExportIterator implements \Iterator
@@ -44,15 +43,26 @@ class ExportIterator implements \Iterator
     protected $offset = -1;
 
     /**
+     * @var bool
+     */
+    protected $useFirstLineAsHeader;
+
+    /**
      * @param MailChimpClient $client
      * @param string $methodName
      * @param array $parameters
+     * @param bool $useFirstLineAsHeader
      */
-    public function __construct(MailChimpClient $client, $methodName, array $parameters = [])
-    {
+    public function __construct(
+        MailChimpClient $client,
+        $methodName,
+        array $parameters = [],
+        $useFirstLineAsHeader = true
+    ) {
         $this->client = $client;
         $this->methodName = $methodName;
         $this->parameters = $parameters;
+        $this->useFirstLineAsHeader = $useFirstLineAsHeader;
     }
 
     /**
@@ -115,19 +125,45 @@ class ExportIterator implements \Iterator
             $response = $this->client->export($this->methodName, $this->parameters);
             $this->body = $response->getBody();
             $this->body->seek(0);
-            $line = $this->body->readLine();
-            if (is_string($line)) {
-                $this->header = json_decode($line);
-            } else {
-                return null;
+
+            if ($this->useFirstLineAsHeader) {
+                $line = $this->getLineData();
+                if ($line) {
+                    $this->header = $line;
+                }
             }
         }
 
+        return $this->getResponseItem();
+    }
+
+    /**
+     * @return array|null
+     */
+    protected function getLineData()
+    {
         $line = $this->body->readLine();
         if (is_string($line)) {
-            return array_combine($this->header, json_decode($line));
+            return json_decode($line, JSON_OBJECT_AS_ARRAY);
         } else {
             return null;
         }
+    }
+
+    /**
+     * @return array|null
+     */
+    protected function getResponseItem()
+    {
+        $line = $this->getLineData();
+        if (!$line) {
+            return null;
+        }
+
+        if ($this->useFirstLineAsHeader) {
+            $line = array_combine($this->header, $line);
+        }
+
+        return $line;
     }
 }

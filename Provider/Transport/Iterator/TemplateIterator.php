@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class TemplateIterator implements \Iterator
@@ -13,16 +12,23 @@ class TemplateIterator implements \Iterator
     protected $client;
 
     /**
+     * @var array
+     */
+    protected $parameters;
+
+    /**
      * @var \Iterator
      */
     protected $iterator;
 
     /**
      * @param MailChimpClient $client
+     * @param array $parameters
      */
-    public function __construct(MailChimpClient $client)
+    public function __construct(MailChimpClient $client, array $parameters = [])
     {
         $this->client = $client;
+        $this->parameters = $parameters;
     }
 
     /**
@@ -30,8 +36,6 @@ class TemplateIterator implements \Iterator
      */
     public function current()
     {
-        $this->ensureIterator();
-
         return $this->iterator->current();
     }
 
@@ -40,8 +44,6 @@ class TemplateIterator implements \Iterator
      */
     public function next()
     {
-        $this->ensureIterator();
-
         $this->iterator->next();
     }
 
@@ -50,8 +52,6 @@ class TemplateIterator implements \Iterator
      */
     public function key()
     {
-        $this->ensureIterator();
-
         return $this->iterator->key();
     }
 
@@ -60,8 +60,6 @@ class TemplateIterator implements \Iterator
      */
     public function valid()
     {
-        $this->ensureIterator();
-
         return $this->iterator->valid();
     }
 
@@ -70,50 +68,29 @@ class TemplateIterator implements \Iterator
      */
     public function rewind()
     {
-        $this->ensureIterator();
-
+        if (!$this->iterator) {
+            $this->initIterator();
+        }
         $this->iterator->rewind();
     }
-
 
     /**
      * {@inheritdoc}
      */
     public function initIterator()
     {
-        $templatesList = (array)$this->client->getTemplates(
-            [
-                'types' => [
-                    Template::TYPE_USER => true,
-                    Template::TYPE_GALLERY => true,
-                    Template::TYPE_BASE => true
-                ],
-                'filters' => [
-                    'include_drag_and_drop' => true
-                ]
-            ]
-        );
+        $templatesList = (array)$this->client->getTemplates($this->parameters);
 
-        $iterator = new \ArrayIterator();
-        foreach ($templatesList as $type => $templates) {
-            foreach ($templates as $template) {
-                $template['type'] = $type;
-                $template['origin_id'] = $template['id'];
-                unset($template['id']);
-                $iterator->append($template);
+        $this->iterator = new \CallbackFilterIterator(
+            new FlattenIterator($templatesList, 'type', false),
+            function (&$current) {
+                if (is_array($current)) {
+                    $current['origin_id'] = $current['id'];
+                    unset($current['id']);
+                }
+
+                return true;
             }
-        }
-
-        $this->iterator = $iterator;
-    }
-
-    /**
-     * Check iterator existence.
-     */
-    private function ensureIterator()
-    {
-        if (!$this->iterator) {
-            $this->initIterator();
-        }
+        );
     }
 }

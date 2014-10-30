@@ -12,7 +12,6 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\LocaleBundle\Model\FirstNameInterface;
 use Oro\Bundle\LocaleBundle\Model\LastNameInterface;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListItem;
 
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/lists/member-info.php
@@ -275,14 +274,6 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @ORM\Column(name="merge_var_values", type="json_array", nullable=true)
      */
     protected $mergeVarValues;
-
-    /**
-     * @var MarketingListItem
-     *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MarketingListBundle\Entity\MarketingListItem", cascade={"persist"})
-     * @ORM\JoinColumn(name="marketing_list_item_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $marketingListItem;
 
     /**
      * @var SubscribersList
@@ -770,25 +761,6 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     public function setMergeVarValues(array $data = null)
     {
         $this->mergeVarValues = $data;
-
-        return $this;
-    }
-
-    /**
-     * @return MarketingListItem
-     */
-    public function getMarketingListItem()
-    {
-        return $this->marketingListItem;
-    }
-
-    /**
-     * @param MarketingListItem $marketingListItem
-     * @return Member
-     */
-    public function setMarketingListItem(MarketingListItem $marketingListItem = null)
-    {
-        $this->marketingListItem = $marketingListItem;
 
         return $this;
     }

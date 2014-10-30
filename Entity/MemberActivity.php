@@ -60,7 +60,7 @@ class MemberActivity
     protected $campaign;
 
     /**
-     * @var Channel
+     * @var Member
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Member")
      * @ORM\JoinColumn(name="member_id", referencedColumnName="id", onDelete="CASCADE")
@@ -74,6 +74,13 @@ class MemberActivity
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $owner;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     */
+    protected $email;
 
     /**
      * @var string
@@ -150,7 +157,7 @@ class MemberActivity
     }
 
     /**
-     * @return Channel
+     * @return Member
      */
     public function getMember()
     {
@@ -158,12 +165,31 @@ class MemberActivity
     }
 
     /**
-     * @param Channel $member
+     * @param Member $member
      * @return MemberActivity
      */
     public function setMember($member)
     {
         $this->member = $member;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     * @return MemberActivity
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
 
         return $this;
     }

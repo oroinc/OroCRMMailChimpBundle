@@ -8,9 +8,11 @@ use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberActivityIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentListIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
@@ -91,6 +93,7 @@ class MailChimpTransport implements TransportInterface
         if (null !== $usesSegment) {
             $filters['uses_segment'] = (bool)$usesSegment;
         }
+
         return new CampaignIterator($this->client, $filters);
     }
 
@@ -119,11 +122,7 @@ class MailChimpTransport implements TransportInterface
         $parameters = ['status' => [Member::STATUS_SUBSCRIBED, Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED]];
 
         if ($since) {
-            $since = clone $since;
-            $since->sub(new \DateInterval('PT1S'));
-            $since->setTimezone(new \DateTimeZone('UTC'));
-
-            $parameters['since'] = $since->format(self::DATETIME_FORMAT);
+            $parameters['since'] = $this->getSinceForApi($since);
         }
 
         return new MemberIterator($subscribersLists, $this->client, $parameters);
@@ -137,7 +136,17 @@ class MailChimpTransport implements TransportInterface
      */
     public function getTemplates()
     {
-        return new TemplateIterator($this->client);
+        $parameters = [
+            'types' => [
+                Template::TYPE_USER => true,
+                Template::TYPE_GALLERY => true,
+                Template::TYPE_BASE => true
+            ],
+            'filters' => [
+                'include_drag_and_drop' => true
+            ]
+        ];
+        return new TemplateIterator($this->client, $parameters);
     }
 
     /**
@@ -150,6 +159,32 @@ class MailChimpTransport implements TransportInterface
             ->getAllSubscribersListIterator();
 
         return new StaticSegmentListIterator($subscribersLists, $this->client);
+    }
+
+    public function getMemberActivitiesToSync(\DateTime $since = null)
+    {
+        $sentCampaigns = $this->managerRegistry
+            ->getRepository('OroCRMMailChimpBundle:Campaign')
+            ->getSentCampaigns();
+
+        $parameters = ['include_empty' => true];
+        if ($since) {
+            $parameters['since'] = $this->getSinceForApi($since);
+        }
+
+        return new MemberActivityIterator($sentCampaigns, $this->client, $parameters);
+    }
+
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/batch-subscribe.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function batchSubscribe(array $args)
+    {
+        return $this->client->batchSubscribe($args);
     }
 
     /**
@@ -174,5 +209,18 @@ class MailChimpTransport implements TransportInterface
     public function getSettingsEntityFQCN()
     {
         return 'OroCRM\\Bundle\\MailChimpBundle\\Entity\\MailChimpTransport';
+    }
+
+    /**
+     * @param \DateTime $since
+     * @return string
+     */
+    protected function getSinceForApi(\DateTime $since)
+    {
+        $since = clone $since;
+        $since->sub(new \DateInterval('PT1S'));
+        $since->setTimezone(new \DateTimeZone('UTC'));
+
+        return $since->format(self::DATETIME_FORMAT);
     }
 }
