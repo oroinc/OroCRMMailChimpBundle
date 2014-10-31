@@ -3,7 +3,6 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
 
@@ -15,15 +14,14 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
     protected $memberClassName;
 
     /**
-     * @var DoctrineHelper
-     */
-    protected $doctrineHelper;
-
-    /**
      * @return bool
      */
     public function writeRequired()
     {
+        if (!$this->subordinateIterator) {
+            return false;
+        }
+
         return !$this->subordinateIterator->valid();
     }
 
@@ -33,14 +31,6 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
     public function setMemberClassName($memberClassName)
     {
         $this->memberClassName = $memberClassName;
-    }
-
-    /**
-     * @param DoctrineHelper $doctrineHelper
-     */
-    public function setDoctrineHelper(DoctrineHelper $doctrineHelper)
-    {
-        $this->doctrineHelper = $doctrineHelper;
     }
 
     /**
@@ -65,7 +55,8 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
                     'status' => Member::STATUS_UNSUBSCRIBED,
                     'originId' => $subscribersList->getOriginId()
                 ]
-            );
+            )
+            ->addOrderBy('subscribersList.id');
 
         return new BufferedQueryResultIterator($qb);
     }

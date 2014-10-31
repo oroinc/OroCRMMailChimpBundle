@@ -2,31 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
-use Psr\Log\LoggerInterface;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 class MemberWriter extends AbstractExportWriter
 {
-    /**
-     * @var MailChimpTransport
-     */
-    protected $transport;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
-    }
-
     /**
      * {@inheritdoc}
      */

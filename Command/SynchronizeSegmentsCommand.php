@@ -51,11 +51,11 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
         $jobExecutor = $this->getJobExecutor();
 
         $jobs = [
-//            'mailchimp_marketing_list_subscribe' => ProcessorRegistry::TYPE_IMPORT,
-//            'mailchimp_static_segment_member_add_state' => ProcessorRegistry::TYPE_IMPORT,
-//            'mailchimp_static_segment_member_remove_state' => ProcessorRegistry::TYPE_IMPORT,
+            'mailchimp_marketing_list_subscribe' => ProcessorRegistry::TYPE_IMPORT,
+            'mailchimp_static_segment_member_add_state' => ProcessorRegistry::TYPE_IMPORT,
+            'mailchimp_static_segment_member_remove_state' => ProcessorRegistry::TYPE_IMPORT,
             'mailchimp_member_export' => ProcessorRegistry::TYPE_EXPORT,
-//            'mailchimp_static_segment_export' => ProcessorRegistry::TYPE_EXPORT,
+            'mailchimp_static_segment_export' => ProcessorRegistry::TYPE_EXPORT,
         ];
 
         foreach ($iterator as $segment) {

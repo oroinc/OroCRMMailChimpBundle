@@ -175,7 +175,7 @@ connector:
             steps:
                 export:
                     title: export
-                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.static_segment_export
                         processor: orocrm_mailchimp.importexport.processor.export_static_segment

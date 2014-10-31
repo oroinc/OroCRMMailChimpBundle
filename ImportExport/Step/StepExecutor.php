@@ -29,11 +29,11 @@ class StepExecutor extends BaseStepExecutor
     {
         $itemsToWrite = [];
         $writeCount = 0;
+        $scheduleWrite = false;
 
         try {
             $stopExecution = false;
             while (!$stopExecution) {
-
                 try {
                     $readItem = $this->reader->read();
                     if (null === $readItem) {
@@ -47,21 +47,21 @@ class StepExecutor extends BaseStepExecutor
                     continue;
                 }
 
-                if ($this->reader instanceof IteratorBasedReader) {
-                    $sourceIterator = $this->reader->getSourceIterator();
-                    if ($sourceIterator instanceof SubordinateReaderInterface && $sourceIterator->writeRequired()) {
-                        $this->write($itemsToWrite, $warningHandler);
-                        $itemsToWrite = [];
-                    }
-                }
-
                 $processedItem = $this->process($readItem, $warningHandler);
                 if (null !== $processedItem) {
                     $itemsToWrite[] = $processedItem;
                     $writeCount++;
-                    if (0 === $writeCount % $this->batchSize) {
+                    if (0 === $writeCount % $this->batchSize || $scheduleWrite) {
                         $this->write($itemsToWrite, $warningHandler);
                         $itemsToWrite = [];
+                        $scheduleWrite = false;
+                    }
+                }
+
+                if ($this->reader instanceof IteratorBasedReader) {
+                    $sourceIterator = $this->reader->getSourceIterator();
+                    if ($sourceIterator instanceof SubordinateReaderInterface && $sourceIterator->writeRequired()) {
+                        $scheduleWrite = true;
                     }
                 }
             }

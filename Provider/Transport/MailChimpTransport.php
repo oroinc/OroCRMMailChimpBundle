@@ -195,6 +195,42 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segment-add.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function addStaticListSegment(array $args)
+    {
+        return $this->client->addStaticListSegment($args);
+    }
+
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segment-members-add.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function addStaticSegmentMembers(array $args)
+    {
+        return $this->client->addStaticSegmentMembers($args);
+    }
+
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segment-members-del.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function deleteStaticSegmentMembers(array $args)
+    {
+        return $this->client->deleteStaticSegmentMembers($args);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getLabel()
