@@ -207,3 +207,33 @@ orocrm:
         workflow:
             segment_name: Segment Name
             sync_message: Marketing List scheduled for sync with MailChimp Segment "%segment_name%"
+
+        emailcampaign:
+            statistics.label: Mailchimp Statistics
+            positive.label: Positive
+            negative.label: Negative
+            type.label: Type
+            status.label: Status
+            sendTime.label: Send Time
+            lastOpenDate.label: Last Open Date
+            archiveUrl.label: Archive Url
+            emailsSent.label: Emails Sent
+            testsSent.label: Tests Sent
+            testsRemain.label: Tests Remain
+            syntaxErrors.label: Syntax Errors
+            hardBounces.label: Hard Bounces
+            softBounces.label: Soft Bounces
+            unsubscribes.label: Unsubscribes
+            abuseReports.label: Abuse Reports
+            forwards.label: Forwards
+            forwardsOpens.label: Forwards Opens
+            opens.label: Opens
+            uniqueOpens.label: Unique Opens
+            clicks.label: Clicks
+            uniqueClicks.label: Unique Clicks
+            usersWhoClicked.label: Users Who Clicked
+            uniqueLikes.label: Unique Likes
+            recipientLikes.label: Recipient Likes
+            facebookLikes.label: Facebook Likes
+            createdAt.label: Created At
+            updatedAt.label: Updated At
