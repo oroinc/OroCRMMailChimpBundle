@@ -98,7 +98,18 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             }
             $this->context->incrementAddCount();
 
+            if ($this->logger) {
+                $this->logger->info(
+                    sprintf(
+                        '    Activity added for MailChimp Member [id=%d]',
+                        $member->getId()
+                    )
+                );
+            }
+
             return $entity;
+        } elseif ($this->logger) {
+            $this->logger->info('    Activity skipped, no corresponding member found');
         }
 
         return null;
