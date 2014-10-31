@@ -1,9 +1,15 @@
 placeholders:
-    view_content_data_additional_information:
+    view_sync_status_data:
         items:
-            orocrm_mailchimp_sync: ~
+            orocrm_mailchimp_sync_data: ~
+    view_sync_status_badge:
+        items:
+            orocrm_mailchimp_sync_badge: ~
 
 items:
-    orocrm_mailchimp_sync:
+    orocrm_mailchimp_sync_data:
         template: OroCRMMailChimpBundle:Placeholder:syncStatus.html.twig
-        applicable: @orocrm_mailchimp.placeholder.filter->isApplicable($entity$)
+        applicable: @orocrm_mailchimp.placeholder.filter->isApplicableOnMarketingList($entity$)
+    orocrm_mailchimp_sync_badge:
+        template: OroCRMMailChimpBundle:Placeholder:syncStatusBadge.html.twig
+        applicable: @orocrm_mailchimp.placeholder.filter->isApplicableOnMarketingList($entity$)

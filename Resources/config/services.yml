@@ -597,8 +597,11 @@ services:
         tags:
             - { name: security.voter, priority: 500 }
 
+    # Placeholder
     orocrm_mailchimp.placeholder.filter:
         class: %orocrm_mailchimp.placeholder.filter.class%
+        arguments:
+            - @doctrine
 
     # Twig extensions
     orocrm_mailchimp.twig.extension:

@@ -27,7 +27,10 @@ class MailChimpExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('orocrm_mailchimp_email_campaign', [$this, 'getEmailCampaign']),
+            new \Twig_SimpleFunction('orocrm_mailchimp_email_campaign',
+                [$this, 'getEmailCampaign']),
+            new \Twig_SimpleFunction('orocrm_mailchimp_email_campaign_sync_status',
+                [$this, 'getEmailCampaignSyncStatus']),
         );
     }
 
@@ -41,13 +44,25 @@ class MailChimpExtension extends \Twig_Extension
 
     /**
      * @param MarketingList $marketingList
-     * @return array|\OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment[]
+     * @return array|\OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
      */
     public function getEmailCampaign(MarketingList $marketingList)
     {
         $staticSegment = $this->registry->getManager()
             ->getRepository('OroCRMMailChimpBundle:StaticSegment')
-            ->findBy(['marketingList' => $marketingList]);
+            ->findOneBy(['marketingList' => $marketingList]);
         return $staticSegment;
+    }
+
+    /**
+     * @param MarketingList $marketingList
+     * @return bool
+     */
+    public function getEmailCampaignSyncStatus(MarketingList $marketingList)
+    {
+        $staticSegment = $this->registry->getManager()
+            ->getRepository('OroCRMMailChimpBundle:StaticSegment')
+            ->findOneBy(['marketingList' => $marketingList]);
+        return $staticSegment->getSyncStatus() == 'synced' ? true : false;
     }
 }
