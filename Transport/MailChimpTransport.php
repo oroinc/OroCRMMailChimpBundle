@@ -4,9 +4,10 @@ namespace OroCRM\Bundle\MailChimpBundle\Transport;
 
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\CampaignBundle\Transport\TransportInterface;
+use OroCRM\Bundle\CampaignBundle\Transport\VisibilityTransportInterface;
 use OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType;
 
-class MailChimpTransport implements TransportInterface
+class MailChimpTransport implements TransportInterface, VisibilityTransportInterface
 {
     const NAME = 'mailchimp';
 
@@ -48,5 +49,13 @@ class MailChimpTransport implements TransportInterface
     public function getSettingsEntityFQCN()
     {
         return 'OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isVisibleInForm()
+    {
+        return false;
     }
 }
