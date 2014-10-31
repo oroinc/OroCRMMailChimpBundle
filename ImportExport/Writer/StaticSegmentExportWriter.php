@@ -2,7 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
-use Oro\Bundle\UIBundle\Tools\ArrayUtils;
+use Doctrine\Common\Collections\ArrayCollection;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
@@ -40,8 +41,6 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         );
 
         $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
-
-        $staticSegment->setSyncStatus(StaticSegment::STATUS_SYNCED);
 
         parent::write($itemsToWrite);
     }
@@ -115,18 +114,20 @@ class StaticSegmentExportWriter extends AbstractExportWriter
 
         $this->handleResponse($staticSegment, $response);
 
-        $emailsWithErrors = [];
-        if (!empty($response['errors'])) {
-            $emailsWithErrors = ArrayUtils::arrayColumn($response['errors'], 'email');
-        }
+        $emailsWithErrors = $this->getArrayData($response, 'errors');
 
-        /** @var StaticSegmentMember $item */
-        foreach ($items as $item) {
-            if (!in_array($item->getMember()->getEmail(), $emailsWithErrors)) {
-                $item->setState($itemState);
+        $items = new ArrayCollection($items);
 
-                $itemsToWrite[] = $item;
+        $items->filter(
+            function (StaticSegmentMember $segmentMember) use ($emailsWithErrors) {
+                return !in_array($segmentMember->getMember()->getEmail(), $emailsWithErrors);
             }
+        );
+
+        foreach ($items as $item) {
+            $item->setState($itemState);
+
+            $itemsToWrite[] = $item;
         }
 
         return $itemsToWrite;

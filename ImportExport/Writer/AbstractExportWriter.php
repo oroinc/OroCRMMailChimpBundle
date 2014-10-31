@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
 
 use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
+use Oro\Bundle\UIBundle\Tools\ArrayUtils;
 use Psr\Log\LoggerInterface;
 
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
@@ -36,5 +37,25 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Ite
     public function setLogger($logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param array $response
+     * @param string $container
+     * @param string|null $key
+     *
+     * @return array
+     */
+    protected function getArrayData(array $response, $container, $key = null)
+    {
+        if (!empty($response[$container])) {
+            if ($key) {
+                return ArrayUtils::arrayColumn($response[$container], $key);
+            }
+
+            return $response[$container];
+        }
+
+        return [];
     }
 }

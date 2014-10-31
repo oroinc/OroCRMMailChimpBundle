@@ -2,8 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
+use Oro\Bundle\LocaleBundle\Model\FullNameInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProvider;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
@@ -59,34 +59,36 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
     }
 
     /**
-     * {@inheritdoc}
+     * @param FullNameInterface $object
+     *
+     * @return array
      */
-    public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
+    public function convertObjectToImportFormat(FullNameInterface $object)
     {
-        $contactInformationFieldsValues = $this->getContactInformationFieldsValues($importedRecord);
+        $contactInformationFieldsValues = $this->getContactInformationFieldsValues($object);
 
         $staticSegment = $this->getStaticSegment();
         $subscribersList = $staticSegment->getSubscribersList();
 
-        $emailMergeVarName = $this->getEmailMergeVarName($subscribersList);
+        $mergeVarsFields = $this->mergeVarsProvider->getMergeVarFields($subscribersList);
 
-        $importedRecord = [
-            $emailMergeVarName => reset($contactInformationFieldsValues),
+        $item = [
+            $mergeVarsFields->getEmail()->getName() => reset($contactInformationFieldsValues),
+            $mergeVarsFields->getLastName()->getName() => $object->getFirstName(),
+            $mergeVarsFields->getFirstName()->getName() => $object->getLastName(),
             'status' => Member::STATUS_UNSUBSCRIBED,
             'subscribersList_id' => $staticSegment->getSubscribersList()->getId(),
             'channel_id' => $staticSegment->getChannel()->getId()
         ];
 
-        $importedRecord = parent::convertToImportFormat($importedRecord);
-
-        return $importedRecord;
+        return $item;
     }
 
     /**
-     * @param array $importedRecord
+     * @param object $object
      * @return array
      */
-    protected function getContactInformationFieldsValues(array $importedRecord)
+    protected function getContactInformationFieldsValues($object)
     {
         $contactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
             $this->memberClassName,
@@ -95,19 +97,8 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
 
         return $this->contactInformationFieldsProvider->getTypedFieldsValues(
             $contactInformationFields,
-            $importedRecord
+            $object
         );
-    }
-
-    /**
-     * @param SubscribersList $subscribersList
-     * @return string
-     */
-    protected function getEmailMergeVarName(SubscribersList $subscribersList)
-    {
-        $mergeVarsFields = $this->mergeVarsProvider->getMergeVarFields($subscribersList);
-
-        return $mergeVarsFields->getEmail()->getName();
     }
 
     /**
