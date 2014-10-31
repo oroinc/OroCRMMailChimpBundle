@@ -98,6 +98,8 @@ parameters:
     # EmailCampaign Voter
     orocrm_mailchimp.email_campaign.security.acl.voter.entity.class: OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter
 
+    orocrm_mailchimp.static_segment_manager.state_mamanger.class: OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager
+
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -627,3 +629,9 @@ services:
             - @oro_entity.doctrine_helper
         tags:
             - { name: security.voter, priority: 500 }
+
+    orocrm_mailchimp.static_segment_manager.state_mamanger:
+        class: %orocrm_mailchimp.static_segment_manager.state_mamanger.class%
+        arguments:
+            - @oro_entity.doctrine_helper
+            - %orocrm_mailchimp.entity.static_segment_member.class%

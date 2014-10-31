@@ -13,6 +13,7 @@ use Oro\Bundle\CronBundle\Command\CronCommandInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 
 class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCommandInterface
 {
@@ -49,6 +50,7 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
         /** @var StaticSegment[] $iterator */
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsWithDynamicMarketingList($segments);
         $jobExecutor = $this->getJobExecutor();
+        $stateManager = $this->getStaticSegmentStateManager();
 
         $jobs = [
             'mailchimp_marketing_list_subscribe' => ProcessorRegistry::TYPE_IMPORT,
@@ -58,19 +60,21 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
             'mailchimp_static_segment_export' => ProcessorRegistry::TYPE_EXPORT,
         ];
 
-        foreach ($iterator as $segment) {
-            $output->writeln(sprintf('<info>Process Static Segment #%s:</info>', $segment->getId()));
+        foreach ($iterator as $staticSegment) {
+            $output->writeln(sprintf('<info>Process Static Segment #%s:</info>', $staticSegment->getId()));
             foreach ($jobs as $job => $type) {
                 $output->writeln($job);
                 $jobResult = $jobExecutor->executeJob(
                     $type,
                     $job,
-                    [$type => [StaticSegmentAwareInterface::OPTION_SEGMENT => $segment]]
+                    [$type => [StaticSegmentAwareInterface::OPTION_SEGMENT => $staticSegment]]
                 );
                 if (!$jobResult->isSuccessful()) {
                     $output->writeln($jobResult->getFailureExceptions());
                 }
             }
+
+            $stateManager->drop($staticSegment);
         }
     }
 
@@ -90,5 +94,13 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
     protected function getJobExecutor()
     {
         return $this->getContainer()->get('oro_importexport.job_executor');
+    }
+
+    /**
+     * @return StaticSegmentsMemberStateManager
+     */
+    protected function getStaticSegmentStateManager()
+    {
+        return $this->getContainer()->get('orocrm_mailchimp.static_segment_manager.state_mamanger');
     }
 }
