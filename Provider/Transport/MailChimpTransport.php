@@ -174,8 +174,8 @@ class MailChimpTransport implements TransportInterface
             ->getRepository('OroCRMMailChimpBundle:Campaign')
             ->getSentCampaigns();
 
-        $parameters = ['include_empty' => true];
-        if ($since) {
+        $parameters = ['include_empty' => false];
+        if (false && $since) {
             $parameters['since'] = $this->getSinceForApi($since);
         }
 

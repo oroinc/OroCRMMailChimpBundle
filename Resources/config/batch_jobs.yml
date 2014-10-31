@@ -91,6 +91,13 @@ connector:
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
+                update_send_action:
+                    title: add_send_activities
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.unsent_activities
+                        processor: orocrm_mailchimp.importexport.processor.unsent_activity
+                        writer:    oro_integration.writer.persistent_batch_writer
 
         mailchimp_static_segment_import:
             title: orocrm.mailchimp.connector.static_segment.job

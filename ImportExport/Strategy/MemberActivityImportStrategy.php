@@ -2,24 +2,30 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
+use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Akeneo\Bundle\BatchBundle\Item\ExecutionContext;
+use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 use Doctrine\Common\Util\ClassUtils;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use Oro\Bundle\ImportExportBundle\Field\DatabaseHelper;
-use Oro\Bundle\ImportExportBundle\Field\FieldHelper;
 use Oro\Bundle\ImportExportBundle\Strategy\Import\AbstractImportStrategy as BasicImportStrategy;
-use Oro\Bundle\ImportExportBundle\Strategy\Import\ImportStrategyHelper;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\ImportExport\Helper\DefaultOwnerHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
 
-class MemberActivityImportStrategy extends BasicImportStrategy implements LoggerAwareInterface
+class MemberActivityImportStrategy extends BasicImportStrategy implements
+    LoggerAwareInterface,
+    StepExecutionAwareInterface
 {
+    /**
+     * @var StepExecution
+     */
+    protected $stepExecution;
+
     /**
      * @var LoggerInterface
      */
@@ -31,20 +37,11 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
     protected $ownerHelper;
 
     /**
-     * @var DoctrineHelper
+     * {@inheritdoc}
      */
-    protected $doctrineHelper;
-
-    public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        ImportStrategyHelper $strategyHelper,
-        FieldHelper $fieldHelper,
-        DatabaseHelper $databaseHelper,
-        DoctrineHelper $doctrineHelper
-    ) {
-        parent::__construct($eventDispatcher, $strategyHelper, $fieldHelper, $databaseHelper);
-
-        $this->doctrineHelper = $doctrineHelper;
+    public function setStepExecution(StepExecution $stepExecution)
+    {
+        $this->stepExecution = $stepExecution;
     }
 
     /**
@@ -101,7 +98,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
             return null;
         }
 
-        $channel = $this->getEntityReference($entity->getChannel());
+        $channel = $this->databaseHelper->getEntityReference($entity->getChannel());
         /** @var Campaign $campaign */
         $campaign = $this->findExistingEntity($entity->getCampaign());
         $member = $this->findExistingMember($entity->getMember(), $channel, $campaign);
@@ -122,6 +119,27 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
     }
 
     /**
+     * @param MemberActivity $entity
+     * @return MemberActivity
+     */
+    protected function afterProcessEntity($entity)
+    {
+        if ($entity) {
+            $this->ownerHelper->populateChannelOwner($entity, $entity->getChannel());
+
+            $jobContext = $this->getJobContext();
+            $processedCampaigns = (array)$jobContext->get('processed_campaigns');
+            $campaignId = $entity->getCampaign()->getId();
+            if (!in_array($campaignId, $processedCampaigns)) {
+                $processedCampaigns['campaign_id'] = $campaignId;
+            }
+            $jobContext->put('processed_campaigns', $processedCampaigns);
+        }
+
+        return parent::afterProcessEntity($entity);
+    }
+
+    /**
      * @param Member $member
      * @param Channel $channel
      * @param Campaign $campaign
@@ -136,15 +154,6 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
         ];
 
         return $this->findEntityByIdentityValues(ClassUtils::getClass($member), $searchCondition);
-    }
-
-    /**
-     * @param object $entity
-     * @return object
-     */
-    protected function getEntityReference($entity)
-    {
-        return $this->doctrineHelper->getEntityReference(ClassUtils::getClass($entity), $entity->getId());
     }
 
     /**
@@ -163,5 +172,15 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
         }
 
         return false;
+    }
+
+    /**
+     * @return ExecutionContext
+     */
+    protected function getJobContext()
+    {
+        /** @var JobExecution $jobExecution */
+        $jobExecution = $this->stepExecution->getJobExecution();
+        return $jobExecution->getExecutionContext();
     }
 }
