@@ -3,24 +3,10 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Oro\Bundle\ImportExportBundle\Strategy\Import\AbstractImportStrategy as BasicImportStrategy;
-use Oro\Bundle\IntegrationBundle\ImportExport\Helper\DefaultOwnerHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
 
 class UnsentActivityStrategy extends BasicImportStrategy
 {
-    /**
-     * @var DefaultOwnerHelper
-     */
-    protected $ownerHelper;
-
-    /**
-     * @param DefaultOwnerHelper $ownerHelper
-     */
-    public function setOwnerHelper(DefaultOwnerHelper $ownerHelper)
-    {
-        $this->ownerHelper = $ownerHelper;
-    }
-
     /**
      * @param MemberActivity $entity
      * @return MemberActivity
@@ -64,16 +50,5 @@ class UnsentActivityStrategy extends BasicImportStrategy
         $entity->setMember(
             $this->databaseHelper->getEntityReference($entity->getMember())
         );
-    }
-
-    /**
-     * @param MemberActivity $entity
-     * @return MemberActivity
-     */
-    protected function afterProcessEntity($entity)
-    {
-        $this->ownerHelper->populateChannelOwner($entity, $entity->getChannel());
-
-        return parent::afterProcessEntity($entity);
     }
 }

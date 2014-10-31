@@ -12,7 +12,6 @@ use Psr\Log\LoggerInterface;
 
 use Oro\Bundle\ImportExportBundle\Strategy\Import\AbstractImportStrategy as BasicImportStrategy;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\IntegrationBundle\ImportExport\Helper\DefaultOwnerHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
@@ -32,11 +31,6 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     protected $logger;
 
     /**
-     * @var DefaultOwnerHelper
-     */
-    protected $ownerHelper;
-
-    /**
      * {@inheritdoc}
      */
     public function setStepExecution(StepExecution $stepExecution)
@@ -50,14 +44,6 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
-    }
-
-    /**
-     * @param DefaultOwnerHelper $ownerHelper
-     */
-    public function setOwnerHelper(DefaultOwnerHelper $ownerHelper)
-    {
-        $this->ownerHelper = $ownerHelper;
     }
 
     /**
@@ -125,8 +111,6 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     protected function afterProcessEntity($entity)
     {
         if ($entity) {
-            $this->ownerHelper->populateChannelOwner($entity, $entity->getChannel());
-
             $jobContext = $this->getJobContext();
             $processedCampaigns = (array)$jobContext->get('processed_campaigns');
             $campaignId = $entity->getCampaign()->getId();
