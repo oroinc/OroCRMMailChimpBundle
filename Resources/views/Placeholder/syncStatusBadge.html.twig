@@ -1,7 +1,11 @@
 <div class="status-enabled pull-left">
     {% if orocrm_mailchimp_email_campaign_sync_status(entity) %}
-        <div class="badge badge-enabled status-enabled"><i class="icon-status-enabled icon-circle"></i>{{ 'orocrm.marketinglist.status.synced'|trans }}</div>
+        <div class="badge badge-enabled status-enabled">
+            <i class="icon-status-enabled icon-circle"></i>{{ 'orocrm.marketinglist.status.synced'|trans }}
+        </div>
     {% else %}
-        <div class="badge badge-disabled status-disabled"><i class="icon-status-disabled icon-circle"></i>{{ 'orocrm.marketinglist.status.not_synced'|trans }}</div>
+        <div class="badge badge-disabled status-disabled">
+            <i class="icon-status-disabled icon-circle"></i>{{ 'orocrm.marketinglist.status.not_synced'|trans }}
+        </div>
     {% endif %}
 </div>

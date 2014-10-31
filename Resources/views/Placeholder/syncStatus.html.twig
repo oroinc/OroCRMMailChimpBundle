@@ -34,18 +34,12 @@
                             </label>
                             <div class="controls">
                                 <div class="control-label">
-                                    {{ static_segment.lastSynced ? static_segment.lastSynced|oro_format_datetime : 'N/A' }}
+                                    {{ static_segment.lastSynced ?
+                                        static_segment.lastSynced|oro_format_datetime :
+                                        'N/A' }}
                                 </div>
                             </div>
                         </div>
-                        {#<div class="control-group">#}
-                            {#<label class="control-label">#}
-                                {#{{ 'orocrm.mailchimp.syncstatus.sync_status.label'|trans }}#}
-                            {#</label>#}
-                            {#<div class="controls">#}
-                                {#<div class="control-label">{{ static_segment.syncStatus }}</div>#}
-                            {#</div>#}
-                        {#</div>#}
 
                     </div>
                 </div>
