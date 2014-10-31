@@ -59,8 +59,9 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
         ];
 
         foreach ($iterator as $segment) {
-            $output->writeln(sprintf('<info>Process Static Segment #%s</info>', $segment->getId()));
+            $output->writeln(sprintf('<info>Process Static Segment #%s:</info>', $segment->getId()));
             foreach ($jobs as $job => $type) {
+                $output->writeln($job);
                 $jobResult = $jobExecutor->executeJob(
                     $type,
                     $job,

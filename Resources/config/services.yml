@@ -534,6 +534,7 @@ services:
         calls:
             - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.member_sync]]
             - [setStrategy, [@orocrm_mailchimp.importexport.strategy.member]]
+            - [setEntityName, [%orocrm_mailchimp.entity.member.class%]]
 
     orocrm_mailchimp.importexport.processor.static_segment_member_add_state:
         class: %orocrm_mailchimp.importexport.processor.static_segment_member_add_state.class%
