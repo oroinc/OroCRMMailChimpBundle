@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;
+use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
 
 class UnsentActivitiesReader extends IteratorBasedReader
 {
@@ -67,7 +68,7 @@ class UnsentActivitiesReader extends IteratorBasedReader
                 )
                 ->where($unsentEmailsQb->expr()->isNull('a2.id'))
                 ->andWhere($unsentEmailsQb->expr()->IN('a1.campaign', ':campaigns'))
-                ->setParameter('sendAction', 'send')
+                ->setParameter('sendAction', MemberActivity::ACTIVITY_SENT)
                 ->setParameter('campaigns', $campaigns)
                 ->addGroupBy('a1.email')
                 ->addGroupBy('a1.campaign')

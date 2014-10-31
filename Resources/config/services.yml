@@ -95,6 +95,7 @@ parameters:
     orocrm_mailchimp.workflow.action.remove_entity.class: OroCRM\Bundle\MailChimpBundle\Model\Action\RemoveEntity
     orocrm_mailchimp.workflow.action.populate_integration_owner.class: OroCRM\Bundle\MailChimpBundle\Model\Action\PopulateIntegrationOwner
     orocrm_mailchimp.workflow.action.assign_constant_value.class: OroCRM\Bundle\MailChimpBundle\Model\Action\AssignConstantValue
+    orocrm_mailchimp.workflow.action.update_email_campaign_statistics.class: OroCRM\Bundle\MailChimpBundle\Model\Action\UpdateEmailCampaignStatistics
 
     # EmailCampaign Voter
     orocrm_mailchimp.email_campaign.security.acl.voter.entity.class: OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter
@@ -622,6 +623,16 @@ services:
             - @oro_workflow.context_accessor
         tags:
             - { name: oro_workflow.action, alias: assign_constant_value }
+
+    orocrm_mailchimp.workflow.action.update_email_campaign_statistics:
+        class: %orocrm_mailchimp.workflow.action.update_email_campaign_statistics.class%
+        arguments:
+            - @oro_workflow.context_accessor
+            - @orocrm_marketing_list.provider.contact_information_fields
+            - @orocrm_campaign.email_campaign.statistics_connector
+            - @orocrm_marketing_list.provider.marketing_list
+        tags:
+            - { name: oro_workflow.action, alias: update_email_campaign_statistics }
 
     orocrm_mailchimp.email_campaign.security.acl.voter.entity:
         class: %orocrm_mailchimp.email_campaign.security.acl.voter.entity.class%

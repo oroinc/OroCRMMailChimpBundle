@@ -3,23 +3,8 @@ definitions:
         label:   'Synchronizes OroCRM Marketing List Item for MailChimp Member Activity'
         enabled: true
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity
-        exclude_definitions: [synchronize_marketing_list_item_for_mailchimp_member_activity]
         actions_configuration:
-            - @tree:
-                conditions:
-                    @not_empty: $member.subscribersList.marketingList
-                actions:
-                    - @create_entity: # create OroCRM Marketing List Item
-                        conditions: # if OroCRM Marketing List Item not exists
-                            @empty: $marketingListItem
-                        parameters:
-                            class:     OroCRM\Bundle\MarketingListBundle\Entity\MarketingListItem
-                            attribute: $marketingListItem
-                            data:
-                                entityId:       $id
-                                marketingList:  $subscribersList.marketingList
-                                contactedTimes: 0
-                                lastContactedAt: $.lastContactedAt
+            - @update_email_campaign_statistics: ~
 
     create_email_campaign_for_mailchimp_campaign:
         label:   Create Email Campaign for MailChimp Campaign
