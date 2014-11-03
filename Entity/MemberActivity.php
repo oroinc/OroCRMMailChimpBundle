@@ -9,7 +9,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
 
 /**
- * @link http://apidocs.mailchimp.com/export/1.0/campaignsubscriberactivity.func.php
+ * @link http://apidocs.mailchimp.com/api/2.0/lists/member-activity.php
  *
  * @ORM\Entity
  * @ORM\Table(
@@ -34,6 +34,22 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  */
 class MemberActivity
 {
+    const ACTIVITY_OPEN = 'open';
+    const ACTIVITY_CLICK = 'click';
+    const ACTIVITY_BOUNCE = 'bounce';
+    const ACTIVITY_UNSUB = 'unsub';
+    const ACTIVITY_ABUSE = 'abuse';
+    const ACTIVITY_SENT = 'sent';
+    const ACTIVITY_ECOMM = 'ecomm';
+    const ACTIVITY_MANDRILL_SEND = 'mandrill_send';
+    const ACTIVITY_MANDRILL_HARD_BOUNCE = 'mandrill_hard_bounce';
+    const ACTIVITY_MANDRILL_SOFT_BOUNCE = 'mandrill_soft_bounce';
+    const ACTIVITY_MANDRILL_OPEN = 'mandrill_open';
+    const ACTIVITY_MANDRILL_CLICK = 'mandrill_click';
+    const ACTIVITY_MANDRILL_SPAM = 'mandrill_spam';
+    const ACTIVITY_MANDRILL_UNSUB = 'mandrill_unsub';
+    const ACTIVITY_MANDRILL_REJECT = 'mandrill_reject';
+
     /**
      * @var int
      *

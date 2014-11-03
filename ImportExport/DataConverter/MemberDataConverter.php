@@ -14,6 +14,7 @@ class MemberDataConverter extends IntegrationAwareDataConverter
             'list_id' => 'subscribersList:originId',
             'channel_id' => 'channel:id',
             'subscribersList_id' => 'subscribersList:id',
+            'email' => 'email',
             'MEMBER_RATING' => 'memberRating',
             'OPTIN_TIME' => 'optedInAt',
             'OPTIN_IP' => 'optedInIpAddress',

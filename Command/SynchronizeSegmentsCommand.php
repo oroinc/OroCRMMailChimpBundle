@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Command;
 
+use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
+use OroCRM\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -10,9 +12,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
 use Oro\Bundle\CronBundle\Command\CronCommandInterface;
+use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 
 class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCommandInterface
 {
@@ -21,8 +25,23 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
      */
     public function getDefaultDefinition()
     {
-        return '*/5 * * * *';
+        return '*/1 * * * *';
     }
+
+    /**
+     * @var JobExecutor
+     */
+    protected $jobExecutor;
+
+    /**
+     * @var StaticSegmentsMemberStateManager
+     */
+    protected $staticSegmentStateManager;
+
+    /**
+     * @var StaticSegmentsMemberStateManager
+     */
+    protected $reverseSyncProcessor;
 
     /**
      * {@inheritdoc}
@@ -48,27 +67,42 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
         $segments = $input->getOption('segments');
         /** @var StaticSegment[] $iterator */
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsWithDynamicMarketingList($segments);
-        $jobExecutor = $this->getJobExecutor();
+        $integrationsToExport = [];
 
         $jobs = [
-//            'mailchimp_marketing_list_subscribe' => ProcessorRegistry::TYPE_IMPORT,
-//            'mailchimp_static_segment_member_add_state' => ProcessorRegistry::TYPE_IMPORT,
-//            'mailchimp_static_segment_member_remove_state' => ProcessorRegistry::TYPE_IMPORT,
-            'mailchimp_member_export' => ProcessorRegistry::TYPE_EXPORT,
-//            'mailchimp_static_segment_export' => ProcessorRegistry::TYPE_EXPORT,
+            'mailchimp_marketing_list_members_sync',
+            'mailchimp_static_segment_member_add_state',
+            'mailchimp_static_segment_member_remove_state',
         ];
 
-        foreach ($iterator as $segment) {
-            $output->writeln(sprintf('<info>Process Static Segment #%s</info>', $segment->getId()));
-            foreach ($jobs as $job => $type) {
-                $jobResult = $jobExecutor->executeJob(
-                    $type,
-                    $job,
-                    [$type => [StaticSegmentAwareInterface::OPTION_SEGMENT => $segment]]
+        foreach ($iterator as $staticSegment) {
+            $output->writeln(sprintf('<info>Process Static Segment #%s:</info>', $staticSegment->getId()));
+            foreach ($jobs as $jobName) {
+                $output->writeln(sprintf('    %s', $jobName));
+                $jobResult = $this->getJobExecutor()->executeJob(
+                    ProcessorRegistry::TYPE_IMPORT,
+                    $jobName,
+                    [ProcessorRegistry::TYPE_IMPORT => [StaticSegmentAwareInterface::OPTION_SEGMENT => $staticSegment]]
                 );
                 if (!$jobResult->isSuccessful()) {
                     $output->writeln($jobResult->getFailureExceptions());
                 }
+            }
+
+            $integrationsToExport[$staticSegment->getChannel()->getId()] = $staticSegment->getChannel();
+
+            $this->getStaticSegmentStateManager()->drop($staticSegment);
+        }
+
+        $exportJobs = [
+            MemberConnector::TYPE => MemberConnector::JOB_EXPORT,
+            StaticSegmentConnector::TYPE => StaticSegmentConnector::JOB_EXPORT
+        ];
+
+        foreach ($exportJobs as $type => $jobName) {
+            $output->writeln(sprintf('    %s', $jobName));
+            foreach ($integrationsToExport as $integrationToExport) {
+                $this->getReverseSyncProcessor()->process($integrationToExport, $type, []);
             }
         }
     }
@@ -88,6 +122,36 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
      */
     protected function getJobExecutor()
     {
-        return $this->getContainer()->get('oro_importexport.job_executor');
+        if (!$this->jobExecutor) {
+            $this->jobExecutor = $this->getContainer()->get('oro_importexport.job_executor');
+        }
+
+        return $this->jobExecutor;
+    }
+
+    /**
+     * @return StaticSegmentsMemberStateManager
+     */
+    protected function getStaticSegmentStateManager()
+    {
+        if (!$this->staticSegmentStateManager) {
+            $this->staticSegmentStateManager = $this->getContainer()->get(
+                'orocrm_mailchimp.static_segment_manager.state_mamanger'
+            );
+        }
+
+        return $this->staticSegmentStateManager;
+    }
+
+    /**
+     * @return ReverseSyncProcessor
+     */
+    protected function getReverseSyncProcessor()
+    {
+        if (!$this->reverseSyncProcessor) {
+            $this->reverseSyncProcessor = $this->getContainer()->get('oro_integration.reverse_sync.processor');
+        }
+
+        return $this->reverseSyncProcessor;
     }
 }
