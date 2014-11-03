@@ -63,6 +63,6 @@ class MailChimpExtension extends \Twig_Extension
         $staticSegment = $this->registry->getManager()
             ->getRepository('OroCRMMailChimpBundle:StaticSegment')
             ->findOneBy(['marketingList' => $marketingList]);
-        return $staticSegment->getSyncStatus() == 'synced' ? true : false;
+        return $staticSegment && $staticSegment->getSyncStatus() == 'synced' ? true : false;
     }
 }
