@@ -76,6 +76,8 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
         ];
 
         foreach ($iterator as $staticSegment) {
+            $this->getStaticSegmentStateManager()->handleDroppedMembers($staticSegment);
+
             $output->writeln(sprintf('<info>Process Static Segment #%s:</info>', $staticSegment->getId()));
             foreach ($jobs as $jobName) {
                 $output->writeln(sprintf('    %s', $jobName));
@@ -90,8 +92,6 @@ class SynchronizeSegmentsCommand extends ContainerAwareCommand implements CronCo
             }
 
             $integrationsToExport[$staticSegment->getChannel()->getId()] = $staticSegment->getChannel();
-
-            $this->getStaticSegmentStateManager()->drop($staticSegment);
         }
 
         $exportJobs = [

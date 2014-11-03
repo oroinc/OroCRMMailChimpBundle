@@ -12,6 +12,7 @@ use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
@@ -37,6 +38,11 @@ abstract class AbstractMarketingListReader extends IteratorBasedReader implement
     protected $contactInformationFieldsProvider;
 
     /**
+     * @var FieldHelper $fieldHelper
+     */
+    protected $fieldHelper;
+
+    /**
      * @var string
      */
     protected $staticSegmentClassName;
@@ -60,16 +66,19 @@ abstract class AbstractMarketingListReader extends IteratorBasedReader implement
      * @param ContextRegistry $contextRegistry
      * @param MarketingListProvider $marketingListProvider
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
+     * @param FieldHelper $fieldHelper
      */
     public function __construct(
         ContextRegistry $contextRegistry,
         MarketingListProvider $marketingListProvider,
-        ContactInformationFieldsProvider $contactInformationFieldsProvider
+        ContactInformationFieldsProvider $contactInformationFieldsProvider,
+        FieldHelper $fieldHelper
     ) {
         parent::__construct($contextRegistry);
 
         $this->marketingListProvider = $marketingListProvider;
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
+        $this->fieldHelper = $fieldHelper;
     }
 
     /**
@@ -153,12 +162,11 @@ abstract class AbstractMarketingListReader extends IteratorBasedReader implement
         $expr = $qb->expr()->orX();
         array_walk(
             $contactInformationFields,
-            function ($field) use ($expr, $qb, $from, $memberContactInformationFields) {
-                $property = sprintf('%s.%s', $from->getAlias(), $field);
+            function ($field) use ($expr, $qb, $from, $marketingList, $memberContactInformationFields) {
                 foreach ($memberContactInformationFields as $memberContactInformationField) {
                     $expr->add(
                         $qb->expr()->eq(
-                            $property,
+                            $this->fieldHelper->getFieldExpr($this->marketingList->getEntity(), $qb, $field),
                             sprintf('%s.%s', self::MEMBER_ALIAS, $memberContactInformationField)
                         )
                     );

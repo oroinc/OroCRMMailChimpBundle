@@ -31,7 +31,7 @@ class StaticSegmentsMemberStateManager
     /**
      * @param StaticSegment $staticSegment
      */
-    public function drop(StaticSegment $staticSegment)
+    public function handleDroppedMembers(StaticSegment $staticSegment)
     {
         $qb = $this->doctrineHelper
             ->getEntityManager($this->staticSegmentMember)
