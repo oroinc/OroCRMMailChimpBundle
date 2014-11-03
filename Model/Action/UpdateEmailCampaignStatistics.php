@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
 
-use Doctrine\ORM\Query\Expr\From;
+use Doctrine\DBAL\Types\Type;
 
 use Oro\Bundle\WorkflowBundle\Model\Action\AbstractAction;
 use Oro\Bundle\WorkflowBundle\Model\ContextAccessor;
@@ -10,6 +10,7 @@ use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use OroCRM\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
+use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
@@ -32,22 +33,50 @@ class UpdateEmailCampaignStatistics extends AbstractAction
     protected $marketingListProvider;
 
     /**
+     * @var FieldHelper
+     */
+    protected $fieldHelper;
+
+    /**
      * @param ContextAccessor $contextAccessor
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param EmailCampaignStatisticsConnector $campaignStatisticsConnector
      * @param MarketingListProvider $marketingListProvider
+     * @param FieldHelper $fieldHelper
      */
     public function __construct(
         ContextAccessor $contextAccessor,
         ContactInformationFieldsProvider $contactInformationFieldsProvider,
         EmailCampaignStatisticsConnector $campaignStatisticsConnector,
-        MarketingListProvider $marketingListProvider
+        MarketingListProvider $marketingListProvider,
+        FieldHelper $fieldHelper
     ) {
         parent::__construct($contextAccessor);
 
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
         $this->campaignStatisticsConnector = $campaignStatisticsConnector;
         $this->marketingListProvider = $marketingListProvider;
+        $this->fieldHelper = $fieldHelper;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function isAllowed($context)
+    {
+        $isAllowed = false;
+        if ($context instanceof EntityAwareInterface) {
+            $entity = $context->getEntity();
+            if ($entity instanceof MemberActivity) {
+                $mailChimpCampaign = $entity->getCampaign();
+                $isAllowed = $mailChimpCampaign
+                    && $mailChimpCampaign->getEmailCampaign()
+                    && $mailChimpCampaign->getStaticSegment()
+                    && $mailChimpCampaign->getStaticSegment()->getMarketingList();
+            }
+        }
+
+        return $isAllowed && parent::isAllowed($context);
     }
 
     /**
@@ -55,12 +84,7 @@ class UpdateEmailCampaignStatistics extends AbstractAction
      */
     protected function executeAction($context)
     {
-        if ($context instanceof EntityAwareInterface) {
-            $entity = $context->getEntity();
-            if ($entity instanceof MemberActivity) {
-                $this->updateStatistics($entity);
-            }
-        }
+        $this->updateStatistics($context->getEntity());
     }
 
     /**
@@ -98,21 +122,19 @@ class UpdateEmailCampaignStatistics extends AbstractAction
                 $marketingListItem->setContactedTimes((int)$marketingListItem->getContactedTimes() + 1);
                 break;
             case MemberActivity::ACTIVITY_OPEN:
-                $emailCampaignStatistics->setOpenCount((int)$emailCampaignStatistics->getOpenCount() + 1);
+                $emailCampaignStatistics->incrementOpenCount();
                 break;
             case MemberActivity::ACTIVITY_CLICK:
-                $emailCampaignStatistics->setClickCount((int)$emailCampaignStatistics->getClickCount() + 1);
+                $emailCampaignStatistics->incrementClickCount();
                 break;
             case MemberActivity::ACTIVITY_BOUNCE:
-                $emailCampaignStatistics->setBounceCount($emailCampaignStatistics->getBounceCount() + 1);
+                $emailCampaignStatistics->incrementBounceCount();
                 break;
             case MemberActivity::ACTIVITY_ABUSE:
-                $emailCampaignStatistics->setAbuseCount($emailCampaignStatistics->getAbuseCount() + 1);
+                $emailCampaignStatistics->incrementAbuseCount();
                 break;
             case MemberActivity::ACTIVITY_UNSUB:
-                $emailCampaignStatistics->setUnsubscribeCount(
-                    (int)$emailCampaignStatistics->getUnsubscribeCount() + 1
-                );
+                $emailCampaignStatistics->incrementUnsubscribeCount();
                 break;
         }
     }
@@ -131,13 +153,14 @@ class UpdateEmailCampaignStatistics extends AbstractAction
 
         $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
 
-        $fromParts = $qb->getDQLPart('from');
-        /** @var From $from */
-        $from = reset($fromParts);
-        $alias = $from->getAlias();
-
         foreach ($emailFields as $emailField) {
-            $qb->andWhere($qb->expr()->eq($alias . '.' . $emailField, $email));
+            $parameterName = $emailField . mt_rand();
+            $qb->andWhere(
+                $qb->expr()->eq(
+                    $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $emailField),
+                    ':' . $parameterName
+                )
+            )->setParameter($parameterName, $email, Type::STRING);
         }
 
         return $qb->getQuery()->getResult();
