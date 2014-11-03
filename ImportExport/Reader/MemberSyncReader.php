@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 
-class MarketingListSubscribeReader extends AbstractMarketingListReader
+class MemberSyncReader extends AbstractMarketingListReader
 {
     /**
      * {@inheritdoc}

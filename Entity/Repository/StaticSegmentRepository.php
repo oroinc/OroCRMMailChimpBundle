@@ -20,14 +20,16 @@ class StaticSegmentRepository extends EntityRepository
 
         $qb
             ->select('staticSegment')
-            ->from('OroCRMMailChimpBundle:StaticSegment', 'staticSegment')
-            ->leftJoin('staticSegment.marketingList', 'ml')
-            ->where($qb->expr()->eq('ml.type', ':type'))
-            ->setParameter('type', MarketingListType::TYPE_DYNAMIC, Type::STRING);
+            ->from('OroCRMMailChimpBundle:StaticSegment', 'staticSegment');
 
         if ($segments) {
             $qb->andWhere('staticSegment.id IN(:segments)')
                 ->setParameter('segments', $segments);
+        } else {
+            $qb
+                ->leftJoin('staticSegment.marketingList', 'ml')
+                ->where($qb->expr()->eq('ml.type', ':type'))
+                ->setParameter('type', MarketingListType::TYPE_DYNAMIC, Type::STRING);
         }
 
         return new BufferedQueryResultIterator($qb);

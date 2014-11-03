@@ -113,15 +113,15 @@ connector:
                     parameters:
                         batch_size: 25
 
-        mailchimp_marketing_list_subscribe:
-            title: orocrm.mailchimp.job.mailchimp_marketing_list_subscribe
+        mailchimp_marketing_list_members_sync:
+            title: orocrm.mailchimp.job.mailchimp_marketing_list_members_sync
             type: import
             steps:
                 import:
                     title: import
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
-                        reader:    orocrm_mailchimp.importexport.reader.marketing_list_subscribe
+                        reader:    orocrm_mailchimp.importexport.reader.members_sync
                         processor: orocrm_mailchimp.importexport.processor.members_sync
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:

@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
 use Oro\Bundle\LocaleBundle\Model\FullNameInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProvider;
+use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
@@ -14,11 +14,6 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
      * @var ContactInformationFieldsProvider
      */
     protected $contactInformationFieldsProvider;
-
-    /**
-     * @var MergeVarProvider
-     */
-    protected $mergeVarsProvider;
 
     /**
      * @var string
@@ -43,14 +38,6 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
     }
 
     /**
-     * @param MergeVarProvider $mergeVarsProvider
-     */
-    public function setMergeVarsProvider($mergeVarsProvider)
-    {
-        $this->mergeVarsProvider = $mergeVarsProvider;
-    }
-
-    /**
      * @param string $memberClassName
      */
     public function setMemberClassName($memberClassName)
@@ -68,14 +55,12 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
         $contactInformationFieldsValues = $this->getContactInformationFieldsValues($object);
 
         $staticSegment = $this->getStaticSegment();
-        $subscribersList = $staticSegment->getSubscribersList();
-
-        $mergeVarsFields = $this->mergeVarsProvider->getMergeVarFields($subscribersList);
 
         $item = [
-            $mergeVarsFields->getEmail()->getName() => reset($contactInformationFieldsValues),
-            $mergeVarsFields->getLastName()->getName() => $object->getFirstName(),
-            $mergeVarsFields->getFirstName()->getName() => $object->getLastName(),
+            MergeVarInterface::FIELD_TYPE_EMAIL => reset($contactInformationFieldsValues),
+            MergeVarInterface::TAG_EMAIL => reset($contactInformationFieldsValues),
+            MergeVarInterface::TAG_FIRST_NAME => $object->getFirstName(),
+            MergeVarInterface::TAG_LAST_NAME => $object->getLastName(),
             'status' => Member::STATUS_UNSUBSCRIBED,
             'subscribersList_id' => $staticSegment->getSubscribersList()->getId(),
             'channel_id' => $staticSegment->getChannel()->getId()

@@ -39,7 +39,10 @@ class MemberWriter extends AbstractExportWriter
 
         $emails = array_map(
             function (Member $member) {
-                return ['email' => ['email' => $member->getEmail()]];
+                return [
+                    'email' => ['email' => $member->getEmail()],
+                    'merge_vars' => $member->getMergeVarValues()
+                ];
             },
             $items
         );
@@ -48,7 +51,8 @@ class MemberWriter extends AbstractExportWriter
             [
                 'id' => $subscribersList->getOriginId(),
                 'batch' => $emails,
-                'double_optin' => false
+                'double_optin' => false,
+                'update_existing' => true,
             ]
         );
 
@@ -66,7 +70,7 @@ class MemberWriter extends AbstractExportWriter
                         return $member->getEmail() === $emailData['email'];
                     }
                 )
-            ->first();
+                ->first();
 
             $member
                 ->setEuid($emailData['euid'])
