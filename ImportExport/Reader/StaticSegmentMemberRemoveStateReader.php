@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
 use Doctrine\ORM\Query\Expr\Join;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 
 class StaticSegmentMemberRemoveStateReader extends AbstractMarketingListReader
 {
@@ -26,6 +27,10 @@ class StaticSegmentMemberRemoveStateReader extends AbstractMarketingListReader
      */
     protected function getQueryIterator()
     {
+        if (!$this->segmentMemberClassName) {
+            throw new InvalidConfigurationException('Static Segment Member class name must be provided');
+        }
+
         $qb = $this
             ->getIteratorQueryBuilder($this->marketingList)
             ->select(self::MEMBER_ALIAS . '.id');

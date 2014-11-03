@@ -129,9 +129,9 @@ services:
         abstract: true
         arguments:
             - @oro_importexport.context_registry
+            - @orocrm_marketing_list.provider.marketing_list
+            - @orocrm_marketing_list.provider.contact_information_fields
         calls:
-            - [setMarketingListProvider, [@orocrm_marketing_list.provider.marketing_list]]
-            - [setContactInformationFieldsProvider, [@orocrm_marketing_list.provider.contact_information_fields]]
             - [setStaticSegmentClassName, [%orocrm_mailchimp.entity.static_segment.class%]]
             - [setMemberClassName, [%orocrm_mailchimp.entity.member.class%]]
 
@@ -153,8 +153,7 @@ services:
         abstract: true
         arguments:
             - @oro_importexport.context_registry
-        calls:
-            - [setDoctrineHelper, [@oro_entity.doctrine_helper]]
+            - @oro_entity.doctrine_helper
 
     orocrm_mailchimp.importexport.reader.abstract_subscribers_list:
         parent: orocrm_mailchimp.importexport.reader.abstract_iterator_based

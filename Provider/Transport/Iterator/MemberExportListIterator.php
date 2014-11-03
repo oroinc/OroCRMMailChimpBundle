@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
 
@@ -12,6 +13,18 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
      * @var string
      */
     protected $memberClassName;
+
+    /**
+     * @param \Iterator $mainIterator
+     * @param DoctrineHelper $doctrineHelper
+     */
+    public function __construct(
+        \Iterator $mainIterator,
+        DoctrineHelper $doctrineHelper
+    ) {
+        $this->mainIterator = $mainIterator;
+        $this->doctrineHelper = $doctrineHelper;
+    }
 
     /**
      * @return bool
@@ -39,6 +52,11 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
     protected function createSubordinateIterator($subscribersList)
     {
         parent::assertSubscribersList($subscribersList);
+
+        if (!$this->memberClassName) {
+            throw new \InvalidArgumentException('Member id must be provided');
+        }
+
 
         $qb = $this->doctrineHelper
             ->getEntityManager($this->memberClassName)

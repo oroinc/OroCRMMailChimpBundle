@@ -2,9 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberExportListIterator;
 
 class MemberExportReader extends AbstractSubscribersListReader
@@ -27,25 +26,15 @@ class MemberExportReader extends AbstractSubscribersListReader
      */
     protected function initializeFromContext(ContextInterface $context)
     {
+        if (!$this->memberClassName) {
+            throw new InvalidConfigurationException('Member class name must be provided');
+        }
+
         if (!$this->getSourceIterator()) {
-            $iterator = new MemberExportListIterator($this->getSubscribersListIterator());
+            $iterator = new MemberExportListIterator($this->getSubscribersListIterator(), $this->doctrineHelper);
             $iterator->setMemberClassName($this->memberClassName);
-            $iterator->setDoctrineHelper($this->doctrineHelper);
 
             $this->setSourceIterator($iterator);
         }
-    }
-
-    /**
-     * @return BufferedQueryResultIterator
-     */
-    protected function getSubscribersListIterator()
-    {
-        /** @var SubscribersListRepository $repository */
-        $repository = $this->doctrineHelper
-            ->getEntityManager($this->subscribersListClassName)
-            ->getRepository($this->subscribersListClassName);
-
-        return $repository->getAllSubscribersListIterator();
     }
 }

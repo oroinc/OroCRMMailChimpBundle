@@ -8,6 +8,7 @@ use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
+use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -56,19 +57,18 @@ abstract class AbstractMarketingListReader extends IteratorBasedReader implement
     protected $marketingList;
 
     /**
+     * @param ContextRegistry $contextRegistry
      * @param MarketingListProvider $marketingListProvider
-     */
-    public function setMarketingListProvider(MarketingListProvider $marketingListProvider)
-    {
-        $this->marketingListProvider = $marketingListProvider;
-    }
-
-    /**
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      */
-    public function setContactInformationFieldsProvider(
+    public function __construct(
+        ContextRegistry $contextRegistry,
+        MarketingListProvider $marketingListProvider,
         ContactInformationFieldsProvider $contactInformationFieldsProvider
     ) {
+        parent::__construct($contextRegistry);
+
+        $this->marketingListProvider = $marketingListProvider;
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
     }
 
@@ -93,6 +93,10 @@ abstract class AbstractMarketingListReader extends IteratorBasedReader implement
      */
     protected function initializeFromContext(ContextInterface $context)
     {
+        if (!$this->staticSegmentClassName) {
+            throw new InvalidConfigurationException('StaticSegment class name must be provided');
+        }
+
         if (!$context->hasOption(StaticSegmentAwareInterface::OPTION_SEGMENT)) {
             throw new InvalidConfigurationException(
                 sprintf('Configuration reader must contain "%s".', StaticSegmentAwareInterface::OPTION_SEGMENT)
@@ -126,6 +130,10 @@ abstract class AbstractMarketingListReader extends IteratorBasedReader implement
      */
     protected function getIteratorQueryBuilder(MarketingList $marketingList)
     {
+        if (!$this->memberClassName) {
+            throw new InvalidConfigurationException('Member class name must be provided');
+        }
+
         $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
 
         $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
