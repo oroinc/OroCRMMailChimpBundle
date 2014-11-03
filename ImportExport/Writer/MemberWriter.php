@@ -22,7 +22,7 @@ class MemberWriter extends AbstractExportWriter
         $subscribersList = $item->getSubscribersList();
 
         if ($itemsToSave = $this->batchSubscribe($subscribersList, $items)) {
-
+            $itemsToWrite = array_merge($itemsToWrite, $itemsToSave);
         }
 
         parent::write($itemsToWrite);

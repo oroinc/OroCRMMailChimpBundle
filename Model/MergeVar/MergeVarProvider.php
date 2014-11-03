@@ -61,10 +61,14 @@ class MergeVarProvider implements MergeVarProviderInterface
     /**
      * @param array $values
      * @param MergeVarInterface $field
-     * @return null
+     * @return mixed
      */
-    protected function getMergeVarValue(array $values, MergeVarInterface $field = null)
+    protected function getMergeVarValue(array $values = null, MergeVarInterface $field = null)
     {
+        if (!is_array($values)) {
+            return null;
+        }
+
         if ($field && $field->getTag() && isset($values[$field->getTag()])) {
             return $values[$field->getTag()];
         }
