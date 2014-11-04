@@ -24,6 +24,7 @@ class PlaceholderFilter
     /**
      * Checks the object is an instance of a given class.
      *
+     * @param EmailCampaign $entity
      * @return bool
      */
     public function isApplicableOnEmailCampaign($entity)
@@ -32,7 +33,7 @@ class PlaceholderFilter
             $campaign = $this->registry->getManager()
                 ->getRepository('OroCRMMailChimpBundle:Campaign')
                 ->findOneBy(['emailCampaign' => $entity]);
-            return $campaign ? true : false;
+            return (bool) $campaign;
         } else {
             return false;
         }

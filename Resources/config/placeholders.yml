@@ -1,9 +1,9 @@
 placeholders:
-    view_content_data_additional_information:
+    view_content_data_email_campaign_status:
         items:
             orocrm_mailchimp_emailcampaign_stats: ~
 
 items:
     orocrm_mailchimp_emailcampaign_stats:
-        template: OroCRMMailChimpBundle:Placeholder:emailCampaignStats.html.twig
+        action: OroCRMMailChimpBundle:MailChimp:emailCampaignStats
         applicable: @orocrm_mailchimp.placeholder.filter->isApplicableOnEmailCampaign($entity$)
