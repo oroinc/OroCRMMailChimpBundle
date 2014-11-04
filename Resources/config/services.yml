@@ -97,6 +97,8 @@ parameters:
     orocrm_mailchimp.workflow.action.populate_integration_owner.class: OroCRM\Bundle\MailChimpBundle\Model\Action\PopulateIntegrationOwner
     orocrm_mailchimp.workflow.action.assign_constant_value.class: OroCRM\Bundle\MailChimpBundle\Model\Action\AssignConstantValue
     orocrm_mailchimp.workflow.action.update_email_campaign_statistics.class: OroCRM\Bundle\MailChimpBundle\Model\Action\UpdateEmailCampaignStatistics
+    orocrm_mailchimp.workflow.action.abstract_marketing_list_entities.class: OroCRM\Bundle\MailChimpBundle\Model\Action\AbstractMarketingListEntitiesAction
+    orocrm_mailchimp.workflow.action.create_marketing_list_state_item.class: OroCRM\Bundle\MailChimpBundle\Model\Action\MarketingListStateItemAction
 
     # EmailCampaign Voter
     orocrm_mailchimp.email_campaign.security.acl.voter.entity.class: OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter
@@ -316,8 +318,8 @@ services:
         parent: orocrm_mailchimp.connector.abstract
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.template.class%]]
-        tags:
-            - { name: oro_integration.connector, type: template, channel_type: mailchimp }
+#        tags:
+#            - { name: oro_integration.connector, type: template, channel_type: mailchimp }
 
     orocrm_mailchimp.connector.list:
         class: %orocrm_mailchimp.connector.list.class%
@@ -629,16 +631,40 @@ services:
         tags:
             - { name: oro_workflow.action, alias: assign_constant_value }
 
-    orocrm_mailchimp.workflow.action.update_email_campaign_statistics:
-        class: %orocrm_mailchimp.workflow.action.update_email_campaign_statistics.class%
+    orocrm_mailchimp.workflow.action.abstract_marketing_list_entities:
+        class: %orocrm_mailchimp.workflow.action.abstract_marketing_list_entities.class%
+        astract: true
         arguments:
             - @oro_workflow.context_accessor
             - @orocrm_marketing_list.provider.contact_information_fields
-            - @orocrm_campaign.email_campaign.statistics_connector
             - @orocrm_marketing_list.provider.marketing_list
             - @orocrm_mailchimp.model.field_helper
+
+    orocrm_mailchimp.workflow.action.update_email_campaign_statistics:
+        class: %orocrm_mailchimp.workflow.action.update_email_campaign_statistics.class%
+        parent: orocrm_mailchimp.workflow.action.abstract_marketing_list_entities
+        calls:
+            - [setCampaignStatisticsConnector, [@orocrm_campaign.email_campaign.statistics_connector]]
         tags:
             - { name: oro_workflow.action, alias: update_email_campaign_statistics }
+
+    orocrm_mailchimp.workflow.action.create_marketing_list_state_item:
+        parent: orocrm_mailchimp.workflow.action.abstract_marketing_list_entities
+        calls:
+            - [setDoctrineHelper, [@oro_entity.doctrine_helper]]
+            - [setMarketingListStateItemClassName, [%orocrm_marketing_list.unsubscribed_item.class%]]
+
+    orocrm_mailchimp.workflow.action.create_marketing_list_unsubscribed_item:
+        class: %orocrm_mailchimp.workflow.action.create_marketing_list_state_item.class%
+        parent: orocrm_mailchimp.workflow.action.create_marketing_list_state_item
+        tags:
+            - { name: oro_workflow.action, alias: create_marketing_list_unsubscribed_item }
+
+    orocrm_mailchimp.workflow.action.create_marketing_list_removed_item:
+        class: %orocrm_mailchimp.workflow.action.create_marketing_list_state_item.class%
+        parent: orocrm_mailchimp.workflow.action.create_marketing_list_state_item
+        tags:
+            - { name: oro_workflow.action, alias: create_marketing_list_removed_item }
 
     orocrm_mailchimp.email_campaign.security.acl.voter.entity:
         class: %orocrm_mailchimp.email_campaign.security.acl.voter.entity.class%

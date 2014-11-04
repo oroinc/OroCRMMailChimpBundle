@@ -52,6 +52,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     const STATUS_SUBSCRIBED   = 'subscribed';
     const STATUS_UNSUBSCRIBED = 'unsubscribed';
     const STATUS_CLEANED      = 'cleaned';
+    const STATUS_EXPORT       = 'export';
     /**#@-*/
 
     /**

@@ -61,7 +61,7 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
             MergeVarInterface::TAG_EMAIL => reset($contactInformationFieldsValues),
             MergeVarInterface::TAG_FIRST_NAME => $object->getFirstName(),
             MergeVarInterface::TAG_LAST_NAME => $object->getLastName(),
-            'status' => Member::STATUS_UNSUBSCRIBED,
+            'status' => Member::STATUS_EXPORT,
             'subscribersList_id' => $staticSegment->getSubscribersList()->getId(),
             'channel_id' => $staticSegment->getChannel()->getId()
         ];
