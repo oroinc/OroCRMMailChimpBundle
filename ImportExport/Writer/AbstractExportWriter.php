@@ -40,6 +40,18 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Ite
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function write(array $items)
+    {
+        if (!$this->transport) {
+            throw new \InvalidArgumentException('Transport was not provided');
+        }
+
+        return parent::write($items);
+    }
+
+    /**
      * @param array $response
      * @param string $container
      * @param string|null $key

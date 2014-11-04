@@ -9,7 +9,7 @@ class StaticSegmentConnector extends AbstractMailChimpConnector implements
     TwoWaySyncConnectorInterface,
     ConnectorInterface
 {
-    const TYPE = 'staticSegment';
+    const TYPE = 'static_segment';
     const JOB_IMPORT = 'mailchimp_static_segment_import';
     const JOB_EXPORT = 'mailchimp_static_segment_export';
 

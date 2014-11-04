@@ -20,7 +20,6 @@ class MemberActivityDataConverter extends IntegrationAwareDataConverter
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        $channel = $this->context->getOption('channel');
         $importedRecord['member:email'] = $importedRecord['email'];
 
         return parent::convertToImportFormat($importedRecord, $skipNullValues);

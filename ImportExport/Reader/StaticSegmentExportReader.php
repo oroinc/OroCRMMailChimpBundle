@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
+use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentExportListIterator;
 
@@ -40,10 +41,13 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
      */
     protected function initializeFromContext(ContextInterface $context)
     {
+        if (!$this->staticSegmentMemberClassName) {
+            throw new InvalidConfigurationException('StaticSegmentMember class name must be provided');
+        }
+
         if (!$this->getSourceIterator()) {
-            $iterator = new StaticSegmentExportListIterator($this->getSegmentsIterator());
+            $iterator = new StaticSegmentExportListIterator($this->getSegmentsIterator(), $this->doctrineHelper);
             $iterator->setStaticSegmentMemberClassName($this->staticSegmentMemberClassName);
-            $iterator->setDoctrineHelper($this->doctrineHelper);
 
             $this->setSourceIterator($iterator);
         }
@@ -54,6 +58,10 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
      */
     protected function getSegmentsIterator()
     {
+        if (!$this->staticSegmentClassName) {
+            throw new InvalidConfigurationException('StaticSegment class name must be provided');
+        }
+
         $qb = $this->doctrineHelper
             ->getEntityManager($this->staticSegmentClassName)
             ->getRepository($this->staticSegmentClassName)

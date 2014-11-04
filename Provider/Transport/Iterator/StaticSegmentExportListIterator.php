@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
@@ -13,6 +14,18 @@ class StaticSegmentExportListIterator extends AbstractSubscribersListIterator im
      * @var string
      */
     protected $staticSegmentMemberClassName;
+
+    /**
+     * @param \Iterator $mainIterator
+     * @param DoctrineHelper $doctrineHelper
+     */
+    public function __construct(
+        \Iterator $mainIterator,
+        DoctrineHelper $doctrineHelper
+    ) {
+        $this->mainIterator = $mainIterator;
+        $this->doctrineHelper = $doctrineHelper;
+    }
 
     /**
      * @return bool
@@ -39,6 +52,10 @@ class StaticSegmentExportListIterator extends AbstractSubscribersListIterator im
      */
     protected function createSubordinateIterator($staticSegment)
     {
+        if (!$this->staticSegmentMemberClassName) {
+            throw new \InvalidArgumentException('StaticSegmentMember id must be provided');
+        }
+
         if (!$staticSegment instanceof StaticSegment) {
             throw new \InvalidArgumentException(
                 sprintf(

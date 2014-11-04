@@ -67,16 +67,19 @@ class FieldHelper
         $joins = $qb->getDQLPart('join');
         /** @var Join $join */
         foreach ($joins[$rootAlias] as $join) {
-            foreach ($fieldConfigJoins[strtolower($join->getJoinType())] as $fieldJoin) {
-                if (strtoupper($fieldJoin['conditionType']) == strtoupper($join->getConditionType())) {
-                    $fixedJoin = $this->replaceAliases($conditions, $fieldJoin['join']);
+            $joinType = strtolower($join->getJoinType());
+            if (array_key_exists($joinType, $fieldConfigJoins)) {
+                foreach ($fieldConfigJoins[$joinType] as $fieldJoin) {
+                    if (strtoupper($fieldJoin['conditionType']) == strtoupper($join->getConditionType())) {
+                        $fixedJoin = $this->replaceAliases($conditions, $fieldJoin['join']);
 
-                    if ($fixedJoin == $join->getJoin()) {
-                        $conditions[$fieldJoin['alias']] = $join->getAlias();
-                        $fixedCondition = $this->replaceAliases($conditions, $fieldJoin['condition']);
+                        if ($fixedJoin == $join->getJoin()) {
+                            $conditions[$fieldJoin['alias']] = $join->getAlias();
+                            $fixedCondition = $this->replaceAliases($conditions, $fieldJoin['condition']);
 
-                        if ($fixedCondition != (string)$join->getCondition()) {
-                            unset($conditions[$fieldJoin['alias']]);
+                            if ($fixedCondition != (string)$join->getCondition()) {
+                                unset($conditions[$fieldJoin['alias']]);
+                            }
                         }
                     }
                 }
