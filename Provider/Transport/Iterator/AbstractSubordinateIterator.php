@@ -24,7 +24,7 @@ abstract class AbstractSubordinateIterator implements \Iterator
      */
     protected $offset = -1;
 
-    /**=
+    /**
      * @param \Iterator $mainIterator
      */
     public function __construct(\Iterator $mainIterator)

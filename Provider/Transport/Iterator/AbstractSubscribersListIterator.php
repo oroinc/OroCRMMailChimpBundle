@@ -1,14 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sergey
- * Date: 30.10.14
- * Time: 18:16
- */
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
@@ -25,23 +19,24 @@ abstract class AbstractSubscribersListIterator extends AbstractSubordinateIterat
     protected $parameters = [];
 
     /**
+     * @var DoctrineHelper
+     */
+    protected $doctrineHelper;
+
+    /**
+     * @param \Iterator $mainIterator
      * @param MailChimpClient $client
      */
-    public function setClient($client)
-    {
+    public function __construct(
+        \Iterator $mainIterator,
+        MailChimpClient $client
+    ) {
+        $this->mainIterator = $mainIterator;
         $this->client = $client;
     }
 
     /**
-     * @param array $parameters
-     */
-    public function setParameters(array $parameters)
-    {
-        $this->parameters = $parameters;
-    }
-
-    /**
-     * @param $subscribersList
+     * @param mixed $subscribersList
      */
     protected function assertSubscribersList($subscribersList)
     {
@@ -49,7 +44,7 @@ abstract class AbstractSubscribersListIterator extends AbstractSubordinateIterat
             throw new \InvalidArgumentException(
                 sprintf(
                     'Instance of %s is expected, %s given.',
-                    'OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList',
+                    'OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList',
                     is_object($subscribersList) ? get_class($subscribersList) : gettype($subscribersList)
                 )
             );

@@ -24,6 +24,10 @@ class StaticSegmentIterator extends AbstractMailChimpIterator
      */
     public function next()
     {
+        if (!$this->subscriberListId) {
+            throw new \InvalidArgumentException('SubscribersList id must be provided');
+        }
+
         $this->offset += 1;
         $key = $this->offset % $this->batchSize;
 

@@ -3,10 +3,13 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
+use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
 
-class StaticSegmentConnector extends AbstractMailChimpConnector implements ConnectorInterface
+class StaticSegmentConnector extends AbstractMailChimpConnector implements
+    TwoWaySyncConnectorInterface,
+    ConnectorInterface
 {
-    const TYPE = 'staticSegment';
+    const TYPE = 'static_segment';
     const JOB_IMPORT = 'mailchimp_static_segment_import';
     const JOB_EXPORT = 'mailchimp_static_segment_export';
 
@@ -48,5 +51,13 @@ class StaticSegmentConnector extends AbstractMailChimpConnector implements Conne
     protected function getConnectorSource()
     {
         return $this->transport->getSegmentsToSync($this->getLastSyncDate());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getExportJobName()
+    {
+        return self::JOB_EXPORT;
     }
 }

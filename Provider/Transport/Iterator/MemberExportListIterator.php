@@ -15,15 +15,26 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
     protected $memberClassName;
 
     /**
-     * @var DoctrineHelper
+     * @param \Iterator $mainIterator
+     * @param DoctrineHelper $doctrineHelper
      */
-    protected $doctrineHelper;
+    public function __construct(
+        \Iterator $mainIterator,
+        DoctrineHelper $doctrineHelper
+    ) {
+        $this->mainIterator = $mainIterator;
+        $this->doctrineHelper = $doctrineHelper;
+    }
 
     /**
      * @return bool
      */
     public function writeRequired()
     {
+        if (!$this->subordinateIterator) {
+            return false;
+        }
+
         return !$this->subordinateIterator->valid();
     }
 
@@ -36,19 +47,16 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
     }
 
     /**
-     * @param DoctrineHelper $doctrineHelper
-     */
-    public function setDoctrineHelper(DoctrineHelper $doctrineHelper)
-    {
-        $this->doctrineHelper = $doctrineHelper;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function createSubordinateIterator($subscribersList)
     {
         parent::assertSubscribersList($subscribersList);
+
+        if (!$this->memberClassName) {
+            throw new \InvalidArgumentException('Member id must be provided');
+        }
+
 
         $qb = $this->doctrineHelper
             ->getEntityManager($this->memberClassName)
@@ -65,7 +73,8 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
                     'status' => Member::STATUS_UNSUBSCRIBED,
                     'originId' => $subscribersList->getOriginId()
                 ]
-            );
+            )
+            ->addOrderBy('subscribersList.id');
 
         return new BufferedQueryResultIterator($qb);
     }

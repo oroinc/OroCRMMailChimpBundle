@@ -2,7 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-class MemberActivityDataConverter extends IntegrationAwareDataConverter
+use Oro\Bundle\ImportExportBundle\Converter\AbstractTableDataConverter;
+
+class UnsentActivityDataConverter extends AbstractTableDataConverter
 {
     /**
      * {@inheritdoc}
@@ -10,19 +12,10 @@ class MemberActivityDataConverter extends IntegrationAwareDataConverter
     protected function getHeaderConversionRules()
     {
         return [
-            'timestamp' => 'activityTime',
             'campaign_id' => 'campaign:id',
+            'member_id' => 'member:id',
+            'channel_id' => 'channel:id'
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
-    {
-        $importedRecord['member:email'] = $importedRecord['email'];
-
-        return parent::convertToImportFormat($importedRecord, $skipNullValues);
     }
 
     /**

@@ -1,81 +1,11 @@
 definitions:
-    synchronize_marketing_list_item_for_mailchimp_member:
-        label:   'Synchronizes OroCRM Marketing List Item for MailChimp Member'
+    synchronize_marketing_list_item_for_mailchimp_member_activity:
+        label:   'Synchronizes OroCRM Marketing List Item for MailChimp Member Activity'
         enabled: true
-        entity:  OroCRM\Bundle\MailChimpBundle\Entity\Member
-        exclude_definitions: [synchronize_marketing_list_item_for_mailchimp_member]
+        entity:  OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity
         actions_configuration:
-            - @tree:
-                conditions:
-                    @not_empty: $subscribersList.marketingList
-                actions:
-                    - @assign_constant_value:
-                        attribute: $.statusCleaned
-                        value: OroCRM\Bundle\MailChimpBundle\Entity\Member::STATUS_CLEANED
-                    - @assign_constant_value:
-                        attribute: $.statusUnsubscribed
-                        value: OroCRM\Bundle\MailChimpBundle\Entity\Member::STATUS_UNSUBSCRIBED
-                    - @create_datetime:
-                        attribute: $.lastContactedAt
-                    - @create_entity: # create OroCRM Marketing List Item
-                        conditions: # if OroCRM Marketing List Item not exists
-                            @empty: $marketingListItem
-                        parameters:
-                            class:     OroCRM\Bundle\MarketingListBundle\Entity\MarketingListItem
-                            attribute: $marketingListItem
-                            data:
-                                entityId:       $id
-                                marketingList:  $subscribersList.marketingList
-                                contactedTimes: 0
-                                lastContactedAt: $.lastContactedAt
-                    # Create or remove Marketing List Removed Item depending on status of member
-                    - @find_entity: # Find Marketing List Removed Item
-                        class: OroCRM\Bundle\MarketingListBundle\Entity\MarketingListRemovedItem
-                        where:
-                            entityId: $id
-                            marketingList: $subscribersList.marketingList.id
-                        attribute: $.marketingListRemovedItem
-                    - @create_entity: # create OroCRM Marketing List Removed Item
-                        conditions: # if Member status equals "cleaned" and Marketing List Removed Item doesn't exist
-                            @and:
-                                - @equal: [$status, $.statusCleaned]
-                                - @empty: $.marketingListRemovedItem
-                        parameters:
-                            class:     OroCRM\Bundle\MarketingListBundle\Entity\MarketingListRemovedItem
-                            attribute: $.marketingListRemovedItem
-                            data:
-                                entityId:       $id
-                                marketingList:  $subscribersList.marketingList
-                    - @remove_entity: # remove OroCRM Marketing List Removed Item
-                        conditions: # if Member status not equals "cleaned" and Marketing List Removed Item exists
-                            @and:
-                                - @not_equal: [$status, $.statusCleaned]
-                                - @not_empty: $.marketingListRemovedItem
-                        parameters: [$.marketingListRemovedItem]
-                    # Create or remove Marketing List Unsubscribed Item depending on status of member
-                    - @find_entity: # Find Marketing List Unsubscribed Item
-                        class: OroCRM\Bundle\MarketingListBundle\Entity\MarketingListUnsubscribedItem
-                        where:
-                            entityId: $id
-                            marketingList: $subscribersList.marketingList.id
-                        attribute: $.marketingListUnsubscribedItem
-                    - @create_entity: # create OroCRM Marketing List Unsubscribed Item
-                        conditions: # if Member status equals "unsubscribed" and Marketing List Unsubscribed Item doesn't exist
-                            @and:
-                                - @equal: [$status, $.statusUnsubscribed]
-                                - @empty: $.marketingListUnsubscribedItem
-                        parameters:
-                            class:     OroCRM\Bundle\MarketingListBundle\Entity\MarketingListUnsubscribedItem
-                            attribute: $.marketingListUnsubscribedItem
-                            data:
-                                entityId:       $id
-                                marketingList:  $subscribersList.marketingList
-                    - @remove_entity: # remove OroCRM Marketing List Unsubscribed Item
-                        conditions: # if Member status not equals "unsubscribed" and Marketing List Unsubscribed Item exists
-                            @and:
-                                - @not_equal: [$status, $.statusUnsubscribed]
-                                - @not_empty: $.marketingListUnsubscribedItem
-                        parameters: [$.marketingListUnsubscribedItem]
+            - @update_email_campaign_statistics: ~
+
     create_email_campaign_for_mailchimp_campaign:
         label:   Create Email Campaign for MailChimp Campaign
         enabled: true
@@ -126,14 +56,11 @@ definitions:
                                     channel: $channel
                                     template: $template
 triggers:
-    synchronize_marketing_list_item_for_mailchimp_member:
+    synchronize_marketing_list_item_for_mailchimp_member_activity:
         -
             event:    create
             queued:   true
-        -
-            event:    update
-            queued:   true
-            field:    status
+
     create_email_campaign_for_mailchimp_campaign:
         -
             event:    create

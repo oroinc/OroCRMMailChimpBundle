@@ -163,14 +163,6 @@ class StaticSegment implements OriginAwareInterface
     protected $memberCount;
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->members = new ArrayCollection();
-    }
-
-    /**
      * Get id
      *
      * @return integer

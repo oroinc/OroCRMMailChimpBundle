@@ -94,7 +94,24 @@ class MailChimpTransport implements TransportInterface
             $filters['uses_segment'] = (bool)$usesSegment;
         }
 
-        return new CampaignIterator($this->client, $filters);
+        // Synchronize only campaigns that are connected to subscriber lists that are used within OroCRM.
+        $staticSegments = $this->managerRegistry
+            ->getRepository('OroCRMMailChimpBundle:StaticSegment')
+            ->findAll();
+        $listsToSynchronize = [];
+        foreach ($staticSegments as $staticSegment) {
+            $listsToSynchronize[] = $staticSegment->getSubscribersList()->getOriginId();
+        }
+        $listsToSynchronize = array_unique($listsToSynchronize);
+
+        if ($listsToSynchronize) {
+            $filters['list_id'] = implode(',', $listsToSynchronize);
+            $filters['exact'] = false;
+
+            return new CampaignIterator($this->client, $filters);
+        } else {
+            return new \ArrayIterator();
+        }
     }
 
     /**
@@ -156,10 +173,9 @@ class MailChimpTransport implements TransportInterface
     {
         $subscribersLists = $this->managerRegistry
             ->getRepository('OroCRMMailChimpBundle:SubscribersList')
-            ->getAllSubscribersListIterator();
+            ->getUsedSubscribersListIterator();
 
-        $iterator = new StaticSegmentListIterator($subscribersLists);
-        $iterator->setClient($this->client);
+        $iterator = new StaticSegmentListIterator($subscribersLists, $this->client);
 
         return $iterator;
     }
@@ -174,7 +190,7 @@ class MailChimpTransport implements TransportInterface
             ->getRepository('OroCRMMailChimpBundle:Campaign')
             ->getSentCampaigns();
 
-        $parameters = ['include_empty' => true];
+        $parameters = ['include_empty' => false];
         if ($since) {
             $parameters['since'] = $this->getSinceForApi($since);
         }
@@ -192,6 +208,42 @@ class MailChimpTransport implements TransportInterface
     public function batchSubscribe(array $args)
     {
         return $this->client->batchSubscribe($args);
+    }
+
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segment-add.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function addStaticListSegment(array $args)
+    {
+        return $this->client->addStaticListSegment($args);
+    }
+
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segment-members-add.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function addStaticSegmentMembers(array $args)
+    {
+        return $this->client->addStaticSegmentMembers($args);
+    }
+
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segment-members-del.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function deleteStaticSegmentMembers(array $args)
+    {
+        return $this->client->deleteStaticSegmentMembers($args);
     }
 
     /**

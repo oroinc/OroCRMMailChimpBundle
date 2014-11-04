@@ -22,6 +22,7 @@ class StaticSegmentMember
     const STATE_ADD = 'add';
     const STATE_REMOVE = 'remove';
     const STATE_SYNCED = 'synced';
+    const STATE_DROP = 'drop';
 
     /**
      * @var int
