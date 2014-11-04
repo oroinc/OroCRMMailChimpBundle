@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Placeholder\PlaceholderFilter;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
@@ -50,15 +49,19 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 
     public function testIsNotApplicableEntityOnMarketingList()
     {
-        $entity = new EmailCampaign();
+        $entity = $this->getMock('OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign');
         $this->placeholderFilter->isApplicableOnMarketingList($entity);
 
-        $this->assertEquals(false, $this->placeholderFilter->isApplicableOnMarketingList($entity));
+        $this->assertFalse($this->placeholderFilter->isApplicableOnMarketingList($entity));
     }
 
-    public function testIsNotApplicableOnMarketingListByData()
+    /**
+     * @param $staticSegment
+     * @param $expected
+     * @dataProvider staticSegmentDataProvider
+     */
+    public function testIsApplicableOnMarketingList($staticSegment, $expected)
     {
-        $staticSegment = null;
         $this->entityRepository
             ->expects($this->once())
             ->method('findOneBy')
@@ -71,24 +74,17 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->entityRepository));
 
         $entity = new MarketingList();
-        $this->assertEquals(false, $this->placeholderFilter->isApplicableOnMarketingList($entity));
+        $this->assertEquals($expected, $this->placeholderFilter->isApplicableOnMarketingList($entity));
     }
 
-    public function testIsApplicableEntitiyOnMarketingList()
+    /**
+     * @return array
+     */
+    public function staticSegmentDataProvider()
     {
-        $staticSegment = new StaticSegment();
-        $this->entityRepository
-            ->expects($this->once())
-            ->method('findOneBy')
-            ->will($this->returnValue($staticSegment));
-        $this->managerRegistry->expects($this->once())
-            ->method('getManager')
-            ->will($this->returnValue($this->entityManager));
-        $this->entityManager->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($this->entityRepository));
-
-        $entity = new MarketingList();
-        $this->assertEquals(true, $this->placeholderFilter->isApplicableOnMarketingList($entity));
+        return [
+            [null, false],
+            [new StaticSegment(), true],
+        ];
     }
 }

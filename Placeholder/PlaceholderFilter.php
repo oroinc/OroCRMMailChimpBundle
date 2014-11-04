@@ -23,7 +23,8 @@ class PlaceholderFilter
 
     /**
      * Checks the object is an instance of a given class.
-     * @param $marketingList
+     *
+     * @param MarketingList $marketingList
      * @return bool
      */
     public function isApplicableOnMarketingList($marketingList)

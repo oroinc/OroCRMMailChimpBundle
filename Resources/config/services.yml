@@ -105,9 +105,6 @@ parameters:
     # Placeholder filter
     orocrm_mailchimp.placeholder.filter.class: OroCRM\Bundle\MailChimpBundle\Placeholder\PlaceholderFilter
 
-    # Twig Extensions
-    orocrm_mailchimp.twig.extension.class: OroCRM\Bundle\MailChimpBundle\Twig\MailChimpExtension
-
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -664,11 +661,3 @@ services:
         class: %orocrm_mailchimp.placeholder.filter.class%
         arguments:
             - @doctrine
-
-    # Twig extensions
-    orocrm_mailchimp.twig.extension:
-        class: %orocrm_mailchimp.twig.extension.class%
-        arguments:
-            - @doctrine
-        tags:
-            - { name: twig.extension }

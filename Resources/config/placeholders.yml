@@ -8,8 +8,8 @@ placeholders:
 
 items:
     orocrm_mailchimp_sync_data:
-        template: OroCRMMailChimpBundle:Placeholder:syncStatus.html.twig
+        action: OroCRMMailChimpBundle:MailChimp:emailCampaignSyncStatus
         applicable: @orocrm_mailchimp.placeholder.filter->isApplicableOnMarketingList($entity$)
     orocrm_mailchimp_sync_badge:
-        template: OroCRMMailChimpBundle:Placeholder:syncStatusBadge.html.twig
+        action: OroCRMMailChimpBundle:MailChimp:emailCampaignSyncStatusBadge
         applicable: @orocrm_mailchimp.placeholder.filter->isApplicableOnMarketingList($entity$)
