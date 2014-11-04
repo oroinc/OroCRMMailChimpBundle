@@ -33,7 +33,7 @@ class PlaceholderFilter
             $staticSegment = $this->registry->getManager()
                 ->getRepository('OroCRMMailChimpBundle:StaticSegment')
                 ->findOneBy(['marketingList' => $marketingList]);
-            return $staticSegment ? true : false;
+            return (bool) $staticSegment;
         } else {
             return false;
         }
