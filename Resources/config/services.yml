@@ -10,6 +10,7 @@ parameters:
 
     orocrm_mailchimp.transport.mailchimp.class: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport
     orocrm_mailchimp.model.field_helper.class: OroCRM\Bundle\MailChimpBundle\Model\FieldHelper
+    orocrm_mailchimp.validator.email_column.class: OroCRM\Bundle\MailChimpBundle\Validator\EmailColumnValidator
 
     # Forms and extensions
     orocrm_mailchimp.form.extension.channel_connectors.class: OroCRM\Bundle\MailChimpBundle\Form\Extension\ChannelConnectorsExtension
@@ -120,6 +121,14 @@ services:
         class: %orocrm_mailchimp.model.field_helper.class%
         arguments:
             - @oro_entity.virtual_field_provider
+
+    orocrm_mailchimp.validator.email_column:
+        class: %orocrm_mailchimp.validator.email_column.class%
+        arguments:
+            - @orocrm_marketing_list.contact_information_column_validator
+            - @doctrine
+        tags:
+            - { name: validator.constraint_validator, alias: orocrm_mailchimp.validator.email_column }
 
     # Readers
     orocrm_mailchimp.importexport.reader.processed_entities:
