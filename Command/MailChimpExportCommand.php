@@ -34,12 +34,12 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
     /**
      * @var StaticSegmentsMemberStateManager
      */
-    protected $staticSegmentStateManager;
+    protected $reverseSyncProcessor;
 
     /**
      * @var StaticSegmentsMemberStateManager
      */
-    protected $reverseSyncProcessor;
+    protected $staticSegmentStateManager;
 
     /**
      * {@inheritdoc}
@@ -78,6 +78,8 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
                 $output->writeln(sprintf('    %s', $jobName));
                 $this->getReverseSyncProcessor()->process($channel, $type, []);
             }
+
+            $this->getStaticSegmentStateManager()->handleDroppedMembers($staticSegment);
         }
     }
 
@@ -101,5 +103,19 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
         }
 
         return $this->reverseSyncProcessor;
+    }
+
+    /**
+     * @return StaticSegmentsMemberStateManager
+     */
+    protected function getStaticSegmentStateManager()
+    {
+        if (!$this->staticSegmentStateManager) {
+            $this->staticSegmentStateManager = $this->getContainer()->get(
+                'orocrm_mailchimp.static_segment_manager.state_manager'
+            );
+        }
+
+        return $this->staticSegmentStateManager;
     }
 }
