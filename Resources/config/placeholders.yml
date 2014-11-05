@@ -1,9 +1,15 @@
 placeholders:
-    view_content_data_email_campaign_status:
+    view_content_data_email_campaign_status_positive:
         items:
-            orocrm_mailchimp_emailcampaign_stats: ~
+            orocrm_mailchimp_emailcampaign_stats_positive: ~
+    view_content_data_email_campaign_status_negative:
+        items:
+            orocrm_mailchimp_emailcampaign_stats_negative: ~
 
 items:
-    orocrm_mailchimp_emailcampaign_stats:
-        action: OroCRMMailChimpBundle:MailChimp:emailCampaignStats
+    orocrm_mailchimp_emailcampaign_stats_positive:
+        action: OroCRMMailChimpBundle:MailChimp:emailCampaignStatsPositive
+        applicable: @orocrm_mailchimp.placeholder.filter->isApplicableOnEmailCampaign($entity$)
+    orocrm_mailchimp_emailcampaign_stats_negative:
+        action: OroCRMMailChimpBundle:MailChimp:emailCampaignStatsNegative
         applicable: @orocrm_mailchimp.placeholder.filter->isApplicableOnEmailCampaign($entity$)

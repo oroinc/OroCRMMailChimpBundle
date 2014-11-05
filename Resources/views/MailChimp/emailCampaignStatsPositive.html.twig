@@ -1,0 +1,38 @@
+{% import 'OroCRMMailChimpBundle::macros.html.twig' as uimc %}
+<div class="widget-content">
+    <div class="row-fluid form-horizontal">
+        <div class="responsive-block">
+            {{ uimc.renderAttributeWithTooltip('orocrm.mailchimp.emailcampaign.emailsSent.label'|trans,
+                campaign_stat.emailsSent,
+                'orocrm.mailchimp.emailcampaign.emailsSent.tooltip'|trans) }}
+            {#{{ ui.renderHtmlProperty(ui.tooltip("test") ~ 'orocrm.mailchimp.emailcampaign.emailsSent.label'|trans, campaign_stat.emailsSent) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.type.label'|trans, campaign_stat.type) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.status.label'|trans, campaign_stat.status) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.sendTime.label'|trans, campaign_stat.sendTime|oro_format_datetime) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.lastOpenDate.label'|trans, campaign_stat.lastOpenDate|oro_format_datetime) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.archiveUrl.label'|trans, campaign_stat.archiveUrl) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.testsSent.label'|trans, campaign_stat.testsSent) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.testsRemain.label'|trans, campaign_stat.testsRemain) }}#}
+            <div class="control-group">
+                <label class="control-label">
+                    <strong>{{ 'orocrm.mailchimp.emailcampaign.positive.label'|trans }}</strong>
+                </label>
+            </div>
+            {{ uimc.renderAttributeWithTooltip('orocrm.mailchimp.emailcampaign.opens.label'|trans,
+                campaign_stat.opens,
+                'orocrm.mailchimp.emailcampaign.opens.tooltip'|trans) }}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.uniqueOpens.label'|trans, campaign_stat.uniqueOpens) }}#}
+            {{ uimc.renderAttributeWithTooltip('orocrm.mailchimp.emailcampaign.clicks.label'|trans,
+                campaign_stat.clicks,
+                'orocrm.mailchimp.emailcampaign.clicks.tooltip'|trans) }}
+            {{ uimc.renderAttributeWithTooltip('orocrm.mailchimp.emailcampaign.forwards.label'|trans,
+                campaign_stat.forwards,
+                'orocrm.mailchimp.emailcampaign.forwards.tooltip'|trans) }}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.forwardsOpens.label'|trans, campaign_stat.forwardsOpens) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.uniqueClicks.label'|trans, campaign_stat.uniqueClicks) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.usersWhoClicked.label'|trans, campaign_stat.usersWhoClicked) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.uniqueLikes.label'|trans, campaign_stat.uniqueLikes) }}#}
+            {#{{ ui.renderProperty('orocrm.mailchimp.emailcampaign.recipientLikes.label'|trans, campaign_stat.recipientLikes) }}#}
+        </div>
+    </div>
+</div>
