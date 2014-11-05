@@ -37,7 +37,7 @@ workflows:
                         attribute: $.result.syncJob
                         flush: true
                         arguments:
-                            - 'oro:cron:mailchimp:sync-segment'
+                            - 'oro:cron:mailchimp:export'
                             - [$.result.segmentArguments]
             refresh_definition:
                 conditions: # allow refresh of marketing list with email fields for active integration when segment is synced
@@ -60,7 +60,7 @@ workflows:
                         attribute: $.result.syncJob
                         flush: true
                         arguments:
-                            - 'oro:cron:mailchimp:sync-segment'
+                            - 'oro:cron:mailchimp:export'
                             - [$.result.segmentArguments]
                     - @flash_message:
                         message: 'orocrm.mailchimp.workflow.sync_message'
