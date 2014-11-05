@@ -1,0 +1,9 @@
+placeholders:
+    view_navButtons_before:
+        items:
+            orocrm_mailchimp_marketing_list_buttons: ~
+
+items:
+    orocrm_mailchimp_marketing_list_buttons:
+        action: OroCRMMailChimpBundle:MailChimp:connectionButtons
+        applicable: @orocrm_mailchimp.placeholder.filter.buttons_filder->isApplicable($entity$)

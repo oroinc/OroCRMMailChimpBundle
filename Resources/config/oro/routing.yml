@@ -2,3 +2,12 @@ orocrm_mailchimp_bundle:
     resource:     "@OroCRMMailChimpBundle/Controller"
     type:         annotation
     prefix:       /
+
+orocrm_mailchimp_static_segment_api:
+    resource:     "@OroCRMMailChimpBundle/Controller/Api/Rest/StaticSegmentController.php"
+    type:         rest
+    prefix:       api/rest/{version}
+    requirements:
+        version:  latest|v1
+    defaults:
+        version:  latest

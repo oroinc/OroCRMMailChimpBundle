@@ -36,14 +36,17 @@ class MailChimpIntegrationSelectType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'empty_value' => 'orocrm.mailchimp.emailcampaign.integration.placeholder',
-                'class' => self::ENTITY,
-                'property' => 'name',
-                'choices' => $this->getMailChimpIntegrations()
-            ]
-        );
+        $integrations = $this->getMailChimpIntegrations();
+        $options = [
+            'class' => self::ENTITY,
+            'property' => 'name',
+            'choices' => $integrations
+        ];
+
+        if (count($integrations) != 1) {
+            $options['empty_value'] = 'orocrm.mailchimp.emailcampaign.integration.placeholder';
+        }
+        $resolver->setDefaults($options);
     }
 
     /**
