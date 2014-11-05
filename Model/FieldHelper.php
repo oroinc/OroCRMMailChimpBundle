@@ -65,6 +65,25 @@ class FieldHelper
         $fieldConfigJoins = $fieldConfig['join'];
 
         $joins = $qb->getDQLPart('join');
+
+        if (empty($joins)) {
+            foreach ($fieldConfigJoins as $type => $typedFieldConfigJoins) {
+                foreach ($typedFieldConfigJoins as $typedFieldConfigJoin) {
+                    $join = new Join(
+                        $type,
+                        $typedFieldConfigJoin['join'],
+                        $typedFieldConfigJoin['alias'],
+                        $typedFieldConfigJoin['conditionType'],
+                        $typedFieldConfigJoin['condition']
+                    );
+
+                    $qb->add('join', [$rootAlias => $join], true);
+
+                    $joins[$rootAlias][] = $join;
+                }
+            }
+        }
+
         /** @var Join $join */
         foreach ($joins[$rootAlias] as $join) {
             $joinType = strtolower($join->getJoinType());

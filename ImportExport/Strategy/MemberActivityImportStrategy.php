@@ -119,7 +119,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      * @param MemberActivity $entity
      * @return MemberActivity
      */
-    protected function afterProcessEntity(MemberActivity $entity = null)
+    protected function afterProcessEntity($entity)
     {
         if ($entity) {
             $jobContext = $this->getJobContext();

@@ -11,3 +11,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings:
             - NotBlank: ~
         template:
             - NotBlank: ~
+
+OroCRM\Bundle\MarketingListBundle\Entity\MarketingList:
+    constraints:
+        - OroCRM\Bundle\MailChimpBundle\Validator\Constraints\EmailColumnConstraint: ~

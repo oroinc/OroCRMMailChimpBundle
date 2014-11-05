@@ -70,7 +70,7 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
             ->andWhere($qb->expr()->eq('subscribersList.originId', ':originId'))
             ->setParameters(
                 [
-                    'status' => Member::STATUS_UNSUBSCRIBED,
+                    'status' => Member::STATUS_EXPORT,
                     'originId' => $subscribersList->getOriginId()
                 ]
             )
