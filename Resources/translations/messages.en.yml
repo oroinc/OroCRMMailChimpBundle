@@ -209,8 +209,6 @@ orocrm:
             sync_message: Marketing List scheduled for sync with MailChimp Segment "%segment_name%"
 
         syncstatus:
-            title.label: Status
-            marketing_list_name.label: MailChimp List Name
-            segment_name.label: MailChimp Segment Name
-            last_synced.label: Last sync
-            sync_status.label: Sync Status
+            title.label: Synchronization
+            synced_to.label: Synced to
+            sync_status.label: Sync status

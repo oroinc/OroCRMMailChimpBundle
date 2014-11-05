@@ -1,49 +1,17 @@
-<div class="responsive-cell">
-    <div class="box-type1">
-        <div class="oro-tabs">
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a>{{ 'orocrm.mailchimp.syncstatus.title.label'|trans }}</a>
-                </li>
-            </ul>
+{% import 'OroUIBundle::macros.html.twig' as ui %}
 
-            <div class="tab-content">
-                <div class="tab-pane active">
-
-                    <div class="box-type1">
-                        <div class="control-group">
-                            <label class="control-label">
-                                {{ 'orocrm.mailchimp.syncstatus.marketing_list_name.label'|trans }}
-                            </label>
-                            <div class="controls">
-                                <div class="control-label">{{ static_segment.subscribersList.name }}</div>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">
-                                {{ 'orocrm.mailchimp.syncstatus.segment_name.label'|trans }}
-                            </label>
-                            <div class="controls">
-                                <div class="control-label">{{ static_segment.name }}</div>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label">
-                                {{ 'orocrm.mailchimp.syncstatus.last_synced.label'|trans }}
-                            </label>
-                            <div class="controls">
-                                <div class="control-label">
-                                    {{ static_segment.lastSynced ?
-                                        static_segment.lastSynced|oro_format_datetime :
-                                        'N/A' }}
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+<div class="widget-content" xmlns="http://www.w3.org/1999/html">
+    <div class="row-fluid form-horizontal">
+        <div class="responsive-block">
+            <div class="control-group">
+                <label class="control-label">
+                    <strong>{{ 'orocrm.mailchimp.syncstatus.title.label'|trans }}</strong>
+                </label>
             </div>
-
+            {{ ui.renderProperty('orocrm.mailchimp.syncstatus.synced_to.label'|trans,
+                static_segment.subscribersList.name ~ " (" ~ static_segment.name ~ ")"
+            ) }}
+            {{ ui.renderProperty('orocrm.mailchimp.syncstatus.sync_status.label'|trans, static_segment.lastSynced) }}
         </div>
     </div>
 </div>
