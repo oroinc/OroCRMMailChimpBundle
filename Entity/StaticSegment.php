@@ -38,6 +38,7 @@ class StaticSegment implements OriginAwareInterface
     const STATUS_NOT_SYNCED = 'not_synced';
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_SYNCED = 'synced';
+    const STATUS_SCHEDULED = 'scheduled';
 
     /**
      * @var int

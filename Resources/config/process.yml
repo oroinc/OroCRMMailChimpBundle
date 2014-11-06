@@ -85,6 +85,37 @@ definitions:
                         actions:
                             - @create_marketing_list_removed_item: ~
 
+    schedule_mailchimp_segment_synchronization:
+        label:   Schedule MailChimp Static Segment synchronization
+        enabled: true
+        entity:  OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
+        actions_configuration:
+            - @assign_constant_value:
+                attribute: $.statusUnsubched
+                value: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_NOT_SYNCED
+            - @assign_constant_value:
+                attribute: $.statusScheduled
+                value: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_SCHEDULED
+            - @tree:
+                conditions:
+                    @or:
+                        - @empty: $originId
+                        - @equal: [$syncStatus, $.statusUnsubched]
+                        - @equal: [$syncStatus, $.statusScheduled]
+                actions:
+                    - @format_string:
+                        attribute: $.segmentArguments
+                        string: '--segments=%segment_id%'
+                        arguments:
+                            segment_id: $id
+                    - @create_entity:
+                        class: JMS\JobQueueBundle\Entity\Job
+                        attribute: $.syncJob
+                        flush: true
+                        arguments:
+                            - 'oro:cron:mailchimp:sync-segment'
+                            - [$.segmentArguments]
+
 triggers:
     synchronize_marketing_list_item_for_mailchimp_member_activity:
         -
@@ -102,3 +133,13 @@ triggers:
         -
             event:    update
             field:    status
+
+    schedule_mailchimp_segment_synchronization:
+        -
+            event:    create
+        -
+            event:    update
+            field:    syncStatus
+        -
+            event:    update
+            field:    originId
