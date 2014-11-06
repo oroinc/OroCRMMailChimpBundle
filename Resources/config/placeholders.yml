@@ -4,12 +4,12 @@ placeholders:
             orocrm_mailchimp_marketing_list_buttons: ~
     view_sync_status_data:
         items:
-            orocrm_mailchimp_sync_data: ~
+            orocrm_mailchimp_marketing_list_sync_data: ~
 
 items:
     orocrm_mailchimp_marketing_list_buttons:
         action: OroCRMMailChimpBundle:MailChimp:connectionButtons
         applicable: @orocrm_mailchimp.placeholder.filter.buttons_filder->isApplicable($entity$)
-    orocrm_mailchimp_sync_data:
-        action: OroCRMMailChimpBundle:MailChimp:emailCampaignSyncStatus
+    orocrm_mailchimp_marketing_list_sync_data:
+        action: OroCRMMailChimpBundle:MailChimp:marketingListSyncStatus
         applicable: @orocrm_mailchimp.placeholder.filter->isApplicableOnMarketingList($entity$)

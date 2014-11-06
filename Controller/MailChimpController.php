@@ -100,7 +100,7 @@ class MailChimpController extends Controller
      *      options={"id" = "marketingListId"})
      * @Template
      */
-    public function emailCampaignSyncStatusAction(MarketingList $marketingList)
+    public function marketingListSyncStatusAction(MarketingList $marketingList)
     {
         return ['static_segment' => $this->findStaticSegmentByMarketingList($marketingList)];
     }

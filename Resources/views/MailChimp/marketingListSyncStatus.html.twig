@@ -1,0 +1,21 @@
+{% import 'OroUIBundle::macros.html.twig' as ui %}
+
+<div class="widget-content" xmlns="http://www.w3.org/1999/html">
+    <div class="row-fluid form-horizontal">
+        <div class="responsive-block">
+            <div class="control-group">
+                {{ 'orocrm.mailchimp.syncstatus.list_is_connected.lebel'|trans({
+                    '%segment%': '<strong>' ~ static_segment.name ~ '</strong>',
+                    '%list%': '<strong>' ~ static_segment.subscribersList.name ~ '</strong>',
+                    '%synced%': '<strong>'
+                        ~ static_segment.lastSynced|default('oro.ui.empty'|trans)
+                        ~ '</strong>',
+                    '%status%': '<strong>'
+                        ~ ('orocrm.mailchimp.syncstatus.' ~ static_segment.syncStatus)|trans
+                        ~ '</strong>'
+                    })|raw
+                }}
+            </div>
+        </div>
+    </div>
+</div>
