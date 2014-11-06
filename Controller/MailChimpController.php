@@ -92,13 +92,26 @@ class MailChimpController extends Controller
     }
 
     /**
+     * @Route("/sync-status/{marketingListId}",
+     *      name="orocrm_mailchimp_sync_status",
+     *      requirements={"marketingListId"="\d+"})
+     * @ParamConverter("marketingList",
+     *      class="OroCRMMarketingListBundle:MarketingList",
+     *      options={"id" = "marketingListId"})
+     * @Template
+     */
+    public function emailCampaignSyncStatusAction(MarketingList $marketingList)
+    {
+        return ['static_segment' => $this->findStaticSegmentByMarketingList($marketingList)];
+    }
+
+    /**
      * @param MarketingList $marketingList
      * @return StaticSegment
      */
     protected function getStaticSegmentByMarketingList(MarketingList $marketingList)
     {
-        $staticSegment = $this->getDoctrine()->getRepository('OroCRMMailChimpBundle:StaticSegment')
-            ->findOneBy(['marketingList' => $marketingList]);
+        $staticSegment = $this->findStaticSegmentByMarketingList($marketingList);
 
         if (!$staticSegment) {
             $staticSegment = new StaticSegment();
@@ -111,20 +124,13 @@ class MailChimpController extends Controller
     }
 
     /**
-     * @Route("/sync-status/{marketingListId}",
-     *      name="orocrm_mailchimp_sync_status",
-     *      requirements={"marketingListId"="\d+"})
-     * @ParamConverter("marketingList",
-     *      class="OroCRMMarketingListBundle:MarketingList",
-     *      options={"id" = "marketingListId"})
-     * @Template
+     * @param MarketingList $marketingList
+     * @return StaticSegment
      */
-    public function emailCampaignSyncStatusAction(MarketingList $marketingList)
+    protected function findStaticSegmentByMarketingList(MarketingList $marketingList)
     {
-        $staticSegment = $this->getDoctrine()
+        return $this->getDoctrine()
             ->getRepository('OroCRMMailChimpBundle:StaticSegment')
             ->findOneBy(['marketingList' => $marketingList]);
-
-        return ['static_segment' => $staticSegment];
     }
 }

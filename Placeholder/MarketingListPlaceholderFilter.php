@@ -30,12 +30,11 @@ class MarketingListPlaceholderFilter
     public function isApplicableOnMarketingList($marketingList)
     {
         if ($marketingList instanceof MarketingList) {
-            $staticSegment = $this->registry->getManager()
+            return (bool)$this->registry->getManager()
                 ->getRepository('OroCRMMailChimpBundle:StaticSegment')
                 ->findOneBy(['marketingList' => $marketingList]);
-            return (bool) $staticSegment;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

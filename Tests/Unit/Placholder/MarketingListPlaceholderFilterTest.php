@@ -28,7 +28,7 @@ class MarketingListPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
     protected $entityRepository;
 
     /**
-     * @var PlaceholderFilter
+     * @var MarketingListPlaceholderFilter
      */
     protected $placeholderFilter;
 
@@ -56,8 +56,8 @@ class MarketingListPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $staticSegment
-     * @param $expected
+     * @param null|StaticSegment $staticSegment
+     * @param bool $expected
      * @dataProvider staticSegmentDataProvider
      */
     public function testIsApplicableOnMarketingList($staticSegment, $expected)
