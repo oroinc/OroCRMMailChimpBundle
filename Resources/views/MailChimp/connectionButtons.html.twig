@@ -56,8 +56,8 @@
 {% endif %}
 
     <script type="text/javascript">
-        require(['jquery', 'oro/dialog-widget'],
-        function ($, DialogWidget) {
+        require(['jquery', 'oro/dialog-widget', 'oroui/js/mediator'],
+        function ($, DialogWidget, mediator) {
             var btn = $('#mailchimp-connection-btn');
             btn.on('click', function () {
                 var dialogOptions = {
@@ -75,6 +75,7 @@
                 };
                 var dialog = new DialogWidget(dialogOptions);
                 dialog.on('formSave', function (segmentId) {
+                    mediator.execute('refreshPage');
                     dialog.remove();
                 });
                 dialog.render();
