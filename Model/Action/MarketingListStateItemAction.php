@@ -149,11 +149,23 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
                 $marketingList,
                 $memberContactInformationFieldsValues
             );
+
+            /** @var MarketingList $marketingListEntity */
             foreach ($marketingListEntities as $marketingListEntity) {
+                $entityId = $this->doctrineHelper->getSingleEntityIdentifier($marketingListEntity);
+
+                $criteria = [
+                    'entityId' => $entityId,
+                    'marketingList' => $marketingListEntity->getId(),
+                ];
+
+                if ($this->getMarketingListStateItem($criteria)) {
+                    continue;
+                }
+
                 /** @var MarketingListStateItemInterface $marketingListStateItem */
                 $marketingListStateItem = new $this->marketingListStateItemClassName();
 
-                $entityId = $this->doctrineHelper->getSingleEntityIdentifier($marketingListEntity);
                 $marketingListStateItem
                     ->setEntityId($entityId)
                     ->setMarketingList($marketingList);
@@ -163,5 +175,17 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
         }
 
         return $entities;
+    }
+
+    /**
+     * @param array $criteria
+     * @return MarketingListStateItemInterface|null
+     */
+    protected function getMarketingListStateItem(array $criteria)
+    {
+        return $this->doctrineHelper
+            ->getEntityManager($this->marketingListStateItemClassName)
+            ->getRepository($this->marketingListStateItemClassName)
+            ->findOneBy($criteria);
     }
 }

@@ -3,24 +3,13 @@
 namespace OroCRM\Bundle\MailChimpBundle\Acl\Voter;
 
 use Oro\Bundle\SecurityBundle\Acl\Voter\AbstractEntityVoter;
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 
 class EmailCampaignVoter extends AbstractEntityVoter
 {
-    const ENTITY = 'OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign';
-
     /**
      * @var array
      */
     protected $supportedAttributes = ['EDIT'];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsClass($class)
-    {
-        return $class === self::ENTITY;
-    }
 
     /**
      * {@inheritdoc}
@@ -40,9 +29,15 @@ class EmailCampaignVoter extends AbstractEntityVoter
      */
     protected function isEmailCampaignSent($entityId)
     {
-        $emailCampaign = $this->registry->getManager()
-            ->getRepository('OroCRMCampaignBundle:EmailCampaign')
+        $emailCampaign = $this->doctrineHelper
+            ->getRepository($this->className)
             ->find($entityId);
-        return $emailCampaign ? $emailCampaign->isSent() : false;
+
+        if ($emailCampaign) {
+            return $emailCampaign->isSent();
+        }
+
+
+        return false;
     }
 }
