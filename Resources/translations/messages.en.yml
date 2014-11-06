@@ -218,6 +218,7 @@ orocrm:
                 update: 'MailChimp connection updated'
                 connect: 'Connected to MailChimp'
                 disconnect: 'Marketing List disconnected from MailChimp'
+                syncronize_scheduled: 'Marketing List scheduled to synchronize with MailChimp'
             dialog:
                 button:
                     update: Update

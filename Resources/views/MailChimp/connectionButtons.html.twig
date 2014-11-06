@@ -21,19 +21,21 @@
             'iCss': 'icon-edit'
         }) }}
 
-        {#{{ UI.dropdownItem({#}
-            {#'path': 'javascript:void(0);',#}
-            {#'data': {#}
-                {#'page-component-module': 'orocrmmailchimp/js/app/components/synchronize-btn-component',#}
-                {#'page-component-options': '[]',#}
-                {#'url': path('orocrm_mailchimp_marketing_list_connect', {id: staticSegment.id}),#}
-                {#'message': 'orocrm.mailchimp.connection.message.syncronize_scheduled'|trans#}
-            {#},#}
-            {#'id': 'mailchimp-synchronize-btn',#}
-            {#'label': 'orocrm.mailchimp.connection.button.synchronize'|trans,#}
-            {#'class': 'no-hash',#}
-            {#'iCss': 'icon-refresh'#}
-        {#}) }}#}
+        {{ UI.dropdownItem({
+            'path': 'javascript:void(0);',
+            'data': {
+                'page-component-module': 'orocrmmailchimp/js/app/components/synchronize-btn-component',
+                'page-component-options': {
+                    'status': constant('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment::STATUS_SCHEDULED')
+                }|json_encode|raw,
+                'url': path('orocrm_api_update_staticsegment_status', {id: staticSegment.id}),
+                'message': 'orocrm.mailchimp.connection.message.syncronize_scheduled'|trans
+            },
+            'id': 'mailchimp-synchronize-btn',
+            'label': 'orocrm.mailchimp.connection.button.synchronize'|trans,
+            'class': 'no-hash',
+            'iCss': 'icon-refresh'
+        }) }}
 
         <li>
             {{  UI.deleteLink({

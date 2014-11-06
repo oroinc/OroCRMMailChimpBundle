@@ -93,11 +93,15 @@ definitions:
             - @assign_constant_value:
                 attribute: $.statusUnsubched
                 value: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_NOT_SYNCED
+            - @assign_constant_value:
+                attribute: $.statusScheduled
+                value: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_SCHEDULED
             - @tree:
                 conditions:
                     @or:
                         - @empty: $originId
                         - @equal: [$syncStatus, $.statusUnsubched]
+                        - @equal: [$syncStatus, $.statusScheduled]
                 actions:
                     - @format_string:
                         attribute: $.segmentArguments
