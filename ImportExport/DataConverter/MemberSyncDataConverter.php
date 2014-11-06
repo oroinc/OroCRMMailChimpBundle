@@ -2,7 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use Oro\Bundle\LocaleBundle\Model\FullNameInterface;
+use Oro\Bundle\LocaleBundle\Model\FirstNameInterface;
+use Oro\Bundle\LocaleBundle\Model\LastNameInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
@@ -46,27 +47,36 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
     }
 
     /**
-     * @param FullNameInterface $object
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public function convertObjectToImportFormat(FullNameInterface $object)
+    public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
+        $object = reset($importedRecord);
         $contactInformationFieldsValues = $this->getContactInformationFieldsValues($object);
-
-        $staticSegment = $this->getStaticSegment();
 
         $item = [
             MergeVarInterface::FIELD_TYPE_EMAIL => reset($contactInformationFieldsValues),
             MergeVarInterface::TAG_EMAIL => reset($contactInformationFieldsValues),
-            MergeVarInterface::TAG_FIRST_NAME => $object->getFirstName(),
-            MergeVarInterface::TAG_LAST_NAME => $object->getLastName(),
-            'status' => Member::STATUS_UNSUBSCRIBED,
-            'subscribersList_id' => $staticSegment->getSubscribersList()->getId(),
-            'channel_id' => $staticSegment->getChannel()->getId()
+            'status' => Member::STATUS_EXPORT,
         ];
 
-        return $item;
+        if ($object instanceof FirstNameInterface) {
+            $item[MergeVarInterface::TAG_FIRST_NAME] = $object->getFirstName();
+        }
+
+        if ($object instanceof LastNameInterface) {
+            $item[MergeVarInterface::TAG_LAST_NAME] = $object->getLastName();
+        }
+
+        if (!empty($importedRecord['subscribersList_id'])) {
+            $item['subscribersList_id'] = $importedRecord['subscribersList_id'];
+        }
+
+        if (!empty($importedRecord['channel_id'])) {
+            $item['channel_id'] = $importedRecord['channel_id'];
+        }
+
+        return parent::convertToImportFormat($item, $skipNullValues);
     }
 
     /**

@@ -57,7 +57,6 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
             throw new \InvalidArgumentException('Member id must be provided');
         }
 
-
         $qb = $this->doctrineHelper
             ->getEntityManager($this->memberClassName)
             ->getRepository($this->memberClassName)
@@ -70,7 +69,7 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
             ->andWhere($qb->expr()->eq('subscribersList.originId', ':originId'))
             ->setParameters(
                 [
-                    'status' => Member::STATUS_UNSUBSCRIBED,
+                    'status' => Member::STATUS_EXPORT,
                     'originId' => $subscribersList->getOriginId()
                 ]
             )

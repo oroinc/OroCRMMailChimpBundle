@@ -133,8 +133,9 @@ class MailChimpTransport implements TransportInterface
      */
     public function getMembersToSync(\DateTime $since = null)
     {
-        $subscribersLists = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:SubscribersList')
-            ->getAllSubscribersListIterator();
+        $subscribersLists = $this->managerRegistry
+            ->getRepository('OroCRMMailChimpBundle:SubscribersList')
+            ->getUsedSubscribersListIterator();
 
         $parameters = ['status' => [Member::STATUS_SUBSCRIBED, Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED]];
 

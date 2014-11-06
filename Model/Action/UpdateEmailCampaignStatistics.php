@@ -2,61 +2,24 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
 
-use Doctrine\DBAL\Types\Type;
-
-use Oro\Bundle\WorkflowBundle\Model\Action\AbstractAction;
-use Oro\Bundle\WorkflowBundle\Model\ContextAccessor;
 use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use OroCRM\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
-use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
-use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
-class UpdateEmailCampaignStatistics extends AbstractAction
+class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
 {
-    /**
-     * @var ContactInformationFieldsProvider
-     */
-    protected $contactInformationFieldsProvider;
-
     /**
      * @var EmailCampaignStatisticsConnector
      */
     protected $campaignStatisticsConnector;
 
     /**
-     * @var MarketingListProvider
-     */
-    protected $marketingListProvider;
-
-    /**
-     * @var FieldHelper
-     */
-    protected $fieldHelper;
-
-    /**
-     * @param ContextAccessor $contextAccessor
-     * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param EmailCampaignStatisticsConnector $campaignStatisticsConnector
-     * @param MarketingListProvider $marketingListProvider
-     * @param FieldHelper $fieldHelper
      */
-    public function __construct(
-        ContextAccessor $contextAccessor,
-        ContactInformationFieldsProvider $contactInformationFieldsProvider,
-        EmailCampaignStatisticsConnector $campaignStatisticsConnector,
-        MarketingListProvider $marketingListProvider,
-        FieldHelper $fieldHelper
-    ) {
-        parent::__construct($contextAccessor);
-
-        $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
+    public function setCampaignStatisticsConnector($campaignStatisticsConnector)
+    {
         $this->campaignStatisticsConnector = $campaignStatisticsConnector;
-        $this->marketingListProvider = $marketingListProvider;
-        $this->fieldHelper = $fieldHelper;
     }
 
     /**
@@ -96,7 +59,7 @@ class UpdateEmailCampaignStatistics extends AbstractAction
         $emailCampaign = $mailChimpCampaign->getEmailCampaign();
         $marketingList = $mailChimpCampaign->getStaticSegment()->getMarketingList();
 
-        $relatedEntities = $this->getMarketingListEntitiesByEmail($marketingList, $memberActivity->getEmail());
+        $relatedEntities = $this->getMarketingListEntitiesByEmails($marketingList, [$memberActivity->getEmail()]);
         foreach ($relatedEntities as $relatedEntity) {
             $emailCampaignStatistics = $this->campaignStatisticsConnector->getStatisticsRecord(
                 $emailCampaign,
@@ -140,37 +103,14 @@ class UpdateEmailCampaignStatistics extends AbstractAction
     }
 
     /**
-     * @param MarketingList $marketingList
-     * @param string $email
-     * @return array
-     */
-    protected function getMarketingListEntitiesByEmail($marketingList, $email)
-    {
-        $emailFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
-            $marketingList,
-            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
-        );
-
-        $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
-
-        foreach ($emailFields as $emailField) {
-            $parameterName = $emailField . mt_rand();
-            $qb->andWhere(
-                $qb->expr()->eq(
-                    $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $emailField),
-                    ':' . $parameterName
-                )
-            )->setParameter($parameterName, $email, Type::STRING);
-        }
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function initialize(array $options)
     {
+        if (!$this->campaignStatisticsConnector) {
+            throw new \InvalidArgumentException('EmailCampaignStatisticsConnector is not provided');
+        }
+
         return $this;
     }
 }

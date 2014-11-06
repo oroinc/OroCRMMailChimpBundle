@@ -8,10 +8,10 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Placeholder\PlaceholderFilter;
+use OroCRM\Bundle\MailChimpBundle\Placeholder\EmailCampaignPlaceholderFilter;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
-class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
+class EmailCampaignPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
@@ -45,7 +45,7 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->managerRegistry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
 
-        $this->placeholderFilter = new PlaceholderFilter($this->managerRegistry);
+        $this->placeholderFilter = new EmailCampaignPlaceholderFilter($this->managerRegistry);
     }
 
     public function testIsNotApplicableEntityOnEmailCampaign()

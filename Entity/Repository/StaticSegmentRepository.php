@@ -14,16 +14,18 @@ class StaticSegmentRepository extends EntityRepository
      * @param array|null $segments
      * @return \Iterator
      */
-    public function getStaticSegmentsWithDynamicMarketingList($segments = null)
+    public function getStaticSegmentsToSync($segments = null)
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb = $this->createQueryBuilder('staticSegment');
 
         $qb
             ->select('staticSegment')
-            ->from('OroCRMMailChimpBundle:StaticSegment', 'staticSegment');
+            ->join('staticSegment.channel', 'channel')
+            ->groupBy('channel.id');
 
         if ($segments) {
-            $qb->andWhere('staticSegment.id IN(:segments)')
+            $qb
+                ->andWhere('staticSegment.id IN(:segments)')
                 ->setParameter('segments', $segments);
         } else {
             $qb

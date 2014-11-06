@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 
-class PlaceholderFilter
+class EmailCampaignPlaceholderFilter
 {
     /**
      * @var ManagerRegistry

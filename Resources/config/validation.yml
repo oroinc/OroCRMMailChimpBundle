@@ -11,3 +11,21 @@ OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings:
             - NotBlank: ~
         template:
             - NotBlank: ~
+
+OroCRM\Bundle\MarketingListBundle\Entity\MarketingList:
+    constraints:
+        - OroCRM\Bundle\MailChimpBundle\Validator\Constraints\EmailColumnConstraint: ~
+
+OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment:
+    properties:
+        name:
+            - NotBlank: ~
+            - Length:
+                max: 100
+                maxMessage: "MailChimp Segment name cannot be longer than {{ limit }} characters long"
+        channel:
+            - NotBlank: ~
+        subscribersList:
+            - NotBlank: ~
+        marketingList:
+            - NotBlank: ~

@@ -55,6 +55,36 @@ definitions:
                                 data:
                                     channel: $channel
                                     template: $template
+
+    mailchimp_handle_unsubscribed_member:
+        label:   Create MarketingListUnsubscribedItem for MailChimp unsubscribed Member
+        enabled: true
+        entity:  OroCRM\Bundle\MailChimpBundle\Entity\Member
+        actions_configuration:
+            - @tree:
+                actions:
+                    # Prepare constants values
+                    - @assign_constant_value:
+                        attribute: $.statusUnsubscribed
+                        value: OroCRM\Bundle\MailChimpBundle\Entity\Member::STATUS_UNSUBSCRIBED
+                    - @assign_constant_value:
+                        attribute: $.statusCleaned
+                        value: OroCRM\Bundle\MailChimpBundle\Entity\Member::STATUS_CLEANED
+                    # Create OroCRM MarketingListUnsubscribedItem
+                    - @tree:
+                        conditions:
+                            @and:
+                                - @equal: [$status, $.statusUnsubscribed]
+                        actions:
+                            - @create_marketing_list_unsubscribed_item: ~
+                    # Create OroCRM MarketingListRemovedItem
+                    - @tree:
+                        conditions:
+                            @and:
+                                - @equal: [$status, $.statusCleaned]
+                        actions:
+                            - @create_marketing_list_removed_item: ~
+
 triggers:
     synchronize_marketing_list_item_for_mailchimp_member_activity:
         -
@@ -65,3 +95,10 @@ triggers:
         -
             event:    create
             queued:   true
+
+    mailchimp_handle_unsubscribed_member:
+        -
+            event:    create
+        -
+            event:    update
+            field:    status
