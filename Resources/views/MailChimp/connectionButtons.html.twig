@@ -6,11 +6,14 @@
         {{ UI.dropdownItem({
             'path': 'javascript:void(0);',
             'data': {
-                'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
-                'page-component-options': '[]',
                 'url': path('orocrm_mailchimp_marketing_list_connect', {id: marketingList.id}),
-                'title': 'orocrm.mailchimp.connection.dialog.title.update'|trans,
-                'message': 'orocrm.mailchimp.connection.message.update'|trans
+                'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
+                'page-component-options': {
+                    'message': 'orocrm.mailchimp.connection.message.update'|trans,
+                    'options': {
+                        'title': 'orocrm.mailchimp.connection.dialog.title.update'|trans,
+                    }
+                }|json_encode|raw
             },
             'id': 'mailchimp-connection-btn',
             'label': 'orocrm.mailchimp.connection.button.manage_connection'|trans,
@@ -19,10 +22,17 @@
         }) }}
 
         {#{{ UI.dropdownItem({#}
-            {#'path': path('oro_dashboard_create'),#}
-            {#'title': 'oro.dashboard.create_dashboard_link.title'|trans,#}
-            {#'label': 'oro.dashboard.create_dashboard_link.text'|trans,#}
-            {#'iCss': 'icon-plus'#}
+            {#'path': 'javascript:void(0);',#}
+            {#'data': {#}
+                {#'page-component-module': 'orocrmmailchimp/js/app/components/synchronize-btn-component',#}
+                {#'page-component-options': '[]',#}
+                {#'url': path('orocrm_mailchimp_marketing_list_connect', {id: staticSegment.id}),#}
+                {#'message': 'orocrm.mailchimp.connection.message.syncronize_scheduled'|trans#}
+            {#},#}
+            {#'id': 'mailchimp-synchronize-btn',#}
+            {#'label': 'orocrm.mailchimp.connection.button.synchronize'|trans,#}
+            {#'class': 'no-hash',#}
+            {#'iCss': 'icon-refresh'#}
         {#}) }}#}
 
         <li>
@@ -48,11 +58,14 @@
     {{ UI.link({
         'path': 'javascript:void(0);',
         'data': {
-            'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
-            'page-component-options': '[]',
             'url': path('orocrm_mailchimp_marketing_list_connect', {id: marketingList.id}),
-            'title': 'orocrm.mailchimp.connection.dialog.title.connect'|trans,
-            'message': 'orocrm.mailchimp.connection.message.connect'|trans
+            'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
+            'page-component-options': {
+                'message': 'orocrm.mailchimp.connection.message.connect'|trans,
+                'options': {
+                    'title': 'orocrm.mailchimp.connection.dialog.title.connect'|trans
+                }
+            }|json_encode|raw
         },
         'id': 'mailchimp-connection-btn',
         'label': 'orocrm.mailchimp.connection.button.connect'|trans,
