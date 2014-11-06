@@ -123,7 +123,13 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
      */
     protected function getMarketingListStateItems(Member $member)
     {
-        $marketingLists = $this->getMarketingListIterator($member->getSubscribersList());
+        $entities = [];
+
+        if (!$subscribersList = $member->getSubscribersList()) {
+            return $entities;
+        }
+
+        $marketingLists = $this->getMarketingListIterator($subscribersList);
 
         $memberContactInformationFields = $this->contactInformationFieldsProvider
             ->getEntityTypedFields(
@@ -137,7 +143,6 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
                 $member
             );
 
-        $entities = [];
 
         foreach ($marketingLists as $marketingList) {
             $marketingListEntities = $this->getMarketingListEntitiesByEmails(
