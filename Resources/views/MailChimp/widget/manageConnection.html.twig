@@ -1,0 +1,55 @@
+<div class="widget-content">
+    {% if savedId is defined and savedId %}
+        <script type="text/javascript">
+            require(['oroui/js/widget-manager'],
+            function(widgetManager){
+                widgetManager.getWidgetInstance({{ app.request.get('_wid')|json_encode|raw }}, function(widget) {
+                    widget.trigger(
+                        'formSave',
+                        {{ savedId|json_encode|raw }}
+                    );
+                });
+            });
+        </script>
+    {% elseif form.vars.errors|length > 0 %}
+        <script type="text/javascript">
+            require(['oroui/js/widget-manager'],
+            function(widgetManager){
+                widgetManager.getWidgetInstance({{ app.request.get('_wid')|json_encode|raw }}, function(widget) {
+                    widget.trigger('formSaveError');
+                });
+            });
+        </script>
+        <div class="alert alert-error">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
+
+    <form method="post"
+          data-nohash="true"
+          data-disable-autofocus="true"
+          id="{{ form.vars.name }}"
+          action="{{ app.request.uri }}"
+          class="form-dialog"
+            >
+        <fieldset class="form-horizontal">
+            {{ form_row(form.name) }}
+            {{ form_row(form.channel) }}
+            {{ form_row(form.subscribersList) }}
+        </fieldset>
+
+        {{ form_rest(form) }}
+
+        <div class="widget-actions">
+            <button type="reset" class="btn">{{ 'orocrm.mailchimp.connection.dialog.button.cancel'|trans }}</button>
+            <button type="submit" class="btn btn-success">
+                {% if entity.id %}
+                    {{ 'orocrm.mailchimp.connection.dialog.button.update'|trans }}
+                {% else %}
+                    {{ 'orocrm.mailchimp.connection.dialog.button.connect'|trans }}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+    {{ oro_form_js_validation(form) }}
+</div>

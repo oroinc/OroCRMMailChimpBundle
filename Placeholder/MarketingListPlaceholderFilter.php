@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
-class PlaceholderFilter
+class MarketingListPlaceholderFilter
 {
     /**
      * @var ManagerRegistry

@@ -57,7 +57,6 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
             throw new \InvalidArgumentException('Member id must be provided');
         }
 
-
         $qb = $this->doctrineHelper
             ->getEntityManager($this->memberClassName)
             ->getRepository($this->memberClassName)
