@@ -85,7 +85,7 @@ class PlaceholderFilterTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [null, null, false],
-            [null,  new Campaign(), false],
+            [null, new Campaign(), false],
             [new EmailCampaign(), null, false],
             [new EmailCampaign(), new Campaign(), false],
             [(new EmailCampaign())->setTransport('mailchimp'), null, false],

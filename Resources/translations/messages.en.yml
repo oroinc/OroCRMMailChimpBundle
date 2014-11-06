@@ -216,18 +216,8 @@ orocrm:
             status.label: Status
             sendTime.label: Send Time
             sendTime.tooltip: Number of email addresses campaign was sent to.
-            lastOpenDate.label: Last Open Date
-            lastOpenDate.tooltip: Last Open Date
-            archiveUrl.label: Archive Url
-            archiveUrl.tooltip: Archive Url
             emailsSent.label: Emails Sent
             emailsSent.tooltip: Emails Sent
-            testsSent.label: Tests Sent
-            testsSent.tooltip: Tests Sent
-            testsRemain.label: Tests Remain
-            testsRemain.tooltip: Tests Remain
-            syntaxErrors.label: Syntax Errors
-            syntaxErrors.tooltip: Syntax Errors
             hardBounces.label: Hard Bounces
             hardBounces.tooltip: Number of email addresses in campaign that hard bounced.
             softBounces.label: Soft Bounces
@@ -238,26 +228,7 @@ orocrm:
             abuseReports.tooltip: Number of email addresses in campaign that reported campaign for abuse.
             forwards.label: Forwards
             forwards.tooltip: Number of times email was forwarded to a friend.
-            forwardsOpens.label: Forwards Opens
-            forwardsOpens.tooltip: Forwards Opens
             opens.label: Opens
             opens.tooltip: Number of times the campaign was opened.
-            uniqueOpens.label: Unique Opens
-            uniqueOpens.tooltip: Unique Opens
             clicks.label: Clicks
             clicks.tooltip: Number of times a link in the campaign was clicked.
-            uniqueClicks.label: Unique Clicks
-            uniqueClicks.tooltip: Unique Clicks
-            usersWhoClicked.label: Users Who Clicked
-            usersWhoClicked.tooltip: Users Who Clicked
-            uniqueLikes.label: Unique Likes
-            uniqueLikes.tooltip: Unique Likes
-            recipientLikes.label: Recipient Likes
-            recipientLikes.tooltip: Recipient Likes
-            facebookLikes.label: Facebook Likes
-            facebookLikes.tooltip: Facebook Likes
-            createdAt.label: Created At
-            createdAt.tooltip: Created At
-            updatedAt.label: Updated At
-            updatedAt.tooltip: Updated At
-
