@@ -214,6 +214,10 @@ orocrm:
                 group_name: 'MailChimp'
                 synchronize: 'Synchronize'
                 disconnect: 'Disconnect'
+            message:
+                update: 'MailChimp connection updated'
+                connect: 'Connected to MailChimp'
+                disconnect: 'Marketing List disconnected from MailChimp'
             dialog:
                 button:
                     update: Update

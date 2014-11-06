@@ -1,3 +1,4 @@
 config:
     paths:
         'orocrmmailchimp/js/app/components/api-key-component': 'bundles/orocrmmailchimp/js/app/components/api-key-component.js'
+        'orocrmmailchimp/js/app/components/connect-btn-component': 'bundles/orocrmmailchimp/js/app/components/connect-btn-component.js'
