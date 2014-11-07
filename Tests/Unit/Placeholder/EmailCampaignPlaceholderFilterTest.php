@@ -74,7 +74,8 @@ class EmailCampaignPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $expected,
-            $this->placeholderFilter->isApplicableOnEmailCampaign($emailCampaign));
+            $this->placeholderFilter->isApplicableOnEmailCampaign($emailCampaign)
+        );
     }
 
     /**

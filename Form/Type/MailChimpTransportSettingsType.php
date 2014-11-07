@@ -24,16 +24,17 @@ class MailChimpTransportSettingsType extends AbstractTransportSettingsType
                     'label' => 'orocrm.mailchimp.emailcampaign.integration.label',
                     'required' => true
                 ]
-            );
-//            ->add(
-//                'template',
-//                'orocrm_mailchimp_template_select',
-//                [
-//                    'label' => 'orocrm.mailchimp.emailcampaign.template.label',
-//                    'required' => true,
-//                    'channel_field' => 'channel'
-//                ]
-//            );
+            )
+            /*
+            ->add(
+                'template',
+                'orocrm_mailchimp_template_select',
+                [
+                    'label' => 'orocrm.mailchimp.emailcampaign.template.label',
+                    'required' => true,
+                    'channel_field' => 'channel'
+                ]
+            )*/;
 
         parent::buildForm($builder, $options);
     }
