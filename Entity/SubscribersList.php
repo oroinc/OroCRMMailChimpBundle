@@ -17,7 +17,7 @@ use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFieldsInterface;
  *\
  * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository")
  * @ORM\Table(
- *      name="orocrm_mailchimp_subscribers_list"
+ *      name="orocrm_mc_subscribers_list"
  * )
  * @ORM\HasLifecycleCallbacks()
  * @Config(

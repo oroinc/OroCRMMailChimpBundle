@@ -14,7 +14,7 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
  * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository")
- * @ORM\Table(name="orocrm_mailchimp_static_segment")
+ * @ORM\Table(name="orocrm_mc_static_segment")
  * @ORM\HasLifecycleCallbacks()
  * @Config(
  *  defaultValues={

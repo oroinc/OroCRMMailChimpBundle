@@ -10,7 +10,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 /**
  * @ORM\Entity()
  * @ORM\Table(
- *      name="orocrm_mailchimp_static_segment_member",
+ *      name="orocrm_mc_static_segment_mmbr",
  *      uniqueConstraints={
  *          @ORM\UniqueConstraint(name="mc_segment_sid_mid_unq", columns={"static_segment_id", "member_id"})
  *     }
