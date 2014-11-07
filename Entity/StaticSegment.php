@@ -88,7 +88,7 @@ class StaticSegment implements OriginAwareInterface
      * @var MarketingList
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MarketingListBundle\Entity\MarketingList")
-     * @ORM\JoinColumn(name="marketing_list_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="marketing_list_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $marketingList;
 
@@ -96,7 +96,7 @@ class StaticSegment implements OriginAwareInterface
      * @var SubscribersList
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
-     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $subscribersList;
 

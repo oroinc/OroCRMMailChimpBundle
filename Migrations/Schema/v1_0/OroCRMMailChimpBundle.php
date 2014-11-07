@@ -510,13 +510,13 @@ class OroCRMMailChimpBundleInstaller implements Installation
             $schema->getTable('orocrm_mc_subscribers_list'),
             ['subscribers_list_id'],
             ['id'],
-            ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_marketing_list'),
             ['marketing_list_id'],
             ['id'],
-            ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_integration_channel'),
