@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Oro\Bundle\FormBundle\Form\Handler\ApiFormHandler;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 
 /**
  * @Route("/mailchimp")
@@ -135,5 +136,25 @@ class MailChimpController extends Controller
         return $this->getDoctrine()
             ->getRepository('OroCRMMailChimpBundle:StaticSegment')
             ->findOneBy(['marketingList' => $marketingList]);
+    }
+
+    /**
+     * @Route("/email-campaign-status-positive/{entity}",
+     *      name="orocrm_mailchimp_email_campaign_status",
+     *      requirements={"entity"="\d+"})
+     * @ParamConverter("emailCampaign",
+     *      class="OroCRMCampaignBundle:EmailCampaign",
+     *      options={"id" = "entity"})
+     * @Template
+     *
+     * @param EmailCampaign $emailCampaign
+     * @return array
+     */
+    public function emailCampaignStatsAction(EmailCampaign $emailCampaign)
+    {
+        $campaign = $this->getDoctrine()
+            ->getRepository('OroCRMMailChimpBundle:Campaign')
+            ->findOneBy(['emailCampaign' => $emailCampaign]);
+        return ['campaignStats' => $campaign];
     }
 }

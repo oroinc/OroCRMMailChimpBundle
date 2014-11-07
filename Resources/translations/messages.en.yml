@@ -234,3 +234,19 @@ orocrm:
             in_progress: In Progress
             scheduled: Scheduled for Sync
             list_is_connected.lebel: This list is connected to "%segment%" segment of "%list%" Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.
+
+        emailcampaign:
+            statistics.label: Mailchimp Statistics
+            positive.label: Positive
+            negative.label: Negative
+            type.label: Type
+            status.label: Status
+            sendTime.label: Send Time
+            emailsSent.label: Emails Sent
+            hardBounces.label: Hard Bounces
+            softBounces.label: Soft Bounces
+            unsubscribes.label: Unsubscribes
+            abuseReports.label: Abuse Reports
+            forwards.label: Forwards
+            opens.label: Opens
+            clicks.label: Clicks

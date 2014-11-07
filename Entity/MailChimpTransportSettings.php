@@ -83,7 +83,7 @@ class MailChimpTransportSettings extends TransportSettings
             $this->settings = new ParameterBag(
                 [
                     'channel' => $this->getChannel(),
-//                    'template' => $this->getTemplate()
+                    // 'template' => $this->getTemplate()
                 ]
             );
         }

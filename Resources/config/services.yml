@@ -116,6 +116,7 @@ parameters:
 
     # Placeholder filter
     orocrm_mailchimp.placeholder.filter.marketing_list.class: OroCRM\Bundle\MailChimpBundle\Placeholder\MarketingListPlaceholderFilter
+    orocrm_mailchimp.placeholder.filter.email_campaign.class: OroCRM\Bundle\MailChimpBundle\Placeholder\EmailCampaignPlaceholderFilter
 
 services:
     orocrm_mailchimp.client.factory:
@@ -769,5 +770,10 @@ services:
     # Placeholder
     orocrm_mailchimp.placeholder.filter.sync_status:
         class: %orocrm_mailchimp.placeholder.filter.marketing_list.class%
+        arguments:
+            - @doctrine
+
+    orocrm_mailchimp.placeholder.filter.email_campaign:
+        class: %orocrm_mailchimp.placeholder.filter.email_campaign.class%
         arguments:
             - @doctrine
