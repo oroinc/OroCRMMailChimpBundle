@@ -84,7 +84,7 @@ definitions:
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
         actions_configuration:
             - @assign_constant_value:
-                attribute: $.statusUnsubched
+                attribute: $.statusNotSynced
                 value: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_NOT_SYNCED
             - @assign_constant_value:
                 attribute: $.statusScheduled
@@ -92,8 +92,7 @@ definitions:
             - @tree:
                 conditions:
                     @or:
-                        - @empty: $originId
-                        - @equal: [$syncStatus, $.statusUnsubched]
+                        - @equal: [$syncStatus, $.statusNotSynced]
                         - @equal: [$syncStatus, $.statusScheduled]
                 actions:
                     - @format_string:
@@ -131,6 +130,3 @@ triggers:
         -
             event:    update
             field:    syncStatus
-        -
-            event:    update
-            field:    originId
