@@ -9,8 +9,8 @@ OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings:
     properties:
         channel:
             - NotBlank: ~
-        template:
-            - NotBlank: ~
+#        template:
+#            - NotBlank: ~
 
 OroCRM\Bundle\MarketingListBundle\Entity\MarketingList:
     constraints:

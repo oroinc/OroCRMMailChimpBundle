@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Acl\Voter;
 
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter;
 
@@ -13,32 +14,22 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
     protected $voter;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $registry;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|DoctrineHelper
      */
     protected $doctrineHelper;
 
     protected function setUp()
     {
-        $this->registry = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
         $this->doctrineHelper = $this->getMockBuilder('Oro\Bundle\EntityBundle\ORM\DoctrineHelper')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->voter = new EmailCampaignVoter($this->registry, $this->doctrineHelper);
+        $this->voter = new EmailCampaignVoter($this->doctrineHelper);
     }
 
     protected function tearDown()
     {
         unset($this->voter);
-        unset($this->registry);
         unset($this->doctrineHelper);
     }
 
@@ -68,11 +59,14 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param string $class
+     * @param string $actualClass
      * @param bool $expected
      * @dataProvider supportsClassDataProvider
      */
-    public function testSupportsClass($class, $expected)
+    public function testSupportsClass($class, $actualClass, $expected)
     {
+        $this->voter->setClassName($actualClass);
+
         $this->assertEquals($expected, $this->voter->supportsClass($class));
     }
 
@@ -82,8 +76,8 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
     public function supportsClassDataProvider()
     {
         return [
-            'supported class' => [EmailCampaignVoter::ENTITY, true],
-            'not supported class' => ['NotSupportedClass', false],
+            'supported class' => ['stdClass', 'stdClass', true],
+            'not supported class' => ['NotSupportedClass', 'stdClass', false],
         ];
     }
 
@@ -91,7 +85,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
      * @dataProvider attributesDataProvider
      * @param array $attributes
      * @param $emailCampaign
-     * @param $expected
+     * @param bool $expected
      */
     public function testVote($attributes, $emailCampaign, $expected)
     {
@@ -102,7 +96,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
         $this->doctrineHelper->expects($this->once())
             ->method('getEntityClass')
             ->with($object)
-            ->will($this->returnValue(EmailCampaignVoter::ENTITY));
+            ->will($this->returnValue('stdClass'));
         $this->doctrineHelper->expects($this->once())
             ->method('getSingleEntityIdentifier')
             ->with($object, false)
@@ -111,6 +105,8 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
         if ($this->voter->supportsAttribute($attributes[0])) {
             $this->assertEmailCampaignLoad($emailCampaign);
         }
+
+        $this->voter->setClassName('stdClass');
 
         $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $this->assertEquals(
@@ -150,18 +146,15 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
         $repository = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectRepository')
             ->disableOriginalConstructor()
             ->getMock();
-        $repository->expects($this->once())
+
+        $repository
+            ->expects($this->once())
             ->method('find')
             ->will($this->returnValue($emailCampaign));
-        $em = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectManager')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $em->expects($this->once())
+
+        $this->doctrineHelper
+            ->expects($this->once())
             ->method('getRepository')
-            ->with('OroCRMCampaignBundle:EmailCampaign')
             ->will($this->returnValue($repository));
-        $this->registry->expects($this->once())
-            ->method('getManager')
-            ->will($this->returnValue($em));
     }
 }

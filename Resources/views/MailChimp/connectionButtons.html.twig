@@ -1,13 +1,37 @@
 {% import 'OroUIBundle::macros.html.twig' as UI %}
 
-<div class="btn-group">
+<div class="btn-group pull-left">
 {% if staticSegment.id %}
     {% set html %}
+        {% if staticSegment.syncStatus == constant('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment::STATUS_SYNCED') %}
+            {{ UI.dropdownItem({
+                'path': 'javascript:void(0);',
+                'data': {
+                    'page-component-module': 'orocrmmailchimp/js/app/components/synchronize-btn-component',
+                    'page-component-options': {
+                        'status': constant('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment::STATUS_SCHEDULED')
+                    }|json_encode|raw,
+                    'url': path('orocrm_api_update_staticsegment_status', {id: staticSegment.id}),
+                    'message': 'orocrm.mailchimp.connection.message.syncronize_scheduled'|trans
+                },
+                'id': 'mailchimp-synchronize-btn',
+                'label': 'orocrm.mailchimp.connection.button.synchronize'|trans,
+                'class': 'no-hash',
+                'iCss': 'icon-refresh'
+            }) }}
+        {% endif %}
+
         {{ UI.dropdownItem({
             'path': 'javascript:void(0);',
             'data': {
                 'url': path('orocrm_mailchimp_marketing_list_connect', {id: marketingList.id}),
-                'title': 'orocrm.mailchimp.connection.dialog.title.update'|trans
+                'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
+                'page-component-options': {
+                    'message': 'orocrm.mailchimp.connection.message.update'|trans,
+                    'options': {
+                        'title': 'orocrm.mailchimp.connection.dialog.title.update'|trans,
+                    }
+                }|json_encode|raw
             },
             'id': 'mailchimp-connection-btn',
             'label': 'orocrm.mailchimp.connection.button.manage_connection'|trans,
@@ -15,21 +39,14 @@
             'iCss': 'icon-edit'
         }) }}
 
-        {#{{ UI.dropdownItem({#}
-            {#'path': path('oro_dashboard_create'),#}
-            {#'title': 'oro.dashboard.create_dashboard_link.title'|trans,#}
-            {#'label': 'oro.dashboard.create_dashboard_link.text'|trans,#}
-            {#'iCss': 'icon-plus'#}
-        {#}) }}#}
-
         <li>
             {{  UI.deleteLink({
                 'dataUrl': path('orocrm_api_delete_staticsegment', {id: staticSegment.id}),
                 'dataRedirect': path('orocrm_marketing_list_view', {id: marketingList.id}),
                 'aCss': 'no-hash remove-button',
                 'id': 'btn-remove-mailchimp-connection',
-                'dataId': staticSegment.id,
                 'entity_label': 'orocrm.mailchimp.connection.name'|trans,
+                'successMessage': 'orocrm.mailchimp.connection.message.disconnect'|trans,
                 'title': 'orocrm.mailchimp.connection.button.disconnect'|trans,
                 'label': 'orocrm.mailchimp.connection.button.disconnect'|trans
             }) }}
@@ -46,39 +63,18 @@
         'path': 'javascript:void(0);',
         'data': {
             'url': path('orocrm_mailchimp_marketing_list_connect', {id: marketingList.id}),
-            'title': 'orocrm.mailchimp.connection.dialog.title.connect'|trans
+            'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
+            'page-component-options': {
+                'message': 'orocrm.mailchimp.connection.message.connect'|trans,
+                'options': {
+                    'title': 'orocrm.mailchimp.connection.dialog.title.connect'|trans
+                }
+            }|json_encode|raw
         },
         'id': 'mailchimp-connection-btn',
         'label': 'orocrm.mailchimp.connection.button.connect'|trans,
-        'class': 'no-hash btn btn-primary',
-        'iCss': 'icon-exchange'
+        'class': 'no-hash btn',
+        'iCss': 'icon-mailchimp'
     }) }}
 {% endif %}
-
-    <script type="text/javascript">
-        require(['jquery', 'oro/dialog-widget'],
-        function ($, DialogWidget) {
-            var btn = $('#mailchimp-connection-btn');
-            btn.on('click', function () {
-                var dialogOptions = {
-                    title: btn.data('title'),
-                    url: btn.data('url'),
-                    stateEnabled: false,
-                    incrementalPosition: false,
-                    loadingMaskEnabled: true,
-                    dialogOptions: {
-                        modal: true,
-                        resizable: false,
-                        width: 475,
-                        autoResize: true
-                    }
-                };
-                var dialog = new DialogWidget(dialogOptions);
-                dialog.on('formSave', function (segmentId) {
-                    dialog.remove();
-                });
-                dialog.render();
-            });
-        });
-    </script>
 </div>

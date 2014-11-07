@@ -5,7 +5,6 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentExportListIterator;
 
 class StaticSegmentExportReader extends AbstractIteratorBasedReader
@@ -65,12 +64,8 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
         $qb = $this->doctrineHelper
             ->getEntityManager($this->staticSegmentClassName)
             ->getRepository($this->staticSegmentClassName)
-            ->createQueryBuilder('staticSegment');
-
-        $qb
-            ->select('staticSegment')
-            ->where($qb->expr()->eq('staticSegment.syncStatus', ':syncStatus'))
-            ->setParameter('syncStatus', StaticSegment::STATUS_NOT_SYNCED);
+            ->createQueryBuilder('staticSegment')
+            ->select('staticSegment');
 
         return new BufferedQueryResultIterator($qb);
     }

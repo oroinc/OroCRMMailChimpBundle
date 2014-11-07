@@ -13,7 +13,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  *
  * @ORM\Entity
  * @ORM\Table(
- *      name="orocrm_mailchimp_member_activity"
+ *      name="orocrm_mc_mmbr_activity"
  * )
  * @Config(
  *  defaultValues={

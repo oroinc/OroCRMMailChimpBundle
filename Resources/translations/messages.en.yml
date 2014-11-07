@@ -214,6 +214,11 @@ orocrm:
                 group_name: 'MailChimp'
                 synchronize: 'Synchronize'
                 disconnect: 'Disconnect'
+            message:
+                update: 'MailChimp connection updated'
+                connect: 'Connected to MailChimp'
+                disconnect: 'Marketing List disconnected from MailChimp'
+                syncronize_scheduled: 'Marketing List scheduled to synchronize with MailChimp'
             dialog:
                 button:
                     update: Update
@@ -222,6 +227,13 @@ orocrm:
                 title:
                     update: MailChimp Connection Settings
                     connect: Connect to MailChimp
+
+        syncstatus:
+            synced: Synced
+            not_synced: Not Synced
+            in_progress: In Progress
+            scheduled: Scheduled for Sync
+            list_is_connected.lebel: This list is connected to "%segment%" segment of "%list%" Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.
 
         emailcampaign:
             statistics.label: Mailchimp Statistics

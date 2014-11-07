@@ -14,7 +14,7 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
  * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository")
- * @ORM\Table(name="orocrm_mailchimp_static_segment")
+ * @ORM\Table(name="orocrm_mc_static_segment")
  * @ORM\HasLifecycleCallbacks()
  * @Config(
  *  defaultValues={
@@ -38,6 +38,7 @@ class StaticSegment implements OriginAwareInterface
     const STATUS_NOT_SYNCED = 'not_synced';
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_SYNCED = 'synced';
+    const STATUS_SCHEDULED = 'scheduled';
 
     /**
      * @var int
@@ -87,7 +88,7 @@ class StaticSegment implements OriginAwareInterface
      * @var MarketingList
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MarketingListBundle\Entity\MarketingList")
-     * @ORM\JoinColumn(name="marketing_list_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="marketing_list_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $marketingList;
 
@@ -95,7 +96,7 @@ class StaticSegment implements OriginAwareInterface
      * @var SubscribersList
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
-     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $subscribersList;
 

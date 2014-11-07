@@ -83,21 +83,16 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
         );
 
-        $memberContactInformationAliasedFields = array_map(
-            function ($memberContactInformationField) {
-                return sprintf('%s.%s', self::MEMBER_ALIAS, $memberContactInformationField);
-            },
-            $memberContactInformationFields
-        );
-
         $expr = $qb->expr()->orX();
         foreach ($contactInformationFields as $contactInformationField) {
-            $expr->add(
-                $qb->expr()->in(
-                    $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField),
-                    $memberContactInformationAliasedFields
-                )
-            );
+            foreach ($memberContactInformationFields as $memberContactInformationField) {
+                $expr->add(
+                    $qb->expr()->eq(
+                        $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField),
+                        sprintf('%s.%s', self::MEMBER_ALIAS, $memberContactInformationField)
+                    )
+                );
+            }
         }
 
         return $qb->leftJoin($this->memberClassName, self::MEMBER_ALIAS, Join::WITH, $expr);

@@ -93,13 +93,29 @@ class MailChimpController extends Controller
     }
 
     /**
+     * @Route("/sync-status/{marketingList}",
+     *      name="orocrm_mailchimp_sync_status",
+     *      requirements={"marketingList"="\d+"})
+     * @ParamConverter("marketingList",
+     *      class="OroCRMMarketingListBundle:MarketingList",
+     *      options={"id" = "marketingList"})
+     * @Template
+     *
+     * @param MarketingList $marketingList
+     * @return array
+     */
+    public function marketingListSyncStatusAction(MarketingList $marketingList)
+    {
+        return ['static_segment' => $this->findStaticSegmentByMarketingList($marketingList)];
+    }
+
+    /**
      * @param MarketingList $marketingList
      * @return StaticSegment
      */
     protected function getStaticSegmentByMarketingList(MarketingList $marketingList)
     {
-        $staticSegment = $this->getDoctrine()->getRepository('OroCRMMailChimpBundle:StaticSegment')
-            ->findOneBy(['marketingList' => $marketingList]);
+        $staticSegment = $this->findStaticSegmentByMarketingList($marketingList);
 
         if (!$staticSegment) {
             $staticSegment = new StaticSegment();
@@ -109,6 +125,17 @@ class MailChimpController extends Controller
         }
 
         return $staticSegment;
+    }
+
+    /**
+     * @param MarketingList $marketingList
+     * @return StaticSegment
+     */
+    protected function findStaticSegmentByMarketingList(MarketingList $marketingList)
+    {
+        return $this->getDoctrine()
+            ->getRepository('OroCRMMailChimpBundle:StaticSegment')
+            ->findOneBy(['marketingList' => $marketingList]);
     }
 
     /**

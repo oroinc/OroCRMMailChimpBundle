@@ -16,7 +16,7 @@ class CampaignDataConverter extends IntegrationAwareDataConverter
             'title' => 'title',
             'subject' => 'subject',
             'type' => 'type',
-            'template_id' => 'template:originId',
+//            'template_id' => 'template:originId',
             'list_id' => 'subscribersList:originId',
             'content_type' => 'contentType',
             'create_time' => 'createdAt',
