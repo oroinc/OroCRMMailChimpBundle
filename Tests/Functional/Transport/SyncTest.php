@@ -45,6 +45,13 @@ class SyncTest extends WebTestCase
 
     /**
      * @dataProvider commandOptionsProvider
+     * @param $commandName
+     * @param array $params
+     * @param string $entity
+     * @param array $data
+     * @param string $assertMethod
+     * @param int $assertCount
+     * @param array $expectedList
      */
     public function testCommand($commandName, array $params, $entity, $data, $assertMethod, $assertCount, $expectedList)
     {
@@ -72,6 +79,7 @@ class SyncTest extends WebTestCase
     }
 
     /**
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @return array
      */
     public function commandOptionsProvider()
@@ -134,7 +142,8 @@ class SyncTest extends WebTestCase
                             'default_language' => 'en',
                             'list_rating' => 0,
                             'subscribe_url_short' => 'http://eepurl.com/55JSn',
-                            'subscribe_url_long' => 'http://orocrm.us9.list-manage.com/subscribe?u=30a1fbd85fafe93f6446fef6e&id=f04749dd92',
+                            'subscribe_url_long' => 'http://orocrm.us9.list-manage.com/subscribe'
+                                . '?u=30a1fbd85fafe93f6446fef6e&id=f04749dd92',
                             'beamer_address' => 'us9-b538643d4f-cb1fc7e5b4@inbound.mailchimp.com',
                             'visibility' => 'pub',
                             'stats' =>

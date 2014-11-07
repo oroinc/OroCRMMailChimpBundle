@@ -114,6 +114,9 @@ parameters:
     orocrm_mailchimp.iterator.static_segment_member_add_state.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberAddStateIterator
     orocrm_mailchimp.iterator.static_segment_member_remove_state.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberRemoveStateIterator
 
+    # Placeholder filter
+    orocrm_mailchimp.placeholder.filter.marketing_list.class: OroCRM\Bundle\MailChimpBundle\Placeholder\MarketingListPlaceholderFilter
+
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -759,3 +762,9 @@ services:
         parent: orocrm_mailchimp.iterator.static_segment
         calls:
             - [setSegmentMemberClassName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
+
+    # Placeholder
+    orocrm_mailchimp.placeholder.filter.sync_status:
+        class: %orocrm_mailchimp.placeholder.filter.marketing_list.class%
+        arguments:
+            - @doctrine
