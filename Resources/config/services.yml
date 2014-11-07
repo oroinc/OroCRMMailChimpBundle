@@ -104,6 +104,7 @@ parameters:
 
     # EmailCampaign Voter
     orocrm_mailchimp.email_campaign.security.acl.voter.entity.class: OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter
+    orocrm_mailchimp.acl.voter.marketing_list_state_item.class: OroCRM\Bundle\MailChimpBundle\Acl\Voter\MarketingListStateItemVoter
 
     orocrm_mailchimp.static_segment_manager.state_manager.class: OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager
 
@@ -702,25 +703,33 @@ services:
         parent: orocrm_mailchimp.workflow.action.abstract_marketing_list_entities
         calls:
             - [setDoctrineHelper, [@oro_entity.doctrine_helper]]
-            - [setMarketingListStateItemClassName, [%orocrm_marketing_list.unsubscribed_item.class%]]
 
     orocrm_mailchimp.workflow.action.create_marketing_list_unsubscribed_item:
         class: %orocrm_mailchimp.workflow.action.create_marketing_list_state_item.class%
         parent: orocrm_mailchimp.workflow.action.create_marketing_list_state_item
+        calls:
+            - [setMarketingListStateItemClassName, [%orocrm_marketing_list.unsubscribed_item.class%]]
         tags:
             - { name: oro_workflow.action, alias: create_marketing_list_unsubscribed_item }
-
-    orocrm_mailchimp.workflow.action.create_marketing_list_removed_item:
-        class: %orocrm_mailchimp.workflow.action.create_marketing_list_state_item.class%
-        parent: orocrm_mailchimp.workflow.action.create_marketing_list_state_item
-        tags:
-            - { name: oro_workflow.action, alias: create_marketing_list_removed_item }
 
     orocrm_mailchimp.email_campaign.security.acl.voter.entity:
         class: %orocrm_mailchimp.email_campaign.security.acl.voter.entity.class%
         arguments:
-            - @doctrine
             - @oro_entity.doctrine_helper
+        calls:
+            - [setClassName, [%orocrm_campaign.email_campaign.entity.class%]]
+        tags:
+            - { name: security.voter, priority: 500 }
+
+    orocrm_mailchimp.acl.voter.marketing_list_state_item:
+        class: %orocrm_mailchimp.acl.voter.marketing_list_state_item.class%
+        arguments:
+            - @oro_entity.doctrine_helper
+            - @orocrm_marketing_list.provider.contact_information_fields
+            - @orocrm_mailchimp.model.field_helper
+            - %orocrm_mailchimp.entity.member.class%
+        calls:
+            - [setClassName, [%orocrm_marketing_list.unsubscribed_item.class%]]
         tags:
             - { name: security.voter, priority: 500 }
 
