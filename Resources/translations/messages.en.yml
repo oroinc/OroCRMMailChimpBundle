@@ -232,5 +232,5 @@ orocrm:
             synced: Synced
             not_synced: Not Synced
             in_progress: In Progress
-            scheduled: Scheduled
-            list_is_connected.lebel: This list is connected to “%segment%” segment of “%list%” Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.
+            scheduled: Scheduled for Sync
+            list_is_connected.lebel: This list is connected to "%segment%" segment of "%list%" Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.
