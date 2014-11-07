@@ -42,10 +42,6 @@ class StaticSegmentExportWriter extends AbstractExportWriter
 
         $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
 
-        $staticSegment
-            ->setSyncStatus(StaticSegment::STATUS_SYNCED)
-            ->setLastSynced(new \DateTime());
-
         parent::write($itemsToWrite);
     }
 

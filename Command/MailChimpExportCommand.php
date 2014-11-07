@@ -71,6 +71,7 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
             StaticSegmentConnector::TYPE => StaticSegmentConnector::JOB_EXPORT
         ];
 
+        /* @todo: get rid of flushes */
         $doctrineHelper = $this->getContainer()->get('oro_entity.doctrine_helper');
         foreach ($iterator as $staticSegment) {
             $em = $doctrineHelper->getEntityManager($staticSegment);
@@ -86,6 +87,19 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
             }
 
             $this->getStaticSegmentStateManager()->handleDroppedMembers($staticSegment);
+
+
+            $staticSegment = $doctrineHelper->getEntity(
+                $doctrineHelper->getEntityClass($staticSegment),
+                $staticSegment->getId()
+            );
+
+            $staticSegment
+                ->setSyncStatus(StaticSegment::STATUS_SYNCED)
+                ->setLastSynced(new \DateTime());
+
+            $em->persist($staticSegment);
+            $em->flush($staticSegment);
         }
     }
 

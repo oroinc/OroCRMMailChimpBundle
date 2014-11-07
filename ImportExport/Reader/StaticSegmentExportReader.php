@@ -64,11 +64,8 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
         $qb = $this->doctrineHelper
             ->getEntityManager($this->staticSegmentClassName)
             ->getRepository($this->staticSegmentClassName)
-            ->createQueryBuilder('staticSegment');
-
-        $qb
-            ->select('staticSegment')
-            ->where($qb->expr()->isNotNull('staticSegment.originId'));
+            ->createQueryBuilder('staticSegment')
+            ->select('staticSegment');
 
         return new BufferedQueryResultIterator($qb);
     }
