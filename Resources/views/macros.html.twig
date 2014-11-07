@@ -1,7 +1,7 @@
 {% macro renderAttributeWithTooltip(title, data, tooltip) %}
     {% import 'OroUIBundle::macros.html.twig' as ui %}
     <div class="control-group">
-        <label class="control-label">{{ ui.tooltip(tooltip) }}{{ title }}</label>
+        <label class="control-label">{{ ui.tooltip(tooltip) }}{{ title|trans }}</label>
         <div class="controls">
             <div class="control-label">
                 {{ data|escape|default('oro.ui.empty'|trans) }}

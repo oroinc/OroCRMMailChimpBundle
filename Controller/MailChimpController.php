@@ -128,6 +128,6 @@ class MailChimpController extends Controller
         $campaign = $this->getDoctrine()
             ->getRepository('OroCRMMailChimpBundle:Campaign')
             ->findOneBy(['emailCampaign' => $emailCampaign]);
-        return ['campaign_stat' => $campaign];
+        return ['campaignStats' => $campaign];
     }
 }
