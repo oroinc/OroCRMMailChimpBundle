@@ -12,4 +12,4 @@ items:
         applicable: @orocrm_mailchimp.placeholder.filter.buttons_filder->isApplicable($entity$)
     orocrm_mailchimp_marketing_list_sync_data:
         action: OroCRMMailChimpBundle:MailChimp:marketingListSyncStatus
-        applicable: @orocrm_mailchimp.placeholder.filter->isApplicableOnMarketingList($marketingList$)
+        applicable: @orocrm_mailchimp.placeholder.filter.sync_status->isApplicableOnMarketingList($marketingList$)

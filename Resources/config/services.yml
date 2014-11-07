@@ -755,7 +755,7 @@ services:
             - [setSegmentMemberClassName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
 
     # Placeholder
-    orocrm_mailchimp.placeholder.filter:
+    orocrm_mailchimp.placeholder.filter.sync_status:
         class: %orocrm_mailchimp.placeholder.filter.marketing_list.class%
         arguments:
             - @doctrine
