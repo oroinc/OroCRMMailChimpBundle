@@ -3,10 +3,12 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
+use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class MemberActivityIterator extends AbstractSubordinateIterator
 {
+    const ACTION_KEY = 'action';
     const CAMPAIGN_KEY = 'campaign_id';
     const EMAIL_KEY = 'email';
 
@@ -68,6 +70,9 @@ class MemberActivityIterator extends AbstractSubordinateIterator
             $this->createExportIterator(MailChimpClient::EXPORT_CAMPAIGN_SUBSCRIBER_ACTIVITY, $parameters),
             function (&$current) use ($campaign, $parameters) {
                 $current[self::CAMPAIGN_KEY] = $campaign->getId();
+                if (!array_key_exists(self::ACTION_KEY, $current)) {
+                    $current[self::ACTION_KEY] = MemberActivity::ACTIVITY_SENT;
+                }
 
                 return true;
             }

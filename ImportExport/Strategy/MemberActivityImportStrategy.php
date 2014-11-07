@@ -80,19 +80,15 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             );
         }
 
-        if ($this->isSkipped($entity)) {
-            return null;
-        }
-
         $channel = $this->databaseHelper->getEntityReference($entity->getChannel());
         /** @var Campaign $campaign */
         $campaign = $this->findExistingEntity($entity->getCampaign());
         $member = $this->findExistingMember($entity->getMember(), $channel, $campaign);
+        $entity->setChannel($channel);
+        $entity->setCampaign($campaign);
+        $entity->setMember($member);
 
-        if ($member) {
-            $entity->setChannel($channel);
-            $entity->setCampaign($campaign);
-            $entity->setMember($member);
+        if ($member && !$this->isSkipped($entity)) {
             if (!$entity->getActivityTime()) {
                 $entity->setActivityTime($campaign->getSendTime());
             }
@@ -109,7 +105,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
 
             return $entity;
         } elseif ($this->logger) {
-            $this->logger->info('    Activity skipped, no corresponding member found');
+            $this->logger->info('    Activity skipped');
         }
 
         return null;
@@ -157,10 +153,11 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      */
     protected function isSkipped(MemberActivity $entity)
     {
-        if ($entity->getAction() === 'send') {
+        if ($entity->getAction() === MemberActivity::ACTIVITY_SENT) {
             $searchCondition = [
                 'campaign' => $entity->getCampaign(),
-                'action' => $entity->getAction()
+                'action' => $entity->getAction(),
+                'member' => $entity->getMember()
             ];
 
             return (bool)$this->findEntityByIdentityValues(ClassUtils::getClass($entity), $searchCondition);
