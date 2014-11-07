@@ -488,7 +488,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
             $schema->getTable('orocrm_mc_static_segment'),
             ['static_segment_id'],
             ['id'],
-            ['onUpdate' => null, 'onDelete' => null]
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
     }
 
