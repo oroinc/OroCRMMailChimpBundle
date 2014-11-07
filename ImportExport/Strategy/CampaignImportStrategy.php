@@ -61,31 +61,37 @@ class CampaignImportStrategy extends AbstractImportStrategy
         );
 
         // Replace Template if required
-        /** @var Template $template */
-        $template = $this->updateRelatedEntity(
-            $existingEntity->getTemplate(),
-            $entity->getTemplate(),
-            $itemData['template']
-        );
-        $existingEntity->setTemplate($template);
+        if (!empty($itemData['template'])) {
+            /** @var Template $template */
+            $template = $this->updateRelatedEntity(
+                $existingEntity->getTemplate(),
+                $entity->getTemplate(),
+                $itemData['template']
+            );
+            $existingEntity->setTemplate($template);
+        }
 
         // Replace subscribers list if required
-        /** @var SubscribersList $subscribersList */
-        $subscribersList = $this->updateRelatedEntity(
-            $existingEntity->getSubscribersList(),
-            $entity->getSubscribersList(),
-            $itemData['subscribersList']
-        );
-        $existingEntity->setSubscribersList($subscribersList);
+        if (!empty($itemData['subscribersList'])) {
+            /** @var SubscribersList $subscribersList */
+            $subscribersList = $this->updateRelatedEntity(
+                $existingEntity->getSubscribersList(),
+                $entity->getSubscribersList(),
+                $itemData['subscribersList']
+            );
+            $existingEntity->setSubscribersList($subscribersList);
+        }
 
         // Replace StaticSegment if required
-        /** @var StaticSegment $staticSegment */
-        $staticSegment = $this->updateRelatedEntity(
-            $existingEntity->getStaticSegment(),
-            $entity->getStaticSegment(),
-            $itemData['staticSegment']
-        );
-        $existingEntity->setStaticSegment($staticSegment);
+        if (!empty($itemData['staticSegment'])) {
+            /** @var StaticSegment $staticSegment */
+            $staticSegment = $this->updateRelatedEntity(
+                $existingEntity->getStaticSegment(),
+                $entity->getStaticSegment(),
+                $itemData['staticSegment']
+            );
+            $existingEntity->setStaticSegment($staticSegment);
+        }
 
         return $existingEntity;
     }
