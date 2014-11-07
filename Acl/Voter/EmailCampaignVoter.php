@@ -16,9 +16,9 @@ class EmailCampaignVoter extends AbstractEntityVoter
      */
     protected function getPermissionForAttribute($class, $identifier, $attribute)
     {
-        if ($this->isEmailCampaignSent($identifier)) {
-            return self::ACCESS_DENIED;
-        }
+//        if ($this->isEmailCampaignSent($identifier)) {
+//            return self::ACCESS_DENIED;
+//        }
 
         return self::ACCESS_ABSTAIN;
     }

@@ -49,12 +49,13 @@ definitions:
                                     transport: $.mailchimpTransport
                                     owner: $channel.defaultUserOwner
                                     organization: $channel.defaultUserOwner.organization
+                                    marketingLIst: $staticSegment.marketingList
                             - @create_entity: # Create MailChimpTransportSettings
                                 class:     OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings
                                 attribute: $emailCampaign.transportSettings
                                 data:
                                     channel: $channel
-                                    template: $template
+#                                    template: $template
 
     mailchimp_handle_member_state:
         label:   Create MarketingListUnsubscribedItem for MailChimp unsubscribed Member
