@@ -71,7 +71,13 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
             StaticSegmentConnector::TYPE => StaticSegmentConnector::JOB_EXPORT
         ];
 
+        $doctrineHelper = $this->getContainer()->get('oro_entity.doctrine_helper');
         foreach ($iterator as $staticSegment) {
+            $em = $doctrineHelper->getEntityManager($staticSegment);
+            $staticSegment->setSyncStatus(StaticSegment::STATUS_IN_PROGRESS);
+            $em->persist($staticSegment);
+            $em->flush($staticSegment);
+
             $channel = $staticSegment->getChannel();
             $output->writeln(sprintf('<info>Channel #%s:</info>', $channel->getId()));
             foreach ($exportJobs as $type => $jobName) {

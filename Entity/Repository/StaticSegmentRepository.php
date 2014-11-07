@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType;
 
 class StaticSegmentRepository extends EntityRepository
@@ -34,6 +35,10 @@ class StaticSegmentRepository extends EntityRepository
                 ->where($qb->expr()->eq('ml.type', ':type'))
                 ->setParameter('type', MarketingListType::TYPE_DYNAMIC, Type::STRING);
         }
+
+        $qb
+            ->andWhere($qb->expr()->neq('staticSegment.syncStatus', ':status'))
+            ->setParameter('status', StaticSegment::STATUS_IN_PROGRESS);
 
         return new BufferedQueryResultIterator($qb);
     }

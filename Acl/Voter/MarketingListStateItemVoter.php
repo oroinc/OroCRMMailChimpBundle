@@ -95,9 +95,9 @@ class MarketingListStateItemVoter extends AbstractEntityVoter
 
         $qb = $this->getQueryBuilder($memberContactInformationFields, $contactInformationValues, $item);
 
-        $memberExists = filter_var($qb->getQuery()->getSingleScalarResult(), FILTER_VALIDATE_BOOLEAN);
+        $result = $qb->getQuery()->getScalarResult();
 
-        if ($memberExists) {
+        if (!empty($result)) {
             return self::ACCESS_DENIED;
         }
 
