@@ -112,32 +112,18 @@ class MailChimpController extends Controller
     }
 
     /**
-     * @Route("/email-campaign-status-positive/{entityId}",
+     * @Route("/email-campaign-status-positive/{entity}",
      *      name="orocrm_mailchimp_email_campaign_status",
-     *      requirements={"entityId"="\d+"})
+     *      requirements={"entity"="\d+"})
      * @ParamConverter("emailCampaign",
      *      class="OroCRMCampaignBundle:EmailCampaign",
-     *      options={"id" = "entityId"})
+     *      options={"id" = "entity"})
      * @Template
+     *
+     * @param EmailCampaign $emailCampaign
+     * @return array
      */
-    public function emailCampaignStatsPositiveAction(EmailCampaign $emailCampaign)
-    {
-        $campaign = $this->getDoctrine()
-            ->getRepository('OroCRMMailChimpBundle:Campaign')
-            ->findOneBy(['emailCampaign' => $emailCampaign]);
-        return ['campaign_stat' => $campaign];
-    }
-
-    /**
-     * @Route("/email-campaign-status-negative/{entityId}",
-     *      name="orocrm_mailchimp_email_campaign_status",
-     *      requirements={"entityId"="\d+"})
-     * @ParamConverter("emailCampaign",
-     *      class="OroCRMCampaignBundle:EmailCampaign",
-     *      options={"id" = "entityId"})
-     * @Template
-     */
-    public function emailCampaignStatsNegativeAction(EmailCampaign $emailCampaign)
+    public function emailCampaignStatsAction(EmailCampaign $emailCampaign)
     {
         $campaign = $this->getDoctrine()
             ->getRepository('OroCRMMailChimpBundle:Campaign')

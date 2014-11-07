@@ -9,7 +9,6 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Placeholder\EmailCampaignPlaceholderFilter;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class EmailCampaignPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,7 +28,7 @@ class EmailCampaignPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
     protected $entityRepository;
 
     /**
-     * @var PlaceholderFilter
+     * @var EmailCampaignPlaceholderFilter
      */
     protected $placeholderFilter;
 
@@ -55,9 +54,9 @@ class EmailCampaignPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $emailCampaign
-     * @param $campaign
-     * @param $expected
+     * @param EmailCampaign $emailCampaign
+     * @param Campaign $campaign
+     * @param bool $expected
      * @dataProvider staticCampaignProvider
      */
     public function testIsApplicableOnEmailCampaign($emailCampaign, $campaign, $expected)
@@ -73,8 +72,8 @@ class EmailCampaignPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
             ->method('getRepository')
             ->will($this->returnValue($this->entityRepository));
 
-
-        $this->assertEquals($expected,
+        $this->assertEquals(
+            $expected,
             $this->placeholderFilter->isApplicableOnEmailCampaign($emailCampaign));
     }
 
@@ -83,13 +82,16 @@ class EmailCampaignPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function staticCampaignProvider()
     {
+        $emailCampaign = new EmailCampaign();
+        $mailchimpEmailCampaign = new EmailCampaign();
+        $mailchimpEmailCampaign->setTransport('mailchimp');
         return [
             [null, null, false],
             [null, new Campaign(), false],
-            [new EmailCampaign(), null, false],
-            [new EmailCampaign(), new Campaign(), false],
-            [(new EmailCampaign())->setTransport('mailchimp'), null, false],
-            [(new EmailCampaign())->setTransport('mailchimp'), new Campaign(), true],
+            [$emailCampaign, null, false],
+            [$emailCampaign, new Campaign(), false],
+            [$mailchimpEmailCampaign, null, false],
+            [$mailchimpEmailCampaign, new Campaign(), true],
         ];
     }
 }
