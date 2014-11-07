@@ -85,7 +85,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
      * @dataProvider attributesDataProvider
      * @param array $attributes
      * @param $emailCampaign
-     * @param $expected
+     * @param bool $expected
      */
     public function testVote($attributes, $emailCampaign, $expected)
     {

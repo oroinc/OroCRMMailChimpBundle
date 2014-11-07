@@ -728,6 +728,8 @@ services:
             - @orocrm_marketing_list.provider.contact_information_fields
             - @orocrm_mailchimp.model.field_helper
             - %orocrm_mailchimp.entity.member.class%
+            - %orocrm_mailchimp.entity.subscribers_list.class%
+            - %orocrm_marketing_list.entity.class%
         calls:
             - [setClassName, [%orocrm_marketing_list.unsubscribed_item.class%]]
         tags:
