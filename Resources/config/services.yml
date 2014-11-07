@@ -696,6 +696,7 @@ services:
         parent: orocrm_mailchimp.workflow.action.abstract_marketing_list_entities
         calls:
             - [setCampaignStatisticsConnector, [@orocrm_campaign.email_campaign.statistics_connector]]
+            - [setRegistry, [@doctrine]]
         tags:
             - { name: oro_workflow.action, alias: update_email_campaign_statistics }
 

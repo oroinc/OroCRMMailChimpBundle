@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use OroCRM\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
@@ -15,11 +16,24 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
     protected $campaignStatisticsConnector;
 
     /**
+     * @var ManagerRegistry
+     */
+    protected $registry;
+
+    /**
      * @param EmailCampaignStatisticsConnector $campaignStatisticsConnector
      */
     public function setCampaignStatisticsConnector($campaignStatisticsConnector)
     {
         $this->campaignStatisticsConnector = $campaignStatisticsConnector;
+    }
+
+    /**
+     * @param ManagerRegistry $registry
+     */
+    public function setRegistry(ManagerRegistry $registry)
+    {
+        $this->registry = $registry;
     }
 
     /**
@@ -60,6 +74,7 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
         $marketingList = $mailChimpCampaign->getStaticSegment()->getMarketingList();
 
         $relatedEntities = $this->getMarketingListEntitiesByEmails($marketingList, [$memberActivity->getEmail()]);
+        $em = $this->registry->getManager();
         foreach ($relatedEntities as $relatedEntity) {
             $emailCampaignStatistics = $this->campaignStatisticsConnector->getStatisticsRecord(
                 $emailCampaign,
@@ -67,6 +82,7 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
             );
 
             $this->incrementStatistics($memberActivity, $emailCampaignStatistics);
+            $em->persist($emailCampaignStatistics);
         }
     }
 
