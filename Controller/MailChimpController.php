@@ -92,13 +92,16 @@ class MailChimpController extends Controller
     }
 
     /**
-     * @Route("/sync-status/{marketingListId}",
+     * @Route("/sync-status/{marketingList}",
      *      name="orocrm_mailchimp_sync_status",
-     *      requirements={"marketingListId"="\d+"})
+     *      requirements={"marketingList"="\d+"})
      * @ParamConverter("marketingList",
      *      class="OroCRMMarketingListBundle:MarketingList",
-     *      options={"id" = "marketingListId"})
+     *      options={"id" = "marketingList"})
      * @Template
+     *
+     * @param MarketingList $marketingList
+     * @return array
      */
     public function marketingListSyncStatusAction(MarketingList $marketingList)
     {
