@@ -21,7 +21,8 @@ class StaticSegmentRepository extends EntityRepository
         $qb
             ->select('staticSegment')
             ->join('staticSegment.channel', 'channel')
-            ->groupBy('channel.id');
+            ->addGroupBy('channel')
+            ->addGroupBy('staticSegment');
 
         if ($segments) {
             $qb

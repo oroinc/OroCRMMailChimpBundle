@@ -106,7 +106,7 @@ definitions:
                         attribute: $.syncJob
                         flush: true
                         arguments:
-                            - 'oro:cron:mailchimp:sync-segment'
+                            - 'oro:cron:mailchimp:export'
                             - [$.segmentArguments]
 
 triggers:
