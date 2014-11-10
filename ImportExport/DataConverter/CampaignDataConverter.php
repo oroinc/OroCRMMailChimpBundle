@@ -60,7 +60,7 @@ class CampaignDataConverter extends IntegrationAwareDataConverter
         $channel = $this->context->getOption('channel');
         $importedRecord['template:channel:id'] = $channel;
         $importedRecord['subscribersList:channel:id'] = $channel;
-        if (isset($importedRecord['saved_segment'], $importedRecord['saved_segment']['id'])) {
+        if (isset($importedRecord['saved_segment']['id'])) {
             $importedRecord['staticSegment:originId'] = $importedRecord['saved_segment']['id'];
             $importedRecord['staticSegment:channel:id'] = $channel;
         }
