@@ -49,14 +49,13 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
         $this->target->setTemplate($template);
         $this->assertNotNull($this->target->getChannel());
         $this->assertNotNull($this->target->getTemplate());
-        $this->assertEquals(
-            new ParameterBag(['channel' => $channel, 'template' => $template]),
-            $this->target->getSettingsBag()
-        );
 
-        // same any time
+        $expectedSettings = [
+            'channel' => $channel,
+            // 'template' => $template
+        ];
         $this->assertEquals(
-            new ParameterBag(['channel' => $channel, 'template' => $template]),
+            new ParameterBag($expectedSettings),
             $this->target->getSettingsBag()
         );
     }
