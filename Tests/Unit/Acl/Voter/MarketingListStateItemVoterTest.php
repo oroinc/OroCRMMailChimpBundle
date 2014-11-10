@@ -272,6 +272,11 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
 
         $qb
             ->expects($this->any())
+            ->method('groupBy')
+            ->will($this->returnSelf());
+
+        $qb
+            ->expects($this->any())
             ->method('setParameter')
             ->with($this->isType('string'), [Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED])
             ->will($this->returnSelf());
@@ -279,7 +284,7 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
         $query = $this
             ->getMockBuilder('Doctrine\ORM\AbstractQuery')
             ->disableOriginalConstructor()
-            ->setMethods(['getSingleScalarResult'])
+            ->setMethods(['getScalarResult'])
             ->getMockForAbstractClass();
 
         $qb
@@ -289,7 +294,7 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
 
         $query
             ->expects($this->any())
-            ->method('getSingleScalarResult')
+            ->method('getScalarResult')
             ->will($this->returnValue($queryResult));
 
         return $qb;
