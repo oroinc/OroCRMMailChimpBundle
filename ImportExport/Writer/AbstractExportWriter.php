@@ -48,7 +48,7 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Ite
             throw new \InvalidArgumentException('Transport was not provided');
         }
 
-        return parent::write($items);
+        parent::write($items);
     }
 
     /**
