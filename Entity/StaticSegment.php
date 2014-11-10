@@ -35,10 +35,14 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
  */
 class StaticSegment implements OriginAwareInterface
 {
+    /**#@+
+     * @const string Status of Static Segment
+     */
     const STATUS_NOT_SYNCED = 'not_synced';
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_SYNCED = 'synced';
     const STATUS_SCHEDULED = 'scheduled';
+    /**#@-*/
 
     /**
      * @var int

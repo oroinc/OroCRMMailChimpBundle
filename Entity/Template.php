@@ -41,9 +41,13 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  */
 class Template implements OriginAwareInterface
 {
+    /**#@+
+     * @const string Type of Template
+     */
     const TYPE_USER = 'user';
     const TYPE_GALLERY = 'gallery';
     const TYPE_BASE = 'base';
+    /**#@-*/
 
     /**
      * @var int

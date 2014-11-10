@@ -34,6 +34,9 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  */
 class MemberActivity
 {
+    /**#@+
+     * @const string Activity of Member Activity
+     */
     const ACTIVITY_OPEN = 'open';
     const ACTIVITY_CLICK = 'click';
     const ACTIVITY_BOUNCE = 'bounce';
@@ -49,6 +52,7 @@ class MemberActivity
     const ACTIVITY_MANDRILL_SPAM = 'mandrill_spam';
     const ACTIVITY_MANDRILL_UNSUB = 'mandrill_unsub';
     const ACTIVITY_MANDRILL_REJECT = 'mandrill_reject';
+    /**#@-*/
 
     /**
      * @var int

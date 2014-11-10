@@ -44,17 +44,25 @@ use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
  */
 class Campaign implements OriginAwareInterface
 {
+    /**#@+
+     * @const string Status of Campaign
+     */
     const STATUS_SAVE = 'save';
     const STATUS_SENT = 'sent';
     const STATUS_SENDING = 'sending';
     const STATUS_PAUSED = 'paused';
     const STATUS_SCHEDULE = 'schedule';
+    /**#@-*/
 
+    /**#@+
+     * @const string Type of Campaign
+     */
     const TYPE_REGULAR = 'regular';
     const TYPE_PLAINTEXT = 'plaintext';
     const TYPE_ABSPLIT = 'absplit';
     const TYPE_RSS = 'rss';
     const TYPE_AUTO = 'auto';
+    /**#@-*/
 
     /**
      * @var int

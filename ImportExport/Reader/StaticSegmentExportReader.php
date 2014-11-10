@@ -40,9 +40,7 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
      */
     protected function initializeFromContext(ContextInterface $context)
     {
-        if (!$this->staticSegmentMemberClassName) {
-            throw new InvalidConfigurationException('StaticSegmentMember class name must be provided');
-        }
+        $this->assertStaticSegmentClassName();
 
         if (!$this->getSourceIterator()) {
             $iterator = new StaticSegmentExportListIterator($this->getSegmentsIterator(), $this->doctrineHelper);
@@ -57,9 +55,7 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
      */
     protected function getSegmentsIterator()
     {
-        if (!$this->staticSegmentClassName) {
-            throw new InvalidConfigurationException('StaticSegment class name must be provided');
-        }
+        $this->assertStaticSegmentClassName();
 
         $qb = $this->doctrineHelper
             ->getEntityManager($this->staticSegmentClassName)
@@ -68,5 +64,12 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
             ->select('staticSegment');
 
         return new BufferedQueryResultIterator($qb);
+    }
+
+    protected function assertStaticSegmentClassName()
+    {
+        if (!$this->staticSegmentClassName) {
+            throw new InvalidConfigurationException('StaticSegment class name must be provided');
+        }
     }
 }

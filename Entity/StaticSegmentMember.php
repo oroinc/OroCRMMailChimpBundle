@@ -19,10 +19,14 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
  */
 class StaticSegmentMember
 {
+    /**#@+
+     * @const string State of Static Segment Member
+     */
     const STATE_ADD = 'add';
     const STATE_REMOVE = 'remove';
     const STATE_SYNCED = 'synced';
     const STATE_DROP = 'drop';
+    /**#@-*/
 
     /**
      * @var int
