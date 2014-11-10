@@ -2,8 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use Symfony\Component\HttpFoundation\ParameterBag;
+
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 
 class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
@@ -19,6 +21,9 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $property
+     * @param mixed $value
+     *
      * @dataProvider settersAndGettersDataProvider
      */
     public function testSettersAndGetters($property, $value)
@@ -43,6 +48,7 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
 
     public function testSettingsBag()
     {
+        /** @var Channel|\PHPUnit_Framework_MockObject_MockObject $channel */
         $channel = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\Channel');
         $template = new Template();
         $this->target->setChannel($channel);
@@ -52,7 +58,7 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
 
         $expectedSettings = [
             'channel' => $channel,
-            // 'template' => $template
+//            'template' => $template
         ];
         $this->assertEquals(
             new ParameterBag($expectedSettings),

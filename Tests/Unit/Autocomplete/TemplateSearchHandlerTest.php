@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Autocomplete;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query\Expr;
@@ -11,8 +10,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
-use OroCRM\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler;
 use Oro\Bundle\SearchBundle\Query\Result;
+use OroCRM\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 
 class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
@@ -23,7 +22,7 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var array
      */
-    protected $testProperties = array('name', 'email');
+    protected $testProperties = ['name', 'email'];
 
     /**
      * @var TemplateSearchHandler
@@ -60,28 +59,33 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
      */
     protected $aclHelper;
 
+    /**
+     * @var Expr|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $expr;
+
     protected function setUp()
     {
         $this->queryBuilder = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
             ->disableOriginalConstructor()
-            ->setMethods(array('expr', 'getQuery', 'where', 'andWhere', 'addOrderBy', 'setParameter', 'getResult'))
+            ->setMethods(['expr', 'getQuery', 'where', 'andWhere', 'addOrderBy', 'setParameter', 'getResult'])
             ->getMock();
         $this->entityRepository = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
             ->disableOriginalConstructor()
-            ->setMethods(array('createQueryBuilder', 'findOneBy'))
+            ->setMethods(['createQueryBuilder', 'findOneBy'])
             ->getMock();
         $this->entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('getRepository', 'getMetadataFactory'))
+            ->setMethods(['getRepository', 'getMetadataFactory'])
             ->getMock();
         $this->managerRegistry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
         $this->expr = $this->getMockBuilder('Doctrine\ORM\Query\Expr')
             ->disableOriginalConstructor()
-            ->setMethods(array('in', 'like'))
+            ->setMethods(['in', 'like'])
             ->getMock();
         $this->aclHelper = $this->getMockBuilder('Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper')
             ->disableOriginalConstructor()
-            ->setMethods(array('apply'))
+            ->setMethods(['apply'])
             ->getMock();
 
         $this->searchHandler = new TemplateSearchHandler(self::TEST_ENTITY_CLASS, $this->testProperties);
@@ -127,7 +131,7 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
         $search = "test;1";
         $firstResult = 1;
         $maxResults = 10;
-        $result = $method->invokeArgs($this->searchHandler, array($search, $firstResult, $maxResults));
+        $result = $method->invokeArgs($this->searchHandler, [$search, $firstResult, $maxResults]);
         $this->assertEquals($result, '');
     }
 
@@ -147,15 +151,17 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
         $reflection = new \ReflectionClass(get_class($this->searchHandler));
         $method = $reflection->getMethod('findById');
         $method->setAccessible(true);
-        $result = $method->invokeArgs($this->searchHandler, array('1;1'));
+        $result = $method->invokeArgs($this->searchHandler, ['1;1']);
 
-        $this->assertEquals($result, array('id' => 1, 'channel' => 1));
+        $this->assertEquals($result, ['id' => 1, 'channel' => 1]);
     }
 
     /**
+     * @param array $expected
+     *
      * @dataProvider templateConvertDataProvider
      */
-    public function testConvertItemsWithCategory($expect)
+    public function testConvertItemsWithCategory(array $expected)
     {
         $this->setUpExpects();
 
@@ -164,18 +170,20 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
 
         $templateOne = new Template();
-        $templateOne->setCategory($expect[0]['name'])->setName($expect[0]['children'][0]['name']);
+        $templateOne->setCategory($expected[0]['name'])->setName($expected[0]['children'][0]['name']);
         $templateTwo = new Template();
-        $templateTwo->setCategory($expect[1]['name'])->setName($expect[1]['children'][0]['name']);
-        $templates = array($templateOne, $templateTwo);
-        $result = $method->invokeArgs($this->searchHandler, array($templates));
-        $this->assertEquals($result, $expect);
+        $templateTwo->setCategory($expected[1]['name'])->setName($expected[1]['children'][0]['name']);
+        $templates = [$templateOne, $templateTwo];
+        $result = $method->invokeArgs($this->searchHandler, [$templates]);
+        $this->assertEquals($expected, $result);
     }
 
     /**
+     * @param array $expected
+     *
      * @dataProvider templateConvertDataProvider
      */
-    public function testConvertItemsWithType($expect)
+    public function testConvertItemsWithType(array $expected)
     {
         $this->setUpExpects();
 
@@ -184,31 +192,33 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
 
         $templateOne = new Template();
-        $templateOne->setType($expect[0]['name'])->setName($expect[0]['children'][0]['name']);
+        $templateOne->setType($expected[0]['name'])->setName($expected[0]['children'][0]['name']);
         $templateTwo = new Template();
-        $templateTwo->setType($expect[1]['name'])->setName($expect[1]['children'][0]['name']);
-        $templates = array($templateOne, $templateTwo);
-        $result = $method->invokeArgs($this->searchHandler, array($templates));
-        $this->assertEquals($result, $expect);
+        $templateTwo->setType($expected[1]['name'])->setName($expected[1]['children'][0]['name']);
+        $templates = [$templateOne, $templateTwo];
+        $result = $method->invokeArgs($this->searchHandler, [$templates]);
+        $this->assertEquals($expected, $result);
     }
 
     /**
+     * @param array $expected
+     *
      * @dataProvider templateConvertDataProvider
      */
-    public function testSearchEntitiesValidResult($expect)
+    public function testSearchEntitiesValidResult(array $expected)
     {
         $this->setUpExpects();
         $this->setSearchExpects();
 
         $templateOne = new Template();
-        $templateOne->setCategory($expect[0]['name'])->setName($expect[0]['children'][0]['name']);
+        $templateOne->setCategory($expected[0]['name'])->setName($expected[0]['children'][0]['name']);
         $templateTwo = new Template();
-        $templateTwo->setType($expect[1]['name'])->setName($expect[1]['children'][0]['name']);
+        $templateTwo->setType($expected[1]['name'])->setName($expected[1]['children'][0]['name']);
         $templateTree = new Template();
-        $templateTree->setType($expect[1]['name'] . '3')->setName($expect[1]['children'][0]['name']);
+        $templateTree->setType($expected[1]['name'] . '3')->setName($expected[1]['children'][0]['name']);
         $templateFour = new Template();
-        $templateFour->setType($expect[1]['name'] . '4')->setName($expect[1]['children'][0]['name']);
-        $templates = array($templateOne, $templateTwo, $templateTree, $templateFour);
+        $templateFour->setType($expected[1]['name'] . '4')->setName($expected[1]['children'][0]['name']);
+        $templates = [$templateOne, $templateTwo, $templateTree, $templateFour];
         $this->queryBuilder->expects($this->exactly(1))
             ->method('getResult')
             ->will($this->returnValue($templates));
@@ -222,13 +232,15 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param array $expected
+     *
      * @dataProvider templateConvertDataProvider
      */
-    public function testSearchEntitiesByIdValidResult($expect)
+    public function testSearchEntitiesByIdValidResult(array $expected)
     {
         $this->setUpExpects();
         $templateOne = new Template();
-        $templateOne->setCategory($expect[0]['name'])->setName($expect[0]['children'][0]['name']);
+        $templateOne->setCategory($expected[0]['name'])->setName($expected[0]['children'][0]['name']);
         $this->entityRepository->expects($this->exactly(1))
             ->method('findOneBy')
             ->will($this->returnValue($templateOne));
@@ -247,32 +259,32 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
     public function templateConvertDataProvider()
     {
         return
-            array(
-                array(
-                    array(
-                        array(
+            [
+                [
+                    [
+                        [
                             "name" => 'C1',
-                            "children" => array(
-                                array(
+                            "children" => [
+                                [
                                     "id" => null,
                                     "name" => "Name",
                                     "email" => null,
-                                )
-                            )
-                        ),
-                        array(
+                                ]
+                            ]
+                        ],
+                        [
                             "name" => 'C2',
-                            "children" => array(
-                                array(
+                            "children" => [
+                                [
                                     "id" => null,
                                     "name" => null,
                                     "email" => null,
-                                )
-                            )
-                        )
-                    )
-                )
-            );
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ];
     }
 
     /**
@@ -281,14 +293,14 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
     protected function setMetaMocks()
     {
         $metadata = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
-            ->setMethods(array('getSingleIdentifierFieldName'))
+            ->setMethods(['getSingleIdentifierFieldName'])
             ->disableOriginalConstructor()
             ->getMock();
         $metadata->expects($this->once())
             ->method('getSingleIdentifierFieldName')
             ->will($this->returnValue(self::ID));
         $metadataFactory = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadataFactory')
-            ->setMethods(array('getMetadataFor'))
+            ->setMethods(['getMetadataFor'])
             ->disableOriginalConstructor()
             ->getMock();
         $metadataFactory->expects($this->once())

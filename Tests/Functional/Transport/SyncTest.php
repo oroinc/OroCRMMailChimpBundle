@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Transport;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 /**
@@ -17,7 +18,7 @@ class SyncTest extends WebTestCase
     protected $client;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClientFactory
      */
     protected $clientFactory;
 
@@ -45,7 +46,7 @@ class SyncTest extends WebTestCase
 
     /**
      * @dataProvider commandOptionsProvider
-     * @param $commandName
+     * @param string $commandName
      * @param array $params
      * @param string $entity
      * @param array $data
@@ -95,18 +96,18 @@ class SyncTest extends WebTestCase
                         [
                             'id' => 'f04749dd92',
                             'web_id' => 460025,
-                            'name' => 'List #####5',
+                            'name' => 'Example List #1',
                             'date_created' => '2014-10-17 19:06:38',
                             'email_type_option' => false,
                             'use_awesomebar' => true,
-                            'default_from_name' => 'Ignat Shcheglovskyi',
-                            'default_from_email' => 'ischeglovskiy@magecore.com',
+                            'default_from_name' => 'John Doe',
+                            'default_from_email' => 'john.doe@example.com',
                             'default_subject' => '',
                             'default_language' => 'en',
                             'list_rating' => 0,
-                            'subscribe_url_short' => 'http://eepurl.com/55JSn',
-                            'subscribe_url_long' => 'http://orocrm.us9.list-manage.com/subscribe?u=30a1fbd85f',
-                            'beamer_address' => 'us9-b538643d4f-cb1fc7e5b4@inbound.mailchimp.com',
+                            'subscribe_url_short' => 'http://eepurl.com/30a1fbd',
+                            'subscribe_url_long' => 'http://list-manage.com/subscribe?u=30a1fbd',
+                            'beamer_address' => '30a1fbd@inbound.mailchimp.com',
                             'visibility' => 'pub',
                             'stats' =>
                                 [
@@ -132,19 +133,18 @@ class SyncTest extends WebTestCase
                         [
                             'id' => 'f04749dd93',
                             'web_id' => 460026,
-                            'name' => 'List #####6',
+                            'name' => 'Example List #2',
                             'date_created' => '2014-10-17 19:06:38',
                             'email_type_option' => false,
                             'use_awesomebar' => true,
-                            'default_from_name' => 'Ignat Shcheglovskyi',
-                            'default_from_email' => 'ischeglovskiy@magecore.com',
+                            'default_from_name' => 'John Doe',
+                            'default_from_email' => 'john.doe@example.com',
                             'default_subject' => '',
                             'default_language' => 'en',
                             'list_rating' => 0,
-                            'subscribe_url_short' => 'http://eepurl.com/55JSn',
-                            'subscribe_url_long' => 'http://orocrm.us9.list-manage.com/subscribe'
-                                . '?u=30a1fbd85fafe93f6446fef6e&id=f04749dd92',
-                            'beamer_address' => 'us9-b538643d4f-cb1fc7e5b4@inbound.mailchimp.com',
+                            'subscribe_url_short' => 'http://eepurl.com/30a1fbd',
+                            'subscribe_url_long' => 'http://list-manage.com/subscribe?u=30a1fbd',
+                            'beamer_address' => '30a1fbd@inbound.mailchimp.com',
                             'visibility' => 'pub',
                             'stats' =>
                                 [

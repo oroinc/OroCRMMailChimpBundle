@@ -3,10 +3,11 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity\Repository;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\EntityManager;
+
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
 
 class SubscribersListRepositoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,12 +33,12 @@ class SubscribersListRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('createQueryBuilder'))
+            ->setMethods(['createQueryBuilder'])
             ->getMock();
 
         $this->queryBuilder = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
             ->disableOriginalConstructor()
-            ->setMethods(array('select', 'from', 'where', 'orderBy', 'setParameter', 'getQuery'))
+            ->setMethods(['select', 'from', 'where', 'orderBy', 'setParameter', 'getQuery'])
             ->getMock();
 
         $this->repository = new SubscribersListRepository(
