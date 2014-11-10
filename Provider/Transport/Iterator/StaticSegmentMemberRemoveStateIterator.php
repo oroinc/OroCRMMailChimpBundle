@@ -32,12 +32,8 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             throw new \InvalidArgumentException('StaticSegmentMember class name must be provided');
         }
 
-        if (!$marketingList = $staticSegment->getMarketingList()) {
-            return new \ArrayIterator();
-        }
-
         $qb = $this
-            ->getIteratorQueryBuilder($marketingList)
+            ->getIteratorQueryBuilder($staticSegment)
             ->select(self::MEMBER_ALIAS . '.id');
 
         $segmentMembersQb = clone $qb;

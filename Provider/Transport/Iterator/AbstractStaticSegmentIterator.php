@@ -2,11 +2,12 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
@@ -61,16 +62,17 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     }
 
     /**
-     * @param MarketingList $marketingList
+     * @param StaticSegment $staticSegment
      *
      * @return QueryBuilder
      */
-    protected function getIteratorQueryBuilder(MarketingList $marketingList)
+    protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
     {
         if (!$this->memberClassName) {
             throw new \InvalidArgumentException('Member class name must be provided');
         }
 
+        $marketingList = $staticSegment->getMarketingList();
         $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
 
         $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
@@ -95,6 +97,18 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
             }
         }
 
-        return $qb->leftJoin($this->memberClassName, self::MEMBER_ALIAS, Join::WITH, $expr);
+        $qb
+            ->leftJoin(
+                $this->memberClassName,
+                self::MEMBER_ALIAS,
+                Join::WITH,
+                $qb->expr()->andX(
+                    $expr,
+                    $qb->expr()->eq(sprintf('%s.subscribersList', self::MEMBER_ALIAS), ':subscribersList')
+                )
+            )
+            ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId(), Type::INTEGER);
+
+        return $qb;
     }
 }

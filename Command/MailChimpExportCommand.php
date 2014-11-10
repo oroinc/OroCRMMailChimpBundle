@@ -2,13 +2,15 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Command;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\CronBundle\Command\CronCommandInterface;
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -42,6 +44,11 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
     protected $staticSegmentStateManager;
 
     /**
+     * @var DoctrineHelper
+     */
+    protected $doctrineHelper;
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
@@ -71,36 +78,47 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
             StaticSegmentConnector::TYPE => StaticSegmentConnector::JOB_EXPORT
         ];
 
-        /* @todo: get rid of flushes */
-        $doctrineHelper = $this->getContainer()->get('oro_entity.doctrine_helper');
-        foreach ($iterator as $staticSegment) {
-            $em = $doctrineHelper->getEntityManager($staticSegment);
-            $staticSegment->setSyncStatus(StaticSegment::STATUS_IN_PROGRESS);
-            $em->persist($staticSegment);
-            $em->flush($staticSegment);
+        /** @var Channel[] $channelToSync */
+        $channelToSync = [];
+        $staticSegments = [];
 
+        foreach ($iterator as $staticSegment) {
+            $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_IN_PROGRESS);
             $channel = $staticSegment->getChannel();
-            $output->writeln(sprintf('<info>Channel #%s:</info>', $channel->getId()));
+            $channelToSync[$channel->getId()] = $channel;
+            $staticSegments[$staticSegment->getId()] = $staticSegment;
+        }
+
+        foreach ($channelToSync as $id => $channel) {
+            $output->writeln(sprintf('<info>Channel #%s:</info>', $id));
             foreach ($exportJobs as $type => $jobName) {
                 $output->writeln(sprintf('    %s', $jobName));
                 $this->getReverseSyncProcessor()->process($channel, $type, []);
             }
-
-            $this->getStaticSegmentStateManager()->handleDroppedMembers($staticSegment);
-
-
-            $staticSegment = $doctrineHelper->getEntity(
-                $doctrineHelper->getEntityClass($staticSegment),
-                $staticSegment->getId()
-            );
-
-            $staticSegment
-                ->setSyncStatus(StaticSegment::STATUS_SYNCED)
-                ->setLastSynced(new \DateTime());
-
-            $em->persist($staticSegment);
-            $em->flush($staticSegment);
         }
+
+        foreach ($staticSegments as $staticSegment) {
+            $this->getStaticSegmentStateManager()->handleDroppedMembers($staticSegment);
+            $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED);
+        }
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     * @param string $status
+     */
+    protected function setStaticSegmentStatus(StaticSegment $staticSegment, $status)
+    {
+        $em = $this->getDoctrineHelper()->getEntityManager($staticSegment);
+
+        $staticSegment = $this->getDoctrineHelper()->getEntity(
+            $this->getDoctrineHelper()->getEntityClass($staticSegment),
+            $staticSegment->getId()
+        );
+
+        $staticSegment->setSyncStatus($status);
+        $em->persist($staticSegment);
+        $em->flush($staticSegment);
     }
 
     /**
@@ -137,5 +155,17 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
         }
 
         return $this->staticSegmentStateManager;
+    }
+
+    /**
+     * @return DoctrineHelper
+     */
+    protected function getDoctrineHelper()
+    {
+        if (!$this->doctrineHelper) {
+            $this->doctrineHelper = $this->getContainer()->get('oro_entity.doctrine_helper');
+        }
+
+        return $this->doctrineHelper;
     }
 }

@@ -17,11 +17,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        if (!$marketingList = $staticSegment->getMarketingList()) {
-            return new \ArrayIterator();
-        }
-
-        $qb = $this->getIteratorQueryBuilder($marketingList);
+        $qb = $this->getIteratorQueryBuilder($staticSegment);
 
         $qb
             ->select(

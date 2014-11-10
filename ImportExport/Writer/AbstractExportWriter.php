@@ -4,11 +4,11 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
 
-use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
-use Oro\Bundle\UIBundle\Tools\ArrayUtils;
 use Psr\Log\LoggerInterface;
 
+use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
+use Oro\Bundle\UIBundle\Tools\ArrayUtils;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 abstract class AbstractExportWriter extends PersistentBatchWriter implements ItemWriterInterface
@@ -48,7 +48,7 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Ite
             throw new \InvalidArgumentException('Transport was not provided');
         }
 
-        return parent::write($items);
+        parent::write($items);
     }
 
     /**

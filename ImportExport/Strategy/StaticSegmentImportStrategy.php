@@ -30,14 +30,22 @@ class StaticSegmentImportStrategy extends AbstractImportStrategy
     }
 
     /**
+     * Sync only existing StaticSegments, do not create them from MailChimp
+     *
      * {@inheritdoc}
      */
     protected function afterProcessEntity($entity)
     {
-        return;
+        if (!$entity) {
+            return null;
+        }
+
+        return parent::afterProcessEntity($entity);
     }
 
     /**
+     * Sync only existing StaticSegments, do not create them from MailChimp
+     *
      * {@inheritdoc}
      */
     protected function validateAndUpdateContext($entity)

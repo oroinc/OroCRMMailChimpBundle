@@ -15,15 +15,11 @@ class StaticSegmentRepository extends EntityRepository
      * @param array|null $segments
      * @return \Iterator
      */
-    public function getStaticSegmentsToSync($segments = null)
+    public function getStaticSegmentsToSync(array $segments = null)
     {
         $qb = $this->createQueryBuilder('staticSegment');
 
-        $qb
-            ->select('staticSegment')
-            ->join('staticSegment.channel', 'channel')
-            ->addGroupBy('channel')
-            ->addGroupBy('staticSegment');
+        $qb->select('staticSegment');
 
         if ($segments) {
             $qb
