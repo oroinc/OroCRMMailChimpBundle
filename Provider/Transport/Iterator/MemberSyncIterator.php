@@ -8,12 +8,13 @@ use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 class MemberSyncIterator extends AbstractStaticSegmentIterator
 {
     /**
+     * @param StaticSegment $staticSegment
+     *
      * {@inheritdoc}
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        /** @var StaticSegment $staticSegment */
-        $qb = $this->getIteratorQueryBuilder($staticSegment->getMarketingList());
+        $qb = $this->getIteratorQueryBuilder($staticSegment);
 
         $qb
             ->addSelect(
