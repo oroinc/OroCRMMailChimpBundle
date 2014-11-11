@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Acl\Voter;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
 {
@@ -84,7 +85,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider attributesDataProvider
      * @param array $attributes
-     * @param $emailCampaign
+     * @param EmailCampaign $emailCampaign
      * @param bool $expected
      */
     public function testVote($attributes, $emailCampaign, $expected)
@@ -108,6 +109,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
 
         $this->voter->setClassName('stdClass');
 
+        /** @var \PHPUnit_Framework_MockObject_MockObject|TokenInterface $token */
         $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $this->assertEquals(
             $expected,
@@ -139,9 +141,9 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $emailCampaign
+     * @param EmailCampaign $emailCampaign
      */
-    protected function assertEmailCampaignLoad($emailCampaign)
+    protected function assertEmailCampaignLoad(EmailCampaign $emailCampaign)
     {
         $repository = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectRepository')
             ->disableOriginalConstructor()

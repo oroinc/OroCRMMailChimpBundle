@@ -21,7 +21,7 @@ class ListSearchHandler extends IntegrationAwareSearchHandler
             ->setFirstResult($firstResult)
             ->setMaxResults($maxResults);
 
-        $query = $this->aclHelper->apply($queryBuilder, 'ASSIGN');
+        $query = $this->aclHelper->apply($queryBuilder, 'VIEW');
 
         return $query->getResult();
     }

@@ -99,24 +99,31 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
 
         foreach ($staticSegments as $staticSegment) {
             $this->getStaticSegmentStateManager()->handleDroppedMembers($staticSegment);
-            $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED);
+            $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED, true);
         }
     }
 
     /**
      * @param StaticSegment $staticSegment
      * @param string $status
+     * @param bool $lastSynced
      */
-    protected function setStaticSegmentStatus(StaticSegment $staticSegment, $status)
+    protected function setStaticSegmentStatus(StaticSegment $staticSegment, $status, $lastSynced = false)
     {
         $em = $this->getDoctrineHelper()->getEntityManager($staticSegment);
 
+        /** @var StaticSegment $staticSegment */
         $staticSegment = $this->getDoctrineHelper()->getEntity(
             $this->getDoctrineHelper()->getEntityClass($staticSegment),
             $staticSegment->getId()
         );
 
         $staticSegment->setSyncStatus($status);
+
+        if ($lastSynced) {
+            $staticSegment->setLastSynced(new \DateTime('now', new \DateTimeZone('UTC')));
+        }
+
         $em->persist($staticSegment);
         $em->flush($staticSegment);
     }

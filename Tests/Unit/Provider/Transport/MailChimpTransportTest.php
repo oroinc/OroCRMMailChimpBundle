@@ -2,20 +2,23 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport as MailChimpTransportEntity;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClientFactory
      */
     protected $clientFactory;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|ManagerRegistry
      */
     protected $managerRegistry;
 
@@ -26,8 +29,6 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->markTestIncomplete();
-
         $this->clientFactory = $this->getMockBuilder(
             'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClientFactory'
         )->disableOriginalConstructor()->getMock();
@@ -107,6 +108,21 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCampaigns($status, $usesSegment, array $expectedFilters)
     {
+        $staticSegmentRepository = $this
+            ->getMockBuilder('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Repository\\StaticSegmentRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->managerRegistry
+            ->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($staticSegmentRepository));
+
+        $staticSegmentRepository
+            ->expects($this->once())
+            ->method('getStaticSegmentsToSync')
+            ->will($this->returnValue([$this->getStaticSegmentMock()]));
+
         $this->initTransport();
         $result = $this->transport->getCampaigns($status, $usesSegment);
 
@@ -119,6 +135,34 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getStaticSegmentMock()
+    {
+        $staticSegmentMock = $this
+            ->getMockBuilder('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $subscribersList = $this
+            ->getMockBuilder('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $staticSegmentMock
+            ->expects($this->once())
+            ->method('getSubscribersList')
+            ->will($this->returnValue($subscribersList));
+
+        $subscribersList
+            ->expects($this->once())
+            ->method('getOriginId')
+            ->will($this->returnValue('originId'));
+
+        return $staticSegmentMock;
+    }
+
+    /**
      * @return array
      */
     public function getCampaignsDataProvider()
@@ -127,20 +171,27 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
             [
                 'status' => null,
                 'usesSegment' => null,
-                'filters' => [],
+                'filters' => [
+                    'list_id' => 'originId',
+                    'exact' => false,
+                ],
             ],
             [
                 'status' => Campaign::STATUS_SENT,
                 'usesSegment' => null,
                 'filters' => [
-                    'status' => Campaign::STATUS_SENT
+                    'status' => Campaign::STATUS_SENT,
+                    'list_id' => 'originId',
+                    'exact' => false,
                 ],
             ],
             [
                 'status' => null,
                 'usesSegment' => true,
                 'filters' => [
-                    'uses_segment' => true
+                    'uses_segment' => true,
+                    'list_id' => 'originId',
+                    'exact' => false,
                 ],
             ],
             [
@@ -148,7 +199,9 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
                 'usesSegment' => true,
                 'filters' => [
                     'status' => Campaign::STATUS_SENT,
-                    'uses_segment' => true
+                    'uses_segment' => true,
+                    'list_id' => 'originId',
+                    'exact' => false,
                 ],
             ],
         ];
@@ -156,9 +209,10 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMembersToSync()
     {
-        $subscribersListRepository = $this->getMockBuilder(
-            'OroCRM\\Bundle\\MailChimpBundle\\Entity\\Repository\SubscribersListRepository'
-        )->disableOriginalConstructor()->getMock();
+        $subscribersListRepository = $this
+            ->getMockBuilder('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Repository\\SubscribersListRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->managerRegistry->expects($this->once())
             ->method('getRepository')
@@ -168,7 +222,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
         $subscribersLists = new \ArrayIterator([$subscribersList]);
 
         $subscribersListRepository->expects($this->once())
-            ->method('getAllSubscribersListIterator')
+            ->method('getUsedSubscribersListIterator')
             ->will($this->returnValue($subscribersLists));
 
         $since = new \DateTime('2015-02-15 21:00:01', new \DateTimeZone('Europe/Kiev'));

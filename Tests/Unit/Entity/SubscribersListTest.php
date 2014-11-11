@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
+use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFieldsInterface;
 
 class SubscribersListTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,6 +18,9 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $property
+     * @param mixed $value
+     *
      * @dataProvider settersAndGettersDataProvider
      */
     public function testSettersAndGetters($property, $value)
@@ -29,6 +33,9 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $property
+     * @param mixed $value
+     *
      * @dataProvider settersAndIsDataProvider
      */
     public function testSettersAndIs($property, $value)
@@ -123,9 +130,10 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
 
     public function testSetMergeVarConfigResetsMergeVarFields()
     {
-        $this->target->setMergeVarFields(
-            $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface')
-        );
+        /** @var MergeVarFieldsInterface|\PHPUnit_Framework_MockObject_MockObject $mergeVarsFields */
+        $mergeVarsFields = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
+
+        $this->target->setMergeVarFields($mergeVarsFields);
 
         $this->target->setMergeVarConfig([]);
 

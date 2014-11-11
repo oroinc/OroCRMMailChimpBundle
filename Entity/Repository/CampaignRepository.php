@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Entity\Repository;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
@@ -20,7 +19,7 @@ class CampaignRepository extends EntityRepository
         $qb->select('c')
             ->from('OroCRMMailChimpBundle:Campaign', 'c')
             ->where($qb->expr()->eq('c.status', ':status'))
-            ->setParameter('status', Campaign::STATUS_SENT, Type::STRING);
+            ->setParameter('status', Campaign::STATUS_SENT);
 
         return new BufferedQueryResultIterator($qb);
     }

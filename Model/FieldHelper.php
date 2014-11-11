@@ -32,9 +32,9 @@ class FieldHelper
     {
         if ($this->virtualFieldProvider->isVirtualField($entityClass, $fieldName)) {
             return $this->getVirtualFieldExpression($qb, $entityClass, $fieldName);
-        } else {
-            return sprintf('%s.%s', $this->getRootTableAlias($qb), $fieldName);
         }
+
+        return sprintf('%s.%s', $this->getRootTableAlias($qb), $fieldName);
     }
 
     /**
@@ -71,7 +71,7 @@ class FieldHelper
                 foreach ($typedFieldConfigJoins as $typedFieldConfigJoin) {
                     $join = new Join(
                         $type,
-                        $typedFieldConfigJoin['join'],
+                        $this->replaceAliases($conditions, $typedFieldConfigJoin['join']),
                         $typedFieldConfigJoin['alias'],
                         $typedFieldConfigJoin['conditionType'],
                         $typedFieldConfigJoin['condition']

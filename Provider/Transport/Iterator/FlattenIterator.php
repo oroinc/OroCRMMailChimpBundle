@@ -5,7 +5,6 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 /**
  * Iterator for data structures like ['item_key' => []]
  * where item_key will be passed to all children with some given key
- *
  */
 class FlattenIterator implements \Iterator
 {
@@ -46,7 +45,7 @@ class FlattenIterator implements \Iterator
 
     /**
      * @param \Iterator|array $toIterate
-     * @param $keyToElementName
+     * @param string $keyToElementName
      * @param bool $processEmpty
      * @param int $dataLevel
      */

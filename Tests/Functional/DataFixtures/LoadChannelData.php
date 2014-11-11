@@ -100,8 +100,8 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
      */
     public function getDependencies()
     {
-        return array(
+        return [
             'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadTransportData'
-        );
+        ];
     }
 }

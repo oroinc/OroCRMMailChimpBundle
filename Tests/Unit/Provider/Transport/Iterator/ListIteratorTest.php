@@ -1,6 +1,6 @@
 <?php
 
-namespace ForumGroup\Bundle\SalesForceMigrationBundle\Tests\Unit\Provider\Transport\Iterator;
+namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
 

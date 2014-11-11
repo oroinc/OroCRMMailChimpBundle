@@ -1,6 +1,6 @@
 <?php
 
-namespace ForumGroup\Bundle\SalesForceMigrationBundle\Tests\Unit\Provider\Transport\Iterator;
+namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
@@ -64,6 +64,9 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * @return array
+     */
     public function iteratorDataProvider()
     {
         $memberFoo = ['email' => 'foo@example.com'];
@@ -124,6 +127,11 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @param array $member
+     * @param $status
+     * @return array
+     */
     protected function passMember(array $member, $status)
     {
         $member['list_id'] = self::TEST_LIST_ID;

@@ -17,6 +17,9 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $property
+     * @param mixed $value
+     *
      * @dataProvider settersAndGettersDataProvider
      */
     public function testSettersAndGetters($property, $value)
@@ -29,6 +32,9 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $property
+     * @param mixed $value
+     *
      * @dataProvider boolSettersAndGettersDataProvider
      */
     public function testBoolSettersAndGetters($property, $value)

@@ -176,6 +176,7 @@ orocrm:
             subscribers_list.label: Subscribers List
             marketing_list_item.label: Marketing List Item
             static_segments.label: Static Segments
+            segment_members.label: Static Segment Members
 
         emailcampaign:
             transport.mailchimp: MailChimp
@@ -217,6 +218,29 @@ orocrm:
             subscribers_list.label: SubscribersList
             sync_status.label: Sync Status
             updated_at.label: Updated At
+            segment_members.label: Members
+
+        staticsegmentmember:
+            entity_label: MailChimp Static Segment Member
+            entity_plural_label: MailChimp Static Segment Members
+            id.label: Id
+            member.label: Member
+            state.label: State
+            static_segment.label: MailChimp Static Segment
+
+        memberactivity:
+            entity_label: MailChimp Member Activity
+            entity_plural_label: MailChimp Member Activities
+            id.label: Id
+            action.label: Action
+            activity_time.label: Activity Time
+            campaign.label: MailChimp Campaign
+            channel.label: Integration channel
+            email.label: Email
+            ip.label: IP
+            member.label: Member
+            owner.label: Owner
+            url.label: URL
 
         connection:
             name: MailChimp Connection
@@ -228,6 +252,8 @@ orocrm:
                 group_name: 'MailChimp'
                 synchronize: 'Synchronize'
                 disconnect: 'Disconnect'
+            confirmation:
+                disconnect: 'Are you sure you want to unlink this Marketing List from MailChimp'
             message:
                 update: 'MailChimp connection updated'
                 connect: 'Connected to MailChimp'
@@ -243,8 +269,8 @@ orocrm:
                     connect: Connect to MailChimp
 
         syncstatus:
-            synced: Synced
+            synced: Up to date
             not_synced: Not Synced
             in_progress: In Progress
             scheduled: Scheduled for Sync
-            list_is_connected.lebel: This list is connected to "%segment%" segment of "%list%" Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.
+            list_is_connected.lebel: This list is linked to "%segment%" segment of "%list%" Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.

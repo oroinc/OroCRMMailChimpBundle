@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
@@ -107,7 +106,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                     $qb->expr()->eq(sprintf('%s.subscribersList', self::MEMBER_ALIAS), ':subscribersList')
                 )
             )
-            ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId(), Type::INTEGER);
+            ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId());
 
         return $qb;
     }

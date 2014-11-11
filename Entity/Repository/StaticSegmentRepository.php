@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Entity\Repository;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
@@ -29,7 +28,7 @@ class StaticSegmentRepository extends EntityRepository
             $qb
                 ->leftJoin('staticSegment.marketingList', 'ml')
                 ->where($qb->expr()->eq('ml.type', ':type'))
-                ->setParameter('type', MarketingListType::TYPE_DYNAMIC, Type::STRING);
+                ->setParameter('type', MarketingListType::TYPE_DYNAMIC);
         }
 
         $qb
