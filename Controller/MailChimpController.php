@@ -10,6 +10,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Oro\Bundle\FormBundle\Form\Handler\ApiFormHandler;
+use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
@@ -21,6 +22,7 @@ class MailChimpController extends Controller
 {
     /**
      * @Route("/ping", name="orocrm_mailchimp_ping")
+     * @AclAncestor("orocrm_mailchimp")
      */
     public function pingAction()
     {
@@ -45,6 +47,7 @@ class MailChimpController extends Controller
      *      name="orocrm_mailchimp_marketing_list_connect",
      *      requirements={"id"="\d+"}
      * )
+     * @AclAncestor("orocrm_mailchimp")
      *
      * @Template
      * @param MarketingList $marketingList
@@ -79,6 +82,8 @@ class MailChimpController extends Controller
      *      class="OroCRMMarketingListBundle:MarketingList",
      *      options={"id" = "entity"}
      * )
+     * @AclAncestor("orocrm_mailchimp")
+     *
      * @Template
      *
      * @param MarketingList $marketingList
@@ -99,6 +104,8 @@ class MailChimpController extends Controller
      * @ParamConverter("marketingList",
      *      class="OroCRMMarketingListBundle:MarketingList",
      *      options={"id" = "marketingList"})
+     * @AclAncestor("orocrm_mailchimp")
+     *
      * @Template
      *
      * @param MarketingList $marketingList
@@ -145,6 +152,8 @@ class MailChimpController extends Controller
      * @ParamConverter("emailCampaign",
      *      class="OroCRMCampaignBundle:EmailCampaign",
      *      options={"id" = "entity"})
+     * @AclAncestor("orocrm_mailchimp")
+     *
      * @Template
      *
      * @param EmailCampaign $emailCampaign

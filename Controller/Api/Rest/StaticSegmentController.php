@@ -29,7 +29,7 @@ class StaticSegmentController extends RestController implements ClassResourceInt
      *      description="Delete MailChimp Static Segment List",
      *      resource=true
      * )
-     * @AclAncestor("orocrm_marketing_list_delete")
+     * @AclAncestor("orocrm_mailchimp")
      *
      * @return Response
      */
@@ -54,7 +54,7 @@ class StaticSegmentController extends RestController implements ClassResourceInt
      *      description="Update Static Segment status",
      *      resource=false
      * )
-     * @AclAncestor("orocrm_marketing_list_edit")
+     * @AclAncestor("orocrm_mailchimp")
      * @param StaticSegment $staticSegment
      * @return Response
      */
