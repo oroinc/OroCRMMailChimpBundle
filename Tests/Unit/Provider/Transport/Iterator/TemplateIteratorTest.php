@@ -2,13 +2,13 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class TemplateIteratorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClient
      */
     protected $client;
 
