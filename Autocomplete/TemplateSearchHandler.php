@@ -16,17 +16,17 @@ class TemplateSearchHandler extends IntegrationAwareSearchHandler
         if ($searchById) {
             $item = $this->findById($query);
 
-            return array(
+            return [
                 'results' => [$this->convertItem($item)],
                 'more'    => false
-            );
+            ];
         } else {
             $items = $this->searchEntities($query, 0, null);
 
-            return array(
+            return [
                 'results' => $this->convertItems($items),
                 'more'    => false
-            );
+            ];
         }
     }
 
@@ -48,7 +48,7 @@ class TemplateSearchHandler extends IntegrationAwareSearchHandler
             ->addOrderBy('e.category', 'ASC')
             ->addOrderBy('e.name', 'ASC');
 
-        $query = $this->aclHelper->apply($queryBuilder, 'ASSIGN');
+        $query = $this->aclHelper->apply($queryBuilder, 'VIEW');
 
         return $query->getResult();
     }
