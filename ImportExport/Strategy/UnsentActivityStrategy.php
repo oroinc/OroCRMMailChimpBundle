@@ -29,8 +29,9 @@ class UnsentActivityStrategy extends BasicImportStrategy
      */
     protected function processEntity($entity)
     {
-        $entity->setAction(MemberActivity::ACTIVITY_SENT);
-        $entity->setActivityTime($entity->getCampaign()->getSendTime());
+        $entity
+            ->setAction(MemberActivity::ACTIVITY_SENT)
+            ->setActivityTime($entity->getCampaign()->getSendTime());
 
         return $entity;
     }

@@ -42,12 +42,16 @@ class UnsentActivitiesReader extends IteratorBasedReader
     protected function getQueryIterator()
     {
         $campaigns = $this->getProcessedCampaigns();
-        if ($campaigns) {
-            /** @var EntityManager $em */
-            $em = $this->registry->getManager();
-            $unsentEmailsQb = $em->createQueryBuilder();
+        if (!$campaigns) {
+            return new \ArrayIterator();
+        }
 
-            $unsentEmailsQb->select(
+        /** @var EntityManager $em */
+        $em = $this->registry->getManager();
+        $unsentEmailsQb = $em->createQueryBuilder();
+
+        $unsentEmailsQb
+            ->select(
                 [
                     'a1.email',
                     'IDENTITY(a1.campaign) as campaign_id',
@@ -55,30 +59,28 @@ class UnsentActivitiesReader extends IteratorBasedReader
                     'IDENTITY(a1.member) as member_id'
                 ]
             )
-                ->from('OroCRMMailChimpBundle:MemberActivity', 'a1')
-                ->leftJoin(
-                    'OroCRMMailChimpBundle:MemberActivity',
-                    'a2',
-                    'WITH',
-                    $unsentEmailsQb->expr()->andX(
-                        $unsentEmailsQb->expr()->eq('a1.email', 'a2.email'),
-                        $unsentEmailsQb->expr()->eq('a1.campaign', 'a2.campaign'),
-                        $unsentEmailsQb->expr()->eq('a2.action', ':sendAction')
-                    )
+            ->from('OroCRMMailChimpBundle:MemberActivity', 'a1')
+            ->leftJoin(
+                'OroCRMMailChimpBundle:MemberActivity',
+                'a2',
+                'WITH',
+                $unsentEmailsQb->expr()->andX(
+                    $unsentEmailsQb->expr()->eq('a1.email', 'a2.email'),
+                    $unsentEmailsQb->expr()->eq('a1.campaign', 'a2.campaign'),
+                    $unsentEmailsQb->expr()->eq('a2.action', ':sendAction')
                 )
-                ->where($unsentEmailsQb->expr()->isNull('a2.id'))
-                ->andWhere($unsentEmailsQb->expr()->IN('a1.campaign', ':campaigns'))
-                ->setParameter('sendAction', MemberActivity::ACTIVITY_SENT)
-                ->setParameter('campaigns', $campaigns)
-                ->addGroupBy('a1.email')
-                ->addGroupBy('a1.campaign')
-                ->addGroupBy('a1.channel')
-                ->addGroupBy('a1.member');
+            )
+            ->where(
+                $unsentEmailsQb->expr()->andX(
+                    $unsentEmailsQb->expr()->isNull('a2.id'),
+                    $unsentEmailsQb->expr()->IN('a1.campaign', ':campaigns')
+                )
+            )
+            ->setParameter('sendAction', MemberActivity::ACTIVITY_SENT)
+            ->setParameter('campaigns', $campaigns)
+            ->addGroupBy('a1.email', 'a1.campaign', 'a1.channel', 'a1.member');
 
-            return new BufferedQueryResultIterator($unsentEmailsQb);
-        } else {
-            return new \ArrayIterator();
-        }
+        return new BufferedQueryResultIterator($unsentEmailsQb);
     }
 
     /**

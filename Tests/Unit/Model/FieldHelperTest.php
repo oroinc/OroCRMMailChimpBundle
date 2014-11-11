@@ -3,12 +3,15 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model;
 
 use Doctrine\ORM\Query\Expr\Join;
+
+use Doctrine\ORM\QueryBuilder;
+use Oro\Bundle\EntityBundle\Provider\VirtualFieldProviderInterface;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 
 class FieldHelperTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|VirtualFieldProviderInterface
      */
     protected $virtualFieldProvider;
 
@@ -38,6 +41,8 @@ class FieldHelperTest extends \PHPUnit_Framework_TestCase
         $from->expects($this->once())
             ->method('getAlias')
             ->will($this->returnValue($alias));
+
+        /** @var \PHPUnit_Framework_MockObject_MockObject|QueryBuilder $qb */
         $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
             ->disableOriginalConstructor()
             ->getMock();
@@ -54,38 +59,32 @@ class FieldHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('alias1.some', $this->helper->getFieldExpr($entityClass, $qb, $fieldName));
     }
 
-    public function testGetFieldExprVirtual()
-    {
-        $entityClass = 'stdClass';
-        $fieldName = 'some';
-        $alias = 't1';
-        $fieldConfig = [
-            'join' => [
-                'left' => [
-                    [
-                        'join' => 'entity.emails',
-                        'alias' => 'emails',
-                        'conditionType' => 'WITH',
-                        'condition' => 'emails.primary = true'
-                    ]
-                ]
-            ],
-            'select' => [
-                'expr' => 'emails.email'
-            ]
-        ];
-
-        $joinOne = new Join('LEFT', 't1.emails', 't2', 'WITH', 't2.primary = true');
-        $joinTwo = new Join('LEFT', 't1.phones', 't3', 'WITH', 't3.primary = true');
-        $joinThree = new Join('INNER', 't1.account', 't4', 'WITH', 't4.id = t1.account_id');
-        $qbJoins = [$alias => [$joinOne, $joinTwo, $joinThree]];
-
+    /**
+     * @param string $entityClass
+     * @param string $fieldName
+     * @param string $alias
+     * @param array $fieldConfig
+     * @param array $joins
+     * @param string $expected
+     *
+     * @dataProvider virtualFieldsProvider
+     */
+    public function testGetFieldExprVirtual(
+        $entityClass,
+        $fieldName,
+        $alias,
+        array $fieldConfig,
+        array $joins,
+        $expected
+    ) {
         $from = $this->getMockBuilder('Doctrine\ORM\Query\Expr\From')
             ->disableOriginalConstructor()
             ->getMock();
         $from->expects($this->atLeastOnce())
             ->method('getAlias')
             ->will($this->returnValue($alias));
+
+        /** @var \PHPUnit_Framework_MockObject_MockObject|QueryBuilder $qb */
         $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
             ->disableOriginalConstructor()
             ->getMock();
@@ -95,7 +94,7 @@ class FieldHelperTest extends \PHPUnit_Framework_TestCase
                 $this->returnValueMap(
                     [
                         ['from', [$from]],
-                        ['join', $qbJoins]
+                        ['join', $joins]
                     ]
                 )
             );
@@ -109,6 +108,65 @@ class FieldHelperTest extends \PHPUnit_Framework_TestCase
             ->with($entityClass, $fieldName)
             ->will($this->returnValue($fieldConfig));
 
-        $this->assertEquals('t2.email', $this->helper->getFieldExpr($entityClass, $qb, $fieldName));
+        $this->assertEquals($expected, $this->helper->getFieldExpr($entityClass, $qb, $fieldName));
+    }
+
+    /**
+     * @return array
+     */
+    public function virtualFieldsProvider()
+    {
+        return [
+            'has_join' => [
+                'stdClass',
+                'field',
+                't1',
+                [
+                    'join' => [
+                        'left' => [
+                            [
+                                'join' => 'entity.emails',
+                                'alias' => 'emails',
+                                'conditionType' => 'WITH',
+                                'condition' => 'emails.primary = true'
+                            ]
+                        ]
+                    ],
+                    'select' => [
+                        'expr' => 'emails.email'
+                    ]
+                ],
+                [
+                    't1' => [
+                        new Join('LEFT', 't1.emails', 't2', 'WITH', 't2.primary = true'),
+                        new Join('LEFT', 't1.phones', 't3', 'WITH', 't3.primary = true'),
+                        new Join('INNER', 't1.account', 't4', 'WITH', 't4.id = t1.account_id'),
+                    ]
+                ],
+                't2.email'
+            ],
+            'empty_qb' => [
+                'stdClass',
+                'field',
+                't1',
+                [
+                    'join' => [
+                        'left' => [
+                            [
+                                'join' => 'entity.emails',
+                                'alias' => 'emails',
+                                'conditionType' => 'WITH',
+                                'condition' => 'emails.primary = true'
+                            ]
+                        ]
+                    ],
+                    'select' => [
+                        'expr' => 'emails.email'
+                    ]
+                ],
+                [],
+                'emails.email'
+            ]
+        ];
     }
 }

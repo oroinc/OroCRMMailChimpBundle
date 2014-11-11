@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query\Expr\Join;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
@@ -15,8 +14,6 @@ use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
 {
-    const ROOT_ENTITY_ALIAS = 'entity';
-
     /**
      * @var DoctrineHelper
      */
@@ -97,7 +94,7 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
             )
             ->join('staticSegment.subscribersList', 'subscribersList')
             ->where($qb->expr()->eq('subscribersList.id', ':subscribersList'))
-            ->setParameter('subscribersList', $subscriberList->getId(), Type::INTEGER);
+            ->setParameter('subscribersList', $subscriberList->getId());
 
         return new BufferedQueryResultIterator($qb);
     }
@@ -112,7 +109,7 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
         $qb = $this->doctrineHelper
             ->getEntityManager($className)
             ->getRepository($className)
-            ->createQueryBuilder(self::ROOT_ENTITY_ALIAS);
+            ->createQueryBuilder('e');
 
         return $qb;
     }
