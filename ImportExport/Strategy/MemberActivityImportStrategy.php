@@ -84,9 +84,11 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
         /** @var Campaign $campaign */
         $campaign = $this->findExistingEntity($entity->getCampaign());
         $member = $this->findExistingMember($entity->getMember(), $channel, $campaign);
-        $entity->setChannel($channel);
-        $entity->setCampaign($campaign);
-        $entity->setMember($member);
+
+        $entity
+            ->setChannel($channel)
+            ->setCampaign($campaign)
+            ->setMember($member);
 
         if ($member && !$this->isSkipped($entity)) {
             if (!$entity->getActivityTime()) {
@@ -139,8 +141,8 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     protected function findExistingMember(Member $member, Channel $channel, Campaign $campaign)
     {
         $searchCondition = [
-            'channel' => $channel,
-            'subscribersList' => $campaign->getSubscribersList(),
+            'channel' => $channel->getId(),
+            'subscribersList' => $campaign->getSubscribersList()->getId(),
             'email' => $member->getEmail()
         ];
 
