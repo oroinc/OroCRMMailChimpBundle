@@ -4,11 +4,9 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 
 class LoadTransportData extends AbstractFixture implements ContainerAwareInterface

@@ -5,10 +5,10 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
 class LoadStaticSegmentData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
