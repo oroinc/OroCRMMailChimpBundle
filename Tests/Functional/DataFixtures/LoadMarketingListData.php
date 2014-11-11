@@ -4,25 +4,24 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
-class LoadTransportData extends AbstractFixture implements ContainerAwareInterface
+class LoadMarketingListData extends AbstractFixture implements ContainerAwareInterface
 {
     /**
-     * @var array Transports configuration
+     * @var array Channels configuration
      */
-    protected $transportData = [
+    protected $mlData = [
         [
-            'reference' => 'mailchimp:transport_one',
-            'apiKey' => 'f9e179585f382c4def28653b1cbddba5-us9',
+            'type' => 'dynamic',
+            'name' => 'Test ML',
+            'description' => '',
+            'entity' => 'OroCRM\Bundle\ContactBundle\Entity\Contact',
+            'reference' => 'mailchimp:ml_one',
         ],
-        [
-            'reference' => 'mailchimp:transport_two',
-            'apiKey' => 'f9e179585f382c4def28653b1cbddba5-us9',
-        ]
     ];
 
     /**
@@ -61,9 +60,13 @@ class LoadTransportData extends AbstractFixture implements ContainerAwareInterfa
      */
     public function load(ObjectManager $manager)
     {
-        foreach ($this->transportData as $data) {
-            $entity = new MailChimpTransport();
-            $this->setEntityPropertyValues($entity, $data, ['reference']);
+        foreach ($this->mlData as $data) {
+            $entity = new MarketingList();
+            $type = $manager
+                ->getRepository('OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType')
+                ->find($data['type']);
+            $entity->setType($type);
+            $this->setEntityPropertyValues($entity, $data, ['reference', 'type']);
             $this->setReference($data['reference'], $entity);
             $manager->persist($entity);
         }

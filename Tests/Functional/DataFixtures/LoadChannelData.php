@@ -20,10 +20,10 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
         [
             'name' => 'mailchimp1',
             'type' => 'mailchimp',
-            'transport' => 'mailchimp_transport:test_transport1',
-            'connectors' => ['list', 'template', 'campaign', 'member'],
+            'transport' => 'mailchimp:transport_one',
+            'connectors' => ['list', 'campaign', 'static_segment', 'member', 'member_activity'],
             'enabled' => true,
-            'reference' => 'mailchimp_transport:test_transport1',
+            'reference' => 'mailchimp:channel_1',
             'synchronizationSettings' => [
                 'isTwoWaySyncEnabled' => true
             ],
@@ -31,10 +31,10 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
         [
             'name' => 'mailchimp2',
             'type' => 'mailchimp',
-            'transport' => 'mailchimp_transport:test_transport2',
+            'transport' => 'mailchimp:transport_two',
             'connectors' => ['list'],
             'enabled' => true,
-            'reference' => 'mailchimp_transport:test_transport2',
+            'reference' => 'mailchimp_transport:channel_2',
             'synchronizationSettings' => [
                 'isTwoWaySyncEnabled' => true
             ],

@@ -3,26 +3,29 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
-class LoadTransportData extends AbstractFixture implements ContainerAwareInterface
+class LoadSubscribersListData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     /**
-     * @var array Transports configuration
+     * @var array Subscriber list configuration
      */
-    protected $transportData = [
+    protected $data = [
         [
-            'reference' => 'mailchimp:transport_one',
-            'apiKey' => 'f9e179585f382c4def28653b1cbddba5-us9',
+            'channel' => 'mailchimp:channel_1',
+            'originId' => '54321',
+            'webId' => '12345',
+            'name' => 'MC',
+            'email_type_option' => '0',
+            'use_awesomebar' => '1',
+            'reference' => 'mailchimp:subscribers_list_one',
         ],
-        [
-            'reference' => 'mailchimp:transport_two',
-            'apiKey' => 'f9e179585f382c4def28653b1cbddba5-us9',
-        ]
     ];
 
     /**
@@ -61,12 +64,23 @@ class LoadTransportData extends AbstractFixture implements ContainerAwareInterfa
      */
     public function load(ObjectManager $manager)
     {
-        foreach ($this->transportData as $data) {
-            $entity = new MailChimpTransport();
+        foreach ($this->data as $data) {
+            $entity = new SubscribersList();
+            $data['channel'] = $this->getReference($data['channel']);
             $this->setEntityPropertyValues($entity, $data, ['reference']);
             $this->setReference($data['reference'], $entity);
             $manager->persist($entity);
         }
         $manager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDependencies()
+    {
+        return array(
+            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadChannelData',
+        );
     }
 }

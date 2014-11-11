@@ -3,26 +3,28 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 
-class LoadTransportData extends AbstractFixture implements ContainerAwareInterface
+class LoadStaticSegmentData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     /**
-     * @var array Transports configuration
+     * @var array Segment configuration
      */
-    protected $transportData = [
+    protected $segmentData = [
         [
-            'reference' => 'mailchimp:transport_one',
-            'apiKey' => 'f9e179585f382c4def28653b1cbddba5-us9',
+            'subscribersList' => 'mailchimp:subscribers_list_one',
+            'marketingList' => 'mailchimp:ml_one',
+            'channel' => 'mailchimp:channel_1',
+            'name' => 'Test',
+            'sync_status' => '',
+            'remote_remove' => '0',
+            'reference' => 'mailchimp:segment_one',
         ],
-        [
-            'reference' => 'mailchimp:transport_two',
-            'apiKey' => 'f9e179585f382c4def28653b1cbddba5-us9',
-        ]
     ];
 
     /**
@@ -61,12 +63,26 @@ class LoadTransportData extends AbstractFixture implements ContainerAwareInterfa
      */
     public function load(ObjectManager $manager)
     {
-        foreach ($this->transportData as $data) {
-            $entity = new MailChimpTransport();
+        foreach ($this->segmentData as $data) {
+            $entity = new StaticSegment();
+            $data['marketingList'] = $this->getReference($data['marketingList']);
+            $data['subscribersList'] = $this->getReference($data['subscribersList']);
+            $data['channel'] = $this->getReference($data['channel']);
             $this->setEntityPropertyValues($entity, $data, ['reference']);
             $this->setReference($data['reference'], $entity);
             $manager->persist($entity);
         }
         $manager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDependencies()
+    {
+        return array(
+            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMarketingListData',
+            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadSubscribersListData'
+        );
     }
 }
