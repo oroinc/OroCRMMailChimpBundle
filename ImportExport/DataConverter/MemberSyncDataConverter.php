@@ -6,57 +6,20 @@ use Oro\Bundle\LocaleBundle\Model\FirstNameInterface;
 use Oro\Bundle\LocaleBundle\Model\LastNameInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
-use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
-class MemberSyncDataConverter extends MemberDataConverter implements StaticSegmentAwareInterface
+class MemberSyncDataConverter extends MemberDataConverter
 {
-    /**
-     * @var ContactInformationFieldsProvider
-     */
-    protected $contactInformationFieldsProvider;
-
-    /**
-     * @var string
-     */
-    protected $memberClassName;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getStaticSegment()
-    {
-        return $this->context->getOption(StaticSegmentAwareInterface::OPTION_SEGMENT);
-    }
-
-    /**
-     * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
-     */
-    public function setContactInformationFieldsProvider(
-        ContactInformationFieldsProvider $contactInformationFieldsProvider
-    ) {
-        $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
-    }
-
-    /**
-     * @param string $memberClassName
-     */
-    public function setMemberClassName($memberClassName)
-    {
-        $this->memberClassName = $memberClassName;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
+        /** @var Member $object */
         $object = reset($importedRecord);
-        $contactInformationFieldsValues = $this->getContactInformationFieldsValues($object);
 
         $item = [
-            MergeVarInterface::FIELD_TYPE_EMAIL => reset($contactInformationFieldsValues),
-            MergeVarInterface::TAG_EMAIL => reset($contactInformationFieldsValues),
+            MergeVarInterface::FIELD_TYPE_EMAIL => $object->getEmail(),
+            MergeVarInterface::TAG_EMAIL => $object->getEmail(),
             'status' => Member::STATUS_EXPORT,
         ];
 
@@ -77,23 +40,6 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
         }
 
         return parent::convertToImportFormat($item, $skipNullValues);
-    }
-
-    /**
-     * @param object $object
-     * @return array
-     */
-    protected function getContactInformationFieldsValues($object)
-    {
-        $contactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
-            $this->memberClassName,
-            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
-        );
-
-        return $this->contactInformationFieldsProvider->getTypedFieldsValues(
-            $contactInformationFields,
-            $object
-        );
     }
 
     /**

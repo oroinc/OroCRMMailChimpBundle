@@ -10,7 +10,6 @@ use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
 {
@@ -127,25 +126,8 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
         }
 
         $marketingLists = $this->getMarketingListIterator($subscribersList);
-
-        $memberContactInformationFields = $this->contactInformationFieldsProvider
-            ->getEntityTypedFields(
-                $member,
-                ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
-            );
-
-        $memberContactInformationFieldsValues = $this->contactInformationFieldsProvider
-            ->getTypedFieldsValues(
-                $memberContactInformationFields,
-                $member
-            );
-
-
         foreach ($marketingLists as $marketingList) {
-            $marketingListEntities = $this->getMarketingListEntitiesByEmails(
-                $marketingList,
-                $memberContactInformationFieldsValues
-            );
+            $marketingListEntities = $this->getMarketingListEntitiesByEmail($marketingList, $member->getEmail());
 
             /** @var MarketingList $marketingListEntity */
             foreach ($marketingListEntities as $marketingListEntity) {
