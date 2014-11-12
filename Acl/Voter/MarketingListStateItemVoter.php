@@ -74,9 +74,9 @@ class MarketingListStateItemVoter extends AbstractEntityVoter
     protected function getPermissionForAttribute($class, $identifier, $attribute)
     {
         /** @var MarketingListStateItemInterface $item */
-        $item = $this->doctrineHelper->getRepository($this->className)->find($identifier);
+        $item = $this->doctrineHelper->getEntityRepository($this->className)->find($identifier);
         $entityClass = $item->getMarketingList()->getEntity();
-        $entity = $this->doctrineHelper->getRepository($entityClass)->find($item->getEntityId());
+        $entity = $this->doctrineHelper->getEntityRepository($entityClass)->find($item->getEntityId());
 
         $contactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
             $entity,
