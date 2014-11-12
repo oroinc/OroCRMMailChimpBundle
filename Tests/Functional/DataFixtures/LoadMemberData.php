@@ -14,13 +14,13 @@ class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtur
      */
     protected $data = [
         [
-            'originId' => 'member1',
+            'originId' => 210000000,
             'reference' => 'mailchimp_member',
             'email' => 'member1@example.com',
             'status' => Member::STATUS_SUBSCRIBED,
         ],
         [
-            'originId' => 'member2',
+            'originId' => 210000001,
             'reference' => 'mailchimp_member',
             'email' => 'member2@example.com',
             'status' => Member::STATUS_SUBSCRIBED,
