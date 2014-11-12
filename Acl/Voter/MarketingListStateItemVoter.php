@@ -88,12 +88,7 @@ class MarketingListStateItemVoter extends AbstractEntityVoter
             $entity
         );
 
-        $memberContactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
-            $this->memberClassName,
-            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
-        );
-
-        $qb = $this->getQueryBuilder($memberContactInformationFields, $contactInformationValues, $item);
+        $qb = $this->getQueryBuilder($contactInformationValues, $item);
 
         $result = $qb->getQuery()->getScalarResult();
 
@@ -105,26 +100,15 @@ class MarketingListStateItemVoter extends AbstractEntityVoter
     }
 
     /**
-     * @param array $memberContactInformationFields
      * @param array $contactInformationValues
      * @param MarketingListStateItemInterface $item
      * @return QueryBuilder
      */
-    protected function getQueryBuilder(array $memberContactInformationFields, array $contactInformationValues, $item)
+    protected function getQueryBuilder(array $contactInformationValues, $item)
     {
         $qb = $this->doctrineHelper
             ->getEntityManager($this->memberClassName)
             ->createQueryBuilder();
-
-        $expr = $qb->expr()->orX();
-        foreach ($memberContactInformationFields as $memberContactInformationField) {
-            $expr->add(
-                $qb->expr()->in(
-                    sprintf('mmb.%s', $memberContactInformationField),
-                    $contactInformationValues
-                )
-            );
-        }
 
         $qb
             ->select('COUNT(mmb.id)')
@@ -143,8 +127,8 @@ class MarketingListStateItemVoter extends AbstractEntityVoter
             )
             ->where(
                 $qb->expr()->andX(
-                    $expr,
                     $qb->expr()->eq('ml.id', $item->getMarketingList()->getId()),
+                    $qb->expr()->in('mmb.email', $contactInformationValues),
                     $qb->expr()->in('mmb.status', ':statuses')
                 )
             )

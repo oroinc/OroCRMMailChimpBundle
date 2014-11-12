@@ -73,7 +73,7 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
         $emailCampaign = $mailChimpCampaign->getEmailCampaign();
         $marketingList = $mailChimpCampaign->getStaticSegment()->getMarketingList();
 
-        $relatedEntities = $this->getMarketingListEntitiesByEmails($marketingList, [$memberActivity->getEmail()]);
+        $relatedEntities = $this->getMarketingListEntitiesByEmail($marketingList, $memberActivity->getEmail());
         $em = $this->registry->getManager();
         foreach ($relatedEntities as $relatedEntity) {
             $emailCampaignStatistics = $this->campaignStatisticsConnector->getStatisticsRecord(

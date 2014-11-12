@@ -1,6 +1,9 @@
 orocrm:
     mailchimp:
         channel_type.label: MailChimp
+        acl:
+            action:
+                general: MailChimp manipulations
         integration_transport:
             label: MailChimp
             api_key:

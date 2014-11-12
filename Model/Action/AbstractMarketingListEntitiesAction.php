@@ -49,10 +49,10 @@ abstract class AbstractMarketingListEntitiesAction extends AbstractAction
 
     /**
      * @param MarketingList $marketingList
-     * @param array $emails
+     * @param string $email
      * @return array
      */
-    protected function getMarketingListEntitiesByEmails(MarketingList $marketingList, array $emails)
+    protected function getMarketingListEntitiesByEmail(MarketingList $marketingList, $email)
     {
         $emailFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
             $marketingList,
@@ -65,12 +65,12 @@ abstract class AbstractMarketingListEntitiesAction extends AbstractAction
         foreach ($emailFields as $emailField) {
             $parameterName = $emailField . mt_rand();
             $expr->add(
-                $qb->expr()->in(
+                $qb->expr()->eq(
                     $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $emailField),
                     ':' . $parameterName
                 )
             );
-            $qb->setParameter($parameterName, $emails);
+            $qb->setParameter($parameterName, $email);
         }
         $qb->andWhere($expr);
 
