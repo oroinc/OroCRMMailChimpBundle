@@ -43,6 +43,10 @@ class SyncListTest extends WebTestCase
             ->method('create')
             ->will($this->returnValue($this->apiClient));
 
+//        $this->getContainer()
+//            ->get('orocrm_mailchimp.client.factory')
+//            ->setClientClass('OroCRM\Bundle\MailChimpBundle\Tests\Functional\Stub\MailChimpClientStub');
+
         $transport = new MailChimpTransport($this->clientFactory, $this->getContainer()->get('doctrine'));
         $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
         $this->loadFixtures(['OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData']);
@@ -107,16 +111,16 @@ class SyncListTest extends WebTestCase
                 'entity' => 'SubscribersList',
                 'data' => $data['response'],
                 'assertMethod' => 'assertEquals',
-                'assertCount' => '2',
+                'assertCount' => count($data['response']['data']),
                 'expectedContent' => [
                     'Run sync for "mailchimp1" integration.',
                     'Start processing "list" connector',
                     'invalid entities: [0]',
-                    'process [2]',
+                    'process [' . count($data['response']['data']) . ']',
                     'delete [0]',
                     'updated [0]',
-                    'read [2]',
-                    'added [2]',
+                    'read [' . count($data['response']['data']) . ']',
+                    'added [' . count($data['response']['data']) . ']',
                 ]
             ];
         }
