@@ -71,7 +71,7 @@ class MemberActivityImportTest extends WebTestCase
                 $campaign = $campaignRepo->findOneBy(['originId' => $criteria['campaign']]);
                 $criteria['campaign'] = $campaign->getId();
                 if (!empty($criteria['activityTime'])) {
-                    $criteria['activityTime'] = new \DateTime($criteria['activityTime']);
+                    $criteria['activityTime'] = new \DateTime($criteria['activityTime'], new \DateTimeZone('UTC'));
                 }
 
                 $result = $repository->findBy($criteria);
