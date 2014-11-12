@@ -2,16 +2,16 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\UserBundle\Migrations\Data\ORM\LoadAdminUserData;
 
-class LoadChannelData extends AbstractFixture implements DependentFixtureInterface, ContainerAwareInterface
+class LoadChannelData extends AbstractMailChimpFixture implements DependentFixtureInterface, ContainerAwareInterface
 {
     /**
      * @var array Channels configuration
@@ -23,7 +23,7 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
             'transport' => 'mailchimp_transport:test_transport1',
             'connectors' => ['list', 'template', 'campaign', 'member'],
             'enabled' => true,
-            'reference' => 'mailchimp_transport:test_transport1',
+            'reference' => 'mailchimp_transport:channel1',
             'synchronizationSettings' => [
                 'isTwoWaySyncEnabled' => true
             ],
@@ -34,7 +34,7 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
             'transport' => 'mailchimp_transport:test_transport2',
             'connectors' => ['list'],
             'enabled' => true,
-            'reference' => 'mailchimp_transport:test_transport2',
+            'reference' => 'mailchimp_transport:channel2',
             'synchronizationSettings' => [
                 'isTwoWaySyncEnabled' => true
             ],
@@ -45,24 +45,6 @@ class LoadChannelData extends AbstractFixture implements DependentFixtureInterfa
      * @var ContainerInterface
      */
     protected $container;
-
-    /**
-     * Sets $entity object properties from $data array
-     *
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
-                continue;
-            }
-            $propertyAccessor->setValue($entity, $property, $value);
-        }
-    }
 
     /**
      * {@inheritdoc}

@@ -1,0 +1,65 @@
+code: 200
+headers: ~
+body:
+    member1@example.com:
+        -
+            action: 'click'
+            timestamp: '2014-11-10 14:46:09'
+            url: 'http://localhost.loc'
+            ip: '0.0.0.3'
+        -
+            action: 'open'
+            timestamp: '2014-11-10 14:46:09'
+            url: ~
+            ip: '0.0.0.4'
+        - ~
+    member2@example.com:
+        -
+            action: 'click'
+            timestamp: '2014-11-10 14:46:09'
+            url: 'http://localhost.loc'
+            ip: '0.0.0.5'
+        -
+            action: 'open'
+            timestamp: '2014-11-10 14:46:09'
+            url: ~
+            ip: '0.0.0.6'
+addCount: 5
+fullCount: 6 # 1 additional send action for second member
+database:
+    -
+        email: 'member1@example.com'
+        action: 'click'
+        activityTime: '2014-11-10 14:46:09'
+        url: 'http://localhost.loc'
+        ip: '0.0.0.3'
+        campaign: campaign2
+    -
+        email: 'member1@example.com'
+        action: 'open'
+        activityTime: '2014-11-10 14:46:09'
+        url: ~
+        ip: '0.0.0.4'
+        campaign: campaign2
+    -
+        email: 'member1@example.com'
+        action: 'sent'
+        campaign: campaign2
+    -
+        email: 'member2@example.com'
+        action: 'click'
+        activityTime: '2014-11-10 14:46:09'
+        url: 'http://localhost.loc'
+        ip: '0.0.0.5'
+        campaign: campaign2
+    -
+        email: 'member2@example.com'
+        action: 'open'
+        activityTime: '2014-11-10 14:46:09'
+        url: ~
+        ip: '0.0.0.6'
+        campaign: campaign2
+    -
+        email: 'member2@example.com'
+        action: 'sent'
+        campaign: campaign2
