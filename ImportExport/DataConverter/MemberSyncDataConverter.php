@@ -6,10 +6,9 @@ use Oro\Bundle\LocaleBundle\Model\FirstNameInterface;
 use Oro\Bundle\LocaleBundle\Model\LastNameInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
-use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentAwareInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
-class MemberSyncDataConverter extends MemberDataConverter implements StaticSegmentAwareInterface
+class MemberSyncDataConverter extends MemberDataConverter
 {
     /**
      * @var ContactInformationFieldsProvider
@@ -17,33 +16,11 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
     protected $contactInformationFieldsProvider;
 
     /**
-     * @var string
-     */
-    protected $memberClassName;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getStaticSegment()
-    {
-        return $this->context->getOption(StaticSegmentAwareInterface::OPTION_SEGMENT);
-    }
-
-    /**
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      */
-    public function setContactInformationFieldsProvider(
-        ContactInformationFieldsProvider $contactInformationFieldsProvider
-    ) {
-        $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
-    }
-
-    /**
-     * @param string $memberClassName
-     */
-    public function setMemberClassName($memberClassName)
+    public function __construct(ContactInformationFieldsProvider $contactInformationFieldsProvider)
     {
-        $this->memberClassName = $memberClassName;
+        $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
     }
 
     /**
@@ -51,6 +28,7 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
+        /** object from marketing list */
         $object = reset($importedRecord);
         $contactInformationFieldsValues = $this->getContactInformationFieldsValues($object);
 
@@ -86,7 +64,7 @@ class MemberSyncDataConverter extends MemberDataConverter implements StaticSegme
     protected function getContactInformationFieldsValues($object)
     {
         $contactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
-            $this->memberClassName,
+            $object,
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
         );
 

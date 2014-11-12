@@ -107,6 +107,9 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->handler->process($staticSegment));
     }
 
+    /**
+     * @param object $entity
+     */
     public function assertParentCalls($entity)
     {
         $this->form->expects($this->once())

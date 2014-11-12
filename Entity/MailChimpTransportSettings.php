@@ -6,12 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use OroCRM\Bundle\CampaignBundle\Entity\TransportSettings;
 
 /**
  * @ORM\Entity
- * @Config()
  */
 class MailChimpTransportSettings extends TransportSettings
 {

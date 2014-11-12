@@ -99,13 +99,6 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
-     * @ConfigField(
-     *      defaultValues={
-     *          "entity"={
-     *              "contact_information"="email"
-     *          }
-     *      }
-     * )
      */
     protected $email;
 
@@ -113,13 +106,6 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
-     * @ConfigField(
-     *      defaultValues={
-     *          "entity"={
-     *              "contact_information"="phone"
-     *          }
-     *      }
-     * )
      */
     protected $phone;
 

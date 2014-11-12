@@ -13,6 +13,7 @@ use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 {
     const MEMBER_ALIAS = 'mmb';
+    const MEMBER_EMAIL_FIELD = 'email';
 
     /**
      * @var MarketingListProvider
@@ -79,21 +80,14 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
         );
 
-        $memberContactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
-            $this->memberClassName,
-            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
-        );
-
         $expr = $qb->expr()->orX();
         foreach ($contactInformationFields as $contactInformationField) {
-            foreach ($memberContactInformationFields as $memberContactInformationField) {
-                $expr->add(
-                    $qb->expr()->eq(
-                        $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField),
-                        sprintf('%s.%s', self::MEMBER_ALIAS, $memberContactInformationField)
-                    )
-                );
-            }
+            $expr->add(
+                $qb->expr()->eq(
+                    $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField),
+                    sprintf('%s.%s', self::MEMBER_ALIAS, self::MEMBER_EMAIL_FIELD)
+                )
+            );
         }
 
         $qb
