@@ -30,7 +30,7 @@ class EmailCampaignVoter extends AbstractEntityVoter
     protected function isEmailCampaignSent($entityId)
     {
         $emailCampaign = $this->doctrineHelper
-            ->getRepository($this->className)
+            ->getEntityRepository($this->className)
             ->find($entityId);
 
         if ($emailCampaign) {
