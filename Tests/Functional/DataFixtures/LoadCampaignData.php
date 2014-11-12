@@ -37,18 +37,18 @@ class LoadCampaignData extends AbstractMailChimpFixture implements DependentFixt
             'reference' => 'mailchimp_campaign4',
             'status' => Campaign::STATUS_SENT,
         ],
-//        [
-//            'originId' => 'campaign5',
-//            'webID' => '115',
-//            'reference' => 'mailchimp_campaign5',
-//            'status' => Campaign::STATUS_SENT,
-//        ],
-//        [
-//            'originId' => 'campaign6',
-//            'webID' => '116',
-//            'reference' => 'mailchimp_campaign6',
-//            'status' => Campaign::STATUS_SENT,
-//        ],
+        [
+            'originId' => 'campaign5',
+            'webID' => '115',
+            'reference' => 'mailchimp_campaign5',
+            'status' => Campaign::STATUS_SENT,
+        ],
+        [
+            'originId' => 'campaign6',
+            'webID' => '116',
+            'reference' => 'mailchimp_campaign6',
+            'status' => Campaign::STATUS_SENT,
+        ],
         [
             'originId' => 'campaign7',
             'webID' => '117',
