@@ -81,12 +81,11 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         );
 
         $expr = $qb->expr()->orX();
-        $memberEmailField = sprintf('%s.%s', self::MEMBER_ALIAS, self::MEMBER_EMAIL_FIELD);
         foreach ($contactInformationFields as $contactInformationField) {
             $expr->add(
                 $qb->expr()->eq(
                     $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField),
-                    $memberEmailField
+                    sprintf('%s.%s', self::MEMBER_ALIAS, self::MEMBER_EMAIL_FIELD)
                 )
             );
         }

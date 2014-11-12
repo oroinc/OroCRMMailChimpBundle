@@ -6,20 +6,35 @@ use Oro\Bundle\LocaleBundle\Model\FirstNameInterface;
 use Oro\Bundle\LocaleBundle\Model\LastNameInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
+use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MemberSyncDataConverter extends MemberDataConverter
 {
+    /**
+     * @var ContactInformationFieldsProvider
+     */
+    protected $contactInformationFieldsProvider;
+
+    /**
+     * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
+     */
+    public function __construct(ContactInformationFieldsProvider $contactInformationFieldsProvider)
+    {
+        $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        /** @var Member $object */
+        /** object from marketing list */
         $object = reset($importedRecord);
+        $contactInformationFieldsValues = $this->getContactInformationFieldsValues($object);
 
         $item = [
-            MergeVarInterface::FIELD_TYPE_EMAIL => $object->getEmail(),
-            MergeVarInterface::TAG_EMAIL => $object->getEmail(),
+            MergeVarInterface::FIELD_TYPE_EMAIL => reset($contactInformationFieldsValues),
+            MergeVarInterface::TAG_EMAIL => reset($contactInformationFieldsValues),
             'status' => Member::STATUS_EXPORT,
         ];
 
@@ -40,6 +55,23 @@ class MemberSyncDataConverter extends MemberDataConverter
         }
 
         return parent::convertToImportFormat($item, $skipNullValues);
+    }
+
+    /**
+     * @param object $object
+     * @return array
+     */
+    protected function getContactInformationFieldsValues($object)
+    {
+        $contactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
+            $object,
+            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
+        );
+
+        return $this->contactInformationFieldsProvider->getTypedFieldsValues(
+            $contactInformationFields,
+            $object
+        );
     }
 
     /**

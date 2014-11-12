@@ -418,6 +418,8 @@ services:
 
     orocrm_mailchimp.importexport.data_converter.member_sync:
         class: %orocrm_mailchimp.importexport.data_converter.member_sync.class%
+        arguments:
+            - @orocrm_marketing_list.provider.contact_information_fields
 
     orocrm_mailchimp.importexport.data_converter.static_segment:
         class: %orocrm_mailchimp.importexport.data_converter.static_segment.class%
