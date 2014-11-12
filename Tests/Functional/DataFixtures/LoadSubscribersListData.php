@@ -2,14 +2,12 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class LoadSubscribersListData extends AbstractFixture implements DependentFixtureInterface
+class LoadSubscribersListData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {
     /**
      * @var array
@@ -36,22 +34,6 @@ class LoadSubscribersListData extends AbstractFixture implements DependentFixtur
     }
 
     /**
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
-                continue;
-            }
-            $propertyAccessor->setValue($entity, $property, $value);
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function load(ObjectManager $manager)
@@ -59,7 +41,7 @@ class LoadSubscribersListData extends AbstractFixture implements DependentFixtur
         foreach ($this->data as $data) {
             $entity = new SubscribersList();
 
-            $entity->setChannel($this->getReference('mailchimp_transport:test_transport1'));
+            $entity->setChannel($this->getReference('mailchimp_transport:channel1'));
 
             $this->setEntityPropertyValues($entity, $data, ['reference']);
             $this->setReference($data['reference'], $entity);

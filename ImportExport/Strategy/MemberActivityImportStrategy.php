@@ -124,7 +124,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             $processedCampaigns = (array)$jobContext->get('processed_campaigns');
             $campaignId = $entity->getCampaign()->getId();
             if (!in_array($campaignId, $processedCampaigns)) {
-                $processedCampaigns['campaign_id'] = $campaignId;
+                $processedCampaigns[] = $campaignId;
             }
             $jobContext->put('processed_campaigns', $processedCampaigns);
         }

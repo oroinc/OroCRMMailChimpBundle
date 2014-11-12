@@ -188,9 +188,7 @@ class MailChimpTransport implements TransportInterface
      */
     public function getMemberActivitiesToSync(\DateTime $since = null)
     {
-        $repository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:Campaign');
-
-        $sentCampaigns = $repository->getSentCampaigns();
+        $sentCampaigns = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:Campaign')->getSentCampaigns();
 
         $parameters = ['include_empty' => true];
         if ($since) {

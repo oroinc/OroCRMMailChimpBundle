@@ -2,15 +2,12 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 
-class LoadMemberData extends AbstractFixture implements DependentFixtureInterface
+class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {
     /**
      * @var array
@@ -36,25 +33,8 @@ class LoadMemberData extends AbstractFixture implements DependentFixtureInterfac
     public function getDependencies()
     {
         return [
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadChannelData',
             'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadSubscribersListData',
         ];
-    }
-
-    /**
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
-                continue;
-            }
-            $propertyAccessor->setValue($entity, $property, $value);
-        }
     }
 
     /**
@@ -65,7 +45,7 @@ class LoadMemberData extends AbstractFixture implements DependentFixtureInterfac
         foreach ($this->data as $data) {
             $entity = new Member();
 
-            $entity->setChannel($this->getReference('mailchimp_transport:test_transport1'));
+            $entity->setChannel($this->getReference('mailchimp_transport:channel1'));
             $entity->setSubscribersList($this->getReference('mailchimp_subscribers_list'));
 
             $this->setEntityPropertyValues($entity, $data, ['reference']);

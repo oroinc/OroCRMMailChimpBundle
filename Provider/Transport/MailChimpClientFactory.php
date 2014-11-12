@@ -7,22 +7,26 @@ class MailChimpClientFactory
     /**
      * @var string
      */
-    protected $clientClass;
+    protected $clientClass = 'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient';
 
     /**
      * @var string
      */
-    protected $apiVersion;
+    protected $apiVersion = MailChimpClient::LATEST_API_VERSION;
 
     /**
      * @param string $clientClass
+     */
+    public function setClientClass($clientClass)
+    {
+        $this->clientClass = $clientClass;
+    }
+
+    /**
      * @param string $apiVersion
      */
-    public function __construct(
-        $clientClass = 'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient',
-        $apiVersion = MailChimpClient::LATEST_API_VERSION
-    ) {
-        $this->clientClass = $clientClass;
+    public function setApiVersion($apiVersion)
+    {
         $this->apiVersion = $apiVersion;
     }
 

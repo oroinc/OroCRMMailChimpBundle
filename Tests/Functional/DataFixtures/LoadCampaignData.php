@@ -2,15 +2,12 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 
-class LoadCampaignData extends AbstractFixture implements DependentFixtureInterface
+class LoadCampaignData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {
     /**
      * @var array
@@ -18,10 +15,46 @@ class LoadCampaignData extends AbstractFixture implements DependentFixtureInterf
     protected $data = [
         [
             'originId' => 'campaign1',
-            'webID' => '123',
-            'reference' => 'mailchimp_campaign',
+            'webID' => '111',
+            'reference' => 'mailchimp_campaign1',
             'status' => Campaign::STATUS_SENT,
-        ]
+        ],
+        [
+            'originId' => 'campaign2',
+            'webID' => '112',
+            'reference' => 'mailchimp_campaign2',
+            'status' => Campaign::STATUS_SENT,
+        ],
+        [
+            'originId' => 'campaign3',
+            'webID' => '113',
+            'reference' => 'mailchimp_campaign3',
+            'status' => Campaign::STATUS_SENT,
+        ],
+        [
+            'originId' => 'campaign4',
+            'webID' => '114',
+            'reference' => 'mailchimp_campaign4',
+            'status' => Campaign::STATUS_SENT,
+        ],
+//        [
+//            'originId' => 'campaign5',
+//            'webID' => '115',
+//            'reference' => 'mailchimp_campaign5',
+//            'status' => Campaign::STATUS_SENT,
+//        ],
+//        [
+//            'originId' => 'campaign6',
+//            'webID' => '116',
+//            'reference' => 'mailchimp_campaign6',
+//            'status' => Campaign::STATUS_SENT,
+//        ],
+        [
+            'originId' => 'campaign7',
+            'webID' => '117',
+            'reference' => 'mailchimp_campaign7',
+            'status' => Campaign::STATUS_SCHEDULE,
+        ],
     ];
 
     /**
@@ -32,22 +65,6 @@ class LoadCampaignData extends AbstractFixture implements DependentFixtureInterf
         return [
             'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadSubscribersListData'
         ];
-    }
-
-    /**
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
-                continue;
-            }
-            $propertyAccessor->setValue($entity, $property, $value);
-        }
     }
 
     /**

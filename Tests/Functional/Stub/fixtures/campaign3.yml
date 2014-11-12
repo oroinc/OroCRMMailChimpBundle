@@ -1,0 +1,42 @@
+code: 200
+headers: ~
+body:
+    member1@example.com:
+        -
+            action: 'click'
+            timestamp: '2014-11-10 14:46:09'
+            url: 'http://localhost.loc'
+            ip: '0.0.0.7'
+        -
+            action: 'open'
+            timestamp: '2014-11-10 14:46:09'
+            url: ~
+            ip: '0.0.0.8'
+    not_exists@example.com:
+        -
+            action: 'click'
+            timestamp: '2014-11-10 14:46:09'
+            url: 'http://localhost.loc'
+            ip: '0.0.0.9'
+        -
+            action: 'open'
+            timestamp: '2014-11-10 14:46:09'
+            url: ~
+            ip: '0.0.0.10'
+addCount: 2
+fullCount: 3 # 1 additional send action
+database:
+    -
+        email: 'member1@example.com'
+        action: 'click'
+        activityTime: '2014-11-10 14:46:09'
+        url: 'http://localhost.loc'
+        ip: '0.0.0.7'
+        campaign: campaign3
+    -
+        email: 'member1@example.com'
+        action: 'open'
+        activityTime: '2014-11-10 14:46:09'
+        url: ~
+        ip: '0.0.0.8'
+        campaign: campaign3
