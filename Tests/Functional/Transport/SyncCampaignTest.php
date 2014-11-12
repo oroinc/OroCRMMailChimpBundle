@@ -15,22 +15,7 @@ class SyncCampaignTest extends WebTestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $client;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClientFactory
-     */
-    protected $entityBody;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $clientFactory;
-
-    /**
-     * @var \Guzzle\Http\Message\Response
-     */
-    protected $response;
+    protected $apiClient;
 
     protected function setUp()
     {
@@ -43,7 +28,7 @@ class SyncCampaignTest extends WebTestCase
                 ['create']
             )
             ->getMock();
-        $this->client = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
+        $this->apiClient = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
             ->disableOriginalConstructor()
             ->setMethods(
                 ['export', 'getLists', 'getListMergeVars', 'getCampaigns']
@@ -51,7 +36,7 @@ class SyncCampaignTest extends WebTestCase
             ->getMock();
         $this->clientFactory->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->client));
+            ->will($this->returnValue($this->apiClient));
 
         $transport = new MailChimpTransport($this->clientFactory, $this->getContainer()->get('doctrine'));
         $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
@@ -77,7 +62,7 @@ class SyncCampaignTest extends WebTestCase
         $assertCount,
         $expectedList
     ) {
-        $this->client->expects($this->once())
+        $this->apiClient->expects($this->once())
             ->method('getCampaigns')
             ->will($this->returnValue($data));
 

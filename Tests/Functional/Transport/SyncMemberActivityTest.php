@@ -15,7 +15,7 @@ class SyncMemberActivityTest extends WebTestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $client;
+    protected $apiClient;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClientFactory
@@ -43,7 +43,7 @@ class SyncMemberActivityTest extends WebTestCase
                 ['create']
             )
             ->getMock();
-        $this->client = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
+        $this->apiClient = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
             ->disableOriginalConstructor()
             ->setMethods(
                 ['export', 'getLists', 'getListMergeVars', 'getListStaticSegments']
@@ -51,7 +51,7 @@ class SyncMemberActivityTest extends WebTestCase
             ->getMock();
         $this->clientFactory->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->client));
+            ->will($this->returnValue($this->apiClient));
 
         $this->entityBody = $this->getMockBuilder('Guzzle\Http\EntityBody\EntityBody')
             ->disableOriginalConstructor()
@@ -62,7 +62,7 @@ class SyncMemberActivityTest extends WebTestCase
         $this->response = $this->getMockBuilder('Guzzle\Http\Message\Response')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->client->expects($this->any())
+        $this->apiClient->expects($this->any())
             ->method('export')
             ->will($this->returnValue($this->response));
         $this->response->expects($this->any())

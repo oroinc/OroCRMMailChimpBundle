@@ -19,7 +19,7 @@ class LoadCampaignData extends AbstractFixture implements ContainerAwareInterfac
         [
             'originId' => '12345',
             'webId' => '54321',
-            'status' => 'sent',
+            'status' => Campaign::STATUS_SENT,
             'title' => 'Test Campaign Title',
             'subject' => 'Test Campaign',
             'subscribersList' => 'mailchimp:subscribers_list_one',

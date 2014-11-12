@@ -15,22 +15,12 @@ class SyncListTest extends WebTestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $client;
-
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClientFactory
-     */
-    protected $entityBody;
+    protected $apiClient;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
     protected $clientFactory;
-
-    /**
-     * @var \Guzzle\Http\Message\Response
-     */
-    protected $response;
 
     protected function setUp()
     {
@@ -43,31 +33,15 @@ class SyncListTest extends WebTestCase
                 ['create']
             )
             ->getMock();
-        $this->client = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
+        $this->apiClient = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
             ->disableOriginalConstructor()
             ->setMethods(
-                ['export', 'getLists', 'getListMergeVars', 'getListStaticSegments']
+                ['export', 'getLists', 'getListMergeVars']
             )
             ->getMock();
-        $this->clientFactory->expects($this->any())
+        $this->clientFactory->expects($this->once())
             ->method('create')
-            ->will($this->returnValue($this->client));
-//
-//        $this->entityBody = $this->getMockBuilder('Guzzle\Http\EntityBody\EntityBody')
-//            ->disableOriginalConstructor()
-//            ->setMethods(
-//                ['seek', 'readLine']
-//            )
-//            ->getMock();
-//        $this->response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-//            ->disableOriginalConstructor()
-//            ->getMock();
-//        $this->client->expects($this->any())
-//            ->method('export')
-//            ->will($this->returnValue($this->response));
-//        $this->response->expects($this->any())
-//            ->method('getBody')
-//            ->will($this->returnValue($this->entityBody));
+            ->will($this->returnValue($this->apiClient));
 
         $transport = new MailChimpTransport($this->clientFactory, $this->getContainer()->get('doctrine'));
         $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
@@ -95,7 +69,7 @@ class SyncListTest extends WebTestCase
         $assertCount,
         $expectedList
     ) {
-        $this->client->expects($this->once())
+        $this->apiClient->expects($this->once())
             ->method($mockMethod)
             ->will($this->returnValue($data));
 
@@ -121,92 +95,17 @@ class SyncListTest extends WebTestCase
      */
     public function commandListOptionsProvider()
     {
-        return [
-            'SubscribersListSyncCommand' => [
+        $results = [];
+        $path = __DIR__ . DIRECTORY_SEPARATOR . 'listResponses';
+        $apiData = $this->getApiRequestsData($path);
+
+        foreach ($apiData as $test => $data) {
+            $results[$test] = [
                 'commandName' => 'oro:cron:integration:sync',
                 'params' => ['--integration-id' => '1', '--connector' => 'list'],
                 'mockMethod' => 'getLists',
                 'entity' => 'SubscribersList',
-                'data' => [
-                    'total' => 2,
-                    'data' => [
-                        [
-                            'id' => 'f04749dd92',
-                            'web_id' => 460025,
-                            'name' => 'Example List #1',
-                            'date_created' => '2014-10-17 19:06:38',
-                            'email_type_option' => false,
-                            'use_awesomebar' => true,
-                            'default_from_name' => 'John Doe',
-                            'default_from_email' => 'john.doe@example.com',
-                            'default_subject' => '',
-                            'default_language' => 'en',
-                            'list_rating' => 0,
-                            'subscribe_url_short' => 'http://eepurl.com/30a1fbd',
-                            'subscribe_url_long' => 'http://list-manage.com/subscribe?u=30a1fbd',
-                            'beamer_address' => '30a1fbd@inbound.mailchimp.com',
-                            'visibility' => 'pub',
-                            'stats' =>
-                                [
-                                    'member_count' => 0,
-                                    'unsubscribe_count' => 0,
-                                    'cleaned_count' => 0,
-                                    'member_count_since_send' => 0,
-                                    'unsubscribe_count_since_send' => 0,
-                                    'cleaned_count_since_send' => 0,
-                                    'campaign_count' => 2,
-                                    'grouping_count' => 0,
-                                    'group_count' => 0,
-                                    'merge_var_count' => 2,
-                                    'avg_sub_rate' => 0,
-                                    'avg_unsub_rate' => 0,
-                                    'target_sub_rate' => 0,
-                                    'open_rate' => 0,
-                                    'click_rate' => 0,
-                                    'date_last_campaign' => null,
-                                ],
-                            'modules' => [],
-                        ],
-                        [
-                            'id' => 'f04749dd93',
-                            'web_id' => 460026,
-                            'name' => 'Example List #2',
-                            'date_created' => '2014-10-17 19:06:38',
-                            'email_type_option' => false,
-                            'use_awesomebar' => true,
-                            'default_from_name' => 'John Doe',
-                            'default_from_email' => 'john.doe@example.com',
-                            'default_subject' => '',
-                            'default_language' => 'en',
-                            'list_rating' => 0,
-                            'subscribe_url_short' => 'http://eepurl.com/30a1fbd',
-                            'subscribe_url_long' => 'http://list-manage.com/subscribe?u=30a1fbd',
-                            'beamer_address' => '30a1fbd@inbound.mailchimp.com',
-                            'visibility' => 'pub',
-                            'stats' =>
-                                [
-                                    'member_count' => 0,
-                                    'unsubscribe_count' => 0,
-                                    'cleaned_count' => 0,
-                                    'member_count_since_send' => 0,
-                                    'unsubscribe_count_since_send' => 0,
-                                    'cleaned_count_since_send' => 0,
-                                    'campaign_count' => 2,
-                                    'grouping_count' => 0,
-                                    'group_count' => 0,
-                                    'merge_var_count' => 2,
-                                    'avg_sub_rate' => 0,
-                                    'avg_unsub_rate' => 0,
-                                    'target_sub_rate' => 0,
-                                    'open_rate' => 0,
-                                    'click_rate' => 0,
-                                    'date_last_campaign' => null,
-                                ],
-                            'modules' => [],
-                        ]
-                    ],
-                    'errors' => []
-                ],
+                'data' => $data['response'],
                 'assertMethod' => 'assertEquals',
                 'assertCount' => '2',
                 'expectedContent' => [
@@ -219,8 +118,9 @@ class SyncListTest extends WebTestCase
                     'read [2]',
                     'added [2]',
                 ]
-            ],
+            ];
+        }
 
-        ];
+        return $results;
     }
 }

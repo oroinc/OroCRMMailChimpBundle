@@ -18,14 +18,14 @@ class LoadMemberData extends AbstractFixture implements ContainerAwareInterface,
     protected $data = [
         [
             'email' => 'test@test.lan',
-            'status' => 'subscribed',
+            'status' => Member::STATUS_SUBSCRIBED,
             'subscribersList' => 'mailchimp:subscribers_list_one',
             'channel' => 'mailchimp:channel_1',
             'reference' => 'mailchimp:member_one',
         ],
         [
             'email' => 'test2@test.lan',
-            'status' => 'subscribed',
+            'status' => Member::STATUS_SUBSCRIBED,
             'subscribersList' => 'mailchimp:subscribers_list_one',
             'channel' => 'mailchimp:channel_1',
             'reference' => 'mailchimp:member_one',

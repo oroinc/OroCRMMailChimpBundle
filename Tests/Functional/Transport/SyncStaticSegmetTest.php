@@ -15,7 +15,7 @@ class SyncStaticSegmentTest extends WebTestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $client;
+    protected $apiClient;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClientFactory
@@ -43,7 +43,7 @@ class SyncStaticSegmentTest extends WebTestCase
                 ['create']
             )
             ->getMock();
-        $this->client = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
+        $this->apiClient = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
             ->disableOriginalConstructor()
             ->setMethods(
                 ['export', 'getLists', 'getListMergeVars', 'getListStaticSegments']
@@ -51,23 +51,7 @@ class SyncStaticSegmentTest extends WebTestCase
             ->getMock();
         $this->clientFactory->expects($this->any())
             ->method('create')
-            ->will($this->returnValue($this->client));
-
-//        $this->entityBody = $this->getMockBuilder('Guzzle\Http\EntityBody\EntityBody')
-//            ->disableOriginalConstructor()
-//            ->setMethods(
-//                ['seek', 'readLine']
-//            )
-//            ->getMock();
-//        $this->response = $this->getMockBuilder('Guzzle\Http\Message\Response')
-//            ->disableOriginalConstructor()
-//            ->getMock();
-//        $this->client->expects($this->any())
-//            ->method('export')
-//            ->will($this->returnValue($this->response));
-//        $this->response->expects($this->any())
-//            ->method('getBody')
-//            ->will($this->returnValue($this->entityBody));
+            ->will($this->returnValue($this->apiClient));
 
         $transport = new MailChimpTransport($this->clientFactory, $this->getContainer()->get('doctrine'));
         $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
@@ -95,7 +79,7 @@ class SyncStaticSegmentTest extends WebTestCase
         $assertCount,
         $expectedList
     ) {
-        $this->client->expects($this->once())
+        $this->apiClient->expects($this->once())
             ->method($mockMethod)
             ->will($this->returnValue($data));
 
