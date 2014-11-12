@@ -3,7 +3,6 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Transport;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 /**
@@ -42,10 +41,6 @@ class SyncListTest extends WebTestCase
         $this->clientFactory->expects($this->once())
             ->method('create')
             ->will($this->returnValue($this->apiClient));
-
-//        $this->getContainer()
-//            ->get('orocrm_mailchimp.client.factory')
-//            ->setClientClass('OroCRM\Bundle\MailChimpBundle\Tests\Functional\Stub\MailChimpClientStub');
 
         $transport = new MailChimpTransport($this->clientFactory, $this->getContainer()->get('doctrine'));
         $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
