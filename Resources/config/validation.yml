@@ -17,6 +17,8 @@ OroCRM\Bundle\MarketingListBundle\Entity\MarketingList:
         - OroCRM\Bundle\MailChimpBundle\Validator\Constraints\EmailColumnConstraint: ~
 
 OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment:
+    constraints:
+        - OroCRM\Bundle\MailChimpBundle\Validator\Constraints\UniqueStaticSegmentNameConstraint: ~
     properties:
         name:
             - NotBlank: ~

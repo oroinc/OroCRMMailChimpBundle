@@ -11,6 +11,7 @@ parameters:
     orocrm_mailchimp.transport.mailchimp.class: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport
     orocrm_mailchimp.model.field_helper.class: OroCRM\Bundle\MailChimpBundle\Model\FieldHelper
     orocrm_mailchimp.validator.email_column.class: OroCRM\Bundle\MailChimpBundle\Validator\EmailColumnValidator
+    orocrm_mailchimp.validator.unique_static_segment_name.class: OroCRM\Bundle\MailChimpBundle\Validator\UniqueStaticSegmentNameValidator
     orocrm_mailchimp.placeholder.filter.buttons_filder.class: OroCRM\Bundle\MailChimpBundle\Placeholder\ButtonsPlaceholderFilter
 
     # Forms and extensions
@@ -130,6 +131,13 @@ services:
             - @doctrine
         tags:
             - { name: validator.constraint_validator, alias: orocrm_mailchimp.validator.email_column }
+
+    orocrm_mailchimp.validator.unique_static_segment_name:
+        class: %orocrm_mailchimp.validator.unique_static_segment_name.class%
+        arguments:
+            - @orocrm_mailchimp.transport.integration_transport
+        tags:
+            - { name: validator.constraint_validator, alias: orocrm_mailchimp.validator.unique_static_segment_name }
 
     orocrm_mailchimp.placeholder.filter.buttons_filder:
         class: %orocrm_mailchimp.placeholder.filter.buttons_filder.class%
