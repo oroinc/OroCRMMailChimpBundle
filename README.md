@@ -1,75 +1,79 @@
 # OroCRMMailChimpBundle
 
-This Bundle provide integration with [MailChimp](http://mailchimp.com) for OroCRM.
-It allows to connect existing Marketing List Members with MailChimp service and receive MailChimp email campaign statistics
-back to OroCRM.
+This Bundle provides integration with [MailChimp](http://mailchimp.com) for OroCRM.
+It allows to link Marketing List to MailChimp service and receive MailChimp Email Campaign statistics
+back in OroCRM.
 
 
-## Setting up connection
+## Setting Up the Connection
 
-First of all new Integration with type MailChimp must be created. 
-To do this go to "System -> Integrations" and click "Create Integration" button.
+First of all, a new Integration with type "MailChimp" must be created.
+
+Go to the "System -> Integrations" and click "Create Integration" button.
  
- - *Type* - must be set to MailChimp 
- - *Name* - must be filled with valuable integration name
- - *API Key* - is a MailChimp API Key. API Key may be found at your MailChimp profile page. [About API Keys](http://kb.mailchimp.com/accounts/management/about-api-keys)
- - *Check Connection* button will appear only when API Key is filled. It allows to check connection with MailChimp API with given API Key.
- - *Default Owner* - Select the owner of the integration. All entities imported from the integration will be assigned to the selected user.
+ - *Type*: must be set to MailChimp 
+ - *Name*: must be filled with meaningful integration name
+ - *API Key*: is a MailChimp API Key from your MailChimp profile page. [About API Keys](http://kb.mailchimp.com/accounts/management/about-api-keys)
+ - *Check Connection*: appear only after the API Key has been filled. Click the button to check connection to the MailChimp API with the given API Key.
+ - *Default Owner*: Select the owner of the integration. All entities imported from the integration will be assigned to the selected user.
  
  
 ## Connecting Marketing List to MailChimp
 
 After integration is created and Enabled Marketing Lists may be connected to MailChimp. 
 
-Note, only marketing lists with email fields are allowed for connection.
+> Only Marketing Lists with Email fields can be connected.
 
-In case when Marketing List is accepted for connection button "Connect To MailChimp" will appear on Marketing List view page.
-One marketing list may be connected only with one MailChimp integration. OroCRM Marketing Lists are represented in MailChimp as Static Segments of some List.
-MailChimp API disallow Lists creation. To load synchronize members to MailChimp at least on List must be present. [Create a New List](http://kb.mailchimp.com/lists/growth/create-a-new-list)
+If the Marketing list is suitable for the connection, "Connect To MailChimp" button will appear on Marketing List view page.
+One Marketing List may be connected only to one MailChimp integration. OroCRM Marketing Lists are represented in MailChimp as Static Segments of some List.
 
-Clicking on "Connect to MailChimp" button opens connection form:
+Lists creation is not allowed by the MailChimp API, so at least one List must be present to load the members to MailChimp. [Create a New List](http://kb.mailchimp.com/lists/growth/create-a-new-list)
 
- - *MailChimp Segment Name* - is a name of MailChimp Static Segment that will be created in MailChimp Subscribers List
- - *MailChimp Integration* - is a MailChimp integration selector
- - *MailChimp Subscribers List* - is a MailChimp Subscribers List in which Static Segment of members will be created
+When "Connect to MailChimp" button is clicked, the following form will emerge:
+
+ - *MailChimp Segment Name*: is a name of MailChimp Static Segment that will be created in MailChimp Subscribers List
+ - *MailChimp Integration*: is a MailChimp integration selector
+ - *MailChimp Subscribers List*: is a MailChimp Subscribers List where Static Segment of members will be created
  
-After saving connection new Static Segment will be scheduled for creation along with members synchronization job.
+After the connection has been saved, a new Static Segment will be scheduled for creation along with the members synchronization job.
 
-Note, Job Queue Daemon required be Running. 
+>Job Queue Daemon has to be running.
 
-For Marketing Lists that are connected to MailChimp email field presence became required. MailChimp connection settings are added as MailChimp action on Marketing List view page.
-Available options are "Connection Settings", "Disconnect" and "Synchronize". Synchronize option is available only for list that are in in Synced status.
+Marketing Lists connected to MailChimp must contain the Email field. Connection settings of the lists are added as a MailChimp action on their view pages.
+Available options are "Connection Settings", "Disconnect" and "Synchronize". Synchronize option is available only for lists in the Synced status.
 
 
 ## MailChimp Campaign Creation
 
 Marketing List members may be used to send MailChimp campaigns. OroCRM Marketing list is mapped to Static Segment of MailChimp List.
-Campaign statistics is collected in OroCRM ONLY when Campaign is sent to Static Segment that connected to OroCRM. 
+Campaign statistics are collected in OroCRM ONLY when Campaign is sent to a Static Segment connected to OroCRM. 
 [More about MailChimp Campaigns](http://kb.mailchimp.com/campaigns)
 
 
 ## Import Synchronization Logic
 
-Import is performed by execution of *oro:cron:integration:sync* cron command.
+Import is performed with *oro:cron:integration:sync* cron command.
 
- - **Lists** - All MailChimp lists are imported with Merge Vars information
- - **Static Segments** - Only segments that are connected with Marketing Lists are synchronized
- - **Campaigns** - Only Sent campaigns which were sent to Static Segment that has connection to OroCRM Marketing List are imported. 
- Within OroCRM for MailChimp Campaign new Email Campaign will be created and keep in sync in further imports.
+ - **Lists**: All MailChimp lists are imported with Merge Vars information
+ - **Static Segments**: Only segment connected with Marketing Lists are synchronized
+ - **Campaigns**: Only Sent campaigns sent to a Static Segment that has connection to OroCRM Marketing List are imported.
+
+A new Email Campaign will be created in OroCRM for a MailChimp Campaign and synchronized during the following imports.
  
- - **Members** - All members for Lists that are connected to OroCRM Static Segment are imported. *Export API used with Since filter*
- - **Member Activities** - Member activities are loaded for Campaigns that were imported to OroCRM. *Export API used with Since filter*
- Each member activity is mapped to OroCRM Marketing List Item and Email Campaign Statics by email. So more than one Marketing List Item and Email Campaign Statics
- record may be created in case when there are more than one entity with same email is present in Marketing List.
- Activities 'open', click', 'bounce', 'unsub', 'abuse' will increment corresponding counters of Email Campaign Statics. 
- 'sent' activity will trigger increment contacted times counter and set last contacted at variable of Marketing List Item.
+ - **Members**: All members for the Lists connected to OroCRM Static Segment are imported. *Export API used with Since filter*
+ - **Member Activities**: Member activities are loaded for Campaigns that were imported to OroCRM. *Export API used with Since filter*
+
+Each member activity is mapped to OroCRM Marketing List Item and Email Campaign Statics by Email. So more than one Marketing List Item and Email Campaign Statics
+record may be create if there are several entities with the same Email in the Marketing List.
+Activities 'open', click', 'bounce', 'unsub', 'abuse' increment corresponding counters of Email Campaign Statics. 
+The 'sent' activity will increment 'contacted times' counter and set 'last contacted at' variable of Marketing List Item.
 
 
 ## Export Logic
 
-Import is performed by execution of *oro:cron:mailchimp:export* cron command.
+Export is performed with *oro:cron:mailchimp:export* cron command.
 
- During synchronization of Marketing List members to MailChimp next steps are performed. 
- First of all Marketing List member is checked that it is subscribed to MailChimp List, in case whe it is not subscribed it is scheduled for subscription. 
- Then all Marketing List members that are not present in Static Segment will be scheduled for mass add to segment.
- All members that are present in Static Segment but not present in Marketing List are scheduled for removal from Static Segment.
+The following steps are performed in the course of the Marketing List members synchronization with MailChimp:
+First, all the Marketing List members are checked for subscription to the MailChimp List. Members not subscribed are scheduled for subscription. 
+After that, all the Marketing List members absent in the Static Segment are scheduled for a mass add to the segment.
+All the members present in the Static Segment but absent in the Marketing List are scheduled for removal from the Static Segment.
