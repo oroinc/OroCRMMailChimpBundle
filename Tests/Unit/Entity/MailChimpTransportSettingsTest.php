@@ -58,7 +58,7 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
 
         $expectedSettings = [
             'channel' => $channel,
-//            'template' => $template
+            // 'template' => $template
         ];
         $this->assertEquals(
             new ParameterBag($expectedSettings),
