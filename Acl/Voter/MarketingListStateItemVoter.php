@@ -78,8 +78,12 @@ class MarketingListStateItemVoter extends AbstractEntityVoter
         $entityClass = $item->getMarketingList()->getEntity();
         $entity = $this->doctrineHelper->getEntityRepository($entityClass)->find($item->getEntityId());
 
+        if (!$entity) {
+            return self::ACCESS_ABSTAIN;
+        }
+
         $contactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
-            $entity,
+            $entityClass,
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
         );
 

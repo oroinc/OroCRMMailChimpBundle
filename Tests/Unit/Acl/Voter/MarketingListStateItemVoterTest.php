@@ -157,7 +157,7 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
 
         $this->doctrineHelper
             ->expects($this->any())
-            ->method('getRepository')
+            ->method('getEntityRepository')
             ->will($this->returnValue($repository));
 
         if (is_object($object)) {
@@ -206,6 +206,7 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
             [1, 'stdClass', new \stdClass(), MarketingListStateItemVoter::ACCESS_ABSTAIN, ['DELETE'], '0'],
             [1, 'stdClass', new \stdClass(), MarketingListStateItemVoter::ACCESS_DENIED, ['DELETE'], '1'],
             [1, 'stdClass', new \stdClass(), MarketingListStateItemVoter::ACCESS_DENIED, ['DELETE'], '2'],
+            [1, 'stdClass', null, MarketingListStateItemVoter::ACCESS_ABSTAIN, ['DELETE'], '2'],
         ];
     }
 
