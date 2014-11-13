@@ -29,7 +29,7 @@ class DateTimeSerializer implements NormalizerInterface, DenormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function denormalize($data, $class, $format = null, array $context = array())
+    public function denormalize($data, $class, $format = null, array $context = [])
     {
         try {
             return $this->mailchimpNormalizer->denormalize($data, $class, $format, $context);
@@ -41,7 +41,7 @@ class DateTimeSerializer implements NormalizerInterface, DenormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
         return $this->mailchimpNormalizer->normalize($object, $format, $context);
     }
@@ -49,7 +49,7 @@ class DateTimeSerializer implements NormalizerInterface, DenormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function supportsDenormalization($data, $type, $format = null, array $context = array())
+    public function supportsDenormalization($data, $type, $format = null, array $context = [])
     {
         return $this->mailchimpNormalizer->supportsDenormalization($data, $type, $format, $context)
             && !empty($context[self::CHANNEL_TYPE_KEY])
@@ -59,7 +59,7 @@ class DateTimeSerializer implements NormalizerInterface, DenormalizerInterface
     /**
      * {@inheritdoc}
      */
-    public function supportsNormalization($data, $format = null, array $context = array())
+    public function supportsNormalization($data, $format = null, array $context = [])
     {
         return $this->mailchimpNormalizer->supportsNormalization($data, $format, $context)
             && !empty($context[self::CHANNEL_TYPE_KEY])

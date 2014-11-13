@@ -112,8 +112,6 @@ parameters:
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
-        arguments:
-            - %orocrm_mailchimp.client.class%
 
     orocrm_mailchimp.transport.mailchimp:
         class: %orocrm_mailchimp.transport.mailchimp.class%

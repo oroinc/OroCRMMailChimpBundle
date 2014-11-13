@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
-class LoadMarketingListData extends AbstractFixture implements ContainerAwareInterface
+class LoadMarketingListData extends AbstractMailChimpFixture implements ContainerAwareInterface
 {
     /**
      * @var array Channels configuration
@@ -28,24 +28,6 @@ class LoadMarketingListData extends AbstractFixture implements ContainerAwareInt
      * @var ContainerInterface
      */
     protected $container;
-
-    /**
-     * Sets $entity object properties from $data array
-     *
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
-                continue;
-            }
-            $propertyAccessor->setValue($entity, $property, $value);
-        }
-    }
 
     /**
      * {@inheritdoc}

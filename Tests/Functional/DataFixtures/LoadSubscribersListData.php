@@ -5,12 +5,29 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
-class LoadSubscribersListData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
+use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
+//class LoadSubscribersListData extends AbstractMailChimpFixture implements DependentFixtureInterface
+//{
+//    /**
+//     * @var array
+//     */
+//    protected $data = [
+//        [
+//            'name' => 'list1',
+//            'originId' => 'list1',
+//            'webId' => '123',
+//            'reference' => 'mailchimp_subscribers_list',
+//            'emailTypeOption' => true,
+//            'useAwesomebar' => true,
+//        ]
+//    ];
+
+class LoadSubscribersListData extends AbstractMailChimpFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     /**
      * @var array Subscriber list configuration
@@ -63,7 +80,8 @@ class LoadSubscribersListData extends AbstractFixture implements ContainerAwareI
                     "id" => 2
                 ]
             ],
-            'use_awesomebar' => '1',
+            'emailTypeOption' => true,
+            'useAwesomebar' => true,
             'reference' => 'mailchimp:subscribers_list_one',
         ],
     ];
@@ -72,24 +90,6 @@ class LoadSubscribersListData extends AbstractFixture implements ContainerAwareI
      * @var ContainerInterface
      */
     protected $container;
-
-    /**
-     * Sets $entity object properties from $data array
-     *
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
-                continue;
-            }
-            $propertyAccessor->setValue($entity, $property, $value);
-        }
-    }
 
     /**
      * {@inheritdoc}

@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
-class LoadStaticSegmentData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
+class LoadStaticSegmentData extends AbstractMailChimpFixture implements ContainerAwareInterface, DependentFixtureInterface
 {
     /**
      * @var array Segment configuration
@@ -31,24 +31,6 @@ class LoadStaticSegmentData extends AbstractFixture implements ContainerAwareInt
      * @var ContainerInterface
      */
     protected $container;
-
-    /**
-     * Sets $entity object properties from $data array
-     *
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
-                continue;
-            }
-            $propertyAccessor->setValue($entity, $property, $value);
-        }
-    }
 
     /**
      * {@inheritdoc}

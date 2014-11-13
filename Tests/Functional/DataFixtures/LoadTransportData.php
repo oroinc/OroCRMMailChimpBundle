@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 
-class LoadTransportData extends AbstractFixture implements ContainerAwareInterface
+class LoadTransportData extends AbstractMailChimpFixture implements ContainerAwareInterface
 {
     /**
      * @var array Transports configuration
@@ -29,24 +29,6 @@ class LoadTransportData extends AbstractFixture implements ContainerAwareInterfa
      * @var ContainerInterface
      */
     protected $container;
-
-    /**
-     * Sets $entity object properties from $data array
-     *
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
-                continue;
-            }
-            $propertyAccessor->setValue($entity, $property, $value);
-        }
-    }
 
     /**
      * {@inheritdoc}

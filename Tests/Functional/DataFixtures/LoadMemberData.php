@@ -5,26 +5,47 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 
-class LoadMemberData extends AbstractFixture implements ContainerAwareInterface, DependentFixtureInterface
+use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+//class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtureInterface
+//{
+//    /**
+//     * @var array
+//     */
+//    protected $data = [
+//        [
+//            'originId' => 210000000,
+//            'reference' => 'mailchimp_member',
+//            'email' => 'member1@example.com',
+//            'status' => Member::STATUS_SUBSCRIBED,
+//        ],
+//        [
+//            'originId' => 210000001,
+//            'reference' => 'mailchimp_member',
+//            'email' => 'member2@example.com',
+//            'status' => Member::STATUS_SUBSCRIBED,
+//        ]
+//    ];
+
+class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {
     /**
      * @var array Channels configuration
      */
     protected $data = [
         [
-            'email' => 'test@test.lan',
+            'originId' => 210000000,
+            'email' => 'member1@example.com',
             'status' => Member::STATUS_SUBSCRIBED,
             'subscribersList' => 'mailchimp:subscribers_list_one',
             'channel' => 'mailchimp:channel_1',
             'reference' => 'mailchimp:member_one',
         ],
         [
-            'email' => 'test2@test.lan',
+            'originId' => 210000001,
+            'email' => 'member2@example.com',
             'status' => Member::STATUS_SUBSCRIBED,
             'subscribersList' => 'mailchimp:subscribers_list_one',
             'channel' => 'mailchimp:channel_1',
@@ -36,24 +57,6 @@ class LoadMemberData extends AbstractFixture implements ContainerAwareInterface,
      * @var ContainerInterface
      */
     protected $container;
-
-    /**
-     * Sets $entity object properties from $data array
-     *
-     * @param object $entity
-     * @param array $data
-     * @param array $excludeProperties
-     */
-    public function setEntityPropertyValues($entity, array $data, array $excludeProperties = [])
-    {
-        $propertyAccessor = PropertyAccess::createPropertyAccessor();
-        foreach ($data as $property => $value) {
-            if (in_array($property, $excludeProperties)) {
-                continue;
-            }
-            $propertyAccessor->setValue($entity, $property, $value);
-        }
-    }
 
     /**
      * {@inheritdoc}

@@ -84,9 +84,11 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
         /** @var Campaign $campaign */
         $campaign = $this->findExistingEntity($entity->getCampaign());
         $member = $this->findExistingMember($entity->getMember(), $channel, $campaign);
-        $entity->setChannel($channel);
-        $entity->setCampaign($campaign);
-        $entity->setMember($member);
+
+        $entity
+            ->setChannel($channel)
+            ->setCampaign($campaign)
+            ->setMember($member);
 
         if ($member && !$this->isSkipped($entity)) {
             if (!$entity->getActivityTime()) {
@@ -122,7 +124,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             $processedCampaigns = (array)$jobContext->get('processed_campaigns');
             $campaignId = $entity->getCampaign()->getId();
             if (!in_array($campaignId, $processedCampaigns)) {
-                $processedCampaigns['campaign_id'] = $campaignId;
+                $processedCampaigns[] = $campaignId;
             }
             $jobContext->put('processed_campaigns', $processedCampaigns);
         }

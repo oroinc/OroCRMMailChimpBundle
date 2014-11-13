@@ -128,8 +128,8 @@ class SyncMemberActivityTest extends WebTestCase
                 'params' => ['--integration-id' => '1', '--connector' => 'member_activity'],
                 'entity' => 'MemberActivity',
                 'data' => [
-                    'line1_data' => '{"test@test.lan":[{"action":"open","timestamp":"2014-11-12 11:00:02","url":null,"ip":"80.91.180.166"}]}',
-                    'line2_data' => '{"test2@test.lan":[{"action":"open","timestamp":"2014-11-12 11:00:01","url":null,"ip":"80.91.180.166"},{"action":"click","timestamp":"2014-11-12 11:00:26","url":"http:\/\/inspiration.mailchimp.com","ip":"80.91.180.166"}]}'
+                    'line1_data' => '{"member1@example.com":[{"action":"open","timestamp":"2014-11-12 11:00:02","url":null,"ip":"80.91.180.166"}]}',
+                    'line2_data' => '{"member2@example.com":[{"action":"open","timestamp":"2014-11-12 11:00:01","url":null,"ip":"80.91.180.166"},{"action":"click","timestamp":"2014-11-12 11:00:26","url":"http:\/\/inspiration.mailchimp.com","ip":"80.91.180.166"}]}'
                 ],
                 'assertMethod' => 'assertEquals',
                 'assertCount' => '5',
