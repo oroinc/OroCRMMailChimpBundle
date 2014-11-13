@@ -4,8 +4,6 @@ orocrm:
         acl:
             action:
                 general: MailChimp manipulations
-        validator:
-            unique_static_segment_name.message: MailChimp Static Segment name must be unique for MailChimp Subscribers List
         integration_transport:
             label: MailChimp
             api_key:

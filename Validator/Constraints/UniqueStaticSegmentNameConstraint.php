@@ -9,7 +9,7 @@ class UniqueStaticSegmentNameConstraint extends Constraint
     /**
      * @var string
      */
-    public $message = 'orocrm.mailchimp.validator.unique_static_segment_name.message';
+    public $message = 'orocrm.mailchimp.unique_static_segment_name.message';
 
     /**
      * {@inheritdoc}

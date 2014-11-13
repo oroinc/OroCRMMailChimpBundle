@@ -1,0 +1,3 @@
+orocrm:
+    mailchimp:
+        unique_static_segment_name.message: MailChimp Static Segment name must be unique for MailChimp Subscribers List
