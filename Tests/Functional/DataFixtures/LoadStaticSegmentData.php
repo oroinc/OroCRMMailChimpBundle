@@ -5,29 +5,25 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
-class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtureInterface
+class LoadStaticSegmentData extends AbstractMailChimpFixture implements
+    ContainerAwareInterface,
+    DependentFixtureInterface
 {
     /**
-     * @var array Channels configuration
+     * @var array Segment configuration
      */
-    protected $data = [
+    protected $segmentData = [
         [
-            'originId' => 210000000,
-            'email' => 'member1@example.com',
-            'status' => Member::STATUS_SUBSCRIBED,
             'subscribersList' => 'mailchimp:subscribers_list_one',
+            'marketingList' => 'mailchimp:ml_one',
             'channel' => 'mailchimp:channel_1',
-            'reference' => 'mailchimp:member_one',
-        ],
-        [
-            'originId' => 210000001,
-            'email' => 'member2@example.com',
-            'status' => Member::STATUS_SUBSCRIBED,
-            'subscribersList' => 'mailchimp:subscribers_list_one',
-            'channel' => 'mailchimp:channel_1',
-            'reference' => 'mailchimp:member_one',
+            'name' => 'Test',
+            'sync_status' => '',
+            'remote_remove' => '0',
+            'reference' => 'mailchimp:segment_one',
         ],
     ];
 
@@ -49,8 +45,9 @@ class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtur
      */
     public function load(ObjectManager $manager)
     {
-        foreach ($this->data as $data) {
-            $entity = new Member();
+        foreach ($this->segmentData as $data) {
+            $entity = new StaticSegment();
+            $data['marketingList'] = $this->getReference($data['marketingList']);
             $data['subscribersList'] = $this->getReference($data['subscribersList']);
             $data['channel'] = $this->getReference($data['channel']);
             $this->setEntityPropertyValues($entity, $data, ['reference']);
@@ -66,7 +63,8 @@ class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtur
     public function getDependencies()
     {
         return array(
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadCampaignData',
+            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMarketingListData',
+            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadSubscribersListData'
         );
     }
 }
