@@ -3,7 +3,6 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Transport;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 /**
@@ -89,7 +88,6 @@ class SyncCampaignTest extends WebTestCase
 
 
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @return array
      */
     public function commandCampaignOptionsProvider()
@@ -121,5 +119,4 @@ class SyncCampaignTest extends WebTestCase
 
         return $results;
     }
-
 }

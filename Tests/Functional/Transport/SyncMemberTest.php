@@ -120,7 +120,6 @@ class SyncMemberTest extends WebTestCase
     }
 
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @return array
      */
     public function commandMemberOptionsProvider()
