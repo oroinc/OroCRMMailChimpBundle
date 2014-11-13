@@ -15,6 +15,11 @@ class SyncCampaignTest extends WebTestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
+    protected $clientFactory;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
     protected $apiClient;
 
     protected function setUp()

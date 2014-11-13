@@ -2,11 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class LoadMarketingListData extends AbstractMailChimpFixture implements ContainerAwareInterface

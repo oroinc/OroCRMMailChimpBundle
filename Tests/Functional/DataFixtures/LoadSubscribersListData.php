@@ -2,32 +2,15 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
-//class LoadSubscribersListData extends AbstractMailChimpFixture implements DependentFixtureInterface
-//{
-//    /**
-//     * @var array
-//     */
-//    protected $data = [
-//        [
-//            'name' => 'list1',
-//            'originId' => 'list1',
-//            'webId' => '123',
-//            'reference' => 'mailchimp_subscribers_list',
-//            'emailTypeOption' => true,
-//            'useAwesomebar' => true,
-//        ]
-//    ];
-
-class LoadSubscribersListData extends AbstractMailChimpFixture implements ContainerAwareInterface, DependentFixtureInterface
+class LoadSubscribersListData extends AbstractMailChimpFixture implements
+    ContainerAwareInterface,
+    DependentFixtureInterface
 {
     /**
      * @var array Subscriber list configuration

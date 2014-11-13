@@ -2,32 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-//class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtureInterface
-//{
-//    /**
-//     * @var array
-//     */
-//    protected $data = [
-//        [
-//            'originId' => 210000000,
-//            'reference' => 'mailchimp_member',
-//            'email' => 'member1@example.com',
-//            'status' => Member::STATUS_SUBSCRIBED,
-//        ],
-//        [
-//            'originId' => 210000001,
-//            'reference' => 'mailchimp_member',
-//            'email' => 'member2@example.com',
-//            'status' => Member::STATUS_SUBSCRIBED,
-//        ]
-//    ];
+use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 
 class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {
