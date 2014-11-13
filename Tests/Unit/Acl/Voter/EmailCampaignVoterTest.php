@@ -156,7 +156,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
 
         $this->doctrineHelper
             ->expects($this->once())
-            ->method('getRepository')
+            ->method('getEntityRepository')
             ->will($this->returnValue($repository));
     }
 }
