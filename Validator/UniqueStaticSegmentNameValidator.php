@@ -31,7 +31,7 @@ class UniqueStaticSegmentNameValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        if ($value instanceof StaticSegment) {
+        if ($value instanceof StaticSegment && !$value->getOriginId()) {
             $this->transport->init($value->getChannel()->getTransport());
 
             $segments = $this->transport->getListStaticSegments($value->getSubscribersList());

@@ -37,6 +37,22 @@ class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
         $this->validator->validate($value, $constraint);
     }
 
+    public function testValidateHasOrigin()
+    {
+        $value = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $value->expects($this->once())
+            ->method('getOriginId')
+            ->will($this->returnValue('123'));
+        $constraint = new UniqueStaticSegmentNameConstraint();
+
+        $this->transport->expects($this->never())
+            ->method($this->anything());
+
+        $this->validator->validate($value, $constraint);
+    }
+
     public function testValidateCorrect()
     {
         $transport = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Transport')
