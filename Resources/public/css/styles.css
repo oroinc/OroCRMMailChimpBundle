@@ -18,3 +18,11 @@
     filter: grayscale(100%);
     filter: gray; /* IE 6-9 */;
 }
+
+.control-group-wide .controls {
+    margin-left: 182px !important;
+}
+
+.control-group-wide .control-label {
+    width: 170px !important;
+}

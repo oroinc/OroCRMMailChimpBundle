@@ -1,3 +1,5 @@
+{% extends 'OroFormBundle:Form:fields.html.twig' %}
+
 {% block orocrm_mailchimp_api_key_type_widget %}
     {% set options = {
         'pingUrl': path('orocrm_mailchimp_ping')
@@ -11,4 +13,10 @@
             <div class="connection-status alert" style="display: none"></div>
         </div>
     </div>
+{% endblock %}
+
+{% block form_row %}
+    {% set attr = attr|merge({'class': ('control-group-wide ' ~ attr.class|default(''))|trim}) %}
+
+    {{ parent() }}
 {% endblock %}
