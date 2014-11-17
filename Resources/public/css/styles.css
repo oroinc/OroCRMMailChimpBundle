@@ -19,10 +19,10 @@
     filter: gray; /* IE 6-9 */;
 }
 
-.control-group-wide .controls {
+.connection-form .controls {
     margin-left: 182px !important;
 }
 
-.control-group-wide .control-label {
+.connection-form .control-label {
     width: 170px !important;
 }
