@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block form_row %}
-    {% set attr = attr|merge({'class': 'control-group-wide ' ~ (attr.class|default(''))|trim}) %}
+    {% set attr = attr|merge({'class': ('control-group-wide ' ~ attr.class|default(''))|trim}) %}
 
     {{ parent() }}
 {% endblock %}
