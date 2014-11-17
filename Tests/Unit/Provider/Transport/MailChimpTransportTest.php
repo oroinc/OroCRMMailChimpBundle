@@ -123,8 +123,12 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
             ->method('getStaticSegmentsToSync')
             ->will($this->returnValue([$this->getStaticSegmentMock()]));
 
+        $channel = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Channel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $this->initTransport();
-        $result = $this->transport->getCampaigns($status, $usesSegment);
+        $result = $this->transport->getCampaigns($channel, $status, $usesSegment);
 
         $this->assertInstanceOf(
             'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\CampaignIterator',
@@ -227,8 +231,12 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 
         $since = new \DateTime('2015-02-15 21:00:01', new \DateTimeZone('Europe/Kiev'));
 
+        $channel = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Channel')
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $client = $this->initTransport();
-        $result = $this->transport->getMembersToSync($since);
+        $result = $this->transport->getMembersToSync($channel, $since);
 
         $this->assertInstanceOf(
             'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MemberIterator',

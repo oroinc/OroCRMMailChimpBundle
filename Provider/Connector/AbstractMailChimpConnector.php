@@ -47,7 +47,7 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
      */
     public function getLastSyncDate()
     {
-        $channel = $this->contextMediator->getChannel($this->getContext());
+        $channel = $this->getChannel();
         $repository = $this->managerRegistry->getRepository('OroIntegrationBundle:Status');
 
         /**
@@ -59,5 +59,13 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
         );
 
         return $status ? $status->getDate() : null;
+    }
+
+    /**
+     * @return \Oro\Bundle\IntegrationBundle\Entity\Channel
+     */
+    protected function getChannel()
+    {
+        return $this->contextMediator->getChannel($this->getContext());
     }
 }
