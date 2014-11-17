@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
@@ -82,11 +83,12 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @link http://apidocs.mailchimp.com/api/2.0/campaigns/list.php
+     * @param Channel $channel
      * @param string|null $status Constant of \OroCRM\Bundle\MailChimpBundle\Entity\Campaign::STATUS_XXX
      * @param bool|null $usesSegment
      * @return \Iterator
      */
-    public function getCampaigns($status = null, $usesSegment = null)
+    public function getCampaigns(Channel $channel, $status = null, $usesSegment = null)
     {
         $filters = [];
         if (null !== $status) {
@@ -99,7 +101,7 @@ class MailChimpTransport implements TransportInterface
         // Synchronize only campaigns that are connected to subscriber lists that are used within OroCRM.
         $staticSegments = $this->managerRegistry
             ->getRepository('OroCRMMailChimpBundle:StaticSegment')
-            ->getStaticSegmentsToSync();
+            ->getStaticSegmentsToSync([], $channel);
 
         $listsToSynchronize = [];
         foreach ($staticSegments as $staticSegment) {
@@ -131,14 +133,15 @@ class MailChimpTransport implements TransportInterface
      *
      * @link http://apidocs.mailchimp.com/export/1.0/list.func.php
      *
+     * @param Channel $channel
      * @param \DateTime|null $since
      * @return \Iterator
      */
-    public function getMembersToSync(\DateTime $since = null)
+    public function getMembersToSync(Channel $channel, \DateTime $since = null)
     {
         $subscribersLists = $this->managerRegistry
             ->getRepository('OroCRMMailChimpBundle:SubscribersList')
-            ->getUsedSubscribersListIterator();
+            ->getUsedSubscribersListIterator($channel);
 
         $parameters = ['status' => [Member::STATUS_SUBSCRIBED, Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED]];
 
@@ -172,12 +175,14 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segments.php
+     * @param Channel $channel
+     * @return StaticSegmentListIterator
      */
-    public function getSegmentsToSync()
+    public function getSegmentsToSync(Channel $channel)
     {
         $subscribersLists = $this->managerRegistry
             ->getRepository('OroCRMMailChimpBundle:SubscribersList')
-            ->getUsedSubscribersListIterator();
+            ->getUsedSubscribersListIterator($channel);
 
         $iterator = new StaticSegmentListIterator($subscribersLists, $this->client);
 
@@ -198,12 +203,14 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
+     * @param Channel $channel
      * @param \DateTime $since
      * @return MemberActivityIterator
      */
-    public function getMemberActivitiesToSync(\DateTime $since = null)
+    public function getMemberActivitiesToSync(Channel $channel, \DateTime $since = null)
     {
-        $sentCampaigns = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:Campaign')->getSentCampaigns();
+        $sentCampaigns = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:Campaign')
+            ->getSentCampaigns($channel);
 
         $parameters = ['include_empty' => true];
         if ($since) {

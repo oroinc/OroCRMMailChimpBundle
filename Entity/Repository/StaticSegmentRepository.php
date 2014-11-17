@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Entity\Repository;
 use Doctrine\ORM\EntityRepository;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType;
 
@@ -12,9 +13,10 @@ class StaticSegmentRepository extends EntityRepository
 {
     /**
      * @param array|null $segments
+     * @param Channel|null $channel
      * @return \Iterator
      */
-    public function getStaticSegmentsToSync(array $segments = null)
+    public function getStaticSegmentsToSync(array $segments = null, Channel $channel = null)
     {
         $qb = $this->createQueryBuilder('staticSegment');
 
@@ -29,6 +31,12 @@ class StaticSegmentRepository extends EntityRepository
                 ->leftJoin('staticSegment.marketingList', 'ml')
                 ->where($qb->expr()->eq('ml.type', ':type'))
                 ->setParameter('type', MarketingListType::TYPE_DYNAMIC);
+        }
+
+        if ($channel) {
+            $qb
+                ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
+                ->setParameter('channel', $channel);
         }
 
         $qb
