@@ -3,14 +3,19 @@
 define(function (require) {
     'use strict';
 
-    var ConnectButtonComponent,
-        BaseComponent = require('oroui/js/app/components/widget-component'),
+    var DialogWidget = require('oro/dialog-widget'),
         mediator = require('oroui/js/mediator');
 
-    ConnectButtonComponent = BaseComponent.extend({
-        defaults: {
-            type: 'dialog',
-            options: {
+    return function (options) {
+        var btn = options._sourceElement,
+            message = options.message,
+            title = options.options.title,
+            url = btn.data('url');
+
+        btn.on('click', function () {
+            var dialogOptions = {
+                title: title,
+                url: url,
                 stateEnabled: false,
                 incrementalPosition: false,
                 loadingMaskEnabled: true,
@@ -20,21 +25,16 @@ define(function (require) {
                     width: 510,
                     autoResize: true
                 }
-            }
-        },
-
-        _bindEnvironmentEvent: function (widget) {
-            var message = this.options.message;
-
-            this.listenTo(widget, 'formSave', function () {
-                widget.remove();
+            };
+            var dialog = new DialogWidget(dialogOptions);
+            dialog.on('formSave', function () {
                 if (message) {
                     mediator.execute('addMessage', 'success', message);
                 }
                 mediator.execute('refreshPage');
+                dialog.remove();
             });
-        }
-    });
-
-    return ConnectButtonComponent;
+            dialog.render();
+        });
+    };
 });
