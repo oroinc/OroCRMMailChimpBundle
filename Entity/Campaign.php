@@ -167,7 +167,7 @@ class Campaign implements OriginAwareInterface
     /**
      * @var EmailCampaign
      *
-     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign")
      * @ORM\JoinColumn(name="email_campaign_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $emailCampaign;
