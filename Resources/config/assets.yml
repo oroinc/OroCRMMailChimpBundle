@@ -1,3 +1,4 @@
 css:
   'orocrmmailchimp':
       - 'bundles/orocrmmailchimp/css/styles.css'
+      - 'bundles/orocrmmailchimp/css/button.less'
