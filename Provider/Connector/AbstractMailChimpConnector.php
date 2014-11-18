@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\IntegrationBundle\Provider\AbstractConnector;
 
@@ -62,7 +63,7 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
     }
 
     /**
-     * @return \Oro\Bundle\IntegrationBundle\Entity\Channel
+     * @return Channel
      */
     protected function getChannel()
     {
