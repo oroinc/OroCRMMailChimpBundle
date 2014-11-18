@@ -48,6 +48,6 @@ class CampaignConnector extends AbstractMailChimpConnector implements ConnectorI
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getCampaigns(Campaign::STATUS_SENT, true);
+        return $this->transport->getCampaigns($this->getChannel(), Campaign::STATUS_SENT, true);
     }
 }
