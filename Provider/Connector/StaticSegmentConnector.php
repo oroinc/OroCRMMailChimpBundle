@@ -50,7 +50,7 @@ class StaticSegmentConnector extends AbstractMailChimpConnector implements
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getSegmentsToSync($this->getLastSyncDate());
+        return $this->transport->getSegmentsToSync($this->getChannel());
     }
 
     /**
