@@ -8,7 +8,7 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
-class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
+class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentMemberStateIterator
 {
     /**
      * @param StaticSegment $staticSegment
@@ -20,6 +20,8 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
         $qb = $this->getIteratorQueryBuilder($staticSegment);
 
         $qb
+            ->resetDQLParts()
+            ->setParameters(['staticSegment' => $staticSegment->getId()])
             ->select(
                 [
                     self::MEMBER_ALIAS . '.id member_id',
@@ -27,14 +29,22 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
                     $qb->expr()->literal(StaticSegmentMember::STATE_ADD) . ' state'
                 ]
             )
+            ->from($this->memberClassName, self::MEMBER_ALIAS)
             ->leftJoin(
-                sprintf('%s.segmentMembers', self::MEMBER_ALIAS),
-                'segmentMembers',
+                $this->segmentMemberClassName,
+                'segmentMember',
                 Join::WITH,
-                $qb->expr()->eq('segmentMembers.staticSegment', $staticSegment->getId())
+                $qb->expr()->andX(
+                    $qb->expr()->eq(sprintf('%s.id', self::MEMBER_ALIAS), 'segmentMember.member'),
+                    $qb->expr()->eq('segmentMember.staticSegment', ':staticSegment')
+                )
             )
-            ->andWhere($qb->expr()->isNull('segmentMembers'))
-            ->andWhere($qb->expr()->isNotNull(sprintf('%s.originId', self::MEMBER_ALIAS)));
+            ->andWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->isNull('segmentMember.id'),
+                    $qb->expr()->isNotNull(sprintf('%s.originId', self::MEMBER_ALIAS))
+                )
+            );
 
         return new BufferedQueryResultIterator($qb);
     }

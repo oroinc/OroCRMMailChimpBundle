@@ -102,6 +102,7 @@ parameters:
 
     # Iterators
     orocrm_mailchimp.iterator.static_segment.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\AbstractStaticSegmentIterator
+    orocrm_mailchimp.iterator.static_segment_state.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\AbstractStaticSegmentMemberStateIterator
     orocrm_mailchimp.iterator.member_sync.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSyncIterator
     orocrm_mailchimp.iterator.static_segment_member_add_state.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberAddStateIterator
     orocrm_mailchimp.iterator.static_segment_member_remove_state.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberRemoveStateIterator
@@ -698,19 +699,24 @@ services:
             - %orocrm_mailchimp.entity.member.class%
             - %orocrm_mailchimp.entity.static_segment.class%
 
+    orocrm_mailchimp.iterator.static_segment_state:
+        class: %orocrm_mailchimp.iterator.static_segment_state.class%
+        parent: orocrm_mailchimp.iterator.static_segment
+        abstract: true
+        calls:
+            - [setSegmentMemberClassName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
+
     orocrm_mailchimp.iterator.member_sync:
         class: %orocrm_mailchimp.iterator.member_sync.class%
         parent: orocrm_mailchimp.iterator.static_segment
 
     orocrm_mailchimp.iterator.static_segment_member_add_state:
         class: %orocrm_mailchimp.iterator.static_segment_member_add_state.class%
-        parent: orocrm_mailchimp.iterator.static_segment
+        parent: orocrm_mailchimp.iterator.static_segment_state
 
     orocrm_mailchimp.iterator.static_segment_member_remove_state:
         class: %orocrm_mailchimp.iterator.static_segment_member_remove_state.class%
-        parent: orocrm_mailchimp.iterator.static_segment
-        calls:
-            - [setSegmentMemberClassName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
+        parent: orocrm_mailchimp.iterator.static_segment_state
 
     # Placeholder
     orocrm_mailchimp.placeholder.filter.sync_status:

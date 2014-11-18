@@ -6,21 +6,8 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
-class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterator
+class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentMemberStateIterator
 {
-    /**
-     * @var string
-     */
-    protected $segmentMemberClassName;
-
-    /**
-     * @param string $segmentMemberClassName
-     */
-    public function setSegmentMemberClassName($segmentMemberClassName)
-    {
-        $this->segmentMemberClassName = $segmentMemberClassName;
-    }
-
     /**
      * @param StaticSegment $staticSegment
      *
