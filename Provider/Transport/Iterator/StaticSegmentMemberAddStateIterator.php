@@ -33,8 +33,15 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
                 Join::WITH,
                 $qb->expr()->eq('segmentMembers.staticSegment', $staticSegment->getId())
             )
-            ->andWhere($qb->expr()->isNull('segmentMembers'))
-            ->andWhere($qb->expr()->isNotNull(sprintf('%s.originId', self::MEMBER_ALIAS)));
+            ->andWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->isNull('segmentMembers'),
+                    $qb->expr()->isNotNull(sprintf('%s.originId', self::MEMBER_ALIAS)),
+                    $qb->expr()->eq(sprintf('%s.subscribersList', self::MEMBER_ALIAS), ':subscribersList')
+                )
+            )
+            ->setParameter('subscribersList', $staticSegment->getSubscribersList())
+            ->groupBy(sprintf('%s.id', self::MEMBER_ALIAS));
 
         return new BufferedQueryResultIterator($qb);
     }
