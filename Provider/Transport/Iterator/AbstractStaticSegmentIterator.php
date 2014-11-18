@@ -36,11 +36,6 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     protected $memberClassName;
 
     /**
-     * @var string
-     */
-    protected $segmentMemberClassName;
-
-    /**
      * @param MarketingListProvider $marketingListProvider
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param FieldHelper $fieldHelper
