@@ -29,8 +29,14 @@ class StaticSegmentRepository extends EntityRepository
         } else {
             $qb
                 ->leftJoin('staticSegment.marketingList', 'ml')
-                ->where($qb->expr()->eq('ml.type', ':type'))
-                ->setParameter('type', MarketingListType::TYPE_DYNAMIC);
+                ->where(
+                    $qb->expr()->andX(
+                        $qb->expr()->eq('ml.type', ':type'),
+                        $qb->expr()->neq('staticSegment.syncStatus', ':status')
+                    )
+                )
+                ->setParameter('type', MarketingListType::TYPE_DYNAMIC)
+                ->setParameter('status', StaticSegment::STATUS_IN_PROGRESS);
         }
 
         if ($channel) {
@@ -38,10 +44,6 @@ class StaticSegmentRepository extends EntityRepository
                 ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
                 ->setParameter('channel', $channel);
         }
-
-        $qb
-            ->andWhere($qb->expr()->neq('staticSegment.syncStatus', ':status'))
-            ->setParameter('status', StaticSegment::STATUS_IN_PROGRESS);
 
         return new BufferedQueryResultIterator($qb);
     }
