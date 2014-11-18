@@ -46,6 +46,6 @@ class MemberActivityConnector extends AbstractMailChimpConnector implements Conn
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getMemberActivitiesToSync($this->getLastSyncDate());
+        return $this->transport->getMemberActivitiesToSync($this->getChannel(), $this->getLastSyncDate());
     }
 }

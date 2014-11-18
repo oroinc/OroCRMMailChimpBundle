@@ -31,3 +31,9 @@ OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment:
             - NotBlank: ~
         marketingList:
             - NotBlank: ~
+
+OroCRM\Bundle\MailChimpBundle\Entity\Member:
+    properties:
+        email:
+            - Email: ~
+            - NotBlank: ~

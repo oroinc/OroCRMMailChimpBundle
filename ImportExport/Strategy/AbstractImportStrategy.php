@@ -49,13 +49,21 @@ abstract class AbstractImportStrategy extends ConfigurableAddOrReplaceStrategy i
      */
     protected function afterProcessEntity($entity)
     {
+        $this->collectEntities($entity);
+
+        return parent::afterProcessEntity($entity);
+    }
+
+    /**
+     * @param OriginAwareInterface $entity
+     */
+    protected function collectEntities($entity)
+    {
         $jobContext = $this->getJobContext();
         $processedEntities = (array)$jobContext->get('processed_entities');
         $processedEntities['originId'][] = $entity->getOriginId();
         $processedEntities['channel'] = $this->context->getOption('channel');
         $jobContext->put('processed_entities', $processedEntities);
-
-        return parent::afterProcessEntity($entity);
     }
 
     /**

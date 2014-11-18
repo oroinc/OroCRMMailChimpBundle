@@ -15,10 +15,15 @@
         }
     },
     "target-dir": "src/OroCRM/Bundle/MailChimpBundle",
+    "repositories": [
+       {
+            "type": "composer",
+            "url": "http://packagist.orocrm.com"
+        }
+    ],
     "require": {
         "php": ">=5.4.9",
-        "oro/platform": "1.x-dev",
-        "oro/crm": "1.x-dev",
+        "oro/crm": ">=1.4.1",
         "zfr/zfr-mailchimp": "~2.0"
     },
     "minimum-stability": "dev",
