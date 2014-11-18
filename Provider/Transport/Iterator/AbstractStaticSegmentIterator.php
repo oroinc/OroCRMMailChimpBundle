@@ -81,13 +81,17 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         );
 
         $expr = $qb->expr()->orX();
+        $whereExpr = $qb->expr()->orX();
         foreach ($contactInformationFields as $contactInformationField) {
+            $fieldName = $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField);
             $expr->add(
                 $qb->expr()->eq(
-                    $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField),
+                    $fieldName,
                     sprintf('%s.%s', self::MEMBER_ALIAS, self::MEMBER_EMAIL_FIELD)
                 )
             );
+            $whereExpr->add($qb->expr()->isNotNull($fieldName));
+            $qb->addGroupBy($fieldName);
         }
 
         $qb
@@ -100,7 +104,8 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                     $qb->expr()->eq(sprintf('%s.subscribersList', self::MEMBER_ALIAS), ':subscribersList')
                 )
             )
-            ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId());
+            ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId())
+            ->andWhere($whereExpr);
 
         return $qb;
     }
