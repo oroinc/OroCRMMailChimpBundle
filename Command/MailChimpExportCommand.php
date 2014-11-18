@@ -2,30 +2,30 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Command;
 
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Oro\Bundle\CronBundle\Command\CronCommandInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
+use Oro\Bundle\IntegrationBundle\Command\AbstractSyncCronCommand;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
+use Oro\Component\Log\OutputLogger;
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
 use OroCRM\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 
-class MailChimpExportCommand extends ContainerAwareCommand implements CronCommandInterface
+class MailChimpExportCommand extends AbstractSyncCronCommand
 {
     /**
      * {@inheritdoc}
      */
     public function getDefaultDefinition()
     {
-        return '*/1 * * * *';
+        return '*/5 * * * *';
     }
 
     /**
@@ -69,6 +69,13 @@ class MailChimpExportCommand extends ContainerAwareCommand implements CronComman
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($this->isJobRunning(null)) {
+            $logger = new OutputLogger($output);
+            $logger->warning('Job already running. Terminating....');
+
+            return;
+        }
+
         $segments = $input->getOption('segments');
         /** @var StaticSegment[] $iterator */
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsToSync($segments);

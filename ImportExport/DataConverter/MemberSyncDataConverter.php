@@ -68,10 +68,12 @@ class MemberSyncDataConverter extends MemberDataConverter
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
         );
 
-        return $this->contactInformationFieldsProvider->getTypedFieldsValues(
+        $values = $this->contactInformationFieldsProvider->getTypedFieldsValues(
             $contactInformationFields,
             $object
         );
+
+        return array_filter($values);
     }
 
     /**

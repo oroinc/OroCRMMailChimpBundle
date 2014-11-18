@@ -40,7 +40,9 @@ class MemberImportStrategy extends AbstractImportStrategy
         }
 
         $entity = $this->afterProcessEntity($entity);
-        $entity = $this->validateAndUpdateContext($entity);
+        if ($entity) {
+            $entity = $this->validateAndUpdateContext($entity);
+        }
 
         return $entity;
     }
@@ -80,13 +82,41 @@ class MemberImportStrategy extends AbstractImportStrategy
      * Set EmailCampaign owner.
      *
      * @param Member $entity
-     * @return Member
+     * @return Member|null
      */
     protected function afterProcessEntity($entity)
     {
         $this->assignMergeVarValues($entity);
 
+        if ($this->isEntityProcessed($entity)) {
+            return null;
+        }
+
         return parent::afterProcessEntity($entity);
+    }
+
+    /**
+     * @param Member $entity
+     */
+    protected function collectEntities($entity)
+    {
+        $jobContext = $this->getJobContext();
+        $processedMembers = (array)$jobContext->get('processed_members');
+        $processedMembers[$entity->getSubscribersList()->getId()][$entity->getEmail()] = true;
+        $jobContext->put('processed_members', $processedMembers);
+    }
+
+    /**
+     * @param Member $entity
+     *
+     * @return bool
+     */
+    protected function isEntityProcessed($entity)
+    {
+        $jobContext = $this->getJobContext();
+        $processedMembers = (array)$jobContext->get('processed_members');
+
+        return !empty($processedMembers[$entity->getSubscribersList()->getId()][$entity->getEmail()]);
     }
 
     /**
