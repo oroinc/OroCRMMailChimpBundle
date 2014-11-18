@@ -77,3 +77,9 @@ The following steps are performed in the course of the Marketing List members sy
 First, all the Marketing List members are checked for subscription to the MailChimp List. Members not subscribed are scheduled for subscription. 
 After that, all the Marketing List members absent in the Static Segment are scheduled for a mass add to the segment.
 All the members present in the Static Segment but absent in the Marketing List are scheduled for removal from the Static Segment.
+
+## Known Issues
+
+Email Campaign Statistics and MailChimp Statistics may differ. Email Campaign Statistics is calculated based on 
+Export API data which at the moment contains only clicks and opens. 
+MailChimp Statistics contains summary statistics for MailChimp Email Campaign.
