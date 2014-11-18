@@ -8,7 +8,7 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
-class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentMemberStateIterator
+class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
 {
     /**
      * @param StaticSegment $staticSegment
@@ -20,8 +20,6 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentMemberSta
         $qb = $this->getIteratorQueryBuilder($staticSegment);
 
         $qb
-            ->resetDQLParts()
-            ->setParameters(['staticSegment' => $staticSegment->getId()])
             ->select(
                 [
                     self::MEMBER_ALIAS . '.id member_id',
@@ -29,22 +27,21 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentMemberSta
                     $qb->expr()->literal(StaticSegmentMember::STATE_ADD) . ' state'
                 ]
             )
-            ->from($this->memberClassName, self::MEMBER_ALIAS)
             ->leftJoin(
-                $this->segmentMemberClassName,
-                'segmentMember',
+                sprintf('%s.segmentMembers', self::MEMBER_ALIAS),
+                'segmentMembers',
                 Join::WITH,
-                $qb->expr()->andX(
-                    $qb->expr()->eq(sprintf('%s.id', self::MEMBER_ALIAS), 'segmentMember.member'),
-                    $qb->expr()->eq('segmentMember.staticSegment', ':staticSegment')
-                )
+                $qb->expr()->eq('segmentMembers.staticSegment', $staticSegment->getId())
             )
             ->andWhere(
                 $qb->expr()->andX(
-                    $qb->expr()->isNull('segmentMember.id'),
-                    $qb->expr()->isNotNull(sprintf('%s.originId', self::MEMBER_ALIAS))
+                    $qb->expr()->isNull('segmentMembers'),
+                    $qb->expr()->isNotNull(sprintf('%s.originId', self::MEMBER_ALIAS)),
+                    $qb->expr()->eq(sprintf('%s.subscribersList', self::MEMBER_ALIAS), ':subscribersList')
                 )
-            );
+            )
+            ->setParameter('subscribersList', $staticSegment->getSubscribersList())
+            ->groupBy(sprintf('%s.id', self::MEMBER_ALIAS));
 
         return new BufferedQueryResultIterator($qb);
     }
