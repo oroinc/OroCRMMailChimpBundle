@@ -26,3 +26,7 @@
 .connection-form .control-label {
     width: 170px !important;
 }
+
+.connection-form .input-append .add-on.btn {
+    padding: 4px 5px;
+}
