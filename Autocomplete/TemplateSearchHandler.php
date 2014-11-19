@@ -15,13 +15,9 @@ class TemplateSearchHandler extends IntegrationAwareSearchHandler
 
         if ($searchById) {
             $items = $this->findById($query);
-            $result = [];
-            if ($items) {
-                $result[] = $this->convertItem($items[0]);
-            }
 
             return [
-                'results' => $result,
+                'results' => [$this->convertItem(reset($items))],
                 'more'    => false
             ];
         } else {
