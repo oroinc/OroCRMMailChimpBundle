@@ -3,6 +3,9 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport;
 
 use Guzzle\Http\Message\Response;
+use Guzzle\Service\Description\Operation;
+use Guzzle\Service\Description\ServiceDescription;
+use Guzzle\Service\Description\ServiceDescriptionInterface;
 use ZfrMailChimp\Client\MailChimpClient as BaseClient;
 
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Exception\BadResponseException;
@@ -10,6 +13,11 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Exception\BadResponseExcept
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/
  * @link http://apidocs.mailchimp.com/export/1.0/
+ *
+ * @codingStandardsIgnoreStart
+ * @method array getCampaignUnsubscribesReport (array $args = array()) {@command MailChimp GetCampaignUnsubscribesReport}
+ * @method array getCampaignSentToReport (array $args = array()) {@command MailChimp GetCampaignSentToReport}
+ * @codingStandardsIgnoreEnd
  */
 class MailChimpClient extends BaseClient
 {
@@ -38,6 +46,11 @@ class MailChimpClient extends BaseClient
     protected $apiKey;
 
     /**
+     * @var string
+     */
+    protected $version;
+
+    /**
      * MailChimp Export API version
      * @link http://apidocs.mailchimp.com/export/1.0/
      */
@@ -50,9 +63,60 @@ class MailChimpClient extends BaseClient
     public function __construct($apiKey, $version = BaseClient::LATEST_API_VERSION)
     {
         $this->apiKey = $apiKey;
+        $this->version = $version;
+
         BaseClient::__construct($apiKey, $version);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function setDescription(ServiceDescriptionInterface $service)
+    {
+        $this->addAdditionalOperations($service);
+
+        return parent::setDescription($service);
+    }
+
+    /**
+     * Add additional operations to service.
+     *
+     * @param ServiceDescription $service
+     */
+    protected function addAdditionalOperations(ServiceDescription $service)
+    {
+        $operations = $this->loadOperations();
+        if ($operations) {
+            foreach ($operations as $name => $config) {
+                if (!$service->hasOperation($name)) {
+                    $service->addOperation(new Operation($config, $service));
+                }
+            }
+        }
+    }
+
+    /**
+     * Load additional operations config.
+     *
+     * @return array|null
+     */
+    protected function loadOperations()
+    {
+        $fileName = sprintf(
+            __DIR__ . '/Operations/MailChimp-%s.php',
+            $this->version
+        );
+
+        if (!is_readable($fileName)) {
+            return null;
+        }
+        $config = require $fileName;
+        if (!is_array($config)) {
+            return null;
+        }
+
+        return $config;
+    }
 
     /**
      * Execute exports API request.
