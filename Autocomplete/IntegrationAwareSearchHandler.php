@@ -30,6 +30,6 @@ abstract class IntegrationAwareSearchHandler extends SearchHandler
             $criteria['channel'] = $channelId;
         }
 
-        return $this->entityRepository->findOneBy($criteria, null);
+        return [$this->entityRepository->findOneBy($criteria, null)];
     }
 }
