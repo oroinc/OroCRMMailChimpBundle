@@ -31,6 +31,15 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     protected $logger;
 
     /**
+     * @var array
+     */
+    protected $singleInstanceActivities = [
+        MemberActivity::ACTIVITY_SENT,
+        MemberActivity::ACTIVITY_UNSUB,
+        MemberActivity::ACTIVITY_BOUNCE
+    ];
+
+    /**
      * {@inheritdoc}
      */
     public function setStepExecution(StepExecution $stepExecution)
@@ -140,11 +149,19 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      */
     protected function findExistingMember(Member $member, Channel $channel, Campaign $campaign)
     {
-        $searchCondition = [
-            'channel' => $channel,
-            'subscribersList' => $campaign->getSubscribersList(),
-            'email' => $member->getEmail()
-        ];
+        if ($member->getOriginId()) {
+            $searchCondition = [
+                'channel' => $channel,
+                'subscribersList' => $campaign->getSubscribersList(),
+                'originId' => $member->getOriginId()
+            ];
+        } else {
+            $searchCondition = [
+                'channel' => $channel,
+                'subscribersList' => $campaign->getSubscribersList(),
+                'email' => $member->getEmail()
+            ];
+        }
 
         return $this->findEntityByIdentityValues(ClassUtils::getClass($member), $searchCondition);
     }
@@ -155,7 +172,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      */
     protected function isSkipped(MemberActivity $entity)
     {
-        if ($entity->getAction() === MemberActivity::ACTIVITY_SENT) {
+        if (in_array($entity->getAction(), $this->singleInstanceActivities)) {
             $searchCondition = [
                 'campaign' => $entity->getCampaign(),
                 'action' => $entity->getAction(),
