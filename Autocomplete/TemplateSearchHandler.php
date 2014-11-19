@@ -14,10 +14,14 @@ class TemplateSearchHandler extends IntegrationAwareSearchHandler
         $this->checkAllDependenciesInjected();
 
         if ($searchById) {
-            $item = $this->findById($query);
+            $items = $this->findById($query);
+            $result = [];
+            if ($items) {
+                $result[] = $this->convertItem($items[0]);
+            }
 
             return [
-                'results' => [$this->convertItem($item)],
+                'results' => $result,
                 'more'    => false
             ];
         } else {
