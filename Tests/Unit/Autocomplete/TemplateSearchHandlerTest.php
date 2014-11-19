@@ -132,7 +132,7 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
         $firstResult = 1;
         $maxResults = 10;
         $result = $method->invokeArgs($this->searchHandler, [$search, $firstResult, $maxResults]);
-        $this->assertEquals($result, '');
+        $this->assertEmpty($result);
     }
 
     /**
@@ -153,7 +153,7 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
         $result = $method->invokeArgs($this->searchHandler, ['1;1']);
 
-        $this->assertEquals($result, ['id' => 1, 'channel' => 1]);
+        $this->assertEquals([['id' => 1, 'channel' => 1]], $result);
     }
 
     /**
@@ -227,8 +227,8 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
         $firstResult = 1;
         $maxResults = 2;
         $result = $this->searchHandler->search($search, $firstResult, $maxResults);
-        $this->assertEquals($result['more'], false);
-        $this->assertEquals(count($result['results']), 4);
+        $this->assertFalse($result['more']);
+        $this->assertCount(4, $result['results']);
     }
 
     /**
@@ -241,16 +241,16 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
         $this->setUpExpects();
         $templateOne = new Template();
         $templateOne->setCategory($expected[0]['name'])->setName($expected[0]['children'][0]['name']);
-        $this->entityRepository->expects($this->exactly(1))
+        $this->entityRepository->expects($this->once())
             ->method('findOneBy')
             ->will($this->returnValue($templateOne));
         $search = "test;1";
         $firstResult = 1;
         $maxResults = 2;
         $result = $this->searchHandler->search($search, $firstResult, $maxResults, true);
-        $this->assertEquals($result['more'], false);
-        $this->assertEquals(count($result['results']), 1);
-        $this->assertEquals($result['results'][0]['id'], "test");
+        $this->assertFalse($result['more']);
+        $this->assertCount(1, $result['results']);
+        $this->assertEquals("test", $result['results'][0]['id']);
     }
 
     /**
