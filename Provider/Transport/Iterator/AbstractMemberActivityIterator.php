@@ -32,6 +32,10 @@ abstract class AbstractMemberActivityIterator extends AbstractSubordinateIterato
         return new \CallbackFilterIterator(
             $this->createResultIterator($campaign),
             function (&$current) use ($campaign) {
+                if ($current === null) {
+                    return false;
+                }
+
                 $current[self::CAMPAIGN_KEY] = $campaign->getId();
                 return true;
             }
