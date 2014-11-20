@@ -222,7 +222,7 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @param Channel $channel
-     * @return MemberUnsubscribesIterator
+     * @return \Iterator
      */
     public function getCampaignUnsubscribesReport(Channel $channel)
     {
@@ -231,7 +231,7 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @param Channel $channel
-     * @return MemberSentToIterator
+     * @return \Iterator
      */
     public function getCampaignSentToReport(Channel $channel)
     {
@@ -240,7 +240,8 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @param Channel $channel
-     * @return MemberSentToIterator
+     * @param \DateTime $since
+     * @return \Iterator
      */
     public function getCampaignAbuseReport(Channel $channel, \DateTime $since = null)
     {

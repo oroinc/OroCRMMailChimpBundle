@@ -97,7 +97,7 @@ connector:
             type: import
             steps:
                 import:
-                    title: import_send
+                    title: import
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity_abuse
@@ -111,7 +111,7 @@ connector:
             type: import
             steps:
                 import:
-                    title: import_send
+                    title: import
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity_unsubscribe

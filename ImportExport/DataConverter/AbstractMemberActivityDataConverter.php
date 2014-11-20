@@ -9,7 +9,9 @@ abstract class AbstractMemberActivityDataConverter extends IntegrationAwareDataC
      */
     protected function getHeaderConversionRules()
     {
-        return [];
+        return [
+            'campaign_id' => 'campaign:id'
+        ];
     }
 
     /**
@@ -17,8 +19,11 @@ abstract class AbstractMemberActivityDataConverter extends IntegrationAwareDataC
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        $importedRecord['member:originId'] = $importedRecord['member']['id'];
-        $importedRecord['email'] = $importedRecord['member']['email'];
+        $memberData = $importedRecord['member'];
+        unset($importedRecord['member']);
+
+        $importedRecord['member:originId'] = $memberData['web_id'];
+        $importedRecord['email'] = $memberData['email'];
 
         return parent::convertToImportFormat($importedRecord, $skipNullValues);
     }

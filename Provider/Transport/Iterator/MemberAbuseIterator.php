@@ -32,6 +32,6 @@ class MemberAbuseIterator extends AbstractMemberActivityIterator
      */
     protected function createResultIterator(Campaign $campaign)
     {
-        return new CampaignSentToIterator($this->client, $campaign, $this->since);
+        return new CampaignAbuseIterator($this->client, $campaign, $this->since);
     }
 }
