@@ -473,9 +473,7 @@ services:
 
     orocrm_mailchimp.importexport.strategy.static_segment:
         class: %orocrm_mailchimp.importexport.strategy.static_segment.class%
-        parent: oro_importexport.strategy.configurable_add_or_replace
-        calls:
-            - [setLogger, [@oro_integration.logger.strategy]]
+        parent: orocrm_mailchimp.importexport.strategy.abstract.add_or_replace
 
     orocrm_mailchimp.importexport.strategy.static_segment_member_add_state:
         parent: oro_importexport.strategy.configurable_add_or_replace
