@@ -1,13 +1,7 @@
 code: 200
 headers: ~
 body:
-    member1@example.com: ~
-    member1@example.com: ~
     not_exists@example.com: ~
-addCount: 1
-fullCount: 1
-database:
-    -
-        email: 'member1@example.com'
-        action: 'sent'
-        campaign: campaign4
+addCount: 0
+fullCount: 0
+database: []
