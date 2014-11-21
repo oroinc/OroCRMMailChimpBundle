@@ -136,7 +136,7 @@ class SyncMemberActivityTest extends WebTestCase
                         "ip":"80.91.180.166"}]}'
                 ],
                 'assertMethod' => 'assertEquals',
-                'assertCount' => '5',
+                'assertCount' => '3',
                 'expectedContent' => [
                     'Run sync for "mailchimp1" integration.',
                     'Start processing "member_activity" connector',

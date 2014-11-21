@@ -31,9 +31,59 @@ OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment:
             - NotBlank: ~
         marketingList:
             - NotBlank: ~
+        syncStatus:
+            - NotBlank: ~
 
 OroCRM\Bundle\MailChimpBundle\Entity\Member:
     properties:
         email:
             - Email: ~
+            - NotBlank: ~
+        status:
+            - NotBlank: ~
+
+OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity:
+    properties:
+        email:
+            - Email: ~
+            - NotBlank: ~
+        action:
+            - NotBlank: ~
+        member:
+            - NotBlank: ~
+
+OroCRM\Bundle\MailChimpBundle\Entity\Campaign:
+    properties:
+        originId:
+            - NotBlank: ~
+        webId:
+            - NotBlank: ~
+        status:
+            - NotBlank: ~
+
+OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember:
+    properties:
+        staticSegment:
+            - NotBlank: ~
+        member:
+            - NotBlank: ~
+        state:
+            - NotBlank: ~
+
+OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList:
+    properties:
+        originId:
+            - NotBlank: ~
+        webId:
+            - NotBlank: ~
+        name:
+            - NotBlank: ~
+
+OroCRM\Bundle\MailChimpBundle\Entity\Template:
+    properties:
+        originId:
+            - NotBlank: ~
+        type:
+            - NotBlank: ~
+        name:
             - NotBlank: ~

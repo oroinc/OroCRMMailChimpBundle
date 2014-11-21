@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\ORM\QueryBuilder;
 
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\WorkflowBundle\Model\Action\AbstractAction;
 use Oro\Bundle\WorkflowBundle\Model\ContextAccessor;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
@@ -50,9 +51,9 @@ abstract class AbstractMarketingListEntitiesAction extends AbstractAction
     /**
      * @param MarketingList $marketingList
      * @param string $email
-     * @return array
+     * @return QueryBuilder
      */
-    protected function getMarketingListEntitiesByEmail(MarketingList $marketingList, $email)
+    protected function getMarketingListEntitiesByEmailQueryBuilder(MarketingList $marketingList, $email)
     {
         $emailFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
             $marketingList,
@@ -74,7 +75,19 @@ abstract class AbstractMarketingListEntitiesAction extends AbstractAction
         }
         $qb->andWhere($expr);
 
-        return $qb->getQuery()->getResult();
+        return $qb;
+    }
+
+    /**
+     * @param MarketingList $marketingList
+     * @param string $email
+     * @return BufferedQueryResultIterator
+     */
+    protected function getMarketingListEntitiesByEmail(MarketingList $marketingList, $email)
+    {
+        return new BufferedQueryResultIterator(
+            $this->getMarketingListEntitiesByEmailQueryBuilder($marketingList, $email)
+        );
     }
 
     /**

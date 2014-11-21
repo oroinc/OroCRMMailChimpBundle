@@ -6,9 +6,13 @@ use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Item\ExecutionContext;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
+
 use Doctrine\Common\Util\ClassUtils;
+
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+
+use Symfony\Component\Validator\ValidatorInterface;
 
 use Oro\Bundle\ImportExportBundle\Strategy\Import\AbstractImportStrategy as BasicImportStrategy;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -31,6 +35,20 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     protected $logger;
 
     /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
+
+    /**
+     * @var array
+     */
+    protected $singleInstanceActivities = [
+        MemberActivity::ACTIVITY_SENT,
+        MemberActivity::ACTIVITY_UNSUB,
+        MemberActivity::ACTIVITY_BOUNCE
+    ];
+
+    /**
      * {@inheritdoc}
      */
     public function setStepExecution(StepExecution $stepExecution)
@@ -44,6 +62,14 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * @param ValidatorInterface $validator
+     */
+    public function setValidator(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
     }
 
     /**
@@ -119,15 +145,25 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      */
     protected function afterProcessEntity($entity)
     {
-        if ($entity) {
-            $jobContext = $this->getJobContext();
-            $processedCampaigns = (array)$jobContext->get('processed_campaigns');
-            $campaignId = $entity->getCampaign()->getId();
-            if (!in_array($campaignId, $processedCampaigns)) {
-                $processedCampaigns[] = $campaignId;
-            }
-            $jobContext->put('processed_campaigns', $processedCampaigns);
+        if (!$entity) {
+            return null;
         }
+
+        $validationErrors = $this->strategyHelper->validateEntity($entity);
+        if ($validationErrors) {
+            $this->context->incrementErrorEntriesCount();
+            $this->strategyHelper->addValidationErrors($validationErrors, $this->context);
+
+            return null;
+        }
+
+        $jobContext = $this->getJobContext();
+        $processedCampaigns = (array)$jobContext->get('processed_campaigns');
+        $campaignId = $entity->getCampaign()->getId();
+        if (!in_array($campaignId, $processedCampaigns)) {
+            $processedCampaigns[] = $campaignId;
+        }
+        $jobContext->put('processed_campaigns', $processedCampaigns);
 
         return parent::afterProcessEntity($entity);
     }
@@ -143,8 +179,13 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
         $searchCondition = [
             'channel' => $channel,
             'subscribersList' => $campaign->getSubscribersList(),
-            'email' => $member->getEmail()
         ];
+
+        if ($originId = $member->getOriginId()) {
+            $searchCondition['originId'] = $originId;
+        } else {
+            $searchCondition['email'] = $member->getEmail();
+        }
 
         return $this->findEntityByIdentityValues(ClassUtils::getClass($member), $searchCondition);
     }
@@ -155,7 +196,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      */
     protected function isSkipped(MemberActivity $entity)
     {
-        if ($entity->getAction() === MemberActivity::ACTIVITY_SENT) {
+        if (in_array($entity->getAction(), $this->singleInstanceActivities)) {
             $searchCondition = [
                 'campaign' => $entity->getCampaign(),
                 'action' => $entity->getAction(),
@@ -175,6 +216,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     {
         /** @var JobExecution $jobExecution */
         $jobExecution = $this->stepExecution->getJobExecution();
+
         return $jobExecution->getExecutionContext();
     }
 }
