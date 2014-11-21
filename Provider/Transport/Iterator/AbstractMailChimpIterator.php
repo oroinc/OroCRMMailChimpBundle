@@ -45,7 +45,7 @@ abstract class AbstractMailChimpIterator implements \Iterator
     public function __construct(MailChimpClient $client, $batchSize = self::BATCH_SIZE)
     {
         $this->client = $client;
-        $this->batchSize = $batchSize;
+        $this->batchSize = $batchSize > 0 ? $batchSize : self::BATCH_SIZE;
     }
 
     /**

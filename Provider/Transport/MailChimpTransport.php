@@ -14,8 +14,11 @@ use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberAbuseIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberActivityIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberIterator;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSentToIterator;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberUnsubscribesIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentListIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
@@ -209,15 +212,44 @@ class MailChimpTransport implements TransportInterface
      */
     public function getMemberActivitiesToSync(Channel $channel, \DateTime $since = null)
     {
-        $sentCampaigns = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:Campaign')
-            ->getSentCampaigns($channel);
-
-        $parameters = ['include_empty' => true];
+        $parameters = ['include_empty' => false];
         if ($since) {
             $parameters['since'] = $this->getSinceForApi($since);
         }
 
-        return new MemberActivityIterator($sentCampaigns, $this->client, $parameters);
+        return new MemberActivityIterator($this->getSentCampaignsIterator($channel), $this->client, $parameters);
+    }
+
+    /**
+     * @param Channel $channel
+     * @return \Iterator
+     */
+    public function getCampaignUnsubscribesReport(Channel $channel)
+    {
+        return new MemberUnsubscribesIterator($this->getSentCampaignsIterator($channel), $this->client);
+    }
+
+    /**
+     * @param Channel $channel
+     * @return \Iterator
+     */
+    public function getCampaignSentToReport(Channel $channel)
+    {
+        return new MemberSentToIterator($this->getSentCampaignsIterator($channel), $this->client);
+    }
+
+    /**
+     * @param Channel $channel
+     * @param \DateTime $since
+     * @return \Iterator
+     */
+    public function getCampaignAbuseReport(Channel $channel, \DateTime $since = null)
+    {
+        if ($since) {
+            $since = $this->getSinceForApi($since);
+        }
+
+        return new MemberAbuseIterator($this->getSentCampaignsIterator($channel), $since, $this->client);
     }
 
     /**
@@ -303,5 +335,15 @@ class MailChimpTransport implements TransportInterface
         $since->setTimezone(new \DateTimeZone('UTC'));
 
         return $since->format(self::DATETIME_FORMAT);
+    }
+
+    /**
+     * @param Channel $channel
+     * @return \Iterator
+     */
+    protected function getSentCampaignsIterator(Channel $channel)
+    {
+        return $this->managerRegistry->getRepository('OroCRMMailChimpBundle:Campaign')
+            ->getSentCampaigns($channel);
     }
 }
