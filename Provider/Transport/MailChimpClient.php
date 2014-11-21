@@ -81,17 +81,17 @@ class MailChimpClient extends BaseClient
     /**
      * Add additional operations to service.
      *
-     * @param ServiceDescription $service
+     * @param ServiceDescriptionInterface $service
      */
-    protected function addAdditionalOperations(ServiceDescription $service)
+    protected function addAdditionalOperations(ServiceDescriptionInterface $service)
     {
-        $operations = $this->loadOperations();
-        if ($operations) {
+        if ($operations = $this->loadOperations()) {
             foreach ($operations as $name => $config) {
                 if (!$service->hasOperation($name)) {
                     if (empty($config['name'])) {
                         $config['name'] = $name;
                     }
+                    /** @var ServiceDescription $service */
                     $service->addOperation(new Operation($config, $service));
                 }
             }
@@ -101,18 +101,18 @@ class MailChimpClient extends BaseClient
     /**
      * Load additional operations config.
      *
-     * @return array|null
+     * @return array
      */
     protected function loadOperations()
     {
         $fileName = sprintf(__DIR__ . '/Operations/MailChimp-%s.php', $this->version);
         if (!is_readable($fileName)) {
-            return null;
+            return [];
         }
 
         $config = require $fileName;
         if (!is_array($config)) {
-            return null;
+            return [];
         }
 
         return $config;

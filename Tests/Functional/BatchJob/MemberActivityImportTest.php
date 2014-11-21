@@ -89,7 +89,7 @@ class MemberActivityImportTest extends WebTestCase
 
                 $result = $repository->findBy($criteria);
 
-                $this->assertCount(1, $result, $file->getFileName() . implode(', ', $criteria));
+                $this->assertCount(1, $result, $file->getFileName());
             }
         }
 

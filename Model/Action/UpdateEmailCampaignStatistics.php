@@ -3,10 +3,14 @@
 namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Base;
+
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use OroCRM\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
 {
@@ -84,6 +88,32 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
             $this->incrementStatistics($memberActivity, $emailCampaignStatistics);
             $em->persist($emailCampaignStatistics);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getMarketingListEntitiesByEmail(MarketingList $marketingList, $email)
+    {
+        $qb = $this->getMarketingListEntitiesByEmailQueryBuilder($marketingList, $email);
+
+        $whereParts = array_filter(
+            $qb->getDQLPart('where')->getParts(),
+            function ($part) {
+                return $part instanceof Base;
+            }
+        );
+
+        $andX = $qb->expr()->andX();
+        foreach ($whereParts as $wherePart) {
+            $andX->add($wherePart);
+        }
+
+        $qb
+            ->resetDQLPart('where')
+            ->where($andX);
+
+        return new BufferedQueryResultIterator($qb);
     }
 
     /**
