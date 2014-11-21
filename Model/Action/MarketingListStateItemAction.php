@@ -52,7 +52,7 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
                 $em->persist($entity);
             }
 
-            $em->flush();
+            $em->flush($entities);
         }
     }
 

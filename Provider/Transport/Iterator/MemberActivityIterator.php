@@ -3,19 +3,11 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
-class MemberActivityIterator extends AbstractSubordinateIterator
+class MemberActivityIterator extends AbstractMemberActivityIterator
 {
-    const ACTION_KEY = 'action';
-    const CAMPAIGN_KEY = 'campaign_id';
     const EMAIL_KEY = 'email';
-
-    /**
-     * @var MailChimpClient
-     */
-    protected $client;
 
     /**
      * @var array
@@ -29,9 +21,8 @@ class MemberActivityIterator extends AbstractSubordinateIterator
      */
     public function __construct(\Iterator $campaigns, MailChimpClient $client, array $parameters = [])
     {
-        parent::__construct($campaigns);
+        parent::__construct($campaigns, $client);
 
-        $this->client = $client;
         $this->parameters = $parameters;
     }
 
@@ -41,42 +32,12 @@ class MemberActivityIterator extends AbstractSubordinateIterator
      * @param Campaign $campaign
      * @return \Iterator
      */
-    protected function createSubordinateIterator($campaign)
+    protected function createResultIterator(Campaign $campaign)
     {
-        if (!$campaign instanceof Campaign) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Instance of %s is expected, %s given.',
-                    'OroCRM\\Bundle\\MailChimpBundle\\Entity\\Campaign',
-                    is_object($campaign) ? get_class($campaign) : gettype($campaign)
-                )
-            );
-        }
-
         $parameters = $this->parameters;
         $parameters['id'] = $campaign->getOriginId();
 
-        return $this->createExportMemberIterator($campaign, $parameters);
-    }
-
-    /**
-     * @param Campaign $campaign
-     * @param array $parameters
-     * @return \Iterator
-     */
-    protected function createExportMemberIterator(Campaign $campaign, $parameters)
-    {
-        return new \CallbackFilterIterator(
-            $this->createExportIterator(MailChimpClient::EXPORT_CAMPAIGN_SUBSCRIBER_ACTIVITY, $parameters),
-            function (&$current) use ($campaign, $parameters) {
-                $current[self::CAMPAIGN_KEY] = $campaign->getId();
-                if (!array_key_exists(self::ACTION_KEY, $current)) {
-                    $current[self::ACTION_KEY] = MemberActivity::ACTIVITY_SENT;
-                }
-
-                return true;
-            }
-        );
+        return $this->createExportIterator(MailChimpClient::EXPORT_CAMPAIGN_SUBSCRIBER_ACTIVITY, $parameters);
     }
 
     /**

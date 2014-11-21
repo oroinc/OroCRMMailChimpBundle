@@ -13,7 +13,7 @@ body:
             url: ~
             ip: '0.0.0.2'
 addCount: 2
-fullCount: 3 # 1 additional send action
+fullCount: 2
 database:
     -
         email: 'member1@example.com'
@@ -28,8 +28,4 @@ database:
         activityTime: '2014-11-10 14:46:09'
         url: ~
         ip: '0.0.0.2'
-        campaign: campaign1
-    -
-        email: 'member1@example.com'
-        action: 'sent'
         campaign: campaign1

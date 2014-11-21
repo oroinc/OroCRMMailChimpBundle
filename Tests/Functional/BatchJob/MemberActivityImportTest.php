@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\BatchJob;
 
+use Oro\Bundle\ImportExportBundle\Job\JobResult;
 use Symfony\Component\Yaml\Yaml;
 
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
@@ -51,7 +52,19 @@ class MemberActivityImportTest extends WebTestCase
         );
 
         $this->assertTrue($jobResult->isSuccessful(), implode(',', $jobResult->getFailureExceptions()));
+        $this->assertEquals(
+            0,
+            $jobResult->getContext()->getErrorEntriesCount(),
+            implode(', ', $jobResult->getContext()->getErrors())
+        );
+        $this->assertDatabaseContent($jobResult);
+    }
 
+    /**
+     * @param JobResult $jobResult
+     */
+    protected function assertDatabaseContent(JobResult $jobResult)
+    {
         $fixtures = new \RecursiveDirectoryIterator(
             __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Stub' . DIRECTORY_SEPARATOR . 'fixtures',
             \RecursiveDirectoryIterator::SKIP_DOTS
@@ -62,8 +75,8 @@ class MemberActivityImportTest extends WebTestCase
 
         $addCount = 0;
         $fullCount = 0;
-        foreach ($fixtures as $fileName => $object) {
-            $data = Yaml::parse($fileName);
+        foreach ($fixtures as $file) {
+            $data = Yaml::parse($file->getPathName());
             $addCount += $data['addCount'];
             $fullCount += $data['fullCount'];
 
@@ -76,7 +89,7 @@ class MemberActivityImportTest extends WebTestCase
 
                 $result = $repository->findBy($criteria);
 
-                $this->assertCount(1, $result);
+                $this->assertCount(1, $result, $file->getFileName());
             }
         }
 

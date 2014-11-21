@@ -24,7 +24,7 @@ body:
             url: ~
             ip: '0.0.0.10'
 addCount: 2
-fullCount: 3 # 1 additional send action
+fullCount: 2
 database:
     -
         email: 'member1@example.com'

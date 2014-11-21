@@ -78,11 +78,53 @@ connector:
                     parameters:
                         batch_size: 25
 
+        mailchimp_member_activity_import_send:
+            title: orocrm.mailchimp.connector.member_activity_send.job
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.connector.member_activity_send
+                        processor: orocrm_mailchimp.importexport.processor.member_activity_send
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25
+
+        mailchimp_member_activity_import_abuse:
+            title: orocrm.mailchimp.connector.member_activity_abuse.job
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.connector.member_activity_abuse
+                        processor: orocrm_mailchimp.importexport.processor.member_activity_abuse
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25
+
+        mailchimp_member_activity_import_unsubscribe:
+            title: orocrm.mailchimp.connector.member_activity_unsubscribe.job
+            type: import
+            steps:
+                import:
+                    title: import
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.connector.member_activity_unsubscribe
+                        processor: orocrm_mailchimp.importexport.processor.member_activity_unsubscribe
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25
+
         mailchimp_member_activity_import:
             title: orocrm.mailchimp.connector.member_activity.job
             type: import
             steps:
-                import:
+                import_activities:
                     title: import
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
@@ -91,13 +133,6 @@ connector:
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
-                update_send_action:
-                    title: add_send_activities
-                    class: Oro\Bundle\BatchBundle\Step\ItemStep
-                    services:
-                        reader:    orocrm_mailchimp.importexport.reader.unsent_activities
-                        processor: orocrm_mailchimp.importexport.processor.unsent_activity
-                        writer:    oro_integration.writer.persistent_batch_writer
 
         mailchimp_static_segment_import:
             title: orocrm.mailchimp.connector.static_segment.job
