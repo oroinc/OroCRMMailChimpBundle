@@ -11,7 +11,7 @@ class MemberSendActivityDataConverter extends AbstractMemberActivityDataConverte
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        if ($importedRecord['status'] == MemberActivity::ACTIVITY_SENT) {
+        if ($importedRecord['status'] === MemberActivity::ACTIVITY_SENT) {
             $importedRecord['action'] = MemberActivity::ACTIVITY_SENT;
         } else {
             $importedRecord['action'] = MemberActivity::ACTIVITY_BOUNCE;

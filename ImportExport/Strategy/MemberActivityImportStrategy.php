@@ -176,18 +176,15 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      */
     protected function findExistingMember(Member $member, Channel $channel, Campaign $campaign)
     {
-        if ($member->getOriginId()) {
-            $searchCondition = [
-                'channel' => $channel,
-                'subscribersList' => $campaign->getSubscribersList(),
-                'originId' => $member->getOriginId()
-            ];
+        $searchCondition = [
+            'channel' => $channel,
+            'subscribersList' => $campaign->getSubscribersList(),
+        ];
+
+        if ($originId = $member->getOriginId()) {
+            $searchCondition['originId'] = $originId;
         } else {
-            $searchCondition = [
-                'channel' => $channel,
-                'subscribersList' => $campaign->getSubscribersList(),
-                'email' => $member->getEmail()
-            ];
+            $searchCondition['email'] = $member->getEmail();
         }
 
         return $this->findEntityByIdentityValues(ClassUtils::getClass($member), $searchCondition);
