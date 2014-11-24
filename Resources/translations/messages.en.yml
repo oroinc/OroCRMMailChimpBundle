@@ -29,6 +29,15 @@ orocrm:
             member_activity:
                 label: Member Activity Connector
                 job: Import Member Activities from MailChimp
+            member_activity_abuse:
+                label: Member Abuse Activity Connector
+                job: Import Member Abuse Activities from MailChimp
+            member_activity_unsubscribe:
+                label: Member Unsubscribe Activity Connector
+                job: Import Member Unsubscribe Activities from MailChimp
+            member_activity_send:
+                label: Member Send Activity Connector
+                job: Import Member Send Activities from MailChimp
 
         mailchimptransport:
             entity_label: MailChimp Transport
