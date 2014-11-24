@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
 
+use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
@@ -14,6 +15,9 @@ use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 abstract class AbstractMarketingListEntitiesAction extends AbstractAction
 {
+    const MARKETING_LIST_ITEMS_MIXIN = 'orocrm-mailchimp-marketing-list-entities-mixin';
+    const MARKETING_LIST_MANUAL_ITEMS_MIXIN = 'orocrm-mailchimp-marketing-list-manual-entities-mixin';
+
     /**
      * @var ContactInformationFieldsProvider
      */
@@ -96,6 +100,25 @@ abstract class AbstractMarketingListEntitiesAction extends AbstractAction
      */
     protected function getEntitiesQueryBuilder(MarketingList $marketingList)
     {
-        return $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
+        if ($marketingList->isManual()) {
+            $mixin = self::MARKETING_LIST_MANUAL_ITEMS_MIXIN;
+        } else {
+            $mixin = self::MARKETING_LIST_ITEMS_MIXIN;
+        }
+
+        $queryBuilder = clone $this->marketingListProvider->getMarketingListQueryBuilder($marketingList, $mixin);
+
+        /** @var From[] $from */
+        $from = $queryBuilder->getDQLPart('from');
+        $entityAlias = $from[0]->getAlias();
+
+        // Select only entity related information ordered by identifier field for maximum performance
+        $queryBuilder
+            ->resetDQLPart('select')
+            ->resetDQLPart('orderBy')
+            ->select($entityAlias)
+            ->orderBy($entityAlias . '.id');
+
+        return $queryBuilder;
     }
 }
