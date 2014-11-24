@@ -114,6 +114,7 @@ parameters:
     orocrm_mailchimp.placeholder.filter.marketing_list.class: OroCRM\Bundle\MailChimpBundle\Placeholder\MarketingListPlaceholderFilter
     orocrm_mailchimp.placeholder.filter.email_campaign.class: OroCRM\Bundle\MailChimpBundle\Placeholder\EmailCampaignPlaceholderFilter
 
+    orocrm_mailchimp.event_listener.process.class: OroCRM\Bundle\MailChimpBundle\EventListener\ProcessListener
 services:
     orocrm_mailchimp.client.factory:
         class: %orocrm_mailchimp.client.factory.class%
@@ -760,3 +761,11 @@ services:
         class: %orocrm_mailchimp.placeholder.filter.email_campaign.class%
         arguments:
             - @doctrine
+
+    orocrm_mailchimp.event_listener.process:
+        class: %orocrm_mailchimp.event_listener.process.class%
+        arguments:
+            - @oro_entity.doctrine_helper
+            - @oro_workflow.listener.process_collector
+        tags:
+            - { name: kernel.event_listener, event: oro_workflow.process.handle_after, method: onProcessHandleAfter }
