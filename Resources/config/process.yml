@@ -118,7 +118,6 @@ triggers:
     create_email_campaign_for_mailchimp_campaign:
         -
             event:    create
-            queued:   true
 
     mailchimp_handle_member_state:
         -
