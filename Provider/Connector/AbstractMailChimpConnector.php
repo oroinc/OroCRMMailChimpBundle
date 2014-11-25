@@ -8,10 +8,13 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
 use Oro\Bundle\IntegrationBundle\Provider\AbstractConnector;
 
+use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 abstract class AbstractMailChimpConnector extends AbstractConnector
 {
+    const LAST_SYNC_DATE_KEY = 'lastSyncDate';
+
     /**
      * @var MailChimpTransport
      */
@@ -59,7 +62,30 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
             ['date' => 'DESC']
         );
 
-        return $status ? $status->getDate() : null;
+        $timezone = new \DateTimeZone('UTC');
+        $date = new \DateTime('now', $timezone);
+        $context = $this->getStepExecution()->getExecutionContext();
+        $data = $context->get(ConnectorInterface::CONTEXT_CONNECTOR_DATA_KEY) ?: [];
+        $context->put(
+            ConnectorInterface::CONTEXT_CONNECTOR_DATA_KEY,
+            array_merge($data, [self::LAST_SYNC_DATE_KEY => $date->format(\DateTime::ISO8601)])
+        );
+
+        if (!$status) {
+            return null;
+        }
+
+        $data = $status->getData();
+
+        if (empty($data)) {
+            return null;
+        }
+
+        if (!empty($data[self::LAST_SYNC_DATE_KEY])) {
+            return new \DateTime($data[self::LAST_SYNC_DATE_KEY], $timezone);
+        }
+
+        return null;
     }
 
     /**
