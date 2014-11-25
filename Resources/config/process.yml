@@ -2,6 +2,7 @@ definitions:
     synchronize_marketing_list_item_for_mailchimp_member_activity:
         label:   'Synchronizes OroCRM Marketing List Item for MailChimp Member Activity'
         enabled: true
+        order:   20
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity
         actions_configuration:
             - @update_email_campaign_statistics: ~
@@ -9,6 +10,7 @@ definitions:
     create_email_campaign_for_mailchimp_campaign:
         label:   Create Email Campaign for MailChimp Campaign
         enabled: true
+        order:   10
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\Campaign
         exclude_definitions: [create_email_campaign_for_mailchimp_campaign]
         actions_configuration:
@@ -112,12 +114,10 @@ triggers:
     synchronize_marketing_list_item_for_mailchimp_member_activity:
         -
             event:    create
-            queued:   true
 
     create_email_campaign_for_mailchimp_campaign:
         -
             event:    create
-            queued:   true
 
     mailchimp_handle_member_state:
         -

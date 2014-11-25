@@ -163,3 +163,33 @@ datagrid:
                     data_name: t.type
         properties:
             id: ~
+
+    orocrm-mailchimp-marketing-list-entities-mixin:
+        source:
+            query:
+                join:
+                    left:
+                        -
+                            join: 'OroCRM\Bundle\MarketingListBundle\Entity\MarketingListItem'
+                            alias: 'mli'
+                            conditionType: 'WITH'
+                            condition: 'mli.entityId = __root_entity__.id AND mli.marketingList = :marketingListEntity'
+        options:
+            export: false
+            skip_count_walker: true
+            mixin: true
+
+    orocrm-mailchimp-marketing-list-manual-entities-mixin:
+        source:
+            query:
+                join:
+                    inner:
+                        -
+                            join: 'OroCRM\Bundle\MarketingListBundle\Entity\MarketingListItem'
+                            alias: 'mli'
+                            conditionType: 'WITH'
+                            condition: 'mli.entityId = __root_entity__.id AND mli.marketingList = :marketingListEntity'
+        options:
+            export: false
+            skip_count_walker: true
+            mixin: true
