@@ -63,11 +63,12 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
         );
 
         $timezone = new \DateTimeZone('UTC');
+        $date = new \DateTime('now', $timezone);
         $context = $this->getStepExecution()->getExecutionContext();
         $data = $context->get(ConnectorInterface::CONTEXT_CONNECTOR_DATA_KEY) ?: [];
         $context->put(
             ConnectorInterface::CONTEXT_CONNECTOR_DATA_KEY,
-            array_merge($data, [self::LAST_SYNC_DATE_KEY => new \DateTime('now', $timezone)])
+            array_merge($data, [self::LAST_SYNC_DATE_KEY => $date->format(\DateTime::ISO8601)])
         );
 
         if (!$status) {
@@ -81,7 +82,7 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
         }
 
         if (!empty($data[self::LAST_SYNC_DATE_KEY])) {
-            return new \DateTime($data[self::LAST_SYNC_DATE_KEY]['date'], $timezone);
+            return new \DateTime($data[self::LAST_SYNC_DATE_KEY], $timezone);
         }
 
         return null;
