@@ -111,11 +111,11 @@ class SyncListTest extends WebTestCase
                     'Run sync for "mailchimp1" integration.',
                     'Start processing "list" connector',
                     'invalid entities: [0]',
-                    'process [' . count($data['response']['data']) . ']',
-                    'delete [0]',
+                    'processed [' . count($data['response']['data']) . ']',
+                    'deleted [0]',
                     'updated [0]',
                     'read [' . count($data['response']['data']) . ']',
-                    'added [' . count($data['response']['data']) . ']',
+                    'added [' . count($data['response']['data']) . ']'
                 ]
             ];
         }
