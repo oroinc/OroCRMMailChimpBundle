@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentExportListIterator;
 
 class StaticSegmentExportReader extends AbstractIteratorBasedReader
@@ -40,10 +41,21 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
      */
     protected function initializeFromContext(ContextInterface $context)
     {
-        $this->assertStaticSegmentClassName();
+        if (!$this->staticSegmentMemberClassName) {
+            throw new InvalidConfigurationException('StaticSegmentMember class name must be provided');
+        }
 
         if (!$this->getSourceIterator()) {
-            $iterator = new StaticSegmentExportListIterator($this->getSegmentsIterator(), $this->doctrineHelper);
+            /** @var Channel $channel */
+            $channel = $this->doctrineHelper->getEntityReference(
+                $this->channelClassName,
+                $context->getOption('channel')
+            );
+
+            $iterator = new StaticSegmentExportListIterator(
+                $this->getSegmentsIterator($channel),
+                $this->doctrineHelper
+            );
             $iterator->setStaticSegmentMemberClassName($this->staticSegmentMemberClassName);
 
             $this->setSourceIterator($iterator);
@@ -51,11 +63,15 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
     }
 
     /**
+     * @param Channel $channel
+     *
      * @return BufferedQueryResultIterator
      */
-    protected function getSegmentsIterator()
+    protected function getSegmentsIterator(Channel $channel)
     {
-        $this->assertStaticSegmentClassName();
+        if (!$this->staticSegmentClassName) {
+            throw new InvalidConfigurationException('StaticSegment class name must be provided');
+        }
 
         $qb = $this->doctrineHelper
             ->getEntityManager($this->staticSegmentClassName)
@@ -63,13 +79,10 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
             ->createQueryBuilder('staticSegment')
             ->select('staticSegment');
 
-        return new BufferedQueryResultIterator($qb);
-    }
+        $qb
+            ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
+            ->setParameter('channel', $channel);
 
-    protected function assertStaticSegmentClassName()
-    {
-        if (!$this->staticSegmentClassName) {
-            throw new InvalidConfigurationException('StaticSegment class name must be provided');
-        }
+        return new BufferedQueryResultIterator($qb);
     }
 }
