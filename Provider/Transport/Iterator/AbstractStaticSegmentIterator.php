@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
+use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
@@ -31,6 +32,11 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     protected $fieldHelper;
 
     /**
+     * @var OwnershipMetadataProvider
+     */
+    protected $ownershipMetadataProvider;
+
+    /**
      * @var string
      */
     protected $memberClassName;
@@ -39,17 +45,20 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
      * @param MarketingListProvider $marketingListProvider
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param FieldHelper $fieldHelper
+     * @param OwnershipMetadataProvider $ownershipMetadataProvider
      * @param string $memberClassName
      */
     public function __construct(
         MarketingListProvider $marketingListProvider,
         ContactInformationFieldsProvider $contactInformationFieldsProvider,
         FieldHelper $fieldHelper,
+        OwnershipMetadataProvider $ownershipMetadataProvider,
         $memberClassName
     ) {
         $this->marketingListProvider = $marketingListProvider;
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
         $this->fieldHelper = $fieldHelper;
+        $this->ownershipMetadataProvider = $ownershipMetadataProvider;
         $this->memberClassName = $memberClassName;
     }
 
@@ -88,6 +97,21 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                     sprintf('%s.%s', self::MEMBER_ALIAS, self::MEMBER_EMAIL_FIELD)
                 )
             );
+        }
+
+        $organization = $staticSegment->getChannel()->getOrganization();
+        $metadata = $this->ownershipMetadataProvider->getMetadata($marketingList->getEntity());
+
+        if ($organization && $fieldName = $metadata->getOrganizationFieldName()) {
+            $aliases = $qb->getRootAliases();
+            $qb->andWhere(
+                $qb->expr()->eq(
+                    sprintf('%s.%s', reset($aliases), $fieldName),
+                    ':organization'
+                )
+            );
+
+            $qb->setParameter('organization', $organization);
         }
 
         $qb
