@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Controller\Api\Rest;
 
-use FOS\Rest\Util\Codes;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;

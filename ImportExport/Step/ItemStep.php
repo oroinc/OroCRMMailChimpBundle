@@ -12,7 +12,7 @@ class ItemStep extends BaseItemStep
      */
     public function doExecute(StepExecution $stepExecution)
     {
-        $this->initializeStepComponents($stepExecution);
+        $this->initializeStepElements($stepExecution);
 
         $stepExecutor = new StepExecutor();
         $stepExecutor
@@ -25,5 +25,6 @@ class ItemStep extends BaseItemStep
         }
 
         $stepExecutor->execute($this);
+        $this->flushStepElements();
     }
 }
