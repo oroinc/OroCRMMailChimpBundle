@@ -11,20 +11,6 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 class SubscribersListRepository extends EntityRepository
 {
     /**
-     * Gets buffered query result iterator for all subscriber lists
-     *
-     * @return \Iterator
-     */
-    public function getAllSubscribersListIterator()
-    {
-        $queryBuilder = $this
-            ->createQueryBuilder('subscribersList')
-            ->select('subscribersList');
-
-        return new BufferedQueryResultIterator($queryBuilder);
-    }
-
-    /**
      * Gets buffered query result iterator for all subscriber lists with segments
      *
      * @param Channel $channel
