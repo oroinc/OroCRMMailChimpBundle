@@ -65,8 +65,12 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
         $qb
             ->select('mmb')
             ->join('mmb.subscribersList', 'subscribersList')
-            ->andWhere($qb->expr()->eq('mmb.status', ':status'))
-            ->andWhere($qb->expr()->eq('subscribersList.originId', ':originId'))
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('mmb.status', ':status'),
+                    $qb->expr()->eq('subscribersList.originId', ':originId')
+                )
+            )
             ->setParameters(
                 [
                     'status' => Member::STATUS_EXPORT,

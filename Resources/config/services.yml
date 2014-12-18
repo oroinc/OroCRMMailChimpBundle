@@ -164,11 +164,10 @@ services:
 
     orocrm_mailchimp.importexport.reader.static_segment:
         class: %orocrm_mailchimp.importexport.reader.static_segment.class%
-        arguments:
-            - @oro_importexport.context_registry
-            - @oro_entity.doctrine_helper
-            - %orocrm_marketing_list.entity.class%
-            - %orocrm_mailchimp.entity.static_segment.class%
+        parent: orocrm_mailchimp.importexport.reader.abstract_iterator_based
+        calls:
+            - [setMarketingListClassName, [%orocrm_marketing_list.entity.class%]]
+            - [setStaticSegmentClassName, [%orocrm_mailchimp.entity.static_segment.class%]]
 
     orocrm_mailchimp.importexport.reader.members_sync:
         parent: orocrm_mailchimp.importexport.reader.static_segment
@@ -191,6 +190,7 @@ services:
         arguments:
             - @oro_importexport.context_registry
             - @oro_entity.doctrine_helper
+            - %oro_integration.entity.class%
 
     orocrm_mailchimp.importexport.reader.member_export:
         class: %orocrm_mailchimp.importexport.reader.member_export.class%
@@ -734,8 +734,8 @@ services:
             - @orocrm_marketing_list.provider.marketing_list
             - @orocrm_marketing_list.provider.contact_information_fields
             - @orocrm_mailchimp.model.field_helper
+            - @oro_security.owner.ownership_metadata_provider
             - %orocrm_mailchimp.entity.member.class%
-            - %orocrm_mailchimp.entity.static_segment.class%
 
     orocrm_mailchimp.iterator.member_sync:
         class: %orocrm_mailchimp.iterator.member_sync.class%

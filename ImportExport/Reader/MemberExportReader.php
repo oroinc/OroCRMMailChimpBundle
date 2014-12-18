@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberExportListIterator;
 
@@ -41,12 +42,23 @@ class MemberExportReader extends AbstractIteratorBasedReader
      */
     protected function initializeFromContext(ContextInterface $context)
     {
+        parent::initializeFromContext($context);
+
         if (!$this->memberClassName) {
             throw new InvalidConfigurationException('Member class name must be provided');
         }
 
         if (!$this->getSourceIterator()) {
-            $iterator = new MemberExportListIterator($this->getSubscribersListIterator(), $this->doctrineHelper);
+            /** @var Channel $channel */
+            $channel = $this->doctrineHelper->getEntityReference(
+                $this->channelClassName,
+                $context->getOption('channel')
+            );
+
+            $iterator = new MemberExportListIterator(
+                $this->getSubscribersListIterator($channel),
+                $this->doctrineHelper
+            );
             $iterator->setMemberClassName($this->memberClassName);
 
             $this->setSourceIterator($iterator);
@@ -54,9 +66,11 @@ class MemberExportReader extends AbstractIteratorBasedReader
     }
 
     /**
+     * @param Channel $channel
+     *
      * @return BufferedQueryResultIterator
      */
-    protected function getSubscribersListIterator()
+    protected function getSubscribersListIterator(Channel $channel)
     {
         if (!$this->subscribersListClassName) {
             throw new InvalidConfigurationException('SubscribersList class name must be provided');
@@ -67,6 +81,6 @@ class MemberExportReader extends AbstractIteratorBasedReader
             ->getEntityManager($this->subscribersListClassName)
             ->getRepository($this->subscribersListClassName);
 
-        return $repository->getAllSubscribersListIterator();
+        return $repository->getUsedSubscribersListIterator($channel);
     }
 }
