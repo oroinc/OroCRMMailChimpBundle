@@ -94,7 +94,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
         $this->target->prePersist();
 
         $this->assertSame($expectedCreated, $this->target->getCreatedAt());
-        $this->assertLessThanOrEqual($expectedUpdated, $this->target->getUpdatedAt());
+        $this->assertGreaterThanOrEqual($expectedUpdated, $this->target->getUpdatedAt());
         $this->assertNotSame($expectedUpdated, $this->target->getUpdatedAt());
     }
 
