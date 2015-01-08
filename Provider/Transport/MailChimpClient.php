@@ -10,15 +10,15 @@ use ZfrMailChimp\Client\MailChimpClient as BaseClient;
 
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Exception\BadResponseException;
 
+// @codingStandardsIgnoreStart
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/
  * @link http://apidocs.mailchimp.com/export/1.0/
  *
- * @codingStandardsIgnoreStart
  * @method array getCampaignUnsubscribesReport (array $args = array()) {@command MailChimp GetCampaignUnsubscribesReport}
  * @method array getCampaignSentToReport (array $args = array()) {@command MailChimp GetCampaignSentToReport}
- * @codingStandardsIgnoreEnd
  */
+// @codingStandardsIgnoreEnd
 class MailChimpClient extends BaseClient
 {
     /**#@+

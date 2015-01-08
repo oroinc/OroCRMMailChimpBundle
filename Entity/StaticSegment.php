@@ -468,7 +468,7 @@ class StaticSegment implements OriginAwareInterface
     /**
      * Get memberCount
      *
-     * @return integer 
+     * @return integer
      */
     public function getMemberCount()
     {

@@ -364,7 +364,7 @@ class Campaign implements OriginAwareInterface
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
