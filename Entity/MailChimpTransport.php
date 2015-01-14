@@ -57,7 +57,7 @@ class MailChimpTransport extends Transport
     /**
      * Get apiKey
      *
-     * @return string 
+     * @return string
      */
     public function getApiKey()
     {
