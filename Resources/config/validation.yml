@@ -5,8 +5,8 @@ OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport:
             - Length:
                 min: 32
             - Regex:
-                pattern: '/^[a-zA-Z0-9]+-[a-zA-Z0-9]+$/'
-                message: Datacenter prefix should be present in your API Key
+                pattern: '/^[a-z0-9]{32,}-[a-z]{2,}[0-9]+$/'
+                message: API Key is invalid
 
 OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings:
     properties:
