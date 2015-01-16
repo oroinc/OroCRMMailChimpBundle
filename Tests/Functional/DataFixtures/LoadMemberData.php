@@ -27,7 +27,7 @@ class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtur
             'status' => Member::STATUS_SUBSCRIBED,
             'subscribersList' => 'mailchimp:subscribers_list_one',
             'channel' => 'mailchimp:channel_1',
-            'reference' => 'mailchimp:member_one',
+            'reference' => 'mailchimp:member_two',
         ],
     ];
 
@@ -53,7 +53,7 @@ class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtur
     public function getDependencies()
     {
         return [
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadCampaignData',
+            __NAMESPACE__ . '\LoadCampaignData',
         ];
     }
 }

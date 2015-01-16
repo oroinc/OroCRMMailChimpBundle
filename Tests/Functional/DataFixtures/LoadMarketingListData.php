@@ -50,7 +50,8 @@ class LoadMarketingListData extends AbstractMailChimpFixture implements Dependen
     public function getDependencies()
     {
         return [
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadSegmentData',
+            __NAMESPACE__ . '\LoadSegmentData',
+            __NAMESPACE__ . '\LoadContactData',
         ];
     }
 }

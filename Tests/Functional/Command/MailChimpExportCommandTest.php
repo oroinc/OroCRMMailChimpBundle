@@ -7,6 +7,9 @@ use Akeneo\Bundle\BatchBundle\Job\BatchStatus;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use OroCRM\Bundle\MailChimpBundle\Command\MailChimpExportCommand;
+use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
 use OroCRM\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 
@@ -20,21 +23,190 @@ class MailChimpExportCommandTest extends WebTestCase
         $this->initClient();
         $this->loadFixtures(
             [
-                'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData',
+                'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentMemberData',
             ]
         );
     }
 
-    public function testJobsSuccessful()
+    protected function tearDown()
     {
+        // clear DB from separate connection
+        $batchJobManager = $this->getContainer()->get('akeneo_batch.job_repository')->getJobManager();
+        $batchJobManager->createQuery('DELETE AkeneoBatchBundle:JobInstance')->execute();
+        $batchJobManager->createQuery('DELETE AkeneoBatchBundle:JobExecution')->execute();
+        $batchJobManager->createQuery('DELETE AkeneoBatchBundle:StepExecution')->execute();
+    }
+
+    /**
+     * @param array $batchSubscribe
+     * @param array $addStaticListSegment
+     * @param array $addStaticSegmentMembers
+     * @param array $deleteStaticSegmentMembers
+     *
+     * @dataProvider responseProvider
+     */
+    public function testJobsSuccessful(
+        array $batchSubscribe,
+        array $addStaticListSegment,
+        array $addStaticSegmentMembers,
+        array $deleteStaticSegmentMembers
+    ) {
+        $transport = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $transport->expects($this->any())
+            ->method('batchSubscribe')
+            ->will($this->returnValue($batchSubscribe));
+
+        $transport->expects($this->any())
+            ->method('addStaticListSegment')
+            ->will($this->returnValue($addStaticListSegment));
+
+        $transport->expects($this->any())
+            ->method('addStaticSegmentMembers')
+            ->will($this->returnValue($addStaticSegmentMembers));
+
+        $transport->expects($this->any())
+            ->method('deleteStaticSegmentMembers')
+            ->will($this->returnValue($deleteStaticSegmentMembers));
+
+        $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
+
+        // no failed jobs
         $this->assertEmpty($this->getJobs(MemberConnector::JOB_EXPORT, BatchStatus::FAILED));
         $this->assertEmpty($this->getJobs(StaticSegmentConnector::JOB_EXPORT, BatchStatus::FAILED));
+
+        // 1 member from data fixtures
+        $this->assertMembers(1);
+
+        // 1 segment with empty originId, should be subscribed
+        $this->assertStaticSegment(1, 'assertEmpty');
+
+        // 1 existing subscribed member
+        $this->assertStaticSegmentMembers(1);
 
         $result = $this->runCommand(MailChimpExportCommand::NAME);
         $this->assertNotEmpty($result);
 
+        // no failed jobs
         $this->assertEmpty($this->getJobs(MemberConnector::JOB_EXPORT, BatchStatus::FAILED));
         $this->assertEmpty($this->getJobs(StaticSegmentConnector::JOB_EXPORT, BatchStatus::FAILED));
+
+        // 1 members from data fixtures + 1 from marketing list
+        $this->assertMembers(2);
+
+        // 1 subscribed segment
+        $this->assertStaticSegment(1, 'assertNotEmpty');
+
+        // 1 existing subscribed member
+        $this->assertStaticSegmentMembers(1);
+    }
+
+    /**
+     * @param int $count
+     */
+    protected function assertMembers($count)
+    {
+        $members = $this->getMembers();
+        $this->assertCount($count, $members);
+        foreach ($members as $member) {
+            $this->assertNotEmpty($member->getOriginId());
+        }
+    }
+
+    /**
+     * @param int    $count
+     * @param string $method
+     */
+    protected function assertStaticSegment($count, $method)
+    {
+        $staticSegments = $this->getStaticSegment();
+        foreach ($staticSegments as $staticSegment) {
+            $this->$method($staticSegment->getOriginId());
+        }
+        $this->assertCount($count, $this->getStaticSegment());
+    }
+
+    /**
+     * @param int $count
+     */
+    protected function assertStaticSegmentMembers($count)
+    {
+        $staticSegmentMembers = $this->getStaticSegmentMember();
+        $this->assertCount($count, $staticSegmentMembers);
+        foreach ($staticSegmentMembers as $staticSegmentMember) {
+            $this->assertEquals(StaticSegmentMember::STATE_SYNCED, $staticSegmentMember->getState());
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function responseProvider()
+    {
+        return [
+            [
+                'batchSubscribe' => [
+                    'adds' => [
+                        [
+                            'email' => 'daniel.case@example.com',
+                            'euid' => time(),
+                            'leid' => time(),
+                        ]
+                    ],
+                    'updates' => [],
+                    'add_count' => 1,
+                    'update_count' => 0,
+                    'error_count' => 0,
+                    'errors' => [],
+                ],
+                'addStaticListSegment' => [
+                    'id' => time(),
+                ],
+                'addStaticSegmentMembers' => [
+                    'success_count' => 1,
+                    'error_count' => 0,
+                    'errors' => [],
+                ],
+                'deleteStaticSegmentMembers' => [
+                    'success_count' => 1,
+                    'error_count' => 0,
+                    'errors' => [],
+                ],
+                'resultMembers' => [1],
+            ]
+        ];
+    }
+
+    /**
+     * @return Member[]
+     */
+    protected function getMembers()
+    {
+        return $this->getContainer()->get('oro_entity.doctrine_helper')
+            ->getEntityRepository('OroCRMMailChimpBundle:Member')
+            ->findAll();
+    }
+
+    /**
+     * @return StaticSegment[]
+     */
+    protected function getStaticSegment()
+    {
+        return $this->getContainer()->get('oro_entity.doctrine_helper')
+            ->getEntityRepository('OroCRMMailChimpBundle:StaticSegment')
+            ->findAll();
+    }
+
+    /**
+     * @return StaticSegmentMember[]
+     */
+    protected function getStaticSegmentMember()
+    {
+        return $this->getContainer()->get('oro_entity.doctrine_helper')
+            ->getEntityRepository('OroCRMMailChimpBundle:StaticSegmentMember')
+            ->findAll();
     }
 
     /**

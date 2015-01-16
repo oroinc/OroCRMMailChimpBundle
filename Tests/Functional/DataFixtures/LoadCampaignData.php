@@ -98,7 +98,7 @@ class LoadCampaignData extends AbstractMailChimpFixture implements DependentFixt
     public function getDependencies()
     {
         return [
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData',
+            __NAMESPACE__ . '\LoadStaticSegmentData',
         ];
     }
 }

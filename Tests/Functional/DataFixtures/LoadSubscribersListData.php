@@ -87,7 +87,7 @@ class LoadSubscribersListData extends AbstractMailChimpFixture implements Depend
     public function getDependencies()
     {
         return [
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadChannelData',
+            __NAMESPACE__ . '\LoadChannelData',
         ];
     }
 }
