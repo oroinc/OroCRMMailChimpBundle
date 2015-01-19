@@ -3,11 +3,10 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 
-class LoadTransportData extends AbstractMailChimpFixture implements ContainerAwareInterface
+class LoadTransportData extends AbstractMailChimpFixture
 {
     /**
      * @var array Transports configuration
@@ -22,19 +21,6 @@ class LoadTransportData extends AbstractMailChimpFixture implements ContainerAwa
             'apiKey' => 'f9e179585f382c4def28653b1cbddba5-us9',
         ]
     ];
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     /**
      * {@inheritdoc}

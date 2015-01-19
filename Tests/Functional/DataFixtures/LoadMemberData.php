@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 
 class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtureInterface
@@ -27,22 +27,9 @@ class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtur
             'status' => Member::STATUS_SUBSCRIBED,
             'subscribersList' => 'mailchimp:subscribers_list_one',
             'channel' => 'mailchimp:channel_1',
-            'reference' => 'mailchimp:member_one',
+            'reference' => 'mailchimp:member_two',
         ],
     ];
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     /**
      * {@inheritdoc}
@@ -65,8 +52,8 @@ class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtur
      */
     public function getDependencies()
     {
-        return array(
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadCampaignData',
-        );
+        return [
+            __NAMESPACE__ . '\LoadCampaignData',
+        ];
     }
 }

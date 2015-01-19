@@ -4,13 +4,10 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
-class LoadStaticSegmentData extends AbstractMailChimpFixture implements
-    ContainerAwareInterface,
-    DependentFixtureInterface
+class LoadStaticSegmentData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {
     /**
      * @var array Segment configuration
@@ -26,19 +23,6 @@ class LoadStaticSegmentData extends AbstractMailChimpFixture implements
             'reference' => 'mailchimp:segment_one',
         ],
     ];
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     /**
      * {@inheritdoc}
@@ -62,9 +46,9 @@ class LoadStaticSegmentData extends AbstractMailChimpFixture implements
      */
     public function getDependencies()
     {
-        return array(
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMarketingListData',
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadSubscribersListData'
-        );
+        return [
+            __NAMESPACE__ . '\LoadMarketingListData',
+            __NAMESPACE__ . '\LoadSubscribersListData'
+        ];
     }
 }

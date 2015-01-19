@@ -20,6 +20,8 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 
 class MailChimpExportCommand extends AbstractSyncCronCommand
 {
+    const NAME = 'oro:cron:mailchimp:export';
+
     /**
      * {@inheritdoc}
      */
@@ -54,7 +56,7 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
     protected function configure()
     {
         $this
-            ->setName('oro:cron:mailchimp:export')
+            ->setName(self::NAME)
             ->setDescription('Export members and static segments to MailChimp')
             ->addOption(
                 'segments',
