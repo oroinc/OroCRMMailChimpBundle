@@ -36,9 +36,8 @@
             {{ form_row(form.name) }}
             {{ form_row(form.channel) }}
             {{ form_row(form.subscribersList) }}
+            {{ form_rest(form) }}
         </fieldset>
-
-        {{ form_rest(form) }}
 
         <div class="widget-actions">
             <button type="reset" class="btn">{{ 'orocrm.mailchimp.connection.dialog.button.cancel'|trans }}</button>
