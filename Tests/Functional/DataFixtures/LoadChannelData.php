@@ -83,7 +83,7 @@ class LoadChannelData extends AbstractMailChimpFixture implements DependentFixtu
     public function getDependencies()
     {
         return [
-            'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadTransportData'
+            __NAMESPACE__ . '\LoadTransportData'
         ];
     }
 }

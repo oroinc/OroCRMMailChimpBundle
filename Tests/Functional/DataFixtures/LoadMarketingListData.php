@@ -2,12 +2,12 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
-class LoadMarketingListData extends AbstractMailChimpFixture implements ContainerAwareInterface
+class LoadMarketingListData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {
     /**
      * @var array Channels configuration
@@ -19,21 +19,9 @@ class LoadMarketingListData extends AbstractMailChimpFixture implements Containe
             'description' => '',
             'entity' => 'OroCRM\Bundle\ContactBundle\Entity\Contact',
             'reference' => 'mailchimp:ml_one',
+            'segment' => 'mailchimp:ml_one:segment',
         ],
     ];
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
 
     /**
      * {@inheritdoc}
@@ -43,13 +31,27 @@ class LoadMarketingListData extends AbstractMailChimpFixture implements Containe
         foreach ($this->mlData as $data) {
             $entity = new MarketingList();
             $type = $manager
-                ->getRepository('OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType')
+                ->getRepository('OroCRMMarketingListBundle:MarketingListType')
                 ->find($data['type']);
+            $segment = $this->getReference($data['segment']);
             $entity->setType($type);
-            $this->setEntityPropertyValues($entity, $data, ['reference', 'type']);
+            $entity->setSegment($segment);
+            $this->setEntityPropertyValues($entity, $data, ['reference', 'type', 'segment']);
             $this->setReference($data['reference'], $entity);
             $manager->persist($entity);
         }
         $manager->flush();
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDependencies()
+    {
+        return [
+            __NAMESPACE__ . '\LoadSegmentData',
+            __NAMESPACE__ . '\LoadContactData',
+        ];
     }
 }

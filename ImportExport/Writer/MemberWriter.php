@@ -21,7 +21,8 @@ class MemberWriter extends AbstractExportWriter
 
         $subscribersList = $item->getSubscribersList();
 
-        if ($itemsToSave = $this->batchSubscribe($subscribersList, $items)) {
+        $itemsToSave = $this->batchSubscribe($subscribersList, $items);
+        if ($itemsToSave) {
             $itemsToWrite = array_merge($itemsToWrite, $itemsToSave);
         }
 

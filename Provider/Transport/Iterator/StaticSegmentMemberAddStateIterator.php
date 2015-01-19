@@ -18,6 +18,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
     protected function createSubordinateIterator($staticSegment)
     {
         $qb = $this->getIteratorQueryBuilder($staticSegment);
+        $alias = sprintf('%s.id', self::MEMBER_ALIAS);
 
         $qb
             ->select(
@@ -41,7 +42,8 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
                 )
             )
             ->setParameter('subscribersList', $staticSegment->getSubscribersList())
-            ->groupBy(sprintf('%s.id', self::MEMBER_ALIAS));
+            ->orderBy($alias)
+            ->groupBy($alias);
 
         return new BufferedQueryResultIterator($qb);
     }
