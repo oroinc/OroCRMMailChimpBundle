@@ -28,22 +28,19 @@ class MemberSyncDataConverter extends MemberDataConverter
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        /** object from marketing list */
-        $object = reset($importedRecord);
-        $contactInformationFieldsValues = $this->getContactInformationFieldsValues($object);
-
+        $marketingListData = reset($importedRecord);
         $item = [
-            MergeVarInterface::FIELD_TYPE_EMAIL => reset($contactInformationFieldsValues),
-            MergeVarInterface::TAG_EMAIL => reset($contactInformationFieldsValues),
+            MergeVarInterface::FIELD_TYPE_EMAIL => $marketingListData['email'],
+            MergeVarInterface::TAG_EMAIL => $marketingListData['email'],
             'status' => Member::STATUS_EXPORT,
         ];
 
-        if ($object instanceof FirstNameInterface) {
-            $item[MergeVarInterface::TAG_FIRST_NAME] = $object->getFirstName();
+        if (isset($marketingListData['firstName'])) {
+            $item[MergeVarInterface::TAG_FIRST_NAME] = $marketingListData['firstName'];
         }
 
-        if ($object instanceof LastNameInterface) {
-            $item[MergeVarInterface::TAG_LAST_NAME] = $object->getLastName();
+        if (isset($marketingListData['lastName'])) {
+            $item[MergeVarInterface::TAG_LAST_NAME] = $marketingListData['lastName'];
         }
 
         if (!empty($importedRecord['subscribersList_id'])) {
