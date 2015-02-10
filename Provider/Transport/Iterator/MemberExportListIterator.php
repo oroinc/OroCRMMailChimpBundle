@@ -80,7 +80,7 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
             ->addOrderBy('subscribersList.id');
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
-        $bufferedIterator->setIsReverse(true);
+        $bufferedIterator->setReverse(true);
 
         return $bufferedIterator;
     }

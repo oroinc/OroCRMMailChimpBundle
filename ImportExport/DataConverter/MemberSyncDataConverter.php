@@ -8,18 +8,6 @@ use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MemberSyncDataConverter extends MemberDataConverter
 {
-    /** @var array */
-    protected $namePartsMap = [
-        MergeVarInterface::TAG_FIRST_NAME  => [
-            'interface'          => 'Oro\\Bundle\\LocaleBundle\\Model\\FirstNameInterface',
-            'suggestedFieldName' => 'firstName'
-        ],
-        MergeVarInterface::TAG_LAST_NAME   => [
-            'interface'          => 'Oro\\Bundle\\LocaleBundle\\Model\\LastNameInterface',
-            'suggestedFieldName' => 'lastName'
-        ]
-    ];
-
     /**
      * @var ContactInformationFieldsProvider
      */
@@ -53,13 +41,12 @@ class MemberSyncDataConverter extends MemberDataConverter
             'status'                            => Member::STATUS_EXPORT,
         ];
 
-        if ($entityClassName) {
-            foreach ($this->namePartsMap as $part => $metadata) {
-                if (in_array($metadata['interface'], class_implements($entityClassName))
-                    && !empty($marketingListData[$metadata['suggestedFieldName']])) {
-                    $item[$part] = $marketingListData[$metadata['suggestedFieldName']];
-                }
-            }
+        if (!empty($marketingListData['firstName'])) {
+            $item[MergeVarInterface::TAG_FIRST_NAME] = $marketingListData['firstName'];
+        }
+
+        if (!empty($marketingListData['lastName'])) {
+            $item[MergeVarInterface::TAG_LAST_NAME] = $marketingListData['lastName'];
         }
 
         if (!empty($importedRecord['subscribersList_id'])) {
