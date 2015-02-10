@@ -44,7 +44,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
             ->groupBy(sprintf('%s.id', self::MEMBER_ALIAS));
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
-        $bufferedIterator->setIsReverse(true);
+        $bufferedIterator->setReverse(true);
 
         return $bufferedIterator;
     }

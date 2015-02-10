@@ -28,7 +28,7 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
         $qb->andWhere($qb->expr()->isNull(self::MEMBER_ALIAS));
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
-        $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setIsReverse(true);
+        $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
 
         return $bufferedIterator;
     }
@@ -40,7 +40,7 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
     {
         $result = parent::read();
 
-        if (!$result) {
+        if (empty($result)) {
             return null;
         }
 
