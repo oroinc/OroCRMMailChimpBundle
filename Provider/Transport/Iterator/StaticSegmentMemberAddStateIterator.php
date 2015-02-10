@@ -46,7 +46,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
             ->groupBy($alias);
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
-        $bufferedIterator->setIsReverse(true);
+        $bufferedIterator->setReverse(true);
 
         return $bufferedIterator;
     }
