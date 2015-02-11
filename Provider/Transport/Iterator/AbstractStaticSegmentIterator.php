@@ -9,6 +9,7 @@ use Oro\Bundle\LocaleBundle\DQL\DQLNameFormatter;
 use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberSyncDataConverter;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
@@ -99,10 +100,10 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 
         $qb->resetDQLPart('select');
         if (isset($parts['first_name'])) {
-            $qb->addSelect(sprintf('%s AS %s', $parts['first_name'], 'firstName'));
+            $qb->addSelect(sprintf('%s AS %s', $parts['first_name'], MemberSyncDataConverter::FIRST_NAME_KEY));
         }
         if (isset($parts['last_name'])) {
-            $qb->addSelect(sprintf('%s AS %s', $parts['last_name'], 'lastName'));
+            $qb->addSelect(sprintf('%s AS %s', $parts['last_name'], MemberSyncDataConverter::LAST_NAME_KEY));
         }
 
         $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(

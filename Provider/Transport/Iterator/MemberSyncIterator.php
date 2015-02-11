@@ -10,45 +10,28 @@ use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 class MemberSyncIterator extends AbstractStaticSegmentIterator
 {
     /**
-     * @var StaticSegment
-     */
-    protected $staticSegment;
-
-    /**
      * @param StaticSegment $staticSegment
      *
      * {@inheritdoc}
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        $this->staticSegment = $staticSegment;
-
-        $qb = $this->getIteratorQueryBuilder($this->staticSegment);
+        $qb = $this->getIteratorQueryBuilder($staticSegment);
 
         $qb->andWhere($qb->expr()->isNull(self::MEMBER_ALIAS));
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
 
-        return $bufferedIterator;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function read()
-    {
-        $result = parent::read();
-
-        if (empty($result)) {
-            return null;
-        }
-
-        return [
-            $result,
-            'subscribersList_id' => $this->staticSegment->getSubscribersList()->getId(),
-            'channel_id'         => $this->staticSegment->getChannel()->getId(),
-            'entityClass'        => $this->staticSegment->getMarketingList()->getEntity(),
-        ];
+        return new \CallbackFilterIterator(
+            $bufferedIterator,
+            function (&$current) use ($staticSegment) {
+                if (is_array($current)) {
+                    $current['subscribersList_id'] = $staticSegment->getSubscribersList()->getId();
+                    $current['entityClass']        = $staticSegment->getMarketingList()->getEntity();
+                }
+                return true;
+            }
+        );
     }
 }

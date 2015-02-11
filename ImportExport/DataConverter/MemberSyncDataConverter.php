@@ -8,6 +8,10 @@ use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MemberSyncDataConverter extends MemberDataConverter
 {
+    const FIRST_NAME_KEY      = 'firstName';
+    const LAST_NAME_KEY       = 'lastName';
+    const SUBSCRIBER_LIST_KEY = 'subscribersList_id';
+
     /**
      * @var ContactInformationFieldsProvider
      */
@@ -26,13 +30,11 @@ class MemberSyncDataConverter extends MemberDataConverter
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        $marketingListData = reset($importedRecord);
         $entityClassName   = !empty($importedRecord['entityClass']) ? $importedRecord['entityClass'] : null;
-
         if ($entityClassName) {
-            $contactFieldsValues = $this->getContactInformationFieldsValues($entityClassName, $marketingListData);
-        } else {
-            $contactFieldsValues = [$marketingListData['email']];
+            $contactFieldsValues = $this->getContactInformationFieldsValues($entityClassName, $importedRecord);
+        } elseif (!empty($importedRecord['email'])) {
+            $contactFieldsValues = [$importedRecord['email']];
         }
 
         $item = [
@@ -41,20 +43,20 @@ class MemberSyncDataConverter extends MemberDataConverter
             'status'                            => Member::STATUS_EXPORT,
         ];
 
-        if (!empty($marketingListData['firstName'])) {
-            $item[MergeVarInterface::TAG_FIRST_NAME] = $marketingListData['firstName'];
+        if (!empty($importedRecord[self::FIRST_NAME_KEY])) {
+            $item[MergeVarInterface::TAG_FIRST_NAME] = $importedRecord[self::FIRST_NAME_KEY];
         }
 
-        if (!empty($marketingListData['lastName'])) {
-            $item[MergeVarInterface::TAG_LAST_NAME] = $marketingListData['lastName'];
+        if (!empty($importedRecord[self::LAST_NAME_KEY])) {
+            $item[MergeVarInterface::TAG_LAST_NAME] = $importedRecord[self::LAST_NAME_KEY];
         }
 
-        if (!empty($importedRecord['subscribersList_id'])) {
-            $item['subscribersList_id'] = $importedRecord['subscribersList_id'];
+        if (!empty($importedRecord[self::SUBSCRIBER_LIST_KEY])) {
+            $item['subscribersList_id'] = $importedRecord[self::SUBSCRIBER_LIST_KEY];
         }
 
-        if (!empty($importedRecord['channel_id'])) {
-            $item['channel_id'] = $importedRecord['channel_id'];
+        if ($this->context->getOption('channel')) {
+            $item['channel_id'] = $this->context->getOption('channel');
         }
 
         return parent::convertToImportFormat($item, $skipNullValues);
@@ -65,7 +67,7 @@ class MemberSyncDataConverter extends MemberDataConverter
      * @param array  $data
      * @return array
      */
-    protected function getContactInformationFieldsValues($entityClassName, $data)
+    protected function getContactInformationFieldsValues($entityClassName, array $data)
     {
         $contactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
             $entityClassName,
