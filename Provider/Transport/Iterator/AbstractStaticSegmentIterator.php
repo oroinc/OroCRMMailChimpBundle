@@ -53,6 +53,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param FieldHelper $fieldHelper
      * @param OwnershipMetadataProvider $ownershipMetadataProvider
+     * @param DQLNameFormatter $formatter
      * @param string $memberClassName
      */
     public function __construct(
@@ -82,6 +83,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     /**
      * @param StaticSegment $staticSegment
      *
+     * @throws \InvalidArgumentException
      * @return QueryBuilder
      */
     protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
