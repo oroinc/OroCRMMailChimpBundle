@@ -8,6 +8,7 @@ use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MemberSyncDataConverter extends MemberDataConverter
 {
+    const EMAIL_KEY           = 'email';
     const FIRST_NAME_KEY      = 'firstName';
     const LAST_NAME_KEY       = 'lastName';
     const SUBSCRIBER_LIST_KEY = 'subscribersList_id';
@@ -30,31 +31,27 @@ class MemberSyncDataConverter extends MemberDataConverter
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        $entityClassName   = !empty($importedRecord['entityClass']) ? $importedRecord['entityClass'] : null;
-        if ($entityClassName) {
-            $contactFieldsValues = $this->getContactInformationFieldsValues($entityClassName, $importedRecord);
-        } elseif (!empty($importedRecord['email'])) {
-            $contactFieldsValues = [$importedRecord['email']];
+        if (!empty($importedRecord['entityClass'])) {
+            $contactFieldsValues = $this->getContactInformationFieldsValues($importedRecord['entityClass'], $importedRecord);
+            $importedRecord[self::EMAIL_KEY] = reset($contactFieldsValues);
         }
 
-        $item = [
-            MergeVarInterface::FIELD_TYPE_EMAIL => reset($contactFieldsValues),
-            MergeVarInterface::TAG_EMAIL        => reset($contactFieldsValues),
-            'status'                            => Member::STATUS_EXPORT,
+        $itemDataMap = [
+            MergeVarInterface::FIELD_TYPE_EMAIL => self::EMAIL_KEY,
+            MergeVarInterface::TAG_EMAIL        => self::EMAIL_KEY,
+            MergeVarInterface::TAG_FIRST_NAME   => self::FIRST_NAME_KEY,
+            MergeVarInterface::TAG_LAST_NAME    => self::LAST_NAME_KEY,
+            'subscribersList_id'                => self::SUBSCRIBER_LIST_KEY,
         ];
 
-        if (!empty($importedRecord[self::FIRST_NAME_KEY])) {
-            $item[MergeVarInterface::TAG_FIRST_NAME] = $importedRecord[self::FIRST_NAME_KEY];
-        }
+        $item = array_map(
+            function($value) use ($importedRecord) {
+                return !empty($importedRecord[$value]) ? $importedRecord[$value] : null;
+            },
+            $itemDataMap
+        );
 
-        if (!empty($importedRecord[self::LAST_NAME_KEY])) {
-            $item[MergeVarInterface::TAG_LAST_NAME] = $importedRecord[self::LAST_NAME_KEY];
-        }
-
-        if (!empty($importedRecord[self::SUBSCRIBER_LIST_KEY])) {
-            $item['subscribersList_id'] = $importedRecord[self::SUBSCRIBER_LIST_KEY];
-        }
-
+        $item['status'] = Member::STATUS_EXPORT;
         if ($this->context->getOption('channel')) {
             $item['channel_id'] = $this->context->getOption('channel');
         }
