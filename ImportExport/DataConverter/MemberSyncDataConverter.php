@@ -32,7 +32,8 @@ class MemberSyncDataConverter extends MemberDataConverter
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
         if (!empty($importedRecord['entityClass'])) {
-            $contactFieldsValues = $this->getContactInformationFieldsValues($importedRecord['entityClass'], $importedRecord);
+            $entityClassName = $importedRecord['entityClass'];
+            $contactFieldsValues = $this->getContactInformationFieldsValues($entityClassName, $importedRecord);
             $importedRecord[self::EMAIL_KEY] = reset($contactFieldsValues);
         }
 
