@@ -79,6 +79,9 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
             )
             ->addOrderBy('subscribersList.id');
 
-        return new BufferedQueryResultIterator($qb);
+        $bufferedIterator = new BufferedQueryResultIterator($qb);
+        $bufferedIterator->setReverse(true);
+
+        return $bufferedIterator;
     }
 }

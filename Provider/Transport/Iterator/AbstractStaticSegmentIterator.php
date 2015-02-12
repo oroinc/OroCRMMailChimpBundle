@@ -5,9 +5,11 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
+use Oro\Bundle\LocaleBundle\DQL\DQLNameFormatter;
 use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberSyncDataConverter;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
@@ -37,6 +39,11 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     protected $ownershipMetadataProvider;
 
     /**
+     * @var DQLNameFormatter
+     */
+    protected $formatter;
+
+    /**
      * @var string
      */
     protected $memberClassName;
@@ -46,6 +53,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param FieldHelper $fieldHelper
      * @param OwnershipMetadataProvider $ownershipMetadataProvider
+     * @param DQLNameFormatter $formatter
      * @param string $memberClassName
      */
     public function __construct(
@@ -53,13 +61,15 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         ContactInformationFieldsProvider $contactInformationFieldsProvider,
         FieldHelper $fieldHelper,
         OwnershipMetadataProvider $ownershipMetadataProvider,
+        DQLNameFormatter $formatter,
         $memberClassName
     ) {
-        $this->marketingListProvider = $marketingListProvider;
+        $this->marketingListProvider            = $marketingListProvider;
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
-        $this->fieldHelper = $fieldHelper;
-        $this->ownershipMetadataProvider = $ownershipMetadataProvider;
-        $this->memberClassName = $memberClassName;
+        $this->fieldHelper                      = $fieldHelper;
+        $this->ownershipMetadataProvider        = $ownershipMetadataProvider;
+        $this->formatter                        = $formatter;
+        $this->memberClassName                  = $memberClassName;
     }
 
     /**
@@ -73,6 +83,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     /**
      * @param StaticSegment $staticSegment
      *
+     * @throws \InvalidArgumentException
      * @return QueryBuilder
      */
     protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
@@ -84,6 +95,19 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         $marketingList = $staticSegment->getMarketingList();
         $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
 
+        /** @var From[] $from */
+        $from = $qb->getDQLPart('from');
+        $entityAlias = $from[0]->getAlias();
+        $parts = $this->formatter->extractNamePartsPaths($marketingList->getEntity(), $entityAlias);
+
+        $qb->resetDQLPart('select');
+        if (isset($parts['first_name'])) {
+            $qb->addSelect(sprintf('%s AS %s', $parts['first_name'], MemberSyncDataConverter::FIRST_NAME_KEY));
+        }
+        if (isset($parts['last_name'])) {
+            $qb->addSelect(sprintf('%s AS %s', $parts['last_name'], MemberSyncDataConverter::LAST_NAME_KEY));
+        }
+
         $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
             $marketingList,
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
@@ -91,9 +115,13 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 
         $expr = $qb->expr()->orX();
         foreach ($contactInformationFields as $contactInformationField) {
+            $contactInformationFieldExpr = $this->fieldHelper
+                ->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField);
+
+            $qb->addSelect($contactInformationFieldExpr. ' AS ' .$contactInformationField);
             $expr->add(
                 $qb->expr()->eq(
-                    $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField),
+                    $contactInformationFieldExpr,
                     sprintf('%s.%s', self::MEMBER_ALIAS, self::MEMBER_EMAIL_FIELD)
                 )
             );

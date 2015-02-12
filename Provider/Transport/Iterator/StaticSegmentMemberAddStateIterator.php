@@ -43,6 +43,9 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
             ->setParameter('subscribersList', $staticSegment->getSubscribersList())
             ->groupBy(sprintf('%s.id', self::MEMBER_ALIAS));
 
-        return new BufferedQueryResultIterator($qb);
+        $bufferedIterator = new BufferedQueryResultIterator($qb);
+        $bufferedIterator->setReverse(true);
+
+        return $bufferedIterator;
     }
 }
