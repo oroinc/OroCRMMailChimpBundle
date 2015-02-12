@@ -4,10 +4,10 @@ define(function (require) {
     'use strict';
 
     var ConnectButtonComponent,
-        BaseComponent = require('oroui/js/app/components/widget-component'),
+        WidgetComponent = require('oroui/js/app/components/widget-component'),
         mediator = require('oroui/js/mediator');
 
-    ConnectButtonComponent = BaseComponent.extend({
+    ConnectButtonComponent = WidgetComponent.extend({
         defaults: {
             type: 'dialog',
             options: {

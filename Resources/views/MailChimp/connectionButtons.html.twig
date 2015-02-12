@@ -25,6 +25,7 @@
                 'url': path('orocrm_mailchimp_marketing_list_connect', {id: marketingList.id}),
                 'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
                 'page-component-options': {
+                    'createOnEvent': 'click',
                     'message': 'orocrm.mailchimp.connection.message.update'|trans,
                     'options': {
                         'title': 'orocrm.mailchimp.connection.dialog.title.update'|trans,
@@ -65,6 +66,7 @@
             'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
             'page-component-options': {
                 'message': 'orocrm.mailchimp.connection.message.connect'|trans,
+                'createOnEvent': 'click',
                 'options': {
                     'title': 'orocrm.mailchimp.connection.dialog.title.connect'|trans
                 }
