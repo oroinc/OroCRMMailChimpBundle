@@ -233,12 +233,11 @@ services:
         parent: oro_integration.writer.persistent_batch_writer
         calls:
             - [setTransport, [@orocrm_mailchimp.transport.integration_transport]]
+            - [setLogger, [@oro_integration.logger.strategy]]
 
     orocrm_mailchimp.importexport.writer.member:
         class: %orocrm_mailchimp.importexport.writer.member.class%
         parent: orocrm_mailchimp.importexport.writer.abstract_export
-        calls:
-            - [setLogger, [@oro_integration.logger.strategy]]
 
     orocrm_mailchimp.importexport.writer.static_segment:
         class: %orocrm_mailchimp.importexport.writer.static_segment.class%
@@ -735,6 +734,7 @@ services:
             - @orocrm_marketing_list.provider.contact_information_fields
             - @orocrm_mailchimp.model.field_helper
             - @oro_security.owner.ownership_metadata_provider
+            - @oro_locale.dql.formatter.name
             - %orocrm_mailchimp.entity.member.class%
 
     orocrm_mailchimp.iterator.member_sync:

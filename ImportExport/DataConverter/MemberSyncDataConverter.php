@@ -2,14 +2,17 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use Oro\Bundle\LocaleBundle\Model\FirstNameInterface;
-use Oro\Bundle\LocaleBundle\Model\LastNameInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MemberSyncDataConverter extends MemberDataConverter
 {
+    const EMAIL_KEY           = 'email';
+    const FIRST_NAME_KEY      = 'firstName';
+    const LAST_NAME_KEY       = 'lastName';
+    const SUBSCRIBER_LIST_KEY = 'subscribersList_id';
+
     /**
      * @var ContactInformationFieldsProvider
      */
@@ -28,49 +31,50 @@ class MemberSyncDataConverter extends MemberDataConverter
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        /** object from marketing list */
-        $object = reset($importedRecord);
-        $contactInformationFieldsValues = $this->getContactInformationFieldsValues($object);
+        if (!empty($importedRecord['entityClass'])) {
+            $entityClassName = $importedRecord['entityClass'];
+            $contactFieldsValues = $this->getContactInformationFieldsValues($entityClassName, $importedRecord);
+            $importedRecord[self::EMAIL_KEY] = reset($contactFieldsValues);
+        }
 
-        $item = [
-            MergeVarInterface::FIELD_TYPE_EMAIL => reset($contactInformationFieldsValues),
-            MergeVarInterface::TAG_EMAIL => reset($contactInformationFieldsValues),
-            'status' => Member::STATUS_EXPORT,
+        $itemDataMap = [
+            MergeVarInterface::FIELD_TYPE_EMAIL => self::EMAIL_KEY,
+            MergeVarInterface::TAG_EMAIL        => self::EMAIL_KEY,
+            MergeVarInterface::TAG_FIRST_NAME   => self::FIRST_NAME_KEY,
+            MergeVarInterface::TAG_LAST_NAME    => self::LAST_NAME_KEY,
+            'subscribersList_id'                => self::SUBSCRIBER_LIST_KEY,
         ];
 
-        if ($object instanceof FirstNameInterface) {
-            $item[MergeVarInterface::TAG_FIRST_NAME] = $object->getFirstName();
-        }
+        $item = array_map(
+            function($value) use ($importedRecord) {
+                return !empty($importedRecord[$value]) ? $importedRecord[$value] : null;
+            },
+            $itemDataMap
+        );
 
-        if ($object instanceof LastNameInterface) {
-            $item[MergeVarInterface::TAG_LAST_NAME] = $object->getLastName();
-        }
-
-        if (!empty($importedRecord['subscribersList_id'])) {
-            $item['subscribersList_id'] = $importedRecord['subscribersList_id'];
-        }
-
-        if (!empty($importedRecord['channel_id'])) {
-            $item['channel_id'] = $importedRecord['channel_id'];
+        $item['status'] = Member::STATUS_EXPORT;
+        if ($this->context->getOption('channel')) {
+            $item['channel_id'] = $this->context->getOption('channel');
         }
 
         return parent::convertToImportFormat($item, $skipNullValues);
     }
 
     /**
-     * @param object $object
+     * @param string $entityClassName
+     * @param array  $data
      * @return array
      */
-    protected function getContactInformationFieldsValues($object)
+    protected function getContactInformationFieldsValues($entityClassName, array $data)
     {
         $contactInformationFields = $this->contactInformationFieldsProvider->getEntityTypedFields(
-            $object,
+            $entityClassName,
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
         );
 
         $values = $this->contactInformationFieldsProvider->getTypedFieldsValues(
             $contactInformationFields,
-            $object
+            $data
         );
 
         return array_filter($values);
