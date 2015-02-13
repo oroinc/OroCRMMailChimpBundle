@@ -71,8 +71,10 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $logger = new OutputLogger($output);
+        $this->getContainer()->get('oro_integration.logger.strategy')->setLogger($logger);
+
         if ($this->isJobRunning(null)) {
-            $logger = new OutputLogger($output);
             $logger->warning('Job already running. Terminating....');
 
             return;
