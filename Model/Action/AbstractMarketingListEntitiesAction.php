@@ -94,8 +94,5 @@ abstract class AbstractMarketingListEntitiesAction extends AbstractAction
      * @param MarketingList $marketingList
      * @return QueryBuilder
      */
-    protected function getEntitiesQueryBuilder(MarketingList $marketingList)
-    {
-        return $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
-    }
+    abstract protected function getEntitiesQueryBuilder(MarketingList $marketingList);
 }
