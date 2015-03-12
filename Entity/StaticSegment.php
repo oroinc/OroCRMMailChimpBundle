@@ -112,6 +112,13 @@ class StaticSegment implements OriginAwareInterface
     protected $segmentMembers;
 
     /**
+     * @var Collection|ArrayCollection|ExtendedMergeVar[]
+     *
+     * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar", mappedBy="staticSegment")
+     */
+    protected $extendedMergeVars;
+
+    /**
      * @var Organization
      *
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\OrganizationBundle\Entity\Organization")
@@ -510,5 +517,15 @@ class StaticSegment implements OriginAwareInterface
     public function getSegmentMembers()
     {
         return $this->segmentMembers;
+    }
+
+    /**
+     * Retrieves extended merge vars
+     *
+     * @return ArrayCollection|Collection|ExtendedMergeVar[]
+     */
+    public function getExtendedMergeVars()
+    {
+        return $this->extendedMergeVars;
     }
 }

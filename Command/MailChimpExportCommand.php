@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Command;
 
+use OroCRM\Bundle\MailChimpBundle\Provider\Connector\ExtendedMergeVarConnector;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -85,6 +86,7 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsToSync($segments);
 
         $exportJobs = [
+            ExtendedMergeVarConnector::TYPE => ExtendedMergeVarConnector::JOB_EXPORT,
             MemberConnector::TYPE => MemberConnector::JOB_EXPORT,
             StaticSegmentConnector::TYPE => StaticSegmentConnector::JOB_EXPORT
         ];
