@@ -62,7 +62,6 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
 
     /**
      * @param QueryBuilder $qb
-     * @return QueryBuilder
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
@@ -77,7 +76,5 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
                 "mlr.entityId = $entityAlias.id"
             )
             ->andWhere('mlr.id IS NULL');
-
-        return $qb;
     }
 }

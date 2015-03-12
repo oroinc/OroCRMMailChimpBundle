@@ -163,7 +163,6 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
      * Method to change $qb for certain Iterator purposes
      *
      * @param QueryBuilder $qb
-     * @return QueryBuilder
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
@@ -185,7 +184,5 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                 "mlu.entityId = $entityAlias"
             )
             ->andWhere('mlu.id IS NULL');
-
-        return $qb;
     }
 }
