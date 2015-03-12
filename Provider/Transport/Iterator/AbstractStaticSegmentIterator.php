@@ -95,6 +95,8 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         $marketingList = $staticSegment->getMarketingList();
         $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
 
+        $this->prepareIteratorPart($qb);
+
         /** @var From[] $from */
         $from = $qb->getDQLPart('from');
         $entityAlias = $from[0]->getAlias();
@@ -153,6 +155,36 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                 )
             )
             ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId());
+
+        return $qb;
+    }
+
+    /**
+     * Method to change $qb for certain Iterator purposes
+     *
+     * @param QueryBuilder $qb
+     * @return QueryBuilder
+     */
+    protected function prepareIteratorPart(QueryBuilder $qb)
+    {
+        $from = $qb->getDQLPart('from');
+        $entityAlias = $from[0]->getAlias();
+
+        $qb
+            ->leftJoin(
+                'OroCRMMarketingListBundle:MarketingListRemovedItem',
+                'mlr',
+                Join::WITH,
+                "mlr.entityId = $entityAlias.id"
+            )
+            ->andWhere('mlr.id IS NULL')
+            ->leftJoin(
+                'OroCRMMarketingListBundle:MarketingListUnsubscribedItem',
+                'mlu',
+                Join::WITH,
+                "mlu.entityId = $entityAlias"
+            )
+            ->andWhere('mlu.id IS NULL');
 
         return $qb;
     }

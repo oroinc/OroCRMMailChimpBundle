@@ -5,10 +5,11 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
-class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterator
+class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentIterator
 {
     /**
      * @var string
@@ -45,7 +46,7 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
                 [
                     'staticSegment.id static_segment_id',
                     'smmb.id member_id',
-                    $segmentMembersQb->expr()->literal(StaticSegmentMember::STATE_REMOVE) . ' state'
+                    $segmentMembersQb->expr()->literal(StaticSegmentMember::STATE_UNSUBSCRIBE) . ' state'
                 ]
             )
             ->from($this->segmentMemberClassName, 'segmentMember')
@@ -71,12 +72,12 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
 
         $qb
             ->leftJoin(
-                'OroCRMMarketingListBundle:MarketingListRemovedItem',
-                'mlr',
+                'OroCRMMarketingListBundle:MarketingListUnsubscribedItem',
+                'mlu',
                 Join::WITH,
-                "mlr.entityId = $entityAlias.id"
+                "mlu.entityId = $entityAlias"
             )
-            ->andWhere('mlr.id IS NULL');
+            ->andWhere('mlu.id IS NULL');
 
         return $qb;
     }

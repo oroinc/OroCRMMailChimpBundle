@@ -287,6 +287,18 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/batch-unsubscribe.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function batchUnsubscribe(array $args)
+    {
+        return $this->client->batchUnsubscribe($args);
+    }
+
+    /**
      * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segment-add.php
      *
      * @param array $args

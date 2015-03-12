@@ -40,7 +40,14 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             StaticSegmentMember::STATE_DROP
         );
 
-        $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
+        $unsubscribedItems = $this->handleMembersUpdate(
+            $staticSegment,
+            StaticSegmentMember::STATE_UNSUBSCRIBE,
+            'batchUnsubscribe',
+            StaticSegmentMember::STATE_DROP
+        );
+
+        $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems, $unsubscribedItems);
 
         parent::write($itemsToWrite);
     }
