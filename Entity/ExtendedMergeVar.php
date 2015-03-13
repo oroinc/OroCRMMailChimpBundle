@@ -24,6 +24,8 @@ class ExtendedMergeVar
     const STATE_SYNCED = 'synced';
     const STATE_DROPPED = 'dropped';
 
+    const NAME_PREFIX = 'e_';
+
     const TAG_FIELD_TYPE = 'text';
 
     const TAG_PREFIX = 'E_';
@@ -131,6 +133,14 @@ class ExtendedMergeVar
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNameWithPrefix()
+    {
+        return self::NAME_PREFIX . $this->name;
     }
 
     /**

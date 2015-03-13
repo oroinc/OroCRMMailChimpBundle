@@ -18,6 +18,17 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
     {
         $qb = $this->getIteratorQueryBuilder($staticSegment);
 
+        if ($staticSegment->getExtendedMergeVars()) {
+            $marketingList = $staticSegment->getMarketingList();
+            foreach ($staticSegment->getExtendedMergeVars() as $var) {
+                $varFieldExpr = $this->fieldHelper
+                    ->getFieldExpr(
+                        $marketingList->getEntity(), $qb, $var->getName()
+                    );
+                $qb->addSelect($varFieldExpr . ' AS ' . $var->getNameWithPrefix());
+            }
+        }
+
         $qb->andWhere($qb->expr()->isNull(self::MEMBER_ALIAS));
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
@@ -29,6 +40,9 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
                 if (is_array($current)) {
                     $current['subscribersList_id'] = $staticSegment->getSubscribersList()->getId();
                     $current['entityClass']        = $staticSegment->getMarketingList()->getEntity();
+                    if ($staticSegment->getExtendedMergeVars()) {
+                        $current['extended_merge_vars'] = $staticSegment->getExtendedMergeVars();
+                    }
                 }
                 return true;
             }

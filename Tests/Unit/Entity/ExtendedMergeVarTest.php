@@ -107,6 +107,16 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedTag, $this->entity->getTag());
     }
 
+    public function testGetNameWithPrefix()
+    {
+        $this->entity->setName('email');
+
+        $this->assertEquals(
+            ExtendedMergeVar::NAME_PREFIX . $this->entity->getName(),
+            $this->entity->getNameWithPrefix()
+        );
+    }
+
     /**
      * @dataProvider tagGenerationDataProvider
      * @param string $value
