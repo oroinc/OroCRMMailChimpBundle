@@ -135,7 +135,7 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
 
                 $criteria = [
                     'entityId' => $entityId,
-                    'marketingList' => $marketingListEntity->getId(),
+                    'marketingList' => $marketingList->getId(),
                 ];
 
                 if ($this->getMarketingListStateItem($criteria)) {
@@ -162,6 +162,11 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
      */
     protected function getMarketingListStateItem(array $criteria)
     {
+        $result = $this->doctrineHelper
+            ->getEntityManager($this->marketingListStateItemClassName)
+            ->getRepository($this->marketingListStateItemClassName)
+            ->findOneBy($criteria);
+
         return $this->doctrineHelper
             ->getEntityManager($this->marketingListStateItemClassName)
             ->getRepository($this->marketingListStateItemClassName)
