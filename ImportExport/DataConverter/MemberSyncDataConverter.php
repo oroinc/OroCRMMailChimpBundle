@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
@@ -57,6 +58,11 @@ class MemberSyncDataConverter extends MemberDataConverter
             $item['channel_id'] = $this->context->getOption('channel');
         }
 
+        if (isset($importedRecord['extended_merge_vars'])) {
+            $extendedMergeVars = $this->prepareExtendedMergeVars($importedRecord);
+            $item = array_merge($item, $extendedMergeVars);
+        }
+
         return parent::convertToImportFormat($item, $skipNullValues);
     }
 
@@ -86,5 +92,24 @@ class MemberSyncDataConverter extends MemberDataConverter
     protected function getBackendHeader()
     {
         throw new \Exception('Normalization is not implemented!');
+    }
+
+    /**
+     * @param array $importedRecord
+     * @return array
+     */
+    private function prepareExtendedMergeVars($importedRecord)
+    {
+        if (false === isset($importedRecord['extended_merge_vars']) || empty($importedRecord['extended_merge_vars'])) {
+            return array();
+        }
+        $result = array();
+        /** @var ExtendedMergeVar $each */
+        foreach ($importedRecord['extended_merge_vars'] as $each) {
+            if (isset($importedRecord[$each->getNameWithPrefix()])) {
+                $result[$each->getTag()] = $importedRecord[$each->getNameWithPrefix()];
+            }
+        }
+        return $result;
     }
 }
