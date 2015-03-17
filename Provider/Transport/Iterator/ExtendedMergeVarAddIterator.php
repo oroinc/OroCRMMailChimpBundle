@@ -2,10 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use Oro\Bundle\SegmentBundle\Entity\Segment;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
-use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 
@@ -88,10 +86,12 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
         $qb->select('extendedMergeVar.name');
         $qb->andWhere($qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'));
         $qb->andWhere($qb->expr()->in('extendedMergeVar.name', ':vars'));
+        $qb->andWhere($qb->expr()->notIn('extendedMergeVar.state', ':states'));
         $qb->setParameters(
             array(
                 'staticSegment' => $staticSegment,
-                'vars' => $vars
+                'vars' => $vars,
+                'states' => array(ExtendedMergeVar::STATE_REMOVE, ExtendedMergeVar::STATE_DROPPED)
             )
         );
 
@@ -105,13 +105,14 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
         );
 
         return new \CallbackFilterIterator(
-            new \ArrayIterator($columnDefinitionList->getIterator()),
+            new \ArrayIterator($columnDefinitionList->getColumns()),
             function (&$current) use ($staticSegment, $existingVars) {
                 if (is_array($current) && isset($current['name'])) {
                     if (in_array($current['name'], $existingVars)) {
                         return false;
                     }
                     $current['static_segment_id'] = $staticSegment->getId();
+                    $current['state'] = ExtendedMergeVar::STATE_ADD;
                 }
                 return true;
             }

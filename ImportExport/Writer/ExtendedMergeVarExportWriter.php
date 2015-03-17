@@ -8,6 +8,7 @@ use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\AddMergeVars;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\Handler;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\RemoveMergeVars;
@@ -55,23 +56,39 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
      */
     protected function add(ArrayCollection $items)
     {
+        $items = $items->filter($this->addedItemsFilter());
+
         if ($items->isEmpty()) {
             return array();
         }
+
+        $mergeVars = $this->getSubscribersListMergeVars(
+            $items->first()->getStaticSegment()->getSubscribersList()
+        );
+
         $successItems = array();
         /** @var ExtendedMergeVar $each */
-        foreach ($items->filter($this->addedItemsFilter()) as $each) {
-            $response = $this->transport->addListMergeVar(
-                array(
-                    'id' => $each->getStaticSegment()->getSubscribersList()->getOriginId(),
-                    'tag' => $each->getTag(),
-                    'name' => $each->getLabel(),
-                    'options' => array(
-                        'field_type' => $each->getFieldType(),
-                        'require' => $each->getRequire()
+        foreach ($items as $each) {
+            $exists = array_filter($mergeVars, function ($var) use ($each) {
+                if ($var['tag'] == $each->getTag()) {
+                    return true;
+                }
+                return false;
+            });
+            $response = array();
+            if (empty($exists)) {
+                $response = $this->transport->addListMergeVar(
+                    array(
+                        'id' => $each->getStaticSegment()->getSubscribersList()->getOriginId(),
+                        'tag' => $each->getTag(),
+                        'name' => $each->getLabel(),
+                        'options' => array(
+                            'field_type' => $each->getFieldType(),
+                            'require' => $each->getRequire()
+                        )
                     )
-                )
-            );
+                );
+            }
             if (is_array($response)) {
                 $this->handleErrorResponse($response);
                 if (false === isset($response['errors'])) {
@@ -95,21 +112,47 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
         $successItems = array();
         /** @var ExtendedMergeVar $each */
         foreach ($items->filter($this->removedItemsFilter()) as $each) {
-            $response = $this->transport->deleteListMergeVar(
-                array(
-                    'id' => $each->getStaticSegment()->getSubscribersList()->getOriginId(),
-                    'tag' => $each->getTag()
-                )
-            );
-            if (is_array($response)) {
-                $this->handleErrorResponse($response);
-                if (false === isset($response['errors'])) {
-                    $each->setDroppedState();
-                    array_push($successItems, $each);
-                }
-            }
+            $each->setDroppedState();
+            array_push($successItems, $each);
         }
         return $successItems;
+    }
+
+    /**
+     * @param SubscribersList $subscribersList
+     * @return array
+     */
+    protected function getSubscribersListMergeVars(SubscribersList $subscribersList)
+    {
+        $response = $this->transport->getListMergeVars(
+            array(
+                'id' => array($subscribersList->getOriginId())
+            )
+        );
+        if (false === is_array($response)) {
+            return array();
+        }
+        $this->handleErrorResponse($response);
+        if (isset($response['errors']) && !empty($response['errors'])) {
+            throw new \RuntimeException('Can not get list of merge vars.');
+        }
+        return $this->extractMergeVarsFromResponse($response);
+    }
+
+    /**
+     * @param array $response
+     * @return array
+     */
+    protected function extractMergeVarsFromResponse(array $response)
+    {
+        if (!isset($response['data'])) {
+            return array();
+        }
+        $data = reset($response['data']);
+        if (!isset($data['merge_vars'])) {
+            return array();
+        }
+        return $data['merge_vars'];
     }
 
     /**

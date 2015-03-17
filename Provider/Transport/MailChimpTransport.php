@@ -253,6 +253,17 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-vars.php
+     *
+     * @param array $args
+     * @return array
+     */
+    public function getListMergeVars(array $args)
+    {
+        return $this->client->getListMergeVars($args);
+    }
+
+    /**
      * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-var-add.php
      *
      * @param array $args

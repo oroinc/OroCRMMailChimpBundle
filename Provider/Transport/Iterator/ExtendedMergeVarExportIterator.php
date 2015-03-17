@@ -80,7 +80,7 @@ class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator impleme
             ->setParameters(
                 array(
                     'staticSegment' => $staticSegment,
-                    'states' => array(ExtendedMergeVar::STATE_SYNCED)
+                    'states' => array(ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_DROPPED)
                 )
             )
             ->orderBy('extendedMergeVar.staticSegment');

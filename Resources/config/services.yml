@@ -86,7 +86,7 @@ parameters:
     orocrm_mailchimp.importexport.data_converter.static_segment.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\StaticSegmentDataConverter
     orocrm_mailchimp.importexport.data_converter.static_segment_member.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\StaticSegmentMemberDataConverter
     orocrm_mailchimp.importexport.data_converter.extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\ExtendedMergeVarDataConverter
-    orocrm_mailchimp.importexport.data_converter.member_extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberExtendedMergeVarDataConverterTest
+    orocrm_mailchimp.importexport.data_converter.member_extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberExtendedMergeVarDataConverter
     orocrm_mailchimp.importexport.data_converter.member_cart_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberCartMergeVarDataConverter
 
     # Import Processors

@@ -7,7 +7,6 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
-use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 
 class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
@@ -97,11 +96,13 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
 
         $qb->andWhere($qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'));
         $qb->andWhere($qb->expr()->notIn('extendedMergeVar.name', ':vars'));
+        $qb->andWhere($qb->expr()->neq('extendedMergeVar.state', ':state'));
 
         $qb->setParameters(
             array(
                 'staticSegment' => $staticSegment,
-                'vars' => $vars
+                'vars' => $vars,
+                'state' => ExtendedMergeVar::STATE_DROPPED
             )
         );
 

@@ -14,7 +14,8 @@ class ExtendedMergeVarDataConverter extends AbstractTableDataConverter
         return array(
             'name' => 'name',
             'label' => 'label',
-            'static_segment_id' => 'staticSegment:id'
+            'static_segment_id' => 'staticSegment:id',
+            'state' => 'state'
         );
     }
 
