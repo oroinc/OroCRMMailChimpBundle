@@ -8,6 +8,7 @@ use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList;
+use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 
 class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
 {
@@ -27,14 +28,21 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
     private $extendedMergeVarClassName;
 
     /**
+     * @var ColumnDefinitionListFactory
+     */
+    private $columnDefinitionListFactory;
+
+    /**
      * @param DecisionHandler $decisionHandler
      * @param DoctrineHelper $doctrineHelper
      * @param string $extendedMergeVarClassName
+     * @param ColumnDefinitionListFactory $columnDefinitionListFactory
      */
     public function __construct(
         DecisionHandler $decisionHandler,
         DoctrineHelper $doctrineHelper,
-        $extendedMergeVarClassName
+        $extendedMergeVarClassName,
+        ColumnDefinitionListFactory $columnDefinitionListFactory
     ) {
         if (false === is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
             throw new \InvalidArgumentException('ExtendedMergeVar class name must be a not empty string.');
@@ -43,6 +51,7 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
         $this->decisionHandler = $decisionHandler;
         $this->doctrineHelper = $doctrineHelper;
         $this->extendedMergeVarClassName = $extendedMergeVarClassName;
+        $this->columnDefinitionListFactory = $columnDefinitionListFactory;
     }
 
     /**
@@ -62,8 +71,8 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
             return new \ArrayIterator(array());
         }
 
-        $segment = $staticSegment->getMarketingList()->getSegment();
-        $columnDefinitionList = new ColumnDefinitionList($segment);
+        $columnDefinitionList = $this->columnDefinitionListFactory
+            ->create($staticSegment->getMarketingList());
 
         $vars = array_map(
             function ($each) {

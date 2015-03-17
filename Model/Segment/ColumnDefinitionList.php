@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Model\Segment;
 
 use Oro\Bundle\SegmentBundle\Entity\Segment;
 
-class ColumnDefinitionList implements \IteratorAggregate
+class ColumnDefinitionList implements ColumnDefinitionListInterface
 {
     /**
      * @var array
@@ -42,7 +42,7 @@ class ColumnDefinitionList implements \IteratorAggregate
 
     /**
      * @param array $column
-     * @return null|ColumnDefinition
+     * @return null|array
      */
     protected function createColumnDefinition(array $column)
     {
@@ -58,13 +58,5 @@ class ColumnDefinitionList implements \IteratorAggregate
     public function getColumns()
     {
         return $this->columns;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->columns);
     }
 }

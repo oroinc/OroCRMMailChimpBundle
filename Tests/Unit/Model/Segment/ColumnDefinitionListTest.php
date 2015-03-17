@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\Model\Segment;
+namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\Segment;
 
 use Oro\Bundle\SegmentBundle\Entity\Segment;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList;
@@ -95,38 +95,6 @@ class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($column1['label'], $this->equalTo('Email'));
         $this->assertThat($column2['name'], $this->equalTo('total'));
         $this->assertThat($column2['label'], $this->equalTo('Total'));
-    }
-
-    public function testGetIterator()
-    {
-        /** @var Segment $segment */
-        $segment = $this->getMockBuilder('Oro\Bundle\SegmentBundle\Entity\Segment')->getMock();
-
-        $definition = json_encode($this->getCorrectSegmentDefinition());
-        $segment->expects($this->once())->method('getDefinition')->will($this->returnValue($definition));
-
-        $list = new ColumnDefinitionList($segment);
-
-        $this->assertInstanceOf('\Iterator', $list->getIterator());
-
-        foreach ($list as $each) {
-            $this->assertArrayHasKey('name', $each);
-            $this->assertArrayHasKey('label', $each);
-            $this->assertThat(
-                $each['name'],
-                $this->logicalOr(
-                    $this->equalTo('email'),
-                    $this->equalTo('total')
-                )
-            );
-            $this->assertThat(
-                $each['label'],
-                $this->logicalOr(
-                    $this->equalTo('Email'),
-                    $this->equalTo('Total')
-                )
-            );
-        }
     }
 
     private function getCorrectSegmentDefinition()

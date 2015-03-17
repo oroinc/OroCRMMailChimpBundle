@@ -20,11 +20,20 @@ class MemberSyncDataConverter extends MemberDataConverter
     protected $contactInformationFieldsProvider;
 
     /**
-     * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
+     * @var MemberExtendedMergeVarDataConverter
      */
-    public function __construct(ContactInformationFieldsProvider $contactInformationFieldsProvider)
-    {
+    protected $memberExtendedMergeVarDataConverter;
+
+    /**
+     * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
+     * @param MemberExtendedMergeVarDataConverter $memberExtendedMergeVarDataConverter
+     */
+    public function __construct(
+        ContactInformationFieldsProvider $contactInformationFieldsProvider,
+        MemberExtendedMergeVarDataConverter $memberExtendedMergeVarDataConverter
+    ) {
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
+        $this->memberExtendedMergeVarDataConverter = $memberExtendedMergeVarDataConverter;
     }
 
     /**
@@ -59,7 +68,9 @@ class MemberSyncDataConverter extends MemberDataConverter
         }
 
         if (isset($importedRecord['extended_merge_vars'])) {
-            $extendedMergeVars = $this->prepareExtendedMergeVars($importedRecord);
+            $extendedMergeVars = $this
+                ->memberExtendedMergeVarDataConverter
+                ->convertToImportFormat($importedRecord, $skipNullValues);
             $item = array_merge($item, $extendedMergeVars);
         }
 
@@ -92,24 +103,5 @@ class MemberSyncDataConverter extends MemberDataConverter
     protected function getBackendHeader()
     {
         throw new \Exception('Normalization is not implemented!');
-    }
-
-    /**
-     * @param array $importedRecord
-     * @return array
-     */
-    private function prepareExtendedMergeVars($importedRecord)
-    {
-        if (false === isset($importedRecord['extended_merge_vars']) || empty($importedRecord['extended_merge_vars'])) {
-            return array();
-        }
-        $result = array();
-        /** @var ExtendedMergeVar $each */
-        foreach ($importedRecord['extended_merge_vars'] as $each) {
-            if (isset($importedRecord[$each->getNameWithPrefix()])) {
-                $result[$each->getTag()] = $importedRecord[$each->getNameWithPrefix()];
-            }
-        }
-        return $result;
     }
 }

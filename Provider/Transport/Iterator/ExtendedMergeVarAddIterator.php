@@ -7,6 +7,7 @@ use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 
 class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
 {
@@ -26,14 +27,21 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
     private $extendedMergeVarClassName;
 
     /**
+     * @var ColumnDefinitionListFactory
+     */
+    private $columnDefinitionListFactory;
+
+    /**
      * @param DecisionHandler $decisionHandler
      * @param DoctrineHelper $doctrineHelper
      * @param string $extendedMergeVarClassName
+     * @param ColumnDefinitionListFactory $columnDefinitionListFactory
      */
     public function __construct(
         DecisionHandler $decisionHandler,
         DoctrineHelper $doctrineHelper,
-        $extendedMergeVarClassName
+        $extendedMergeVarClassName,
+        ColumnDefinitionListFactory $columnDefinitionListFactory
     ) {
         if (false === is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
             throw new \InvalidArgumentException('ExtendedMergeVar class name must be a not empty string.');
@@ -42,6 +50,7 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
         $this->decisionHandler = $decisionHandler;
         $this->doctrineHelper = $doctrineHelper;
         $this->extendedMergeVarClassName = $extendedMergeVarClassName;
+        $this->columnDefinitionListFactory = $columnDefinitionListFactory;
     }
 
     /**
@@ -61,9 +70,8 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
             return new \ArrayIterator(array());
         }
 
-        /** @var Segment $segment */
-        $segment = $staticSegment->getMarketingList()->getSegment();
-        $columnDefinitionList = new ColumnDefinitionList($segment);
+        $columnDefinitionList = $this->columnDefinitionListFactory
+            ->create($staticSegment->getMarketingList());
 
         $vars = array_map(
             function ($each) {
@@ -97,7 +105,7 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
         );
 
         return new \CallbackFilterIterator(
-            $columnDefinitionList->getIterator(),
+            new \ArrayIterator($columnDefinitionList->getIterator()),
             function (&$current) use ($staticSegment, $existingVars) {
                 if (is_array($current) && isset($current['name'])) {
                     if (in_array($current['name'], $existingVars)) {
