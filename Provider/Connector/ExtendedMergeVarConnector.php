@@ -20,7 +20,7 @@ class ExtendedMergeVarConnector extends AbstractMailChimpConnector implements
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.connector.extendedMergeVar.label';
+        return 'orocrm.mailchimp.connector.extended_merge_var.label';
     }
 
     /**

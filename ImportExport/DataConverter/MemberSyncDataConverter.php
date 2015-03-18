@@ -20,20 +20,12 @@ class MemberSyncDataConverter extends MemberDataConverter
     protected $contactInformationFieldsProvider;
 
     /**
-     * @var MemberExtendedMergeVarDataConverter
-     */
-    protected $memberExtendedMergeVarDataConverter;
-
-    /**
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
-     * @param MemberExtendedMergeVarDataConverter $memberExtendedMergeVarDataConverter
      */
     public function __construct(
-        ContactInformationFieldsProvider $contactInformationFieldsProvider,
-        MemberExtendedMergeVarDataConverter $memberExtendedMergeVarDataConverter
+        ContactInformationFieldsProvider $contactInformationFieldsProvider
     ) {
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
-        $this->memberExtendedMergeVarDataConverter = $memberExtendedMergeVarDataConverter;
     }
 
     /**
@@ -65,13 +57,6 @@ class MemberSyncDataConverter extends MemberDataConverter
         $item['status'] = Member::STATUS_EXPORT;
         if ($this->context->getOption('channel')) {
             $item['channel_id'] = $this->context->getOption('channel');
-        }
-
-        if (isset($importedRecord['extended_merge_vars'])) {
-            $extendedMergeVars = $this
-                ->memberExtendedMergeVarDataConverter
-                ->convertToImportFormat($importedRecord, $skipNullValues);
-            $item = array_merge($item, $extendedMergeVars);
         }
 
         return parent::convertToImportFormat($item, $skipNullValues);

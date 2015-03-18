@@ -5,12 +5,12 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\ImportExport\DataConverter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Oro\Bundle\ImportExportBundle\Converter\DataConverterInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberExtendedMergeVarDataConverter;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MmbrExtdMergeVarValuesDataConverter;
 
-class MemberExtendedMergeVarDataConverterTest extends \PHPUnit_Framework_TestCase
+class MmbrExtdMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var MemberExtendedMergeVarDataConverter
+     * @var MmbrExtdMergeVarValuesDataConverter
      */
     private $converter;
 
@@ -28,7 +28,7 @@ class MemberExtendedMergeVarDataConverterTest extends \PHPUnit_Framework_TestCas
             ->expects($this->any())
             ->method('convertToImportFormat')
             ->will($this->returnValue(array()));
-        $this->converter = new MemberExtendedMergeVarDataConverter($this->injectedDataConverter);
+        $this->converter = new MmbrExtdMergeVarValuesDataConverter($this->injectedDataConverter);
     }
 
     public function testConvertToImportFormatWhenImportedRecordIsNotValid()

@@ -2,11 +2,11 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Oro\Bundle\ImportExportBundle\Converter\DataConverterInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 
-class MemberExtendedMergeVarDataConverter implements DataConverterInterface
+class MmbrExtdMergeVarValuesDataConverter implements DataConverterInterface
 {
     /**
      * @var DataConverterInterface
@@ -30,7 +30,7 @@ class MemberExtendedMergeVarDataConverter implements DataConverterInterface
             return array();
         }
         $extendedMergeVars = $importedRecord['extended_merge_vars'];
-        if (false === ($extendedMergeVars instanceof ArrayCollection)) {
+        if (false === ($extendedMergeVars instanceof Collection)) {
             return array();
         }
         $result = array();

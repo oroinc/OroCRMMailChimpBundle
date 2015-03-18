@@ -286,6 +286,17 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/update-member.php
+     *
+     * @param array $args
+     * @return array
+     */
+    public function updateListMember(array $args)
+    {
+        return $this->client->updateListMember($args);
+    }
+
+    /**
      * @link http://apidocs.mailchimp.com/api/2.0/lists/batch-subscribe.php
      *
      * @param array $args

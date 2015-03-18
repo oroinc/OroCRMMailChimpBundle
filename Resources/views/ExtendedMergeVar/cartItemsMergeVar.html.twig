@@ -3,9 +3,8 @@
         <thead>
         <tr>
             <td>{{ 'orocrm.magento.cartitem.name.label'|trans }}</td>
-            <td>{{ 'orocrm.magento.cartitem.sku.label'|trans }}</td>
-            <td>{{ 'orocrm.magento.cartitem.price.label'|trans }}</td>
             <td>{{ 'orocrm.magento.cartitem.qty.label'|trans }}</td>
+            <td>{{ 'orocrm.magento.cartitem.price.label'|trans }}</td>
             <td>{{ 'orocrm.magento.cartitem.row_total.label'|trans }}</td>
         </tr>
         </thead>
@@ -13,9 +12,8 @@
         {% for item in cartItems %}
         <tr>
             <td>{{ item.name }}</td>
-            <td>{{ item.sku }}</td>
-            <td>{{ item.price }}</td>
             <td>{{ item.qty }}</td>
+            <td>{{ item.price }}</td>
             <td>{{ item.rowTotal }}</td>
         </tr>
         {% endfor %}

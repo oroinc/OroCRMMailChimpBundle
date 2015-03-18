@@ -32,22 +32,22 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
     /**
      * @param DecisionHandler $decisionHandler
      * @param DoctrineHelper $doctrineHelper
-     * @param string $extendedMergeVarClassName
+     * @param string $mmbrExtdMergeVarClassName
      * @param ColumnDefinitionListFactory $columnDefinitionListFactory
      */
     public function __construct(
         DecisionHandler $decisionHandler,
         DoctrineHelper $doctrineHelper,
-        $extendedMergeVarClassName,
+        $mmbrExtdMergeVarClassName,
         ColumnDefinitionListFactory $columnDefinitionListFactory
     ) {
-        if (false === is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
+        if (false === is_string($mmbrExtdMergeVarClassName) || empty($mmbrExtdMergeVarClassName)) {
             throw new \InvalidArgumentException('ExtendedMergeVar class name must be a not empty string.');
         }
 
         $this->decisionHandler = $decisionHandler;
         $this->doctrineHelper = $doctrineHelper;
-        $this->extendedMergeVarClassName = $extendedMergeVarClassName;
+        $this->extendedMergeVarClassName = $mmbrExtdMergeVarClassName;
         $this->columnDefinitionListFactory = $columnDefinitionListFactory;
     }
 

@@ -8,12 +8,12 @@ use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MagentoBundle\Entity\Cart;
 use OroCRM\Bundle\MagentoBundle\Entity\CartItem;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberCartMergeVarDataConverter;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MmbrCartMergeVarValuesDataConverter;
 
-class MemberCartMergeVarDataConverterTest extends \PHPUnit_Framework_TestCase
+class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var MemberCartMergeVarDataConverter
+     * @var MmbrCartMergeVarValuesDataConverter
      */
     private $converter;
 
@@ -45,7 +45,7 @@ class MemberCartMergeVarDataConverterTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->twig = $this->getMockBuilder('\Twig_Environment')->getMock();
         $this->template = 'cartItems.html.twig';
-        $this->converter = new MemberCartMergeVarDataConverter(
+        $this->converter = new MmbrCartMergeVarValuesDataConverter(
             $this->doctrineHelper, $this->twig, $this->template
         );
         $this->entityRepository = $this
@@ -60,7 +60,7 @@ class MemberCartMergeVarDataConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testObjectInitializationWheTemplateIsNotString()
     {
-        new MemberCartMergeVarDataConverter(
+        new MmbrCartMergeVarValuesDataConverter(
             $this->doctrineHelper, $this->twig, array()
         );
     }
@@ -71,7 +71,7 @@ class MemberCartMergeVarDataConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function testObjectInitializationWhenTemplaIsEmptyString()
     {
-        new MemberCartMergeVarDataConverter(
+        new MmbrCartMergeVarValuesDataConverter(
             $this->doctrineHelper, $this->twig, ''
         );
     }

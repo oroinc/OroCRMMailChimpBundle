@@ -38,6 +38,8 @@ orocrm:
             member_activity_send:
                 label: Member Send Activity Connector
                 job: Import Member Send Activities from MailChimp
+            extended_merge_var:
+                label: Subscribers List Merge Vars Connector
 
         mailchimptransport:
             entity_label: MailChimp Transport

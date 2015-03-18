@@ -32,5 +32,16 @@ class OroCRMMailChimpBundle implements Migration
             ['id'],
             ['onDelete' => 'CASCADE', 'onUpdate' => null]
         );
+
+        $table = $schema->createTable('orocrm_mc_mmbr_extd_merge_var');
+        $table->addColumn('id', 'integer', ['autoincrement' => true]);
+        $table->addColumn('member_id', 'integer', []);
+        $table->addColumn('static_segment_id', 'integer', []);
+        $table->addColumn('merge_var_values', 'json_array', ['notnull' => false, 'comment' => '(DC2Type:json_array)']);
+        $table->addColumn('state', 'string', ['length' => 255]);
+        $table->setPrimaryKey(['id']);
+        $table->addUniqueIndex(['static_segment_id', 'member_id'], 'mc_mmbr_extd_merge_var_sid_mmbr_unq');
+        $table->addIndex(['static_segment_id'], 'IDX_507F296DF8DF7CF6', []);
+        $table->addIndex(['member_id'], 'IDX_507F296D7597D3FE', []);
     }
 }

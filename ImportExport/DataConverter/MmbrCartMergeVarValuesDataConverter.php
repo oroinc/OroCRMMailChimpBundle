@@ -2,14 +2,14 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Converter\DataConverterInterface;
 use OroCRM\Bundle\MagentoBundle\Entity\Cart;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\CartColumnDefinitionList;
 
-class MemberCartMergeVarDataConverter implements DataConverterInterface
+class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
 {
     /**
      * @var DoctrineHelper
@@ -49,9 +49,9 @@ class MemberCartMergeVarDataConverter implements DataConverterInterface
         if (false === isset($importedRecord['extended_merge_vars'])) {
             return array();
         }
-        /** @var ArrayCollection $extendedMergeVars */
+        /** @var Collection $extendedMergeVars */
         $extendedMergeVars = $importedRecord['extended_merge_vars'];
-        if (false === ($extendedMergeVars instanceof ArrayCollection)) {
+        if (false === ($extendedMergeVars instanceof Collection)) {
             return array();
         }
 
