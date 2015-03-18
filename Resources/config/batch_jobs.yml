@@ -202,21 +202,21 @@ connector:
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
-                handle_remove_state:
-                    title: export
-                    class: Oro\Bundle\BatchBundle\Step\ItemStep
-                    services:
-                        reader:    orocrm_mailchimp.importexport.reader.static_segment_member_remove_state
-                        processor: orocrm_mailchimp.importexport.processor.static_segment_member_remove_state
-                        writer:    oro_integration.writer.persistent_batch_writer
-                    parameters:
-                        batch_size: 25
                 handle_unsubscribe_state:
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.static_segment_member_unsubscribe_state
                         processor: orocrm_mailchimp.importexport.processor.static_segment_member_unsubscribe_state
+                        writer:    oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 25
+                handle_remove_state:
+                    title: export
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.static_segment_member_remove_state
+                        processor: orocrm_mailchimp.importexport.processor.static_segment_member_remove_state
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
