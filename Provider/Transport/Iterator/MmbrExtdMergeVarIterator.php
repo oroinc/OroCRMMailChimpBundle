@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Doctrine\ORM\AbstractQuery;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\QueryDecorator;
 
@@ -39,6 +40,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
             );
         $qb->addSelect($fieldExpr . ' AS entity_id');
         $qb->addSelect(self::MEMBER_ALIAS . '.id AS member_id');
+        $qb->addSelect($qb->expr()->literal(MemberExtendedMergeVar::STATE_ADD) . ' state');
 
         $this->queryDecorator->decorate($qb, $staticSegment);
 
