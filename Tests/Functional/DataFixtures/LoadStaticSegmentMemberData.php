@@ -17,7 +17,12 @@ class LoadStaticSegmentMemberData extends AbstractMailChimpFixture implements De
             'member' => 'mailchimp:member',
             'segment' => 'mailchimp:segment_one',
             'state' => StaticSegmentMember::STATE_SYNCED,
-        ]
+        ],
+        [
+            'member' => 'mailchimp:member2',
+            'segment' => 'mailchimp:segment_one',
+            'state' => StaticSegmentMember::STATE_SYNCED,
+        ],
     ];
 
     /**
