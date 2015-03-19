@@ -19,9 +19,17 @@ class CartColumnDefinitionList implements ColumnDefinitionListInterface
             $columnDefinitionList->getColumns(),
             array(
                 array(
-                    'name' => self::CART_ITEMS_NAME,
-                    'label' => self::CART_ITEMS_LABEL
-                )
+                    'name' => 'item_1',
+                    'label' => 'First Cart Item'
+                ),
+                array(
+                    'name' => 'item_2',
+                    'label' => 'Second Cart Item'
+                ),
+                array(
+                    'name' => 'item_3',
+                    'label' => 'Third Cart Item'
+                ),
             )
         );
     }

@@ -137,7 +137,7 @@ parameters:
 
     orocrm_mailchimp.segment.column_definition.factory.class: OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory
 
-    orocrm_mailchimp.extended_merge_var.cart_items.template: OroCRMMailChimpBundle:ExtendedMergeVar:cartItemsMergeVar.html.twig
+    orocrm_mailchimp.extended_merge_var.cart_items.template: OroCRMMailChimpBundle:ExtendedMergeVar:cartItemsMergeVar.txt.twig
 
 services:
     orocrm_mailchimp.client.factory:

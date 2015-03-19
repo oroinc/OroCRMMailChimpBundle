@@ -44,7 +44,7 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
             ->disableOriginalConstructor()
             ->getMock();
         $this->twig = $this->getMockBuilder('\Twig_Environment')->getMock();
-        $this->template = 'cartItems.html.twig';
+        $this->template = 'cartItems.txt.twig';
         $this->converter = new MmbrCartMergeVarValuesDataConverter(
             $this->doctrineHelper, $this->twig, $this->template
         );
@@ -105,7 +105,7 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
     public function testConvertToImportFormatWhenCartDoesNotExist()
     {
         $cartItemsVar = new ExtendedMergeVar();
-        $cartItemsVar->setName('cartItems');
+        $cartItemsVar->setName('item_1');
         $vars = new ArrayCollection(array($cartItemsVar));
 
         $importedRecord = array(
@@ -131,7 +131,7 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
     public function testConvertToImportFormatWhenCartHasNoItems()
     {
         $cartItemsVar = new ExtendedMergeVar();
-        $cartItemsVar->setName('cartItems');
+        $cartItemsVar->setName('item_1');
         $vars = new ArrayCollection(array($cartItemsVar));
 
         $importedRecord = array(
@@ -154,22 +154,22 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
 
         $result = $this->converter->convertToImportFormat($importedRecord);
 
-        $this->assertNotEmpty($result);
-
-        $this->assertArrayHasKey($cartItemsVar->getTag(), $result);
-        $this->assertEquals('', $result[$cartItemsVar->getTag()]);
+        $this->assertEmpty($result);
     }
 
     public function testConvertToImportFormat()
     {
         $firstNameVar = new ExtendedMergeVar();
-        $cartItemsVar = new ExtendedMergeVar();
+        $firstCartItemVar = new ExtendedMergeVar();
+        $secondCartItemVar = new ExtendedMergeVar();
         $firstNameVar->setName('fName');
-        $cartItemsVar->setName('cartItems');
+        $firstCartItemVar->setName('item_1');
+        $secondCartItemVar->setName('item_2');
         $vars = new ArrayCollection(
             array(
                 $firstNameVar,
-                $cartItemsVar
+                $firstCartItemVar,
+                $secondCartItemVar
             )
         );
 
@@ -183,10 +183,12 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
         );
 
         $cart = new Cart();
+        $cartItem1 = new CartItem();
+        $cartItem2 = new CartItem();
         $cartItems = new ArrayCollection(
             array(
-                new CartItem(),
-                new CartItem()
+                $cartItem1,
+                $cartItem2
             )
         );
         $cart->setCartItems($cartItems);
@@ -196,16 +198,21 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
 
         $this->entityRepository->expects($this->once())->method('find')->with(1)->will($this->returnValue($cart));
 
-        $this->twig->expects($this->once())->method('render')
-            ->with($this->template, array('cartItems' => $cartItems))
-            ->will($this->returnValue('rendered_html'));
+        $this->twig->expects($this->at(0))->method('render')
+            ->with($this->template, array('item' => $cartItem1, 'index' => 0))
+            ->will($this->returnValue('rendered_html_of_cart_item_1'));
+
+        $this->twig->expects($this->at(1))->method('render')
+            ->with($this->template, array('item' => $cartItem2, 'index' => 1))
+            ->will($this->returnValue('rendered_html_of_cart_item_2'));
 
         $result = $this->converter->convertToImportFormat($importedRecord);
 
         $this->assertNotEmpty($result);
 
-        $this->assertArrayHasKey($cartItemsVar->getTag(), $result);
+        $this->assertArrayHasKey($firstCartItemVar->getTag(), $result);
         $this->assertArrayNotHasKey($firstNameVar->getTag(), $result);
-        $this->assertEquals('rendered_html', $result[$cartItemsVar->getTag()]);
+        $this->assertEquals('rendered_html_of_cart_item_1', $result[$firstCartItemVar->getTag()]);
+        $this->assertEquals('rendered_html_of_cart_item_2', $result[$secondCartItemVar->getTag()]);
     }
 }

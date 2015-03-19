@@ -38,12 +38,12 @@ class CartColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
         $columns = $this->cartColumnDefinitionList->getColumns();
 
         $this->assertNotEmpty($columns);
-        $this->assertCount(2, $columns);
+        $this->assertCount(4, $columns);
         $column1 = reset($columns);
         $column2 = next($columns);
         $this->assertThat($column1['name'], $this->equalTo('fname'));
         $this->assertThat($column1['label'], $this->equalTo('First Name'));
-        $this->assertThat($column2['name'], $this->equalTo(CartColumnDefinitionList::CART_ITEMS_NAME));
-        $this->assertThat($column2['label'], $this->equalTo(CartColumnDefinitionList::CART_ITEMS_LABEL));
+        $this->assertThat($column2['name'], $this->equalTo('item_1'));
+        $this->assertThat($column2['label'], $this->equalTo('First Cart Item'));
     }
 }

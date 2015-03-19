@@ -30,7 +30,7 @@ class QueryDecorator
         if ($staticSegment->getExtendedMergeVars()) {
             $marketingList = $staticSegment->getMarketingList();
             foreach ($staticSegment->getExtendedMergeVars() as $var) {
-                if ($var->getName() == 'cartItems') {
+                if (false !== strpos($var->getName(), 'item_')) {
                     continue;
                 }
                 $varFieldExpr = $this->fieldHelper

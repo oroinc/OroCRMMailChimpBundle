@@ -64,7 +64,7 @@ class QueryDecoratorTest extends \PHPUnit_Framework_TestCase
         $extendedMergeVar = new ExtendedMergeVar();
         $cartItemsMergeVar = new ExtendedMergeVar();
         $extendedMergeVar->setName('extendedMergeVar');
-        $cartItemsMergeVar->setName('cartItems');
+        $cartItemsMergeVar->setName('item_1');
         $extendedMergeVars = new ArrayCollection(
             array(
                 $extendedMergeVar, $cartItemsMergeVar

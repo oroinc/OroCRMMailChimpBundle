@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Converter\DataConverterInterface;
 use OroCRM\Bundle\MagentoBundle\Entity\Cart;
+use OroCRM\Bundle\MagentoBundle\Entity\CartItem;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\CartColumnDefinitionList;
 
@@ -57,23 +58,33 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
 
         $result = array();
 
-        /** @var ExtendedMergeVar $cartMergeVar */
-        $cartMergeVar = $extendedMergeVars->filter(function ($each) {
-            if ($each->getName() == CartColumnDefinitionList::CART_ITEMS_NAME) {
+        /** @var Collection $cartItemMergeVars */
+        $cartItemMergeVars = $extendedMergeVars->filter(function ($each) {
+            if (false !== strpos($each->getName(), 'item_')) {
                 return true;
             }
             return false;
-        })->first();
+        });
 
-        if ($cartMergeVar && isset($importedRecord['entity_id'])) {
+        if (!$cartItemMergeVars->isEmpty() && isset($importedRecord['entity_id'])) {
             $cartEntityId = $importedRecord['entity_id'];
+            /** @var Cart $cart */
             $cart = $this->doctrineHelper
                 ->getEntityRepository($importedRecord['entityClass'])
                 ->find($cartEntityId);
             if ($cart) {
-                $result = array(
-                    $cartMergeVar->getTag() => $this->prepareCartItemsHtml($cart)
-                );
+                $cartItems = $cart->getCartItems();
+                if (!$cartItems->isEmpty()) {
+                    $index = 0;
+                    foreach ($cartItemMergeVars as $mergeVar) {
+                        $item = $cartItems->get($index);
+                        if (is_null($item)) {
+                            continue;
+                        }
+                        $result[$mergeVar->getTag()] = $this->prepareCartItemsHtml($item, $index);
+                        $index++;
+                    }
+                }
             }
         }
         return $result;
@@ -88,16 +99,12 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
     }
 
     /**
-     * @param Cart $cart
+     * @param CartItem $item
      * @return string
      */
-    private function prepareCartItemsHtml(Cart $cart)
+    private function prepareCartItemsHtml(CartItem $item, $index)
     {
-        $cartItems = $cart->getCartItems();
-        if ($cartItems->isEmpty()) {
-            return '';
-        }
-        $html = $this->twig->render($this->cartItemsTemplate, array('cartItems' => $cartItems));
+        $html = $this->twig->render($this->cartItemsTemplate, array('item' => $item, 'index' => $index));
         return $html;
     }
 }
