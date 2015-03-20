@@ -77,14 +77,14 @@ class MailChimpExportCommandTest extends WebTestCase
         $this->assertEmpty($this->getJobs(MemberConnector::JOB_EXPORT, BatchStatus::FAILED));
         $this->assertEmpty($this->getJobs(StaticSegmentConnector::JOB_EXPORT, BatchStatus::FAILED));
 
-        // 1 member from data fixtures
-        $this->assertMembers(1);
+        // 2 members from data fixtures, second one should be unsubscribed
+        $this->assertMembers(2);
 
         // 1 segment with empty originId, should be subscribed
         $this->assertStaticSegment(1, 'assertEmpty');
 
         // 1 existing subscribed member
-        $this->assertStaticSegmentMembers(1);
+        $this->assertStaticSegmentMembers(2);
 
         $result = $this->runCommand(MailChimpExportCommand::NAME);
         $this->assertNotEmpty($result);
@@ -93,14 +93,15 @@ class MailChimpExportCommandTest extends WebTestCase
         $this->assertEmpty($this->getJobs(MemberConnector::JOB_EXPORT, BatchStatus::FAILED));
         $this->assertEmpty($this->getJobs(StaticSegmentConnector::JOB_EXPORT, BatchStatus::FAILED));
 
-        // 1 members from data fixtures + 1 from marketing list
-        $this->assertMembers(2);
+        // 2 members from data fixtures + 1 from marketing list
+        $this->assertMembers(3);
 
         // 1 subscribed segment
         $this->assertStaticSegment(1, 'assertNotEmpty');
 
-        // 1 existing subscribed member
-        $this->assertStaticSegmentMembers(1);
+        // 1 existing subscribed member, member2 excluded from ML and was dropped
+        // john.doe should be removed from segment as its not longer in ML
+        $this->assertStaticSegmentMembers(2, 'john.doe@example.com');
     }
 
     /**
@@ -130,12 +131,16 @@ class MailChimpExportCommandTest extends WebTestCase
 
     /**
      * @param int $count
+     * @param string|null $excludedEmail
      */
-    protected function assertStaticSegmentMembers($count)
+    protected function assertStaticSegmentMembers($count, $excludedEmail = null)
     {
         $staticSegmentMembers = $this->getStaticSegmentMember();
         $this->assertCount($count, $staticSegmentMembers);
         foreach ($staticSegmentMembers as $staticSegmentMember) {
+            if ($excludedEmail) {
+                $this->assertNotEquals($staticSegmentMember->getMember()->getEmail(), $excludedEmail);
+            }
             $this->assertEquals(StaticSegmentMember::STATE_SYNCED, $staticSegmentMember->getState());
         }
     }
