@@ -31,14 +31,14 @@ class LoadSegmentData extends AbstractMailChimpFixture
                 'filters' =>
                     [
                         [
-                            'columnName' => 'firstName',
+                            'columnName' => 'lastName',
                             'criterion' =>
                                 [
                                     'filter' => 'string',
                                     'data' =>
                                         [
-                                            'value' => 'John',
-                                            'type' => '2',
+                                            'value' => 'Case',
+                                            'type' => '1',
                                         ],
                                 ],
                         ],
