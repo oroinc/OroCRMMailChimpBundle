@@ -135,7 +135,8 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
 
                 $criteria = [
                     'entityId' => $entityId,
-                    'marketingList' => $marketingList->getId(),
+                    'entity' => $marketingList->getEntity(),
+                    'marketingList' => $marketingList->getId()
                 ];
 
                 if ($this->getMarketingListStateItem($criteria)) {

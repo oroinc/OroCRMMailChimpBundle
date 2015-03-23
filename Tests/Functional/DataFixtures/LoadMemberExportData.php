@@ -18,5 +18,13 @@ class LoadMemberExportData extends LoadMemberData
             'channel' => 'mailchimp:channel_1',
             'reference' => 'mailchimp:member',
         ],
+        [
+            'originId' => 210000003,
+            'email' => 'john.doe@example.com',
+            'status' => Member::STATUS_SUBSCRIBED,
+            'subscribersList' => 'mailchimp:subscribers_list_one',
+            'channel' => 'mailchimp:channel_1',
+            'reference' => 'mailchimp:member2',
+        ],
     ];
 }
