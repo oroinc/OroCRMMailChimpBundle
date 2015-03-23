@@ -1,1 +1,1 @@
-<div id="item_{{ index }}">{{ item.name }} ({{ item.qty }}) {{ item.price }} {{ item.rowTotal }}</div>
+<div id="item_{{ index }}"><div id="item_{{ index }}_name"><a href="{{ item.productUrl }}">{{ item.name }}</a></div> <div id="item_{{ index }}_qty">({{ item.qty }})</div> <div id="item_{{ index }}_price">{{ item.price|oro_format_currency({'currency': item.cart.storeCurrencyCode}) }}</div> <div id="item_{{ index }}_rowTotal">{{ item.rowTotal|oro_format_currency({'currency': item.cart.storeCurrencyCode}) }}</div></div>
