@@ -163,11 +163,6 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
      */
     protected function getMarketingListStateItem(array $criteria)
     {
-        $result = $this->doctrineHelper
-            ->getEntityManager($this->marketingListStateItemClassName)
-            ->getRepository($this->marketingListStateItemClassName)
-            ->findOneBy($criteria);
-
         return $this->doctrineHelper
             ->getEntityManager($this->marketingListStateItemClassName)
             ->getRepository($this->marketingListStateItemClassName)

@@ -5,10 +5,9 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
-class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterator
+class StaticSegmentMemberUnsubscribeDeleteStateIterator extends AbstractStaticSegmentIterator
 {
     /**
      * @var string
@@ -45,39 +44,23 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
                 [
                     'staticSegment.id static_segment_id',
                     'smmb.id member_id',
-                    $segmentMembersQb->expr()->literal(StaticSegmentMember::STATE_REMOVE) . ' state'
+                    $segmentMembersQb->expr()->literal(StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE) . ' state'
                 ]
             )
             ->from($this->segmentMemberClassName, 'segmentMember')
             ->join('segmentMember.member', 'smmb')
             ->join('segmentMember.staticSegment', 'staticSegment')
             ->andWhere($qb->expr()->eq('staticSegment.id', $staticSegment->getId()))
-            ->andWhere($segmentMembersQb->expr()->In('smmb.id', $qb->getDQL()));
-
-
+            ->andWhere($segmentMembersQb->expr()->NotIn('smmb.id', $qb->getDQL()));
 
         $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
         $bufferedIterator->setReverse(true);
 
-
         return $bufferedIterator;
     }
 
-    /**
-     * @param QueryBuilder $qb
-     */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
-        $from = $qb->getDQLPart('from');
-        $entityAlias = $from[0]->getAlias();
-
-        $qb
-            ->leftJoin(
-                'OroCRMMarketingListBundle:MarketingListRemovedItem',
-                'mlr',
-                Join::WITH,
-                "mlr.entityId = $entityAlias.id"
-            )
-            ->andWhere('mlr.id IS NOT NULL');
+        return;
     }
 }
