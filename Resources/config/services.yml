@@ -74,7 +74,6 @@ parameters:
     orocrm_mailchimp.connector.member_activity_unsubscribe.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberUnsubscribeActivityConnector
     orocrm_mailchimp.connector.static_segment.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector
     orocrm_mailchimp.connector.campaign.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\CampaignConnector
-    orocrm_mailchimp.connector.extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\ExtendedMergeVarConnector
 
     # Data Converter
     orocrm_mailchimp.importexport.data_converter.template.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\TemplateDataConverter
@@ -496,14 +495,6 @@ services:
             - [setEntityName, [%orocrm_mailchimp.entity.member_activity.class%]]
         tags:
             - { name: oro_integration.connector, type: member_activity_unsubscribe, channel_type: mailchimp }
-
-    orocrm_mailchimp.connector.extended_merge_var:
-        class: %orocrm_mailchimp.connector.extended_merge_var.class%
-        parent: orocrm_mailchimp.connector.abstract
-        calls:
-            - [setEntityName, [%orocrm_mailchimp.entity.extended_merge_var.class%]]
-        tags:
-            - { name: oro_integration.connector, type: extended_merge_var, channel_type: mailchimp }
 
     # Data Converter
     orocrm_mailchimp.importexport.data_converter.campaign:

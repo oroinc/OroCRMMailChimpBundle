@@ -152,6 +152,33 @@ connector:
             title: orocrm.mailchimp.job.member.export.label
             type:  export
             steps:
+                add_extended_merge_vars:
+                    title: export
+                    class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
+                    services:
+                        reader: orocrm_mailchimp.importexport.reader.extended_merge_var_add
+                        processor: orocrm_mailchimp.importexport.processor.extended_merge_var
+                        writer: oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 10
+                remove_extended_merge_vars:
+                    title: export
+                    class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
+                    services:
+                        reader: orocrm_mailchimp.importexport.reader.extended_merge_var_remove
+                        processor: orocrm_mailchimp.importexport.processor.extended_merge_var
+                        writer: oro_integration.writer.persistent_batch_writer
+                    parameters:
+                        batch_size: 10
+                export_extended_merge_vars:
+                    title: export
+                    class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
+                    services:
+                        reader: orocrm_mailchimp.importexport.reader.extended_merge_var_export
+                        processor: orocrm_mailchimp.importexport.processor.export_extended_merge_var
+                        writer: orocrm_mailchimp.importexport.writer.extended_merge_var
+                    parameters:
+                        batch_size: 10
                 process_data:
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
@@ -238,35 +265,3 @@ connector:
                         writer:    orocrm_mailchimp.importexport.writer.static_segment
                     parameters:
                         batch_size: 2000
-
-        mailchimp_extended_merge_var_export:
-            title: Extended MergeVar export
-            type: export
-            steps:
-                process_add:
-                    title: export
-                    class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
-                    services:
-                        reader: orocrm_mailchimp.importexport.reader.extended_merge_var_add
-                        processor: orocrm_mailchimp.importexport.processor.extended_merge_var
-                        writer: oro_integration.writer.persistent_batch_writer
-                    parameters:
-                        batch_size: 10
-                process_remove:
-                    title: export
-                    class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
-                    services:
-                        reader: orocrm_mailchimp.importexport.reader.extended_merge_var_remove
-                        processor: orocrm_mailchimp.importexport.processor.extended_merge_var
-                        writer: oro_integration.writer.persistent_batch_writer
-                    parameters:
-                        batch_size: 10
-                export:
-                    title: export
-                    class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
-                    services:
-                        reader: orocrm_mailchimp.importexport.reader.extended_merge_var_export
-                        processor: orocrm_mailchimp.importexport.processor.export_extended_merge_var
-                        writer: orocrm_mailchimp.importexport.writer.extended_merge_var
-                    parameters:
-                        batch_size: 10
