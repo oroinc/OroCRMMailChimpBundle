@@ -2,43 +2,46 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar;
 
+use Doctrine\ORM\Query\Expr\Select;
 use Doctrine\ORM\QueryBuilder;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 
 class QueryDecorator
 {
     /**
-     * @var FieldHelper
-     */
-    private $fieldHelper;
-
-    /**
-     * @param FieldHelper $fieldHelper
-     */
-    public function __construct(FieldHelper $fieldHelper)
-    {
-        $this->fieldHelper = $fieldHelper;
-    }
-
-    /**
      * @param QueryBuilder $queryBuilder
-     * @param StaticSegment $staticSegment
+     * @return void
      */
-    public function decorate(QueryBuilder $queryBuilder, StaticSegment $staticSegment)
+    public function decorate(QueryBuilder $queryBuilder)
     {
-        if ($staticSegment->getExtendedMergeVars()) {
-            $marketingList = $staticSegment->getMarketingList();
-            foreach ($staticSegment->getExtendedMergeVars() as $var) {
-                if (false !== strpos($var->getName(), 'item_')) {
-                    continue;
-                }
-                $varFieldExpr = $this->fieldHelper
-                    ->getFieldExpr(
-                        $marketingList->getEntity(), $queryBuilder, $var->getName()
-                    );
-                $queryBuilder->addSelect($varFieldExpr . ' AS ' . $var->getNameWithPrefix());
+        /** @var Select[] $selects */
+        $selects = $queryBuilder->getDQLPart('select');
+        $selectParts = array();
+        foreach ($selects as $select) {
+            $parts = $select->getParts();
+            $selectParts = array_merge($selectParts, $parts);
+        }
+        $queryBuilder->resetDQLPart('select');
+        $rootAliases = $queryBuilder->getRootAliases();
+        $rootAlias = reset($rootAliases);
+        foreach ($selectParts as $each) {
+
+            $exprParts = explode(' ', $each);
+
+            $columnWithAlias = $exprParts[0];
+
+            $alias = $rootAlias;
+            $columnName = $columnWithAlias;
+
+            if (strpos($columnWithAlias, '.')) {
+                list($alias, $columnName) = explode('.', $columnWithAlias);
             }
+
+            if ($alias == $rootAlias && $columnName == 'id') {
+                continue;
+            }
+
+            $queryBuilder->addSelect($each);
+            $queryBuilder->addSelect(sprintf('%s', $columnWithAlias));
         }
     }
 }

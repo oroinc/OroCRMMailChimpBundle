@@ -87,9 +87,9 @@ class MmbrExtdMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
         );
 
         $importedRecord = array(
-            'e_fName' => 'John',
-            'e_lName' => 'Doe',
-            'e_email' => 'john.doe@email.com',
+            'fName' => 'John',
+            'lName' => 'Doe',
+            'email' => 'john.doe@email.com',
             'invalid_var' => 'value',
             'extended_merge_vars' => $vars
         );

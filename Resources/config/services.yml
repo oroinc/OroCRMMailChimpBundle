@@ -974,5 +974,3 @@ services:
 
     orocrm_mailchimp.extended_merge_var.query_decorator:
         class: %orocrm_mailchimp.extended_merge_var.query_decorator.class%
-        arguments:
-            - @orocrm_mailchimp.model.field_helper
