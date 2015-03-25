@@ -85,6 +85,18 @@ During segment export we have 4 steps
  - **handle_unsubscribe_state**: Will unsubscribe members from List at MailChimp
  - **handle_delete_state**: Will delete members from List at MailChimp
 
+## Extended Merge Vars ##
+
+Extended Merge Vars is a functionality to add MailChimp Merge Vars. 
+Merge Vars creates from the definition of the Segment of the MarketingList. 
+Merge Var is equal to column in the Segment definition. Then Merge Vars could be used to personalize MailChimp email templates.
+During export next steps executes:
+
+ - creates Extended Merge Vars from the Segment definition
+ - creates MailChimp Merge Vars and export its values to every MailChimp subscriber in the list
+
+Predefined cart item Merge Vars adds if Segment built on Shopping Cart entity. For now it limits to 3 cart items.
+
 ## Known Issues
 
 Email Campaign Statistics and MailChimp Statistics may differ. Email Campaign Statistics is calculated based on 
