@@ -78,6 +78,13 @@ First, all the Marketing List members are checked for subscription to the MailCh
 After that, all the Marketing List members absent in the Static Segment are scheduled for a mass add to the segment.
 All the members present in the Static Segment but absent in the Marketing List are scheduled for removal from the Static Segment.
 
+During segment export we have 4 steps
+
+ - **handle_add_state**: Will add new member to MailChimp
+ - **handle_remove_state**: Will remove members from Segment at MailChimp
+ - **handle_unsubscribe_state**: Will unsubscribe members from List at MailChimp
+ - **handle_delete_state**: Will delete members from List at MailChimp
+
 ## Known Issues
 
 Email Campaign Statistics and MailChimp Statistics may differ. Email Campaign Statistics is calculated based on 
