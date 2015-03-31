@@ -73,12 +73,21 @@ class MemberWriter extends AbstractExportWriter
                 )
                 ->first();
 
-            $member
-                ->setEuid($emailData['euid'])
-                ->setLeid($emailData['leid'])
-                ->setStatus(Member::STATUS_SUBSCRIBED);
+            if ($member) {
+                $member
+                    ->setEuid($emailData['euid'])
+                    ->setLeid($emailData['leid'])
+                    ->setStatus(Member::STATUS_SUBSCRIBED);
 
-            $itemsToWrite[] = $member;
+                $itemsToWrite[] = $member;
+            } elseif ($this->logger) {
+                $this->logger->info(
+                    sprintf(
+                        'A member with "%s" email was not found',
+                        $emailData['email']
+                    )
+                );
+            }
         }
 
         return $itemsToWrite;
