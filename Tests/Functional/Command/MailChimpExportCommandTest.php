@@ -86,8 +86,11 @@ class MailChimpExportCommandTest extends WebTestCase
         // 1 existing subscribed member
         $this->assertStaticSegmentMembers(2);
 
-        $result = $this->runCommand(MailChimpExportCommand::NAME);
+        $result = $this->runCommand(MailChimpExportCommand::NAME, ['--verbose' => true]);
         $this->assertNotEmpty($result);
+
+        // unknown email should be ignored
+        $this->assertContains('A member with "miranda.case@example.com" email was not found', $result);
 
         // no failed jobs
         $this->assertEmpty($this->getJobs(MemberConnector::JOB_EXPORT, BatchStatus::FAILED));
@@ -160,7 +163,13 @@ class MailChimpExportCommandTest extends WebTestCase
                             'leid' => time(),
                         ]
                     ],
-                    'updates' => [],
+                    'updates' => [
+                        [   // used to test a case when returned my MailChimp email does not exist in Oro
+                            'email' => 'miranda.case@example.com',
+                            'euid' => null,
+                            'leid' => null
+                        ]
+                    ],
                     'add_count' => 1,
                     'update_count' => 0,
                     'error_count' => 0,
