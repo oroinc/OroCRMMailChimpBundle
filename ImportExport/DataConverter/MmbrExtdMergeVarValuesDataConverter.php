@@ -41,8 +41,8 @@ class MmbrExtdMergeVarValuesDataConverter implements DataConverterInterface
                     'Each element in extended_merge_vars array should be ExtendedMergeVar object.'
                 );
             }
-            if (isset($importedRecord[$each->getNameWithPrefix()])) {
-                $result[$each->getTag()] = $importedRecord[$each->getNameWithPrefix()];
+            if (isset($importedRecord[$each->getName()])) {
+                $result[$each->getTag()] = $importedRecord[$each->getName()];
             }
         }
 

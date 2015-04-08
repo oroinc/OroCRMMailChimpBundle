@@ -86,9 +86,7 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsToSync($segments);
 
         $exportJobs = [
-            ExtendedMergeVarConnector::TYPE => ExtendedMergeVarConnector::JOB_EXPORT,
             MemberConnector::TYPE => MemberConnector::JOB_EXPORT,
-//            'mmbr_extd_merge_var' => 'mailchimp_extended_merge_var_member_values_export',
             StaticSegmentConnector::TYPE => StaticSegmentConnector::JOB_EXPORT
         ];
 

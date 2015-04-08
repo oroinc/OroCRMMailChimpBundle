@@ -3,11 +3,14 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query\Expr\Join;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\QueryDecorator;
+use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
 {
@@ -33,6 +36,8 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         }
 
         $qb = $this->getIteratorQueryBuilder($staticSegment);
+        $this->queryDecorator->decorate($qb);
+
         $marketingList = $staticSegment->getMarketingList();
         $fieldExpr = $this->fieldHelper
             ->getFieldExpr(
@@ -41,8 +46,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         $qb->addSelect($fieldExpr . ' AS entity_id');
         $qb->addSelect(self::MEMBER_ALIAS . '.id AS member_id');
         $qb->addSelect($qb->expr()->literal(MemberExtendedMergeVar::STATE_ADD) . ' state');
-
-        $this->queryDecorator->decorate($qb, $staticSegment);
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
@@ -61,5 +64,74 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
                 return true;
             }
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
+    {
+        if (!$this->memberClassName) {
+            throw new \InvalidArgumentException('Member class name must be provided');
+        }
+
+        $marketingList = $staticSegment->getMarketingList();
+
+        if ($marketingList->isManual()) {
+            $mixin = MarketingListProvider::MANUAL_RESULT_ENTITIES_MIXIN;
+        } else {
+            $mixin = MarketingListProvider::RESULT_ENTITIES_MIXIN;
+        }
+
+        $qb = clone $this->marketingListProvider->getMarketingListQueryBuilder($marketingList, $mixin);
+
+        $this->prepareIteratorPart($qb);
+
+        $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
+            $marketingList,
+            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
+        );
+
+        $expr = $qb->expr()->orX();
+        foreach ($contactInformationFields as $contactInformationField) {
+            $contactInformationFieldExpr = $this->fieldHelper
+                ->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField);
+
+            $expr->add(
+                $qb->expr()->eq(
+                    $contactInformationFieldExpr,
+                    sprintf('%s.%s', self::MEMBER_ALIAS, self::MEMBER_EMAIL_FIELD)
+                )
+            );
+        }
+
+        $organization = $staticSegment->getChannel()->getOrganization();
+        $metadata = $this->ownershipMetadataProvider->getMetadata($marketingList->getEntity());
+
+        if ($organization && $fieldName = $metadata->getOrganizationFieldName()) {
+            $aliases = $qb->getRootAliases();
+            $qb->andWhere(
+                $qb->expr()->eq(
+                    sprintf('%s.%s', reset($aliases), $fieldName),
+                    ':organization'
+                )
+            );
+
+            $qb->setParameter('organization', $organization);
+        }
+
+        $qb
+            ->leftJoin(
+                $this->memberClassName,
+                self::MEMBER_ALIAS,
+                Join::WITH,
+                $qb->expr()->andX(
+                    $expr,
+                    $qb->expr()->eq(sprintf('%s.subscribersList', self::MEMBER_ALIAS), ':subscribersList')
+                )
+            )
+            ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId());
+
+        return $qb;
     }
 }
