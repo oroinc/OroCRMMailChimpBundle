@@ -38,6 +38,8 @@
             'iCss': 'icon-edit'
         }) }}
 
+        {% placeholder mailchimp_workflow_button with {entity: marketingList} %}
+
         <li>
             {{  UI.deleteLink({
                 'dataUrl': path('orocrm_api_delete_staticsegment', {id: staticSegment.id}),
