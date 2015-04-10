@@ -42,7 +42,6 @@ class MmbrExtdMergeVarExportReader extends AbstractIteratorBasedReader
     protected function initializeFromContext(ContextInterface $context)
     {
         if (!$this->getSourceIterator()) {
-
             if (!$this->mmbrExtdMergeVarClassName) {
                 throw new InvalidConfigurationException('MemberExtendedMergeVar class name must be provided');
             }

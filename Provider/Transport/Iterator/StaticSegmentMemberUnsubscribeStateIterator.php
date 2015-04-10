@@ -78,6 +78,4 @@ class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentI
             )
             ->andWhere('mlu.id IS NOT NULL');
     }
-
-
 }

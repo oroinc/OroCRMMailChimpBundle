@@ -55,8 +55,13 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             true
         );
 
-        $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems,
-            $unsubscribedItems, $unsubscribedDeletedItems);
+        $itemsToWrite = array_merge(
+            $itemsToWrite,
+            $addedItems,
+            $removedItems,
+            $unsubscribedItems,
+            $unsubscribedDeletedItems
+        );
 
         parent::write($itemsToWrite);
     }
@@ -93,8 +98,13 @@ class StaticSegmentExportWriter extends AbstractExportWriter
      * @param bool $deleteMember
      * @return array
      */
-    public function handleMembersUpdate(StaticSegment $staticSegment, $segmentStateFilter, $method,
-                                        $itemState, $deleteMember = false)
+    public function handleMembersUpdate(
+        StaticSegment $staticSegment,
+        $segmentStateFilter,
+        $method,
+        $itemState,
+        $deleteMember = false
+    )
     {
         $itemsToWrite = [];
 

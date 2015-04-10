@@ -41,7 +41,9 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         $marketingList = $staticSegment->getMarketingList();
         $fieldExpr = $this->fieldHelper
             ->getFieldExpr(
-                $marketingList->getEntity(), $qb, 'id'
+                $marketingList->getEntity(),
+                $qb,
+                'id'
             );
         $qb->addSelect($fieldExpr . ' AS entity_id');
         $qb->addSelect(self::MEMBER_ALIAS . '.id AS member_id');

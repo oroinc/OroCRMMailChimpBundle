@@ -24,7 +24,6 @@ class QueryDecorator
         $rootAliases = $queryBuilder->getRootAliases();
         $rootAlias = reset($rootAliases);
         foreach ($selectParts as $each) {
-
             $exprParts = explode(' ', $each);
 
             $columnWithAlias = $exprParts[0];

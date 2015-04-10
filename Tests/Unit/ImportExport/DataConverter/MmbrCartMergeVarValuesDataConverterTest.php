@@ -47,7 +47,9 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
         $this->twig = $this->getMockBuilder('\Twig_Environment')->getMock();
         $this->template = 'cartItems.txt.twig';
         $this->converter = new MmbrCartMergeVarValuesDataConverter(
-            $this->doctrineHelper, $this->twig, $this->template
+            $this->doctrineHelper,
+            $this->twig,
+            $this->template
         );
         $this->entityRepository = $this
             ->getMockBuilder('Doctrine\ORM\EntityRepository')
@@ -62,7 +64,9 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
     public function testObjectInitializationWheTemplateIsNotString()
     {
         new MmbrCartMergeVarValuesDataConverter(
-            $this->doctrineHelper, $this->twig, []
+            $this->doctrineHelper,
+            $this->twig,
+            []
         );
     }
 
@@ -73,7 +77,9 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
     public function testObjectInitializationWhenTemplaIsEmptyString()
     {
         new MmbrCartMergeVarValuesDataConverter(
-            $this->doctrineHelper, $this->twig, ''
+            $this->doctrineHelper,
+            $this->twig,
+            ''
         );
     }
 
