@@ -90,7 +90,7 @@ parameters:
     orocrm_mailchimp.importexport.data_converter.extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\ExtendedMergeVarDataConverter
     orocrm_mailchimp.importexport.data_converter.mmbr_extd_merge_var_values.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MmbrExtdMergeVarValuesDataConverter
     orocrm_mailchimp.importexport.data_converter.mmbr_cart_merge_var_values.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MmbrCartMergeVarValuesDataConverter
-    orocrm_mailchimp.importexport.data_converter.mmbr_extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MmbrExtdMergeVarDataconverter
+    orocrm_mailchimp.importexport.data_converter.mmbr_extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MmbrExtdMergeVarDataConverter
 
     # Import Processors
     orocrm_mailchimp.importexport.processor.import.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Processor\ImportProcessor
