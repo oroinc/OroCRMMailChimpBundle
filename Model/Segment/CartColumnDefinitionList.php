@@ -23,28 +23,28 @@ class CartColumnDefinitionList implements ColumnDefinitionListInterface
      */
     public function __construct(ColumnDefinitionListInterface $columnDefinitionList)
     {
-        $this->columns = array();
+        $this->columns = [];
         $this->columns = array_merge(
             $columnDefinitionList->getColumns(),
-            array(
-                array(
+            [
+                [
                     'name' => self::CART_ITEM_1_NAME,
                     'label' => self::CART_ITEM_1_LABEL
-                ),
-                array(
+                ],
+                [
                     'name' => self::CART_ITEM_2_NAME,
                     'label' => self::CART_ITEM_2_LABEL
-                ),
-                array(
+                ],
+                [
                     'name' => self::CART_ITEM_3_NAME,
                     'label' => self::CART_ITEM_3_LABEL
-                ),
-            )
+                ],
+            ]
         );
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getColumns()
     {

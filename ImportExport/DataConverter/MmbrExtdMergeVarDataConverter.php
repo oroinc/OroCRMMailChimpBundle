@@ -21,7 +21,7 @@ class MmbrExtdMergeVarDataConverter extends AbstractTableDataConverter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
@@ -33,20 +33,20 @@ class MmbrExtdMergeVarDataConverter extends AbstractTableDataConverter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getHeaderConversionRules()
     {
-        return array(
+        return [
             'static_segment_id' => 'staticSegment:id',
             'member_id' => 'member:id',
             'merge_var_values' => 'mergeVarValues',
             'state' => 'state'
-        );
+        ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getBackendHeader()
     {

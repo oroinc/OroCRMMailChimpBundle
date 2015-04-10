@@ -14,7 +14,7 @@ class DecisionHandler
 
     public function __construct()
     {
-        $this->allowedSources = array();
+        $this->allowedSources = [];
     }
 
     /**

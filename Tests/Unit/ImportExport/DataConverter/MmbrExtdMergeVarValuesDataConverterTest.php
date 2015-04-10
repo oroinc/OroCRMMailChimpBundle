@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\ImportExport\DataConverter;
 
 use Doctrine\Common\Collections\ArrayCollection;
+
 use Oro\Bundle\ImportExportBundle\Converter\DataConverterInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MmbrExtdMergeVarValuesDataConverter;
@@ -40,15 +41,13 @@ class MmbrExtdMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
 
         $result = $this->converter
             ->convertToImportFormat(
-                array(
-                    'extended_merge_vars' => new ArrayCollection(array())
-                )
+                ['extended_merge_vars' => new ArrayCollection([])]
             );
 
         $this->assertTrue(is_array($result));
         $this->assertEmpty($result);
 
-        $result = $this->converter->convertToImportFormat(array('name' => array()));
+        $result = $this->converter->convertToImportFormat(['name' => []]);
 
         $this->assertTrue(is_array($result));
         $this->assertEmpty($result);
@@ -61,9 +60,7 @@ class MmbrExtdMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
     public function testConvertToImportFormatWhenExtendedMergeVarsInvalid()
     {
         $this->converter->convertToImportFormat(
-            array(
-                'extended_merge_vars' => new ArrayCollection(array(new \StdClass()))
-            )
+            ['extended_merge_vars' => new ArrayCollection([new \StdClass()])]
         );
     }
 
@@ -78,21 +75,21 @@ class MmbrExtdMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
         $emailVar->setName('email');
         $nonExistentVar->setName('nonExistent');
         $vars = new ArrayCollection(
-            array(
+            [
                 $firstNameVar,
                 $lastNameVar,
                 $emailVar,
                 $nonExistentVar
-            )
+            ]
         );
 
-        $importedRecord = array(
+        $importedRecord = [
             'fName' => 'John',
             'lName' => 'Doe',
             'email' => 'john.doe@email.com',
             'invalid_var' => 'value',
             'extended_merge_vars' => $vars
-        );
+        ];
 
         $result = $this->converter->convertToImportFormat($importedRecord);
 

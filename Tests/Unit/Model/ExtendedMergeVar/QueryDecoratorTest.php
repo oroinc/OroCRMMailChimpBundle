@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\ExtendedMergeVar;
 
 use Doctrine\ORM\Query\Expr\Select;
 use Doctrine\ORM\QueryBuilder;
+
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\QueryDecorator;
 
 class QueryDecoratorTest extends \PHPUnit_Framework_TestCase
@@ -30,13 +31,13 @@ class QueryDecoratorTest extends \PHPUnit_Framework_TestCase
 
     public function testDecorate()
     {
-        $selects = array(
+        $selects = [
             new Select('t1.email as c1'),
             new Select('t1.fname as c2'),
             new Select('t1.id'),
             new Select('t1.lname as c3'),
             new Select('name')
-        );
+        ];
         $this->queryBuilder->expects($this->once())->method('getDQLPart')
             ->with('select')->will($this->returnValue($selects));
         $this->queryBuilder->expects($this->once())->method('resetDQLPart')->with('select');

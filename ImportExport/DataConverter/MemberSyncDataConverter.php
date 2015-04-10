@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;

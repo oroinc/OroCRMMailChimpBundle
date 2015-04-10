@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
 use Doctrine\Common\Collections\Collection;
+
 use Oro\Bundle\ImportExportBundle\Converter\DataConverterInterface;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 
@@ -22,18 +23,18 @@ class MmbrExtdMergeVarValuesDataConverter implements DataConverterInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
         if (false === isset($importedRecord['extended_merge_vars'])) {
-            return array();
+            return [];
         }
         $extendedMergeVars = $importedRecord['extended_merge_vars'];
         if (false === ($extendedMergeVars instanceof Collection)) {
-            return array();
+            return [];
         }
-        $result = array();
+        $result = [];
         /** @var ExtendedMergeVar $each */
         foreach ($extendedMergeVars as $each) {
             if (false === ($each instanceof ExtendedMergeVar)) {
@@ -55,7 +56,7 @@ class MmbrExtdMergeVarValuesDataConverter implements DataConverterInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function convertToExportFormat(array $exportedRecord, $skipNullValues = true)
     {

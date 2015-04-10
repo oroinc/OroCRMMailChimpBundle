@@ -39,7 +39,7 @@ class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
     {
         /** @var Segment $segment */
         $segment = $this->getMockBuilder('Oro\Bundle\SegmentBundle\Entity\Segment')->getMock();
-        $definition = json_encode(array('filters' => array()));
+        $definition = json_encode(['filters' => []]);
         $segment->expects($this->once())->method('getDefinition')->will($this->returnValue($definition));
 
         $list = new ColumnDefinitionList($segment);
@@ -53,11 +53,11 @@ class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
         $segment = $this->getMockBuilder('Oro\Bundle\SegmentBundle\Entity\Segment')->getMock();
 
         $definition = json_encode(array(
-            'columns' => array(
-                array('name' => 'email', 'func' => null),
-                array('name' => 'total', 'label' => 'Total', 'func' => null)
-            ),
-            'filters' => array()
+            'columns' => [
+                ['name' => 'email', 'func' => null],
+                ['name' => 'total', 'label' => 'Total', 'func' => null]
+            ],
+            'filters' => []
         ));
 
         $segment->expects($this->once())->method('getDefinition')->will($this->returnValue($definition));
@@ -99,12 +99,12 @@ class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
 
     private function getCorrectSegmentDefinition()
     {
-        return array(
-            'columns' => array(
-                array('name' => 'email', 'label' => 'Email', 'func' => null),
-                array('name' => 'total', 'label' => 'Total', 'func' => null)
-            ),
-            'filters' => array()
-        );
+        return [
+            'columns' => [
+                ['name' => 'email', 'label' => 'Email', 'func' => null],
+                ['name' => 'total', 'label' => 'Total', 'func' => null]
+            ],
+            'filters' => []
+        ];
     }
 }

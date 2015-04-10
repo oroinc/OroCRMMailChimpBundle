@@ -16,7 +16,7 @@ class ColumnDefinitionList implements ColumnDefinitionListInterface
      */
     public function __construct(Segment $segment)
     {
-        $this->columns = array();
+        $this->columns = [];
         $definition = json_decode($segment->getDefinition(), true);
         if (false === is_null($definition)) {
             $this->initialize($definition);
@@ -49,7 +49,7 @@ class ColumnDefinitionList implements ColumnDefinitionListInterface
         if (false === isset($column['name']) || false ===  isset($column['label'])) {
             return null;
         }
-        return array('name' => $column['name'], 'label' => $column['label']);
+        return ['name' => $column['name'], 'label' => $column['label']];
     }
 
     /**

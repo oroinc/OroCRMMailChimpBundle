@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\ImportExport\DataConverter;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
+
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MagentoBundle\Entity\Cart;
 use OroCRM\Bundle\MagentoBundle\Entity\CartItem;
@@ -61,7 +62,7 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
     public function testObjectInitializationWheTemplateIsNotString()
     {
         new MmbrCartMergeVarValuesDataConverter(
-            $this->doctrineHelper, $this->twig, array()
+            $this->doctrineHelper, $this->twig, []
         );
     }
 
@@ -80,17 +81,13 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
     {
         $cartItemsVar = new ExtendedMergeVar();
         $cartItemsVar->setName('cartItems');
-        $vars = new ArrayCollection(
-            array(
-                $cartItemsVar
-            )
-        );
+        $vars = new ArrayCollection([$cartItemsVar]);
 
-        $importedRecord = array(
+        $importedRecord = [
             'entityClass' => 'Entity',
             'e_fName' => 'John',
             'extended_merge_vars' => $vars
-        );
+        ];
 
         $this->doctrineHelper->expects($this->never())->method('getEntityRepository');
         $this->entityRepository->expects($this->never())->method('find');
@@ -108,14 +105,14 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
         $cartItemsVar->setName('item_1');
         $vars = new ArrayCollection(array($cartItemsVar));
 
-        $importedRecord = array(
+        $importedRecord = [
             'entity_id' => 1,
             'entityClass' => 'Entity',
             'e_fName' => 'John',
             'e_lName' => 'Doe',
             'e_email' => 'john.doe@email.com',
             'extended_merge_vars' => $vars
-        );
+        ];
 
         $this->doctrineHelper->expects($this->once())->method('getEntityRepository')
             ->with('Entity')->will($this->returnValue($this->entityRepository));
@@ -134,14 +131,14 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
         $cartItemsVar->setName('item_1');
         $vars = new ArrayCollection(array($cartItemsVar));
 
-        $importedRecord = array(
+        $importedRecord = [
             'entity_id' => 1,
             'entityClass' => 'Entity',
             'e_fName' => 'John',
             'e_lName' => 'Doe',
             'e_email' => 'john.doe@email.com',
             'extended_merge_vars' => $vars
-        );
+        ];
 
         $cart = new Cart();
 
@@ -166,31 +163,27 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
         $firstCartItemVar->setName('item_1');
         $secondCartItemVar->setName('item_2');
         $vars = new ArrayCollection(
-            array(
+            [
                 $firstNameVar,
                 $firstCartItemVar,
                 $secondCartItemVar
-            )
+            ]
         );
 
-        $importedRecord = array(
+        $importedRecord = [
             'entity_id' => 1,
             'entityClass' => 'Entity',
             'e_fName' => 'John',
             'e_lName' => 'Doe',
             'e_email' => 'john.doe@email.com',
             'extended_merge_vars' => $vars
-        );
+        ];
 
         $cart = new Cart();
         $cartItem1 = new CartItem();
         $cartItem2 = new CartItem();
-        $cartItems = new ArrayCollection(
-            array(
-                $cartItem1,
-                $cartItem2
-            )
-        );
+        $cartItems = new ArrayCollection([$cartItem1, $cartItem2]);
+
         $cart->setCartItems($cartItems);
 
         $this->doctrineHelper->expects($this->once())->method('getEntityRepository')
@@ -199,11 +192,11 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
         $this->entityRepository->expects($this->once())->method('find')->with(1)->will($this->returnValue($cart));
 
         $this->twig->expects($this->at(0))->method('render')
-            ->with($this->template, array('item' => $cartItem1, 'index' => 0))
+            ->with($this->template, ['item' => $cartItem1, 'index' => 0])
             ->will($this->returnValue('rendered_html_of_cart_item_1'));
 
         $this->twig->expects($this->at(1))->method('render')
-            ->with($this->template, array('item' => $cartItem2, 'index' => 1))
+            ->with($this->template, ['item' => $cartItem2, 'index' => 1])
             ->will($this->returnValue('rendered_html_of_cart_item_2'));
 
         $result = $this->converter->convertToImportFormat($importedRecord);

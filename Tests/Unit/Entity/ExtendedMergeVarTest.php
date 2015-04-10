@@ -2,8 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+
+use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 
 class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 {
@@ -88,12 +89,12 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 
     public function setNameDataProvider()
     {
-        return array(
-            array(''),
-            array(123),
-            array(array()),
-            array(new \ArrayIterator(array()))
-        );
+        return [
+            [''],
+            [123],
+            [[]],
+            [new \ArrayIterator([])]
+        ];
     }
 
     public function testSetAndGetName()
@@ -121,11 +122,11 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 
     public function tagGenerationDataProvider()
     {
-        return array(
-            array('total', ExtendedMergeVar::TAG_PREFIX . 'TOTAL'),
-            array('entity_total', ExtendedMergeVar::TAG_PREFIX . 'NTTY_TTL'),
-            array('anyEntityAttr', ExtendedMergeVar::TAG_PREFIX . 'NYNTTYTT')
-        );
+        return [
+            ['total', ExtendedMergeVar::TAG_PREFIX . 'TOTAL'],
+            ['entity_total', ExtendedMergeVar::TAG_PREFIX . 'NTTY_TTL'],
+            ['anyEntityAttr', ExtendedMergeVar::TAG_PREFIX . 'NYNTTYTT']
+        ];
     }
 
     public function testIsAddState()

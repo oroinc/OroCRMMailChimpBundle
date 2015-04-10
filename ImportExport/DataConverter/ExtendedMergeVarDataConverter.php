@@ -7,20 +7,20 @@ use Oro\Bundle\ImportExportBundle\Converter\AbstractTableDataConverter;
 class ExtendedMergeVarDataConverter extends AbstractTableDataConverter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getHeaderConversionRules()
     {
-        return array(
+        return [
             'name' => 'name',
             'label' => 'label',
             'static_segment_id' => 'staticSegment:id',
             'state' => 'state'
-        );
+        ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getBackendHeader()
     {

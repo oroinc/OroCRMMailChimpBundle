@@ -65,10 +65,10 @@ class MmbrExtdMergeVarExportIterator extends AbstractSubordinateIterator impleme
             ->andWhere($qb->expr()->eq('mmbrExtdMergeVar.staticSegment', ':staticSegment'))
             ->andWhere($qb->expr()->notIn('mmbrExtdMergeVar.state', ':states'))
             ->setParameters(
-                array(
+                [
                     'staticSegment' => $staticSegment,
-                    'states' => array(ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_DROPPED)
-                )
+                    'states' => [ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_DROPPED]
+                ]
             )
             ->orderBy('mmbrExtdMergeVar.member');
 

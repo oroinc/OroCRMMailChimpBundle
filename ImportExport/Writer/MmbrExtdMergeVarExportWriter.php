@@ -4,19 +4,8 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\AddMergeVars;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\Handler;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\RemoveMergeVars;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\UpdateMergeVars;
-use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
 {
@@ -33,7 +22,7 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
 
         $items = new ArrayCollection($items);
 
-        $itemsToWrite = array();
+        $itemsToWrite = [];
 
         $addedItems = $this->set($items);
 
@@ -55,18 +44,18 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
         $items = $items->filter($this->addedItemsFilter());
 
         if ($items->isEmpty()) {
-            return array();
+            return [];
         }
 
-        $successItems = array();
+        $successItems = [];
         /** @var MemberExtendedMergeVar $mmbrExtdMergeVar */
         foreach ($items as $mmbrExtdMergeVar) {
             $response = $this->transport->updateListMember(
-                array(
+                [
                     'id' => $mmbrExtdMergeVar->getStaticSegment()->getSubscribersList()->getOriginId(),
-                    'email' => array('email' => $mmbrExtdMergeVar->getMember()->getEmail()),
+                    'email' => ['email' => $mmbrExtdMergeVar->getMember()->getEmail()],
                     'merge_vars' => $mmbrExtdMergeVar->getMergeVarValues()
-                )
+                ]
             );
 
             if (is_array($response)) {

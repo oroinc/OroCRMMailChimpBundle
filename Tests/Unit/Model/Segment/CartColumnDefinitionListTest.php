@@ -22,12 +22,12 @@ class CartColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
         $this->columnDefinitionList = $this
             ->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListInterface')
             ->getMock();
-        $columns = array(
-            array(
+        $columns = [
+            [
                 'name' => 'fname',
                 'label' => 'First Name'
-            )
-        );
+            ]
+        ];
         $this->columnDefinitionList->expects($this->once())->method('getColumns')
             ->will($this->returnValue($columns));
         $this->cartColumnDefinitionList = new CartColumnDefinitionList($this->columnDefinitionList);

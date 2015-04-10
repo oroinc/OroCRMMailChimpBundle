@@ -15,7 +15,7 @@ class QueryDecorator
     {
         /** @var Select[] $selects */
         $selects = $queryBuilder->getDQLPart('select');
-        $selectParts = array();
+        $selectParts = [];
         foreach ($selects as $select) {
             $parts = $select->getParts();
             $selectParts = array_merge($selectParts, $parts);

@@ -102,6 +102,9 @@ class ExtendedMergeVar
      */
     protected $state;
 
+    /**
+     * Initialize default values for the entity
+     */
     public function __construct()
     {
         $this->require = false;

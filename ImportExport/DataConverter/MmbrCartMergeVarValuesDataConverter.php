@@ -3,12 +3,11 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
 use Doctrine\Common\Collections\Collection;
+
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Converter\DataConverterInterface;
 use OroCRM\Bundle\MagentoBundle\Entity\Cart;
 use OroCRM\Bundle\MagentoBundle\Entity\CartItem;
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\Model\Segment\CartColumnDefinitionList;
 
 class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
 {
@@ -23,7 +22,7 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
     private $twig;
 
     /**
-     * @vars string
+     * @var string
      */
     private $cartItemsTemplate;
 
@@ -43,27 +42,24 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
         if (false === isset($importedRecord['extended_merge_vars'])) {
-            return array();
+            return [];
         }
         /** @var Collection $extendedMergeVars */
         $extendedMergeVars = $importedRecord['extended_merge_vars'];
         if (false === ($extendedMergeVars instanceof Collection)) {
-            return array();
+            return [];
         }
 
-        $result = array();
+        $result = [];
 
         /** @var Collection $cartItemMergeVars */
         $cartItemMergeVars = $extendedMergeVars->filter(function ($each) {
-            if (false !== strpos($each->getName(), 'item_')) {
-                return true;
-            }
-            return false;
+            return false !== strpos($each->getName(), 'item_');
         });
 
         if (!$cartItemMergeVars->isEmpty() && isset($importedRecord['entity_id'])) {
@@ -91,7 +87,7 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function convertToExportFormat(array $exportedRecord, $skipNullValues = true)
     {
@@ -104,7 +100,7 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
      */
     private function prepareCartItemsHtml(CartItem $item, $index)
     {
-        $html = $this->twig->render($this->cartItemsTemplate, array('item' => $item, 'index' => $index));
+        $html = $this->twig->render($this->cartItemsTemplate, ['item' => $item, 'index' => $index]);
         return $html;
     }
 }

@@ -2,9 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 
 class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
@@ -88,11 +88,11 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
         $qb->andWhere($qb->expr()->in('extendedMergeVar.name', ':vars'));
         $qb->andWhere($qb->expr()->notIn('extendedMergeVar.state', ':states'));
         $qb->setParameters(
-            array(
+            [
                 'staticSegment' => $staticSegment,
                 'vars' => $vars,
-                'states' => array(ExtendedMergeVar::STATE_REMOVE, ExtendedMergeVar::STATE_DROPPED)
-            )
+                'states' => [ExtendedMergeVar::STATE_REMOVE, ExtendedMergeVar::STATE_DROPPED]
+            ]
         );
 
         $existingVars = array_map(

@@ -67,7 +67,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
     {
