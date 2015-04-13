@@ -8,10 +8,12 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\AutomationCampaignIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberAbuseIterator;
@@ -120,6 +122,36 @@ class MailChimpTransport implements TransportInterface
         $filters['exact'] = false;
 
         return new CampaignIterator($this->client, $filters);
+    }
+
+    public function getAutomationCampaigns(Channel $channel, $status = null, $usesSegment = null)
+    {
+        $filters = [];
+        if (null !== $usesSegment) {
+            $filters['uses_segment'] = (bool)$usesSegment;
+        }
+
+        $filters['type'] = Campaign::TYPE_AUTO;
+
+        // Synchronize only campaigns that are connected to subscriber lists that are used within OroCRM.
+        $staticSegments = $this->managerRegistry
+            ->getRepository('OroCRMMailChimpBundle:StaticSegment')
+            ->getStaticSegmentsToSync([], $channel);
+
+        $listsToSynchronize = [];
+        foreach ($staticSegments as $staticSegment) {
+            $listsToSynchronize[] = $staticSegment->getSubscribersList()->getOriginId();
+        }
+        $listsToSynchronize = array_unique($listsToSynchronize);
+
+        if (!$listsToSynchronize) {
+            return new \ArrayIterator();
+        }
+
+        $filters['list_id'] = implode(',', $listsToSynchronize);
+        $filters['exact'] = false;
+
+        return new AutomationCampaignIterator($this->client, $filters);
     }
 
     /**
