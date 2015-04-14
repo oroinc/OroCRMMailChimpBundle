@@ -53,7 +53,7 @@ class MemberExtendedMergeVar
      * @var Member
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Member")
-     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
