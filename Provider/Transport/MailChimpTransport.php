@@ -132,6 +132,9 @@ class MailChimpTransport implements TransportInterface
     public function getAutomationCampaigns(Channel $channel)
     {
         $campaignIterator = $this->getCampaigns($channel, Campaign::STATUS_SENDING);
+        if ($campaignIterator instanceof \ArrayIterator) {
+            return $campaignIterator;
+        }
         return new AutomationCampaignIterator($campaignIterator);
     }
 
