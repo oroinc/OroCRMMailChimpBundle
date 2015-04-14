@@ -38,7 +38,7 @@ class CartColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
         $columns = $this->cartColumnDefinitionList->getColumns();
 
         $this->assertNotEmpty($columns);
-        $this->assertCount(4, $columns);
+        $this->assertCount(5, $columns);
         $column1 = reset($columns);
         $column2 = next($columns);
         $this->assertThat($column1['name'], $this->equalTo('fname'));
