@@ -13,6 +13,9 @@ class CartColumnDefinitionList implements ColumnDefinitionListInterface
     const CART_ITEM_3_NAME = 'item_3';
     const CART_ITEM_3_LABEL = 'Third Cart Item';
 
+    const CAMPAIGN_CODE_NAME = 'campaign_code';
+    const CAMPAIGN_CODE_LABEL = 'Campaign Code';
+
     /**
      * @var array
      */
@@ -39,6 +42,10 @@ class CartColumnDefinitionList implements ColumnDefinitionListInterface
                     'name' => self::CART_ITEM_3_NAME,
                     'label' => self::CART_ITEM_3_LABEL
                 ),
+                array(
+                    'name' => self::CAMPAIGN_CODE_NAME,
+                    'label' => self::CAMPAIGN_CODE_LABEL
+                )
             )
         );
     }

@@ -5,10 +5,10 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 use Doctrine\Common\Collections\Collection;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Converter\DataConverterInterface;
+use OroCRM\Bundle\AbandonedCartBundle\Entity\CampaignAbandonedCartRelation;
 use OroCRM\Bundle\MagentoBundle\Entity\Cart;
 use OroCRM\Bundle\MagentoBundle\Entity\CartItem;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\Model\Segment\CartColumnDefinitionList;
 
 class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
 {
@@ -56,10 +56,22 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
             return array();
         }
 
+        $cartItemMergeVars = $this->prepareCartItemMergeVars($extendedMergeVars, $importedRecord);
+        $campaignCodeVar = $this->prepareCampaignCodeMergeVar($extendedMergeVars, $importedRecord);
+
+        return array_merge($cartItemMergeVars, $campaignCodeVar);
+    }
+
+    /**
+     * @param Collection|ExtendedMergeVar[] $extendedMergeVars
+     * @param array $importedRecord
+     * @return array
+     */
+    protected function prepareCartItemMergeVars(Collection $extendedMergeVars, array $importedRecord)
+    {
         $result = array();
 
-        /** @var Collection $cartItemMergeVars */
-        $cartItemMergeVars = $extendedMergeVars->filter(function ($each) {
+        $cartItemMergeVars = $extendedMergeVars->filter(function (ExtendedMergeVar $each) {
             if (false !== strpos($each->getName(), 'item_')) {
                 return true;
             }
@@ -87,6 +99,34 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
                 }
             }
         }
+
+        return $result;
+    }
+
+    /**
+     * @param Collection|ExtendedMergeVar[] $extendedMergeVars
+     * @param array $importedRecord
+     * @return array
+     */
+    protected function prepareCampaignCodeMergeVar(Collection $extendedMergeVars, array $importedRecord)
+    {
+        $result = array();
+        $campaignCodeMergeVar = $extendedMergeVars->filter(function (ExtendedMergeVar $each) {
+            if (false !== strpos($each->getName(), 'campaign_code')) {
+                return true;
+            }
+            return false;
+        })->first();
+
+        if ($campaignCodeMergeVar && isset($importedRecord['marketingList'])) {
+            $marketingListId = $importedRecord['marketingList'];
+            /** @var CampaignAbandonedCartRelation $campaignToAbandonedCartRelation */
+            $campaignToAbandonedCartRelation = $this->doctrineHelper
+                ->getEntityRepository('OroCRMAbandonedCartBundle:CampaignAbandonedCartRelation')
+                ->findOneBy(array('marketingList' => $marketingListId));
+            $result[$campaignCodeMergeVar->getTag()] = $campaignToAbandonedCartRelation->getCampaign()->getCode();
+        }
+
         return $result;
     }
 
