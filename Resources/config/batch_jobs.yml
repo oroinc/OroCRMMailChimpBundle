@@ -5,7 +5,7 @@ connector:
             title: orocrm.mailchimp.connector.campaign.job
             type: import
             steps:
-                import:
+                import_campaign:
                     title: import
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
@@ -14,19 +14,7 @@ connector:
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
-                remove:
-                    title: import
-                    class: Oro\Bundle\BatchBundle\Step\ItemStep
-                    services:
-                        reader:    orocrm_mailchimp.importexport.reader.processed_entities
-                        processor: orocrm_mailchimp.importexport.processor.campaign.remove
-                        writer:    orocrm_mailchimp.importexport.writer.campaign.remove
-
-        mailchimp_automation_campaign_import:
-            title: orocrm.mailchimp.connector.automation_campaign.job
-            type: import
-            steps:
-                import:
+                import_automation_campaign:
                     title: import
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:

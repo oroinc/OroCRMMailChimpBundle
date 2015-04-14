@@ -3,7 +3,6 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 
 class AutomationCampaignConnector extends AbstractMailChimpConnector implements ConnectorInterface
 {
@@ -47,6 +46,6 @@ class AutomationCampaignConnector extends AbstractMailChimpConnector implements 
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getAutomationCampaigns($this->getChannel(), Campaign::STATUS_SENT, true);
+        return $this->transport->getAutomationCampaigns($this->getChannel());
     }
 }

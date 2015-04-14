@@ -124,34 +124,15 @@ class MailChimpTransport implements TransportInterface
         return new CampaignIterator($this->client, $filters);
     }
 
-    public function getAutomationCampaigns(Channel $channel, $status = null, $usesSegment = null)
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/campaigns/list.php
+     * @param Channel $channel
+     * @return \Iterator List of Automation Campaigns
+     */
+    public function getAutomationCampaigns(Channel $channel)
     {
-        $filters = [];
-        if (null !== $usesSegment) {
-            $filters['uses_segment'] = (bool)$usesSegment;
-        }
-
-        $filters['type'] = Campaign::TYPE_AUTO;
-
-        // Synchronize only campaigns that are connected to subscriber lists that are used within OroCRM.
-        $staticSegments = $this->managerRegistry
-            ->getRepository('OroCRMMailChimpBundle:StaticSegment')
-            ->getStaticSegmentsToSync([], $channel);
-
-        $listsToSynchronize = [];
-        foreach ($staticSegments as $staticSegment) {
-            $listsToSynchronize[] = $staticSegment->getSubscribersList()->getOriginId();
-        }
-        $listsToSynchronize = array_unique($listsToSynchronize);
-
-        if (!$listsToSynchronize) {
-            return new \ArrayIterator();
-        }
-
-        $filters['list_id'] = implode(',', $listsToSynchronize);
-        $filters['exact'] = false;
-
-        return new AutomationCampaignIterator($this->client, $filters);
+        $campaignIterator = $this->getCampaigns($channel, Campaign::STATUS_SENDING);
+        return new AutomationCampaignIterator($campaignIterator);
     }
 
     /**
