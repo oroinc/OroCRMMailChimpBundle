@@ -14,17 +14,17 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
     /**
      * @var DoctrineHelper
      */
-    private $doctrineHelper;
+    protected $doctrineHelper;
 
     /**
      * @var \Twig_Environment
      */
-    private $twig;
+    protected $twig;
 
     /**
      * @var string
      */
-    private $cartItemsTemplate;
+    protected $cartItemsTemplate;
 
     /**
      * @param DoctrineHelper $doctrineHelper
@@ -98,7 +98,7 @@ class MmbrCartMergeVarValuesDataConverter implements DataConverterInterface
      * @param CartItem $item
      * @return string
      */
-    private function prepareCartItemsHtml(CartItem $item, $index)
+    protected function prepareCartItemsHtml(CartItem $item, $index)
     {
         $html = $this->twig->render($this->cartItemsTemplate, ['item' => $item, 'index' => $index]);
         return $html;

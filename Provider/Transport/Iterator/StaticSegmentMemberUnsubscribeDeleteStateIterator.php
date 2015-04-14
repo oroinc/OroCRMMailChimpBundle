@@ -51,7 +51,7 @@ class StaticSegmentMemberUnsubscribeDeleteStateIterator extends AbstractStaticSe
             ->join('segmentMember.member', 'smmb')
             ->join('segmentMember.staticSegment', 'staticSegment')
             ->andWhere($qb->expr()->eq('staticSegment.id', $staticSegment->getId()))
-            ->andWhere($segmentMembersQb->expr()->NotIn('smmb.id', $qb->getDQL()));
+            ->andWhere($segmentMembersQb->expr()->notIn('smmb.id', $qb->getDQL()));
 
         $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
         $bufferedIterator->setReverse(true);

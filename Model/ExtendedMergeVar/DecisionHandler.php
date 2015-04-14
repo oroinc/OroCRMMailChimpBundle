@@ -24,7 +24,7 @@ class DecisionHandler
      */
     public function allowExtendedMergeVar(MarketingListSourceInterface $source)
     {
-        if (in_array($source->getCode(), $this->allowedSources)) {
+        if (in_array($source->getCode(), $this->allowedSources, true)) {
             return;
         }
         $this->allowedSources[] = $source->getCode();
@@ -46,6 +46,6 @@ class DecisionHandler
      */
     public function isAllow(MarketingList $marketingList)
     {
-        return in_array($marketingList->getSource(), $this->allowedSources);
+        return in_array($marketingList->getSource(), $this->allowedSources, true);
     }
 }

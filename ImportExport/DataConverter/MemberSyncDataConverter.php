@@ -21,9 +21,8 @@ class MemberSyncDataConverter extends MemberDataConverter
     /**
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      */
-    public function __construct(
-        ContactInformationFieldsProvider $contactInformationFieldsProvider
-    ) {
+    public function __construct(ContactInformationFieldsProvider $contactInformationFieldsProvider)
+    {
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
     }
 

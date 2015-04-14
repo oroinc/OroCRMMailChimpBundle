@@ -24,7 +24,7 @@ class ExtendedMergeVarExportReader extends AbstractIteratorBasedReader
     /**
      * @var DecisionHandler
      */
-    private $decisionHandler;
+    protected $decisionHandler;
 
     /**
      * @param string $staticSegmentClassName

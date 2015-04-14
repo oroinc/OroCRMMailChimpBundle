@@ -76,11 +76,7 @@ class MmbrCartMergeVarValuesDataConverterTest extends \PHPUnit_Framework_TestCas
      */
     public function testObjectInitializationWhenTemplaIsEmptyString()
     {
-        new MmbrCartMergeVarValuesDataConverter(
-            $this->doctrineHelper,
-            $this->twig,
-            ''
-        );
+        new MmbrCartMergeVarValuesDataConverter($this->doctrineHelper, $this->twig, '');
     }
 
     public function testConvertToImportFormatWhenEntityIdIsNotIsset()

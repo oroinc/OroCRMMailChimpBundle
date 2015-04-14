@@ -112,6 +112,9 @@ class ExtendedMergeVar
         $this->state = self::STATE_ADD;
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;

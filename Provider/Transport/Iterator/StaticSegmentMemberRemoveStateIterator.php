@@ -54,11 +54,8 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             ->andWhere($qb->expr()->eq('staticSegment.id', $staticSegment->getId()))
             ->andWhere($segmentMembersQb->expr()->In('smmb.id', $qb->getDQL()));
 
-
-
         $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
         $bufferedIterator->setReverse(true);
-
 
         return $bufferedIterator;
     }

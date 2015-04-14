@@ -101,7 +101,7 @@ class MemberExtendedMergeVar
 
     /**
      * @param StaticSegment $staticSegment
-     * @return ExtendedMergeVar
+     * @return MemberExtendedMergeVar
      */
     public function setStaticSegment(StaticSegment $staticSegment)
     {
@@ -119,10 +119,12 @@ class MemberExtendedMergeVar
 
     /**
      * @param Member $member
+     * @return MemberExtendedMergeVar
      */
     public function setMember(Member $member)
     {
         $this->member = $member;
+        return $this;
     }
 
     /**
