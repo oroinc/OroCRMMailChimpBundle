@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
@@ -138,5 +139,15 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
             ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId());
 
         return $qb;
+    }
+
+    /**
+     * Method to change $qb for certain Iterator purposes
+     *
+     * @param QueryBuilder $qb
+     */
+    protected function prepareIteratorPart(QueryBuilder $qb)
+    {
+        return;
     }
 }
