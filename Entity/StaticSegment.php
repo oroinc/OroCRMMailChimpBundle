@@ -174,6 +174,11 @@ class StaticSegment implements OriginAwareInterface
      */
     protected $memberCount;
 
+    public function __construct()
+    {
+        $this->extendedMergeVars = new ArrayCollection();
+    }
+
     /**
      * Get id
      *
@@ -517,6 +522,28 @@ class StaticSegment implements OriginAwareInterface
     public function getSegmentMembers()
     {
         return $this->segmentMembers;
+    }
+
+    /**
+     * @param ExtendedMergeVar $extendedMergeVar
+     * @return void
+     */
+    public function addExtendedMergeVar(ExtendedMergeVar $extendedMergeVar)
+    {
+        if (!$this->extendedMergeVars->contains($extendedMergeVar)) {
+            $this->extendedMergeVars->add($extendedMergeVar);
+        }
+    }
+
+    /**
+     * @param ExtendedMergeVar $extendedMergeVar
+     * @return void
+     */
+    public function removeExtendedMergeVar(ExtendedMergeVar $extendedMergeVar)
+    {
+        if ($this->extendedMergeVars->contains($extendedMergeVar)) {
+            $this->extendedMergeVars->removeElement($extendedMergeVar);
+        }
     }
 
     /**
