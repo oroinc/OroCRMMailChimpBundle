@@ -31,8 +31,8 @@ class MmbrExtdMergeVarExportIterator extends AbstractSubordinateIterator impleme
     ) {
         parent::__construct($mainIterator);
 
-        if (false === is_string($mmbrExtdMergeVarClassName) || empty($mmbrExtdMergeVarClassName)) {
-            throw new \InvalidArgumentException('MemberExtendedMergeVar class must be a not empty string.');
+        if (!is_string($mmbrExtdMergeVarClassName) || empty($mmbrExtdMergeVarClassName)) {
+            throw new \InvalidArgumentException('MemberExtendedMergeVar class name must be provided.');
         }
 
         $this->doctrineHelper = $doctrineHelper;

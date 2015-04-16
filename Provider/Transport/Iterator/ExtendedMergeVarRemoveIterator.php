@@ -7,16 +7,10 @@ use Doctrine\ORM\AbstractQuery;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
-use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
+use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 
 class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
 {
-    /**
-     * @var DecisionHandler
-     */
-    private $decisionHandler;
-
     /**
      * @var DoctrineHelper
      */
@@ -28,30 +22,27 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
     private $extendedMergeVarClassName;
 
     /**
-     * @var ColumnDefinitionListFactory
+     * @var ProviderInterface
      */
-    private $columnDefinitionListFactory;
+    private $provider;
 
     /**
-     * @param DecisionHandler $decisionHandler
      * @param DoctrineHelper $doctrineHelper
-     * @param string $mmbrExtdMergeVarClassName
-     * @param ColumnDefinitionListFactory $columnDefinitionListFactory
+     * @param string $ExtendedMergeVarClassName
+     * @param ProviderInterface $provider
      */
     public function __construct(
-        DecisionHandler $decisionHandler,
         DoctrineHelper $doctrineHelper,
-        $mmbrExtdMergeVarClassName,
-        ColumnDefinitionListFactory $columnDefinitionListFactory
+        $ExtendedMergeVarClassName,
+        ProviderInterface $provider
     ) {
-        if (false === is_string($mmbrExtdMergeVarClassName) || empty($mmbrExtdMergeVarClassName)) {
-            throw new \InvalidArgumentException('ExtendedMergeVar class name must be a not empty string.');
+        if (!is_string($ExtendedMergeVarClassName) || empty($ExtendedMergeVarClassName)) {
+            throw new \InvalidArgumentException('ExtendedMergeVar class name must be provided.');
         }
 
-        $this->decisionHandler = $decisionHandler;
         $this->doctrineHelper = $doctrineHelper;
-        $this->extendedMergeVarClassName = $mmbrExtdMergeVarClassName;
-        $this->columnDefinitionListFactory = $columnDefinitionListFactory;
+        $this->extendedMergeVarClassName = $ExtendedMergeVarClassName;
+        $this->provider = $provider;
     }
 
     /**
@@ -67,18 +58,16 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        if (false === $this->decisionHandler->isAllow($staticSegment->getMarketingList())) {
-            return new \ArrayIterator(array());
-        }
+        $vars = $this->provider
+            ->provideExtendedMergeVars(
+                $staticSegment->getMarketingList()
+            );
 
-        $columnDefinitionList = $this->columnDefinitionListFactory
-            ->create($staticSegment->getMarketingList());
-
-        $vars = array_map(
+        $varNames = array_map(
             function ($each) {
                 return $each['name'];
             },
-            $columnDefinitionList->getColumns()
+            $vars
         );
 
         $qb = $this->doctrineHelper
@@ -102,7 +91,7 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
         $qb->setParameters(
             [
                 'staticSegment' => $staticSegment,
-                'vars' => $vars,
+                'vars' => $varNames,
                 'state' => ExtendedMergeVar::STATE_DROPPED
             ]
         );

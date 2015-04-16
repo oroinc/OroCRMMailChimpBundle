@@ -211,7 +211,7 @@ connector:
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
                         reader: orocrm_mailchimp.importexport.reader.mmbr_extd_merge_var_export
-                        processor: orocrm_mailchimp.importexport.processor.export_mmbr_extd_merge_var
+                        processor: orocrm_mailchimp.importexport.processor.export_member_extended_merge_var
                         writer: orocrm_mailchimp.importexport.writer.mmbr_extd_merge_var
                     parameters:
                         batch_size: 10

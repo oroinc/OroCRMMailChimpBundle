@@ -78,6 +78,11 @@ class MemberExtendedMergeVar
      */
     protected $state;
 
+    /**
+     * @var array
+     */
+    protected $mergeVarValuesContext;
+
     public function __construct()
     {
         $this->state = self::STATE_ADD;
@@ -138,7 +143,7 @@ class MemberExtendedMergeVar
     /**
      * @param array $mergeVarValues
      */
-    public function setMergeVarValues($mergeVarValues)
+    public function setMergeVarValues(array $mergeVarValues)
     {
         $this->mergeVarValues = $mergeVarValues;
     }
@@ -173,5 +178,23 @@ class MemberExtendedMergeVar
     public function isAddState()
     {
         return $this->state === self::STATE_ADD;
+    }
+
+    /**
+     * @param array $context
+     * @return MemberExtendedMergeVar
+     */
+    public function setMergeVarValuesContext(array $context)
+    {
+        $this->mergeVarValuesContext = $context;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMergeVarValuesContext()
+    {
+        return $this->mergeVarValuesContext;
     }
 }

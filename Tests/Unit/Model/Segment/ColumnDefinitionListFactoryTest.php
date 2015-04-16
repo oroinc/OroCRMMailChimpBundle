@@ -2,11 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\Segment;
 
-use Oro\Bundle\SegmentBundle\Entity\Segment;
-use OroCRM\Bundle\AbandonedCartBundle\Model\MarketingList\AbandonedCartSource;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MarketingListBundle\Model\MarketingListSourceInterface;
 
 class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,12 +12,12 @@ class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
     private $factory;
 
     /**
-     * @var MarketingList
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $marketingList;
 
     /**
-     * @var Segment
+     * @var \PHPUnit_Framework_MockObject_MockObject
      */
     private $segment;
 
@@ -39,24 +35,17 @@ class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
         $this->factory = new ColumnDefinitionListFactory();
     }
 
-    public function testCreateForNativeMarketingList()
+    protected function tearDown()
     {
-        $this->marketingList->expects($this->once())->method('getSource')
-            ->will($this->returnValue(MarketingListSourceInterface::DEFAULT_SOURCE_CODE));
+        unset($this->marketingList);
+        unset($this->segment);
+        unset($this->factory);
+    }
 
+    public function testCreate()
+    {
         $object = $this->factory->create($this->marketingList);
 
         $this->assertInstanceOf('OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList', $object);
-        $this->assertNotInstanceOf('OroCRM\Bundle\MailChimpBundle\Model\Segment\CartColumnDefinitionList', $object);
-    }
-
-    public function testCreateForAbandonedCartMarketingList()
-    {
-        $this->marketingList->expects($this->once())->method('getSource')
-            ->will($this->returnValue(AbandonedCartSource::SOURCE_CODE));
-
-        $object = $this->factory->create($this->marketingList);
-
-        $this->assertInstanceOf('OroCRM\Bundle\MailChimpBundle\Model\Segment\CartColumnDefinitionList', $object);
     }
 }

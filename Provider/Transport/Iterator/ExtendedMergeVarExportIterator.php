@@ -6,7 +6,6 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
-use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
 
 class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator implements SubordinateReaderInterface
 {
@@ -16,36 +15,28 @@ class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator impleme
     private $extendedMergeVarClassName;
 
     /**
-     * @var DecisionHandler
-     */
-    private $decisionHandler;
-
-    /**
      * @var DoctrineHelper
      */
     private $doctrineHelper;
 
     /**
      * @param \Iterator $mainIterator
-     * @param DecisionHandler $decisionHandler
      * @param DoctrineHelper $doctrineHelper
-     * @param string $extendedMergeVarClassName
+     * @param string $mmbrExtdMergeVarClassName
      */
     public function __construct(
         \Iterator $mainIterator,
-        DecisionHandler $decisionHandler,
         DoctrineHelper $doctrineHelper,
-        $extendedMergeVarClassName
+        $mmbrExtdMergeVarClassName
     ) {
         parent::__construct($mainIterator);
 
-        if (false === is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
-            throw new \InvalidArgumentException('ExtendedMergeVar class must be a not empty string.');
+        if (!is_string($mmbrExtdMergeVarClassName) || empty($mmbrExtdMergeVarClassName)) {
+            throw new \InvalidArgumentException('ExtendedMergeVar class must be provided.');
         }
 
-        $this->decisionHandler = $decisionHandler;
         $this->doctrineHelper = $doctrineHelper;
-        $this->extendedMergeVarClassName = $extendedMergeVarClassName;
+        $this->extendedMergeVarClassName = $mmbrExtdMergeVarClassName;
     }
 
     /**
@@ -65,10 +56,6 @@ class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator impleme
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        if (false === $this->decisionHandler->isAllow($staticSegment->getMarketingList())) {
-            return new \ArrayIterator(array());
-        }
-
         $qb = $this->doctrineHelper
             ->getEntityManager($this->extendedMergeVarClassName)
             ->getRepository($this->extendedMergeVarClassName)

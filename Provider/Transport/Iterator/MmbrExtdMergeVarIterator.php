@@ -4,7 +4,6 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query\Expr\Join;
-use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
@@ -61,11 +60,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
             function (&$current) use ($staticSegment) {
                 if (is_array($current)) {
                     $current['subscribersList_id'] = $staticSegment->getSubscribersList()->getId();
-                    $current['entityClass']        = $staticSegment->getMarketingList()->getEntity();
                     $current['static_segment_id']  = $staticSegment->getId();
-                    if ($staticSegment->getExtendedMergeVars()) {
-                        $current['extended_merge_vars'] = $staticSegment->getExtendedMergeVars();
-                    }
                 }
                 return true;
             }
@@ -90,8 +85,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         }
 
         $qb = clone $this->marketingListProvider->getMarketingListQueryBuilder($marketingList, $mixin);
-
-        $this->prepareIteratorPart($qb);
 
         $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
             $marketingList,
@@ -139,15 +132,5 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
             ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId());
 
         return $qb;
-    }
-
-    /**
-     * Method to change $qb for certain Iterator purposes
-     *
-     * @param QueryBuilder $qb
-     */
-    protected function prepareIteratorPart(QueryBuilder $qb)
-    {
-        return;
     }
 }

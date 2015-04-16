@@ -522,7 +522,7 @@ class StaticSegment implements OriginAwareInterface
     /**
      * Retrieves extended merge vars
      *
-     * @return ArrayCollection|Collection|ExtendedMergeVar[]
+     * @return ArrayCollection|ExtendedMergeVar[]
      */
     public function getExtendedMergeVars()
     {

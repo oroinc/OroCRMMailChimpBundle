@@ -6,7 +6,6 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExtendedMergeVarExportIterator;
 
 class ExtendedMergeVarExportReader extends AbstractIteratorBasedReader
@@ -20,11 +19,6 @@ class ExtendedMergeVarExportReader extends AbstractIteratorBasedReader
      * @var string
      */
     protected $extendedMergeVarClassName;
-
-    /**
-     * @var DecisionHandler
-     */
-    protected $decisionHandler;
 
     /**
      * @param string $staticSegmentClassName
@@ -43,21 +37,13 @@ class ExtendedMergeVarExportReader extends AbstractIteratorBasedReader
     }
 
     /**
-     * @param DecisionHandler $decisionHandler
-     */
-    public function setDecisionHandler(DecisionHandler $decisionHandler)
-    {
-        $this->decisionHandler = $decisionHandler;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function initializeFromContext(ContextInterface $context)
     {
         if (!$this->getSourceIterator()) {
             if (!$this->extendedMergeVarClassName) {
-                throw new InvalidConfigurationException('ExtendedMergeVar class name must be provided');
+                throw new InvalidConfigurationException('ExtendedMergeVar class name must be provided.');
             }
 
             /** @var Channel $channel */
@@ -68,7 +54,6 @@ class ExtendedMergeVarExportReader extends AbstractIteratorBasedReader
 
             $iterator = new ExtendedMergeVarExportIterator(
                 $this->getSegmentsIterator($channel),
-                $this->decisionHandler,
                 $this->doctrineHelper,
                 $this->extendedMergeVarClassName
             );

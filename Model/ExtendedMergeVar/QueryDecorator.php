@@ -26,13 +26,19 @@ class QueryDecorator
         foreach ($selectParts as $each) {
             $exprParts = explode(' ', $each);
 
-            $columnWithAlias = $exprParts[0];
+            $columnWithTableAlias = $exprParts[0];
 
             $alias = $rootAlias;
-            $columnName = $columnWithAlias;
+            $columnName = $columnWithTableAlias;
 
-            if (strpos($columnWithAlias, '.')) {
-                list($alias, $columnName) = explode('.', $columnWithAlias);
+            if (strpos($columnWithTableAlias, '.')) {
+                list($alias, $columnName) = explode('.', $columnWithTableAlias);
+            }
+
+            $columnAlias = $columnName;
+
+            if (isset($exprParts[2])) {
+                $columnAlias = $exprParts[2];
             }
 
             if ($alias == $rootAlias && $columnName == 'id') {
@@ -40,7 +46,7 @@ class QueryDecorator
             }
 
             $queryBuilder->addSelect($each);
-            $queryBuilder->addSelect(sprintf('%s', $columnWithAlias));
+            $queryBuilder->addSelect(sprintf('%s as %s_%s', $columnWithTableAlias, $columnAlias, $columnName));
         }
     }
 }
