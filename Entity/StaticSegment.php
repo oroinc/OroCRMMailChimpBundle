@@ -105,14 +105,14 @@ class StaticSegment implements OriginAwareInterface
     protected $subscribersList;
 
     /**
-     * @var Collection|ArrayCollection|Member[]
+     * @var Collection|Member[]
      *
      * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="staticSegment")
      */
     protected $segmentMembers;
 
     /**
-     * @var Collection|ArrayCollection|ExtendedMergeVar[]
+     * @var Collection|ExtendedMergeVar[]
      *
      * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar", mappedBy="staticSegment")
      */
