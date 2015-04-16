@@ -896,6 +896,8 @@ services:
             - @oro_security.owner.ownership_metadata_provider
             - @oro_locale.dql.formatter.name
             - %orocrm_mailchimp.entity.member.class%
+            - %orocrm_marketing_list.removed_item.class%
+            - %orocrm_marketing_list.unsubscribed_item.class%
 
     orocrm_mailchimp.iterator.member_sync:
         class: %orocrm_mailchimp.iterator.member_sync.class%

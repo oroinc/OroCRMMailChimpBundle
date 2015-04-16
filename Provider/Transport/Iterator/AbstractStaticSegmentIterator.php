@@ -49,6 +49,16 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     protected $memberClassName;
 
     /**
+     * @var string
+     */
+    protected $removedItemClassName;
+
+    /**
+     * @var string
+     */
+    protected $unsubscribedItemClassName;
+
+    /**
      * @param MarketingListProvider $marketingListProvider
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param FieldHelper $fieldHelper
@@ -62,7 +72,9 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         FieldHelper $fieldHelper,
         OwnershipMetadataProvider $ownershipMetadataProvider,
         DQLNameFormatter $formatter,
-        $memberClassName
+        $memberClassName,
+        $removedItemClassName,
+        $unsubscribedItemClassName
     ) {
         $this->marketingListProvider            = $marketingListProvider;
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
@@ -70,6 +82,8 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         $this->ownershipMetadataProvider        = $ownershipMetadataProvider;
         $this->formatter                        = $formatter;
         $this->memberClassName                  = $memberClassName;
+        $this->removedItemClassName             = $removedItemClassName;
+        $this->unsubscribedItemClassName        = $unsubscribedItemClassName;
     }
 
     /**
@@ -167,22 +181,22 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
-        $from = $qb->getDQLPart('from');
-        $entityAlias = $from[0]->getAlias();
+        $rootAliases = $qb->getRootAliases();
+        $entityAlias = reset($rootAliases);
 
         $qb
             ->leftJoin(
-                'OroCRMMarketingListBundle:MarketingListRemovedItem',
+                $this->removedItemClassName,
                 'mlr',
                 Join::WITH,
                 "mlr.entityId = $entityAlias.id"
             )
             ->andWhere('mlr.id IS NULL')
             ->leftJoin(
-                'OroCRMMarketingListBundle:MarketingListUnsubscribedItem',
+                $this->unsubscribedItemClassName,
                 'mlu',
                 Join::WITH,
-                "mlu.entityId = $entityAlias"
+                "mlu.entityId = $entityAlias.id"
             )
             ->andWhere('mlu.id IS NULL');
     }

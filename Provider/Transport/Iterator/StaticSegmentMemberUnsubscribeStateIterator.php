@@ -66,15 +66,15 @@ class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentI
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
-        $from = $qb->getDQLPart('from');
-        $entityAlias = $from[0]->getAlias();
+        $rootAliases = $qb->getRootAliases();
+        $entityAlias = reset($rootAliases);
 
         $qb
             ->leftJoin(
-                'OroCRMMarketingListBundle:MarketingListUnsubscribedItem',
+                $this->unsubscribedItemClassName,
                 'mlu',
                 Join::WITH,
-                "mlu.entityId = $entityAlias"
+                "mlu.entityId = $entityAlias.id"
             )
             ->andWhere('mlu.id IS NOT NULL');
     }

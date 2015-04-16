@@ -65,12 +65,12 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
-        $from = $qb->getDQLPart('from');
-        $entityAlias = $from[0]->getAlias();
+        $rootAliases = $qb->getRootAliases();
+        $entityAlias = reset($rootAliases);
 
         $qb
             ->leftJoin(
-                'OroCRMMarketingListBundle:MarketingListRemovedItem',
+                $this->removedItemClassName,
                 'mlr',
                 Join::WITH,
                 "mlr.entityId = $entityAlias.id"
