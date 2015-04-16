@@ -11,7 +11,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
  * @ORM\Table(
  *      name="orocrm_mc_extended_merge_var",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="mc_extended_merge_var_sid_name_unq", columns={"static_segment_id", "name"})
+ *          @ORM\UniqueConstraint(name="mc_emv_sid_name_unq", columns={"static_segment_id", "name"})
  *     }
  * )
  * @ORM\HasLifecycleCallbacks()
@@ -24,7 +24,7 @@ class ExtendedMergeVar
     const STATE_SYNCED = 'synced';
     const STATE_DROPPED = 'dropped';
 
-    const TAG_FIELD_TYPE = 'text';
+    const TAG_TEXT_FIELD_TYPE = 'text';
 
     const TAG_PREFIX = 'E_';
     const MAXIMUM_TAG_LENGTH = 10;
@@ -77,14 +77,14 @@ class ExtendedMergeVar
     /**
      * @var bool
      *
-     * @ORM\Column(name="is_require", type="boolean", options={"default"=false})
+     * @ORM\Column(name="is_require", type="boolean")
      */
     protected $require;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="field_type", type="string", length=255, nullable=false, options={"default"="text"})
+     * @ORM\Column(name="field_type", type="string", length=255, nullable=false)
      */
     protected $fieldType;
 
@@ -108,7 +108,7 @@ class ExtendedMergeVar
     public function __construct()
     {
         $this->require = false;
-        $this->fieldType = self::TAG_FIELD_TYPE;
+        $this->fieldType = self::TAG_TEXT_FIELD_TYPE;
         $this->state = self::STATE_ADD;
     }
 
@@ -241,7 +241,7 @@ class ExtendedMergeVar
     /**
      * @return void
      */
-    public function setSyncedState()
+    public function markSynced()
     {
         $this->state = self::STATE_SYNCED;
     }
@@ -249,7 +249,7 @@ class ExtendedMergeVar
     /**
      * @return void
      */
-    public function setDroppedState()
+    public function markDropped()
     {
         $this->state = self::STATE_DROPPED;
     }

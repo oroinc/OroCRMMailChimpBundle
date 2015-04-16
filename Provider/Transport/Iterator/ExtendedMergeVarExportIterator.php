@@ -22,25 +22,25 @@ class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator impleme
     /**
      * @param \Iterator $mainIterator
      * @param DoctrineHelper $doctrineHelper
-     * @param string $mmbrExtdMergeVarClassName
+     * @param string $extendedMergeVarClassName
      */
     public function __construct(
         \Iterator $mainIterator,
         DoctrineHelper $doctrineHelper,
-        $mmbrExtdMergeVarClassName
+        $extendedMergeVarClassName
     ) {
         parent::__construct($mainIterator);
 
-        if (!is_string($mmbrExtdMergeVarClassName) || empty($mmbrExtdMergeVarClassName)) {
+        if (!is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
             throw new \InvalidArgumentException('ExtendedMergeVar class must be provided.');
         }
 
         $this->doctrineHelper = $doctrineHelper;
-        $this->extendedMergeVarClassName = $mmbrExtdMergeVarClassName;
+        $this->extendedMergeVarClassName = $extendedMergeVarClassName;
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function writeRequired()
     {
@@ -61,16 +61,16 @@ class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator impleme
             ->getRepository($this->extendedMergeVarClassName)
             ->createQueryBuilder('extendedMergeVar');
 
-        $qb->select('extendedMergeVar')
-            ->andWhere($qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'))
-            ->andWhere($qb->expr()->notIn('extendedMergeVar.state', ':states'))
-            ->setParameters(
-                [
-                    'staticSegment' => $staticSegment,
-                    'states' => [ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_DROPPED]
-                ]
+        $qb
+            ->select('extendedMergeVar')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'),
+                    $qb->expr()->notIn('extendedMergeVar.state', ':states')
+                )
             )
-            ->orderBy('extendedMergeVar.staticSegment');
+            ->setParameter('staticSegment', $staticSegment)
+            ->setParameter('states', [ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_DROPPED]);
 
         return new BufferedQueryResultIterator($qb);
     }

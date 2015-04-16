@@ -11,7 +11,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
  * @ORM\Table(
  *      name="orocrm_mc_mmbr_extd_merge_var",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="mc_mmbr_extd_merge_var_sid_mmbr_unq",
+ *          @ORM\UniqueConstraint(name="mc_mmbr_emv_sid_mmbr_unq",
  *          columns={"static_segment_id", "member_id"})
  *     }
  * )
@@ -85,8 +85,8 @@ class MemberExtendedMergeVar
 
     public function __construct()
     {
-        $this->state = self::STATE_ADD;
         $this->mergeVarValues = [];
+        $this->state = self::STATE_ADD;
     }
 
     /**

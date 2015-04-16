@@ -23,6 +23,6 @@ class MemberExtendedMergeVarDataConverter extends AbstractTableDataConverter
      */
     protected function getBackendHeader()
     {
-        throw new \Exception('Normalization is not implemented!');
+        throw new \BadMethodCallException('Normalization is not implemented!');
     }
 }

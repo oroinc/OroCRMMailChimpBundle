@@ -72,7 +72,7 @@ class DataGridProviderTest extends \PHPUnit_Framework_TestCase
                     $this->arrayHasKey('grid-mixin'),
                     $this->callback(function($other) use ($type) {
                         if ($type === MarketingListType::TYPE_MANUAL) {
-                            $mixin = MarketingListProvider::MANUAL_RESULT_ENTITIES_MIXIN;;
+                            $mixin = MarketingListProvider::MANUAL_RESULT_ENTITIES_MIXIN;
                         } else {
                             $mixin = MarketingListProvider::RESULT_ENTITIES_MIXIN;
                         }

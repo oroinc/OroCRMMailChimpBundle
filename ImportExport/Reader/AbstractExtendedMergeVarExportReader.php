@@ -6,19 +6,13 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MmbrExtdMergeVarExportIterator;
 
-class MmbrExtdMergeVarExportReader extends AbstractIteratorBasedReader
+abstract class AbstractExtendedMergeVarExportReader extends AbstractIteratorBasedReader
 {
     /**
      * @var string
      */
     protected $staticSegmentClassName;
-
-    /**
-     * @var string
-     */
-    protected $mmbrExtdMergeVarClassName;
 
     /**
      * @param string $staticSegmentClassName
@@ -29,22 +23,13 @@ class MmbrExtdMergeVarExportReader extends AbstractIteratorBasedReader
     }
 
     /**
-     * @param string $mmbrExtdMergeVarClassName
-     */
-    public function setMmbrExtdMergeVarClassName($mmbrExtdMergeVarClassName)
-    {
-        $this->mmbrExtdMergeVarClassName = $mmbrExtdMergeVarClassName;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function initializeFromContext(ContextInterface $context)
     {
+        parent::initializeFromContext($context);
+
         if (!$this->getSourceIterator()) {
-            if (!$this->mmbrExtdMergeVarClassName) {
-                throw new InvalidConfigurationException('MemberExtendedMergeVar class name must be provided');
-            }
 
             /** @var Channel $channel */
             $channel = $this->doctrineHelper->getEntityReference(
@@ -52,15 +37,17 @@ class MmbrExtdMergeVarExportReader extends AbstractIteratorBasedReader
                 $context->getOption('channel')
             );
 
-            $iterator = new MmbrExtdMergeVarExportIterator(
-                $this->getSegmentsIterator($channel),
-                $this->doctrineHelper,
-                $this->mmbrExtdMergeVarClassName
-            );
+            $iterator = $this->getExtendedMergeVarIterator($channel);
 
             $this->setSourceIterator($iterator);
         }
     }
+
+    /**
+     * @param Channel $channel
+     * @return \Iterator
+     */
+    abstract protected function getExtendedMergeVarIterator(Channel $channel);
 
     /**
      * @param Channel $channel
@@ -75,10 +62,10 @@ class MmbrExtdMergeVarExportReader extends AbstractIteratorBasedReader
         $qb = $this->doctrineHelper
             ->getEntityManager($this->staticSegmentClassName)
             ->getRepository($this->staticSegmentClassName)
-            ->createQueryBuilder('staticSegment')
-            ->select('staticSegment');
+            ->createQueryBuilder('staticSegment');
 
         $qb
+            ->select('staticSegment')
             ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
             ->setParameter('channel', $channel);
 

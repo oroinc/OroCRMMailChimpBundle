@@ -72,17 +72,18 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
             ->getRepository($this->extendedMergeVarClassName)
             ->createQueryBuilder('extendedMergeVar');
 
-        $qb->select('extendedMergeVar.name');
-        $qb->andWhere($qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'));
-        $qb->andWhere($qb->expr()->in('extendedMergeVar.name', ':vars'));
-        $qb->andWhere($qb->expr()->notIn('extendedMergeVar.state', ':states'));
-        $qb->setParameters(
-            [
-                'staticSegment' => $staticSegment,
-                'vars' => $varNames,
-                'states' => [ExtendedMergeVar::STATE_REMOVE, ExtendedMergeVar::STATE_DROPPED]
-            ]
-        );
+        $qb
+            ->select('extendedMergeVar.name')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'),
+                    $qb->expr()->in('extendedMergeVar.name', ':vars'),
+                    $qb->expr()->notIn('extendedMergeVar.state', ':states')
+                )
+            )
+            ->setParameter(':staticSegment', $staticSegment)
+            ->setParameter(':vars', $varNames)
+            ->setParameter(':states', [ExtendedMergeVar::STATE_REMOVE, ExtendedMergeVar::STATE_DROPPED]);
 
         $existingVars = array_map(
             function ($each) {

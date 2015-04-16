@@ -23,7 +23,7 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
         $entity = new ExtendedMergeVar();
 
         $this->assertEquals(ExtendedMergeVar::STATE_ADD, $entity->getState());
-        $this->assertEquals(ExtendedMergeVar::TAG_FIELD_TYPE, $entity->getFieldType());
+        $this->assertEquals(ExtendedMergeVar::TAG_TEXT_FIELD_TYPE, $entity->getFieldType());
         $this->assertFalse($entity->getRequire());
         $this->assertNull($entity->getName());
         $this->assertNull($entity->getLabel());
@@ -143,13 +143,13 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 
     public function testSetSyncedState()
     {
-        $this->entity->setSyncedState();
+        $this->entity->markSynced();
         $this->assertEquals(ExtendedMergeVar::STATE_SYNCED, $this->entity->getState());
     }
 
     public function testSetDroppedState()
     {
-        $this->entity->setDroppedState();
+        $this->entity->markDropped();
         $this->assertEquals(ExtendedMergeVar::STATE_DROPPED, $this->entity->getState());
     }
 }

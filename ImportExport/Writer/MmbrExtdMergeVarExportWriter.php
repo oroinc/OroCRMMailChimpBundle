@@ -2,10 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
-
-use Doctrine\Common\Collections\ArrayCollection;
 
 class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
 {

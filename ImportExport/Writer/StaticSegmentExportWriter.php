@@ -104,8 +104,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         $method,
         $itemState,
         $deleteMember = false
-    )
-    {
+    ) {
         $itemsToWrite = [];
 
         $items = $staticSegment->getSegmentMembers()

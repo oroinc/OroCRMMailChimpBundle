@@ -35,12 +35,12 @@ class OroCRMMailChimpBundle implements Migration
         $table->addColumn('static_segment_id', 'integer', []);
         $table->addColumn('name', 'string', ['length' => 255]);
         $table->addColumn('label', 'string', ['length' => 255]);
-        $table->addColumn('is_require', 'boolean', ['default' => '0']);
-        $table->addColumn('field_type', 'string', ['default' => 'text', 'length' => 255]);
+        $table->addColumn('is_require', 'boolean', []);
+        $table->addColumn('field_type', 'string', ['length' => 255]);
         $table->addColumn('tag', 'string', ['length' => 10]);
         $table->addColumn('state', 'string', ['length' => 255]);
         $table->setPrimaryKey(['id']);
-        $table->addUniqueIndex(['static_segment_id', 'name'], 'mc_extended_merge_var_sid_name_unq');
+        $table->addUniqueIndex(['static_segment_id', 'name'], 'mc_emv_sid_name_unq');
         $table->addIndex(['static_segment_id'], 'IDX_DDE321ACF8DF7CF6', []);
     }
 
@@ -58,7 +58,7 @@ class OroCRMMailChimpBundle implements Migration
         $table->addColumn('merge_var_values', 'json_array', ['notnull' => false, 'comment' => '(DC2Type:json_array)']);
         $table->addColumn('state', 'string', ['length' => 255]);
         $table->setPrimaryKey(['id']);
-        $table->addUniqueIndex(['static_segment_id', 'member_id'], 'mc_mmbr_extd_merge_var_sid_mmbr_unq');
+        $table->addUniqueIndex(['static_segment_id', 'member_id'], 'mc_mmbr_emv_sid_mmbr_unq');
         $table->addIndex(['static_segment_id'], 'IDX_507F296DF8DF7CF6', []);
         $table->addIndex(['member_id'], 'IDX_507F296D7597D3FE', []);
     }

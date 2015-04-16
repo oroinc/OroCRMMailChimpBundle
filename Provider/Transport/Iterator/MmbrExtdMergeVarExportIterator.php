@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
+use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
 
 class MmbrExtdMergeVarExportIterator extends AbstractSubordinateIterator implements SubordinateReaderInterface
@@ -61,16 +61,16 @@ class MmbrExtdMergeVarExportIterator extends AbstractSubordinateIterator impleme
             ->getRepository($this->mmbrExtdMergeVarClassName)
             ->createQueryBuilder('mmbrExtdMergeVar');
 
-        $qb->select('mmbrExtdMergeVar')
-            ->andWhere($qb->expr()->eq('mmbrExtdMergeVar.staticSegment', ':staticSegment'))
-            ->andWhere($qb->expr()->notIn('mmbrExtdMergeVar.state', ':states'))
-            ->setParameters(
-                [
-                    'staticSegment' => $staticSegment,
-                    'states' => [ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_DROPPED]
-                ]
+        $qb
+            ->select('mmbrExtdMergeVar')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('mmbrExtdMergeVar.staticSegment', ':staticSegment'),
+                    $qb->expr()->notIn('mmbrExtdMergeVar.state', ':states')
+                )
             )
-            ->orderBy('mmbrExtdMergeVar.member');
+            ->setParameter('staticSegment', $staticSegment)
+            ->setParameter('states',[MemberExtendedMergeVar::STATE_SYNCED, MemberExtendedMergeVar::STATE_DROPPED]);
 
         return new BufferedQueryResultIterator($qb);
     }

@@ -43,7 +43,7 @@ parameters:
     orocrm_mailchimp.importexport.reader.member_export.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\MemberExportReader
     orocrm_mailchimp.importexport.reader.static_segment_export.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\StaticSegmentExportReader
     orocrm_mailchimp.importexport.reader.extended_merge_var_export.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\ExtendedMergeVarExportReader
-    orocrm_mailchimp.importexport.reader.mmbr_extd_merge_var_export.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\MmbrExtdMergeVarExportReader
+    orocrm_mailchimp.importexport.reader.mmbr_extd_merge_var_export.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\MemberExtendedMergeVarExportReader
 
     # Writers
     orocrm_mailchimp.importexport.writer.remove.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\RemoveWriter

@@ -84,17 +84,17 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
             ]
         );
 
-        $qb->andWhere($qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'));
-        $qb->andWhere($qb->expr()->notIn('extendedMergeVar.name', ':vars'));
-        $qb->andWhere($qb->expr()->neq('extendedMergeVar.state', ':state'));
-
-        $qb->setParameters(
-            [
-                'staticSegment' => $staticSegment,
-                'vars' => $varNames,
-                'state' => ExtendedMergeVar::STATE_DROPPED
-            ]
-        );
+        $qb
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'),
+                    $qb->expr()->notIn('extendedMergeVar.name', ':vars'),
+                    $qb->expr()->neq('extendedMergeVar.state', ':state')
+                )
+            )
+            ->setParameter('staticSegment', $staticSegment)
+            ->setParameter('vars', $varNames)
+            ->setParameter('state', ExtendedMergeVar::STATE_DROPPED);
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);

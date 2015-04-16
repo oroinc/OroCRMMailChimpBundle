@@ -107,8 +107,10 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         }
 
         $marketingList = $staticSegment->getMarketingList();
-        $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList,
-            MarketingListProvider::FULL_ENTITIES_MIXIN);
+        $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder(
+            $marketingList,
+            MarketingListProvider::FULL_ENTITIES_MIXIN
+        );
 
         $this->prepareIteratorPart($qb);
 

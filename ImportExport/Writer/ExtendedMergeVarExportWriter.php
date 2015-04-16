@@ -2,10 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-
-use Doctrine\Common\Collections\ArrayCollection;
 
 class ExtendedMergeVarExportWriter extends AbstractExportWriter
 {
@@ -24,18 +24,23 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
 
         $itemsToWrite = [];
 
-        $addedItems = $this->add($items);
-        $removedItems = $this->remove($items);
+        try {
+            $addedItems = $this->add($items);
+            $removedItems = $this->remove($items);
 
-        if ($addedItems) {
-            $this->logger->info(sprintf('Extended merge vars: [%s] added', count($addedItems)));
+            if ($addedItems) {
+                $this->logger->info(sprintf('Extended merge vars: [%s] added', count($addedItems)));
+            }
+
+            if ($removedItems) {
+                $this->logger->info(sprintf('Extended merge vars: [%s] removed', count($addedItems)));
+            }
+
+            $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            $this->stepExecution->addFailureException($e);
         }
-
-        if ($removedItems) {
-            $this->logger->info(sprintf('Extended merge vars: [%s] removed', count($addedItems)));
-        }
-
-        $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
 
         parent::write($itemsToWrite);
     }
@@ -60,10 +65,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
         /** @var ExtendedMergeVar $each */
         foreach ($items as $each) {
             $exists = array_filter($mergeVars, function ($var) use ($each) {
-                if ($var['tag'] == $each->getTag()) {
-                    return true;
-                }
-                return false;
+                return $var['tag'] === $each->getTag();
             });
             $response = [];
             if (empty($exists)) {
@@ -82,7 +84,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
             if (is_array($response)) {
                 $this->handleErrorResponse($response);
                 if (false === isset($response['errors'])) {
-                    $each->setSyncedState();
+                    $each->markSynced();
                     $successItems[] = $each;
                 }
             }
@@ -102,7 +104,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
         $successItems = [];
         /** @var ExtendedMergeVar $each */
         foreach ($items->filter($this->removedItemsFilter()) as $each) {
-            $each->setDroppedState();
+            $each->markDropped();
             array_push($successItems, $each);
         }
         return $successItems;
@@ -121,13 +123,17 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
                 ]
             ]
         );
+
         if (false === is_array($response)) {
-            return [];
+            throw new \RuntimeException('Can not get list of merge vars.');
         }
+
         $this->handleErrorResponse($response);
+
         if (isset($response['errors']) && !empty($response['errors'])) {
             throw new \RuntimeException('Can not get list of merge vars.');
         }
+
         return $this->extractMergeVarsFromResponse($response);
     }
 
@@ -138,7 +144,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
     protected function extractMergeVarsFromResponse(array $response)
     {
         if (!isset($response['data'])) {
-            return [];
+            throw new \RuntimeException('Can not extract merge vars data from response.');
         }
         $data = reset($response['data']);
         if (!isset($data['merge_vars'])) {
@@ -173,10 +179,11 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
      */
     protected function handleErrorResponse(array $response)
     {
-        if (isset($response['errors'])) {
+        if (isset($response['errors']) && !empty($response['errors'])) {
             foreach ($response['errors'] as $error) {
                 $this->logErrors(array('code' => $error['code'], 'error' => $error['error']));
             }
+            throw new \RuntimeException('Can not get list of merge vars.');
         }
     }
 
