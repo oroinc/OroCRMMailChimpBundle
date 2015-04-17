@@ -15,6 +15,9 @@ use OroCRM\Bundle\MailChimpBundle\Model\MarketingList\DataGridProviderInterface;
 
 class MemberExtendedMergeVarStrategy extends ConfigurableAddOrReplaceStrategy
 {
+    const YES_LABEL_KEY = 'oro.filter.form.label_type_yes';
+    const NO_LABEL_KEY  = 'oro.filter.form.label_type_no';
+
     /**
      * @var DataGridProviderInterface
      */
@@ -155,7 +158,7 @@ class MemberExtendedMergeVarStrategy extends ConfigurableAddOrReplaceStrategy
                 $value = $this->numberFormatter->formatDecimal($value);
                 break;
             case PropertyInterface::TYPE_BOOLEAN:
-                $value = $this->translator->trans((bool)$value ? 'Yes' : 'No', [], 'jsmessages');
+                $value = $this->translator->trans((bool)$value ? self::YES_LABEL_KEY : self::NO_LABEL_KEY);
                 break;
             case PropertyInterface::TYPE_PERCENT:
                 $value = $this->numberFormatter->formatPercent($value);

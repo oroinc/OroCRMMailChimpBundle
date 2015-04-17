@@ -60,7 +60,7 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
 
             if (is_array($response)) {
                 $this->handleErrorResponse($response);
-                if (false === isset($response['errors'])) {
+                if (!isset($response['errors']) || empty($response['errors'])) {
                     $mmbrExtdMergeVar->setSyncedState();
                     array_push($successItems, $mmbrExtdMergeVar);
                 }

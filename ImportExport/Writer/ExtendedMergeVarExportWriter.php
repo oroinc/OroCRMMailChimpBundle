@@ -83,7 +83,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
             }
             if (is_array($response)) {
                 $this->handleErrorResponse($response);
-                if (false === isset($response['errors'])) {
+                if (!isset($response['errors']) || empty($response['errors'])) {
                     $each->markSynced();
                     $successItems[] = $each;
                 }

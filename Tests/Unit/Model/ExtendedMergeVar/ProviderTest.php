@@ -69,8 +69,10 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
      * @param array $segmentExtendedMergeVars
      * @param array $externalProviderMergeVars
      */
-    public function testProvideExtendedMergeVarsWithExternalProviders($segmentExtendedMergeVars, $externalProviderMergeVars)
-    {
+    public function testProvideExtendedMergeVarsWithExternalProviders(
+        $segmentExtendedMergeVars,
+        $externalProviderMergeVars
+    ) {
         $this->columnDefinitionList->expects($this->once())->method('getColumns')
             ->will($this->returnValue($segmentExtendedMergeVars));
 
