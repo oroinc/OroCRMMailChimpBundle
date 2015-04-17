@@ -90,9 +90,9 @@ class MemberExtendedMergeVarStrategy extends ConfigurableAddOrReplaceStrategy
             return;
         }
 
-        $extendedMergeVars = $staticSegment->getExtendedMergeVars();
+        $extendedMergeVars = $staticSegment->getSyncedExtendedMergeVars();
 
-        if (!$extendedMergeVars || $extendedMergeVars->isEmpty()) {
+        if ($extendedMergeVars->isEmpty()) {
             return;
         }
 

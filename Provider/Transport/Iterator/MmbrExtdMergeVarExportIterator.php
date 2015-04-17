@@ -70,7 +70,7 @@ class MmbrExtdMergeVarExportIterator extends AbstractSubordinateIterator impleme
                 )
             )
             ->setParameter('staticSegment', $staticSegment)
-            ->setParameter('states',[MemberExtendedMergeVar::STATE_SYNCED, MemberExtendedMergeVar::STATE_DROPPED]);
+            ->setParameter('states', [MemberExtendedMergeVar::STATE_SYNCED, MemberExtendedMergeVar::STATE_DROPPED]);
 
         return new BufferedQueryResultIterator($qb);
     }

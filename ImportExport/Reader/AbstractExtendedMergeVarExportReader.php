@@ -30,7 +30,6 @@ abstract class AbstractExtendedMergeVarExportReader extends AbstractIteratorBase
         parent::initializeFromContext($context);
 
         if (!$this->getSourceIterator()) {
-
             /** @var Channel $channel */
             $channel = $this->doctrineHelper->getEntityReference(
                 $this->channelClassName,
