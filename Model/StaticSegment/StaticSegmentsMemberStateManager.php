@@ -49,11 +49,17 @@ class StaticSegmentsMemberStateManager
     {
         $staticSegmentRep = $this->doctrineHelper->getEntityRepository($this->staticSegmentMember);
 
-        $deletedMembers = $staticSegmentRep->createQueryBuilder('smmb')
+        $qb = $staticSegmentRep->createQueryBuilder('smmb');
+
+        $deletedMembers = $qb
             ->select('IDENTITY(smmb.member) AS memberId')
-            ->where('smmb.staticSegment = :staticSegment AND smmb.state = :state')
-            ->setParameter('staticSegment', $staticSegment->getId())
-            ->setParameter('state', StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE)
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('smmb.staticSegment', $staticSegment->getId()),
+                    $qb->expr()->eq('smmb.state', ':stateUnsDel')
+                )
+            )
+            ->setParameter('stateUnsDel', StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE)
             ->getQuery()
             ->getArrayResult();
 
@@ -61,10 +67,8 @@ class StaticSegmentsMemberStateManager
 
         if (!empty($deletedMembers)) {
             $deletedMembersIds = array_map('current', $deletedMembers);
-            $deletedMembersIds = implode($deletedMembersIds, ',');
             $this->deleteMailChimpMembers($deletedMembersIds, $staticSegment->getSubscribersList());
             $this->deleteMailChimpMembersExtendedVars($deletedMembersIds, $staticSegment->getId());
-
         }
     }
 
@@ -79,24 +83,22 @@ class StaticSegmentsMemberStateManager
 
         $qb
             ->delete($this->staticSegmentMember, 'smmb')
-            ->andWhere('smmb.staticSegment = :staticSegment')
-            ->andWhere('smmb.state = :state_drop OR smmb.state = :state_delete')
-            ->setParameters(
-                [
-                    'staticSegment' => $staticSegment->getId(),
-                    'state_drop' => StaticSegmentMember::STATE_DROP,
-                    'state_delete' => StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE,
-                ]
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('smmb.staticSegment', $staticSegment->getId()),
+                    $qb->expr()->in('smmb.state', ':states')
+                )
             )
+            ->setParameter('states', [StaticSegmentMember::STATE_DROP, StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE])
             ->getQuery()
             ->execute();
     }
 
     /**
-     * @param string $subscribersList
-     * @param string $deletedMembersIds
+     * @param array $deletedMembersIds
+     * @param $subscribersList
      */
-    private function deleteMailChimpMembers($deletedMembersIds, $subscribersList)
+    private function deleteMailChimpMembers(array $deletedMembersIds, $subscribersList)
     {
         $qb = $this->doctrineHelper
             ->getEntityManager($this->mailChimpMember)
@@ -104,23 +106,22 @@ class StaticSegmentsMemberStateManager
 
         $qb
             ->delete($this->mailChimpMember, 'mmb')
-            ->andWhere('mmb.id IN (:memberIds)')
-            ->andWhere('mmb.subscribersList = :subscribersList')
-            ->setParameters(
-                [
-                    'memberIds' => $deletedMembersIds,
-                    'subscribersList' => $subscribersList,
-                ]
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->in('mmb.id', ':deletedMembersIds'),
+                    $qb->expr()->eq('mmb.subscribersList', $subscribersList->getId())
+                )
             )
+            ->setParameter('deletedMembersIds', $deletedMembersIds)
             ->getQuery()
             ->execute();
     }
 
     /**
-     * @param string $staticSegmentId
-     * @param string $deletedMembersIds
+     * @param array $deletedMembersIds
+     * @param $staticSegmentId
      */
-    private function deleteMailChimpMembersExtendedVars($deletedMembersIds, $staticSegmentId)
+    private function deleteMailChimpMembersExtendedVars(array $deletedMembersIds, $staticSegmentId)
     {
         $qb = $this->doctrineHelper
             ->getEntityManager($this->extMergeVar)
@@ -128,14 +129,13 @@ class StaticSegmentsMemberStateManager
 
         $qb
             ->delete($this->extMergeVar, 'evmmb')
-            ->andWhere('evmmb.member IN (:memberIds)')
-            ->andWhere('evmmb.staticSegment = :staticSegment')
-            ->setParameters(
-                [
-                    'memberIds' => $deletedMembersIds,
-                    'staticSegment' => $staticSegmentId
-                ]
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->in('evmmb.member', ':deletedMembersIds'),
+                    $qb->expr()->eq('evmmb.staticSegment', $staticSegmentId)
+                )
             )
+            ->setParameter('deletedMembersIds', $deletedMembersIds)
             ->getQuery()
             ->execute();
     }
