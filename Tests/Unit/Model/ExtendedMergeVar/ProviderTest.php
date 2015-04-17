@@ -101,7 +101,12 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 $this->getSegmentExtendedMergeVars(),
-                $this->getExternalProviderExtendedMergeVars()
+                [
+                    [
+                        'name' => 'e_dummy_name',
+                        'label' => 'e_dummy_label'
+                    ]
+                ]
             ]
         ];
     }
@@ -115,19 +120,6 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
             [
                 'name' => 'dummy_name',
                 'label' => 'dummy_label'
-            ]
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    protected function getExternalProviderExtendedMergeVars()
-    {
-        return [
-            [
-                'name' => 'e_dummy_name',
-                'label' => 'e_dummy_label'
             ]
         ];
     }

@@ -41,7 +41,9 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
      */
     protected function set(ArrayCollection $items)
     {
-        $items = $items->filter($this->addedItemsFilter());
+        $items = $items->filter(function(MemberExtendedMergeVar $mmbrExtdMergeVar) {
+            return $mmbrExtdMergeVar->isAddState();
+        });
 
         if ($items->isEmpty()) {
             return [];
@@ -70,24 +72,14 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
     }
 
     /**
-     * @return callable
-     */
-    protected function addedItemsFilter()
-    {
-        return function (MemberExtendedMergeVar $mmbrExtdMergeVar) {
-            return $mmbrExtdMergeVar->isAddState();
-        };
-    }
-
-    /**
      * @param array $response
      * @return void
      */
     protected function handleErrorResponse(array $response)
     {
-        if (isset($response['errors'])) {
+        if (!empty($response['errors'])) {
             foreach ($response['errors'] as $error) {
-                $this->logErrors(array('code' => $error['code'], 'error' => $error['error']));
+                $this->logErrors(['code' => $error['code'], 'error' => $error['error']]);
             }
         }
     }
@@ -96,7 +88,7 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
      * @param array $errors
      * @return void
      */
-    private function logErrors(array $errors)
+    protected function logErrors(array $errors)
     {
         if (empty($errors)) {
             return;

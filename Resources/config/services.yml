@@ -921,15 +921,15 @@ services:
         class: %orocrm_mailchimp.iterator.extended_merge_var_add.class%
         arguments:
             - @oro_entity.doctrine_helper
-            - %orocrm_mailchimp.entity.extended_merge_var.class%
             - @orocrm_mailchimp.extended_merge_var.composite_provider
+            - %orocrm_mailchimp.entity.extended_merge_var.class%
 
     orocrm_mailchimp.iterator.extended_merge_var_remove:
         class: %orocrm_mailchimp.iterator.extended_merge_var_remove.class%
         arguments:
             - @oro_entity.doctrine_helper
-            - %orocrm_mailchimp.entity.extended_merge_var.class%
             - @orocrm_mailchimp.extended_merge_var.composite_provider
+            - %orocrm_mailchimp.entity.extended_merge_var.class%
 
     orocrm_mailchimp.iterator.mmbr_extd_merge_var:
         class: %orocrm_mailchimp.iterator.mmbr_extd_merge_var.class%

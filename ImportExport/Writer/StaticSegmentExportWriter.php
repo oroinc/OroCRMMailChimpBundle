@@ -92,9 +92,9 @@ class StaticSegmentExportWriter extends AbstractExportWriter
 
     /**
      * @param StaticSegment $staticSegment
-     * @param $segmentStateFilter
-     * @param $method
-     * @param $itemState
+     * @param string $segmentStateFilter
+     * @param string $method
+     * @param string $itemState
      * @param bool $deleteMember
      * @return array
      */

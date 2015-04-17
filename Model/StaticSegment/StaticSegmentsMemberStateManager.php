@@ -98,7 +98,7 @@ class StaticSegmentsMemberStateManager
      * @param array $deletedMembersIds
      * @param $subscribersList
      */
-    private function deleteMailChimpMembers(array $deletedMembersIds, $subscribersList)
+    protected function deleteMailChimpMembers(array $deletedMembersIds, $subscribersList)
     {
         $qb = $this->doctrineHelper
             ->getEntityManager($this->mailChimpMember)
@@ -121,7 +121,7 @@ class StaticSegmentsMemberStateManager
      * @param array $deletedMembersIds
      * @param $staticSegmentId
      */
-    private function deleteMailChimpMembersExtendedVars(array $deletedMembersIds, $staticSegmentId)
+    protected function deleteMailChimpMembersExtendedVars(array $deletedMembersIds, $staticSegmentId)
     {
         $qb = $this->doctrineHelper
             ->getEntityManager($this->extMergeVar)

@@ -70,16 +70,16 @@ class ExtendedMergeVar
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(name="label", type="string", length=255, nullable=false)
      */
     protected $label;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="is_require", type="boolean")
+     * @ORM\Column(name="is_required", type="boolean")
      */
-    protected $require;
+    protected $required;
 
     /**
      * @var string
@@ -91,7 +91,7 @@ class ExtendedMergeVar
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=10, nullable=false)
+     * @ORM\Column(name="tag", type="string", length=10, nullable=false)
      */
     protected $tag;
 
@@ -107,7 +107,7 @@ class ExtendedMergeVar
      */
     public function __construct()
     {
-        $this->require = false;
+        $this->required = false;
         $this->fieldType = self::TAG_TEXT_FIELD_TYPE;
         $this->state = self::STATE_ADD;
     }
@@ -183,9 +183,9 @@ class ExtendedMergeVar
     /**
      * @return boolean
      */
-    public function getRequire()
+    public function isRequired()
     {
-        return $this->require;
+        return $this->required;
     }
 
     /**
@@ -227,7 +227,7 @@ class ExtendedMergeVar
      */
     public function isAddState()
     {
-        return self::STATE_ADD == $this->state;
+        return self::STATE_ADD === $this->state;
     }
 
     /**
@@ -235,7 +235,7 @@ class ExtendedMergeVar
      */
     public function isRemoveState()
     {
-        return self::STATE_REMOVE == $this->state;
+        return self::STATE_REMOVE === $this->state;
     }
 
     /**

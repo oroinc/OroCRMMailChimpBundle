@@ -35,7 +35,7 @@ class OroCRMMailChimpBundle implements Migration
         $table->addColumn('static_segment_id', 'integer', []);
         $table->addColumn('name', 'string', ['length' => 255]);
         $table->addColumn('label', 'string', ['length' => 255]);
-        $table->addColumn('is_require', 'boolean', []);
+        $table->addColumn('is_required', 'boolean', []);
         $table->addColumn('field_type', 'string', ['length' => 255]);
         $table->addColumn('tag', 'string', ['length' => 10]);
         $table->addColumn('state', 'string', ['length' => 255]);

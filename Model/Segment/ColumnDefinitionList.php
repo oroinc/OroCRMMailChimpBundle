@@ -9,7 +9,7 @@ class ColumnDefinitionList implements ColumnDefinitionListInterface
     /**
      * @var array
      */
-    private $columns;
+    protected $columns;
 
     /**
      * @param Segment $segment
@@ -18,7 +18,7 @@ class ColumnDefinitionList implements ColumnDefinitionListInterface
     {
         $this->columns = [];
         $definition = json_decode($segment->getDefinition(), true);
-        if (false === is_null($definition)) {
+        if (!is_null($definition)) {
             $this->initialize($definition);
         }
     }
@@ -29,12 +29,12 @@ class ColumnDefinitionList implements ColumnDefinitionListInterface
      */
     protected function initialize(array $definition)
     {
-        if (false === isset($definition['columns'])) {
+        if (!isset($definition['columns']) || !is_array($definition['columns'])) {
             return;
         }
         foreach ($definition['columns'] as $column) {
             $columnDefinition = $this->createColumnDefinition($column);
-            if ($columnDefinition) {
+            if (!empty($columnDefinition)) {
                 array_push($this->columns, $columnDefinition);
             }
         }
@@ -42,12 +42,12 @@ class ColumnDefinitionList implements ColumnDefinitionListInterface
 
     /**
      * @param array $column
-     * @return null|array
+     * @return array
      */
     protected function createColumnDefinition(array $column)
     {
-        if (false === isset($column['name']) || false ===  isset($column['label'])) {
-            return null;
+        if (!isset($column['name'], $column['label'])) {
+            return [];
         }
         return ['name' => $column['name'], 'label' => $column['label']];
     }

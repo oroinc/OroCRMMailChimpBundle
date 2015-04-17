@@ -7,26 +7,9 @@ use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList;
 
 class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var ColumnDefinitionList
-     */
-    private $list;
-
-    /**
-     * @var Segment
-     */
-    private $segment;
-
-    protected function setUp()
-    {
-        $this->segment = $this->getMockBuilder('Oro\Bundle\SegmentBundle\Entity\Segment')->getMock();
-        $this->list = new ColumnDefinitionList($this->segment);
-    }
-
     public function testGetColumnsWhenJsonRepresentationIsIncorrect()
     {
-        /** @var Segment $segment */
-        $segment = $this->getMockBuilder('Oro\Bundle\SegmentBundle\Entity\Segment')->getMock();
+        $segment = $this->getSegment();
         $segment->expects($this->once())->method('getDefinition')
             ->will($this->returnValue('incorrect_definition'));
 
@@ -37,8 +20,7 @@ class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
 
     public function testGetColumnsWhenDefinitionHasNoColumns()
     {
-        /** @var Segment $segment */
-        $segment = $this->getMockBuilder('Oro\Bundle\SegmentBundle\Entity\Segment')->getMock();
+        $segment = $this->getSegment();
         $definition = json_encode(['filters' => []]);
         $segment->expects($this->once())->method('getDefinition')->will($this->returnValue($definition));
 
@@ -49,8 +31,7 @@ class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
 
     public function testGetColumnsWhenColumnDefinitionIsIncorrect()
     {
-        /** @var Segment $segment */
-        $segment = $this->getMockBuilder('Oro\Bundle\SegmentBundle\Entity\Segment')->getMock();
+        $segment = $this->getSegment();
 
         $definition = json_encode(array(
             'columns' => [
@@ -97,7 +78,18 @@ class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($column2['label'], $this->equalTo('Total'));
     }
 
-    private function getCorrectSegmentDefinition()
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|Segment
+     */
+    protected function getSegment()
+    {
+        return $segment = $this->getMockBuilder('Oro\Bundle\SegmentBundle\Entity\Segment')->getMock();
+    }
+
+    /**
+     * @return array
+     */
+    protected function getCorrectSegmentDefinition()
     {
         return [
             'columns' => [

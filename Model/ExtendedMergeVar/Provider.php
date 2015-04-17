@@ -35,14 +35,14 @@ class Provider implements CompositeProviderInterface
     }
 
     /**
-     * {@inheritdoc
+     * {@inheritdoc}
      */
     public function provideExtendedMergeVars(MarketingList $marketingList)
     {
-        $list = $this
+        $vars = $this
             ->columnDefinitionListFactory
-            ->create($marketingList);
-        $vars = $list->getColumns();
+            ->create($marketingList)
+            ->getColumns();
 
         foreach ($this->providers as $provider) {
             $currentProviderVars = $provider->provideExtendedMergeVars($marketingList);

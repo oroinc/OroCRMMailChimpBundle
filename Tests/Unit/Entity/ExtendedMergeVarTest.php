@@ -11,7 +11,7 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
     /**
      * @var ExtendedMergeVar
      */
-    private $entity;
+    protected $entity;
 
     protected function setUp()
     {
@@ -24,7 +24,7 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(ExtendedMergeVar::STATE_ADD, $entity->getState());
         $this->assertEquals(ExtendedMergeVar::TAG_TEXT_FIELD_TYPE, $entity->getFieldType());
-        $this->assertFalse($entity->getRequire());
+        $this->assertFalse($entity->isRequired());
         $this->assertNull($entity->getName());
         $this->assertNull($entity->getLabel());
         $this->assertNull($entity->getTag());

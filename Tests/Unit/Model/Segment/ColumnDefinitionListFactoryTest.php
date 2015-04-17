@@ -9,17 +9,17 @@ class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @var ColumnDefinitionListFactory
      */
-    private $factory;
+    protected $factory;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $marketingList;
+    protected $marketingList;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $segment;
+    protected $segment;
 
     protected function setUp()
     {

@@ -11,12 +11,12 @@ class QueryDecoratorTest extends \PHPUnit_Framework_TestCase
     /**
      * @var QueryDecorator
      */
-    private $queryDecorator;
+    protected $queryDecorator;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $queryBuilder;
+    protected $queryBuilder;
 
     protected function setUp()
     {

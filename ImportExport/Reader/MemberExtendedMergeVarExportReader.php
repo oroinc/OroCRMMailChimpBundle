@@ -17,18 +17,20 @@ class MemberExtendedMergeVarExportReader extends AbstractExtendedMergeVarExportR
      */
     public function setMmbrExtdMergeVarClassName($mmbrExtdMergeVarClassName)
     {
-        if (!is_string($mmbrExtdMergeVarClassName) && empty($mmbrExtdMergeVarClassName)) {
-            throw new \InvalidArgumentException('MemberExtendedMergeVar class name must be provided');
-        }
         $this->mmbrExtdMergeVarClassName = $mmbrExtdMergeVarClassName;
     }
 
     /**
      * @param Channel $channel
-     * @return \Iterator
+     * @return MmbrExtdMergeVarExportIterator
+     * @throws \InvalidArgumentException if MemberExtendedMergeVar class name is not provided
      */
     protected function getExtendedMergeVarIterator(Channel $channel)
     {
+        if (!is_string($this->mmbrExtdMergeVarClassName) && empty($this->mmbrExtdMergeVarClassName)) {
+            throw new \InvalidArgumentException('MemberExtendedMergeVar class name must be provided.');
+        }
+
         $iterator = new MmbrExtdMergeVarExportIterator(
             $this->getSegmentsIterator($channel),
             $this->doctrineHelper,

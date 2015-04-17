@@ -35,7 +35,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     protected function createSubordinateIterator($staticSegment)
     {
         if (!$staticSegment->getExtendedMergeVars()) {
-            return new \ArrayIterator(array());
+            return new \EmptyIterator();
         }
 
         $qb = $this->getIteratorQueryBuilder($staticSegment);

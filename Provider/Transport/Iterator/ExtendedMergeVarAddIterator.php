@@ -25,21 +25,21 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
 
     /**
      * @param DoctrineHelper $doctrineHelper
-     * @param string $extendedMergeVarClassName
      * @param ProviderInterface $provider
+     * @param string $extendedMergeVarClassName
      */
     public function __construct(
         DoctrineHelper $doctrineHelper,
-        $extendedMergeVarClassName,
-        ProviderInterface $provider
+        ProviderInterface $provider,
+        $extendedMergeVarClassName
     ) {
         if (!is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
             throw new \InvalidArgumentException('ExtendedMergeVar class name must be provided.');
         }
 
         $this->doctrineHelper = $doctrineHelper;
-        $this->extendedMergeVarClassName = $extendedMergeVarClassName;
         $this->provider = $provider;
+        $this->extendedMergeVarClassName = $extendedMergeVarClassName;
     }
 
     /**
@@ -55,10 +55,7 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        $vars = $this->provider
-            ->provideExtendedMergeVars(
-                $staticSegment->getMarketingList()
-            );
+        $vars = $this->provider->provideExtendedMergeVars($staticSegment->getMarketingList());
 
         $varNames = array_map(
             function ($each) {
