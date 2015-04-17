@@ -34,8 +34,7 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->columnDefinitionList = $this
-            ->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListInterface')
-            ->getMock();
+            ->getMock('OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListInterface');
         $this->marketingList = new MarketingList();
         $this->columnDefinitionListFactory
             ->expects($this->any())
@@ -65,17 +64,18 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($columns, $extendedMergeVars);
     }
 
-    public function testProvideExtendedMergeVarsWithExternalProviders()
+    /**
+     * @dataProvider extendedMergeVarsDataProvider
+     * @param array $segmentExtendedMergeVars
+     * @param array $externalProviderMergeVars
+     */
+    public function testProvideExtendedMergeVarsWithExternalProviders($segmentExtendedMergeVars, $externalProviderMergeVars)
     {
-        $segmentExtendedMergeVars = $this->getSegmentExtendedMergeVars();
-        $externalProviderMergeVars = $this->getExternalProviderExtendedMergeVars();
-
         $this->columnDefinitionList->expects($this->once())->method('getColumns')
             ->will($this->returnValue($segmentExtendedMergeVars));
 
         $externalProvider = $this
-            ->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface')
-            ->getMock();
+            ->getMock('OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface');
         $externalProvider->expects($this->once())->method('provideExtendedMergeVars')
             ->will($this->returnValue($externalProviderMergeVars));
 
@@ -89,6 +89,19 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @return array
+     */
+    public function extendedMergeVarsDataProvider()
+    {
+        return [
+            [
+                $this->getSegmentExtendedMergeVars(),
+                $this->getExternalProviderExtendedMergeVars()
+            ]
+        ];
     }
 
     /**

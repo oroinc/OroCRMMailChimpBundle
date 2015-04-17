@@ -14,34 +14,34 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
     /**
      * @var DoctrineHelper
      */
-    private $doctrineHelper;
+    protected $doctrineHelper;
 
     /**
      * @var string
      */
-    private $extendedMergeVarClassName;
+    protected $extendedMergeVarClassName;
 
     /**
      * @var ProviderInterface
      */
-    private $provider;
+    protected $provider;
 
     /**
      * @param DoctrineHelper $doctrineHelper
-     * @param string $ExtendedMergeVarClassName
+     * @param string $extendedMergeVarClassName
      * @param ProviderInterface $provider
      */
     public function __construct(
         DoctrineHelper $doctrineHelper,
-        $ExtendedMergeVarClassName,
+        $extendedMergeVarClassName,
         ProviderInterface $provider
     ) {
-        if (!is_string($ExtendedMergeVarClassName) || empty($ExtendedMergeVarClassName)) {
+        if (!is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
             throw new \InvalidArgumentException('ExtendedMergeVar class name must be provided.');
         }
 
         $this->doctrineHelper = $doctrineHelper;
-        $this->extendedMergeVarClassName = $ExtendedMergeVarClassName;
+        $this->extendedMergeVarClassName = $extendedMergeVarClassName;
         $this->provider = $provider;
     }
 

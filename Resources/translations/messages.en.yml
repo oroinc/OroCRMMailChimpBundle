@@ -231,6 +231,7 @@ orocrm:
             sync_status.label: Sync Status
             updated_at.label: Updated At
             segment_members.label: Members
+            extended_merge_vars.label: Extended Merge Vars
 
         staticsegmentmember:
             entity_label: MailChimp Static Segment Member
@@ -242,9 +243,24 @@ orocrm:
 
         memberextendedmergevar:
             entity_label: Member Exteneded Merge Var
+            entity_plural_label: Member Exteneded Merge Var
+            id.label: Id
+            merge_var_values.label: Member Merge Var Values
+            state.label: State
+            member.label: Member
+            static_segment.label: Static Segment
 
         extendedmergevar:
             entity_label: Exteneded Merge Var
+            entity_plural_label: Exteneded Merge Var
+            field_type.label: Field Type
+            id.label: Id
+            label.label: Label
+            name.label: Name
+            require.label: Is Required
+            state.label: State
+            tag.label: Tag
+            static_segment.label: Static Segment
 
         memberactivity:
             entity_label: MailChimp Member Activity

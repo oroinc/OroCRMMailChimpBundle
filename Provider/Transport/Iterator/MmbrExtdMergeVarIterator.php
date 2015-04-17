@@ -17,7 +17,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     /**
      * @var QueryDecorator
      */
-    private $queryDecorator;
+    protected $queryDecorator;
 
     /**
      * @param QueryDecorator $queryDecorator

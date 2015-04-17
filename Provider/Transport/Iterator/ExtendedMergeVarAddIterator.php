@@ -11,17 +11,17 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
     /**
      * @var DoctrineHelper
      */
-    private $doctrineHelper;
+    protected $doctrineHelper;
 
     /**
      * @var string
      */
-    private $extendedMergeVarClassName;
+    protected $extendedMergeVarClassName;
 
     /**
      * @var ProviderInterface
      */
-    private $provider;
+    protected $provider;
 
     /**
      * @param DoctrineHelper $doctrineHelper

@@ -12,12 +12,12 @@ class MmbrExtdMergeVarExportIterator extends AbstractSubordinateIterator impleme
     /**
      * @var string
      */
-    private $mmbrExtdMergeVarClassName;
+    protected $mmbrExtdMergeVarClassName;
 
     /**
      * @var DoctrineHelper
      */
-    private $doctrineHelper;
+    protected $doctrineHelper;
 
     /**
      * @param \Iterator $mainIterator
