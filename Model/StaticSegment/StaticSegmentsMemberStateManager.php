@@ -104,9 +104,9 @@ class StaticSegmentsMemberStateManager
 
     /**
      * @param array $deletedMembersIds
-     * @param $subscribersList
+     * @param SubscribersList $subscribersList
      */
-    protected function deleteMailChimpMembers(array $deletedMembersIds, $subscribersList)
+    protected function deleteMailChimpMembers(array $deletedMembersIds, SubscribersList $subscribersList)
     {
         $qb = $this->doctrineHelper
             ->getEntityManager($this->mailChimpMember)
