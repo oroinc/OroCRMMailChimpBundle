@@ -2,7 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\Segment;
 
+use Oro\Bundle\SegmentBundle\Entity\Segment;
+
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,12 +15,12 @@ class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
     protected $factory;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|MarketingList
      */
     protected $marketingList;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|Segment
      */
     protected $segment;
 

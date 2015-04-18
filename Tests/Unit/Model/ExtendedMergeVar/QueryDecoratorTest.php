@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\ExtendedMergeVar;
 
 use Doctrine\ORM\Query\Expr\Select;
+use Doctrine\ORM\QueryBuilder;
 
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\QueryDecorator;
 
@@ -14,7 +15,7 @@ class QueryDecoratorTest extends \PHPUnit_Framework_TestCase
     protected $queryDecorator;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|QueryBuilder
      */
     protected $queryBuilder;
 

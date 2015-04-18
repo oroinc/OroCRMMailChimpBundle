@@ -59,6 +59,11 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     protected $unsubscribedItemClassName;
 
     /**
+     * @var string
+     */
+    protected $segmentMemberClassName;
+
+    /**
      * @param MarketingListProvider $marketingListProvider
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param FieldHelper $fieldHelper
@@ -84,6 +89,14 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         $this->memberClassName                  = $memberClassName;
         $this->removedItemClassName             = $removedItemClassName;
         $this->unsubscribedItemClassName        = $unsubscribedItemClassName;
+    }
+
+    /**
+     * @param string $segmentMemberClassName
+     */
+    public function setSegmentMemberClassName($segmentMemberClassName)
+    {
+        $this->segmentMemberClassName = $segmentMemberClassName;
     }
 
     /**
@@ -200,6 +213,6 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                 Join::WITH,
                 "mlu.entityId = $entityAlias.id"
             )
-            ->andWhere($qb->expr()->isNull('mlг.id'));
+            ->andWhere($qb->expr()->isNull('mlu.id'));
     }
 }

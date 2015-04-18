@@ -12,19 +12,6 @@ use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentIterator
 {
     /**
-     * @var string
-     */
-    protected $segmentMemberClassName;
-
-    /**
-     * @param string $segmentMemberClassName
-     */
-    public function setSegmentMemberClassName($segmentMemberClassName)
-    {
-        $this->segmentMemberClassName = $segmentMemberClassName;
-    }
-
-    /**
      * @param StaticSegment $staticSegment
      *
      * @return \Iterator|BufferedQueryResultIterator
