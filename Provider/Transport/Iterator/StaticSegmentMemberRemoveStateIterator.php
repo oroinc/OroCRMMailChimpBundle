@@ -53,7 +53,7 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             ->join('segmentMember.member', 'smmb')
             ->join('segmentMember.staticSegment', 'staticSegment')
             ->andWhere($qb->expr()->eq('staticSegment.id', $staticSegment->getId()))
-            ->andWhere($segmentMembersQb->expr()->In('smmb.id', $qb->getDQL()));
+            ->andWhere($segmentMembersQb->expr()->in('smmb.id', $qb->getDQL()));
 
         $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
         $bufferedIterator->setReverse(true);
@@ -76,6 +76,6 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
                 Join::WITH,
                 "mlr.entityId = $entityAlias.id"
             )
-            ->andWhere('mlr.id IS NOT NULL');
+            ->andWhere($qb->expr()->isNotNull('mlr.id'));
     }
 }

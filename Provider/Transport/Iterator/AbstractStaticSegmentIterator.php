@@ -193,13 +193,13 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                 Join::WITH,
                 "mlr.entityId = $entityAlias.id"
             )
-            ->andWhere('mlr.id IS NULL')
+            ->andWhere($qb->expr()->isNull('mlr.id'))
             ->leftJoin(
                 $this->unsubscribedItemClassName,
                 'mlu',
                 Join::WITH,
                 "mlu.entityId = $entityAlias.id"
             )
-            ->andWhere('mlu.id IS NULL');
+            ->andWhere($qb->expr()->isNull('mlг.id'));
     }
 }
