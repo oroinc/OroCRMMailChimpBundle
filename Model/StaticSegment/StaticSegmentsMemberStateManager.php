@@ -5,6 +5,8 @@ namespace OroCRM\Bundle\MailChimpBundle\Model\StaticSegment;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 
 class StaticSegmentsMemberStateManager
 {
@@ -14,27 +16,32 @@ class StaticSegmentsMemberStateManager
     protected $doctrineHelper;
 
     /**
-     * @var string
+     * @var StaticSegmentMember
      */
     protected $staticSegmentMember;
 
     /**
-     * @var string
+     * @var Member
      */
     protected $mailChimpMember;
 
     /**
-     * @var string
+     * @var MemberExtendedMergeVar
      */
     protected $extMergeVar;
 
     /**
      * @param DoctrineHelper $doctrineHelper
-     * @param $staticSegmentMember
-     * @param $mailChimpMember
-     * @param $extMergeVar
+     * @param StaticSegmentMember $staticSegmentMember
+     * @param Member $mailChimpMember
+     * @param MemberExtendedMergeVar $extMergeVar
      */
-    public function __construct(DoctrineHelper $doctrineHelper, $staticSegmentMember, $mailChimpMember, $extMergeVar)
+    public function __construct(
+        DoctrineHelper $doctrineHelper,
+        StaticSegmentMember $staticSegmentMember,
+        Member $mailChimpMember,
+        MemberExtendedMergeVar $extMergeVar
+    )
     {
         $this->doctrineHelper = $doctrineHelper;
         $this->staticSegmentMember = $staticSegmentMember;
