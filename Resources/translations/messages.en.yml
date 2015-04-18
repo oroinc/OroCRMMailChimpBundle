@@ -257,7 +257,7 @@ orocrm:
             id.label: Id
             label.label: Label
             name.label: Name
-            require.label: Is Required
+            required.label: Is Required
             state.label: State
             tag.label: Tag
             static_segment.label: Static Segment
