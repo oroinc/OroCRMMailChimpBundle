@@ -17,32 +17,27 @@ class StaticSegmentsMemberStateManager
     protected $doctrineHelper;
 
     /**
-     * @var StaticSegmentMember
+     * @var string
      */
     protected $staticSegmentMember;
 
     /**
-     * @var Member
+     * @var string
      */
     protected $mailChimpMember;
 
     /**
-     * @var MemberExtendedMergeVar
+     * @var string
      */
     protected $extMergeVar;
 
     /**
      * @param DoctrineHelper $doctrineHelper
-     * @param StaticSegmentMember $staticSegmentMember
-     * @param Member $mailChimpMember
-     * @param MemberExtendedMergeVar $extMergeVar
+     * @param string $staticSegmentMember
+     * @param string $mailChimpMember
+     * @param string $extMergeVar
      */
-    public function __construct(
-        DoctrineHelper $doctrineHelper,
-        StaticSegmentMember $staticSegmentMember,
-        Member $mailChimpMember,
-        MemberExtendedMergeVar $extMergeVar
-    )
+    public function __construct(DoctrineHelper $doctrineHelper, $staticSegmentMember, $mailChimpMember, $extMergeVar)
     {
         $this->doctrineHelper = $doctrineHelper;
         $this->staticSegmentMember = $staticSegmentMember;
