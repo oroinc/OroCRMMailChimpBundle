@@ -7,6 +7,7 @@ use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
+use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 class StaticSegmentsMemberStateManager
 {
@@ -72,7 +73,7 @@ class StaticSegmentsMemberStateManager
 
         $this->handleDroppedMembers($staticSegment);
 
-        if (!empty($deletedMembers)) {
+        if ($deletedMembers) {
             $deletedMembersIds = array_map('current', $deletedMembers);
             $this->deleteMailChimpMembers($deletedMembersIds, $staticSegment->getSubscribersList());
             $this->deleteMailChimpMembersExtendedVars($deletedMembersIds, $staticSegment->getId());
@@ -126,7 +127,7 @@ class StaticSegmentsMemberStateManager
 
     /**
      * @param array $deletedMembersIds
-     * @param $staticSegmentId
+     * @param integer $staticSegmentId
      */
     protected function deleteMailChimpMembersExtendedVars(array $deletedMembersIds, $staticSegmentId)
     {
