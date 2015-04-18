@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\ExtendedMergeVar;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\Provider;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
+use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListInterface;
 
 class ProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +25,7 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
     protected $marketingList;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|ColumnDefinitionListInterface
      */
     protected $columnDefinitionList;
 
