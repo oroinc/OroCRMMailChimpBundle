@@ -42,6 +42,10 @@ class MailChimpExportCommandTest extends WebTestCase
      * @param array $addStaticListSegment
      * @param array $addStaticSegmentMembers
      * @param array $deleteStaticSegmentMembers
+     * @param array $addExtendedMergeVars
+     * @param array $subscriberListMergeVars
+     * @param array $exportExtendedMergeVars
+     * @param array $batchUnsubscribe
      *
      * @dataProvider responseProvider
      */
@@ -49,7 +53,11 @@ class MailChimpExportCommandTest extends WebTestCase
         array $batchSubscribe,
         array $addStaticListSegment,
         array $addStaticSegmentMembers,
-        array $deleteStaticSegmentMembers
+        array $deleteStaticSegmentMembers,
+        array $addExtendedMergeVars,
+        array $subscriberListMergeVars,
+        array $exportExtendedMergeVars,
+        array $batchUnsubscribe
     ) {
         $transport = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport')
             ->disableOriginalConstructor()
@@ -71,6 +79,22 @@ class MailChimpExportCommandTest extends WebTestCase
             ->method('deleteStaticSegmentMembers')
             ->will($this->returnValue($deleteStaticSegmentMembers));
 
+        $transport->expects($this->any())
+            ->method('addListMergeVar')
+            ->will($this->returnValue($addExtendedMergeVars));
+
+        $transport->expects($this->any())
+            ->method('getListMergeVars')
+            ->will($this->returnValue($subscriberListMergeVars));
+
+        $transport->expects($this->any())
+            ->method('batchUnsubscribe')
+            ->will($this->returnValue($exportExtendedMergeVars));
+
+        $transport->expects($this->any())
+            ->method('updateListMember')
+            ->will($this->returnValue($batchUnsubscribe));
+
         $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
 
         // no failed jobs
@@ -86,15 +110,18 @@ class MailChimpExportCommandTest extends WebTestCase
         // 1 existing subscribed member
         $this->assertStaticSegmentMembers(2);
 
-        $result = $this->runCommand(MailChimpExportCommand::NAME);
+        $result = $this->runCommand(MailChimpExportCommand::NAME, ['--verbose' => true]);
         $this->assertNotEmpty($result);
+
+        // unknown email should be ignored
+        $this->assertContains('A member with "miranda.case@example.com" email was not found', $result);
 
         // no failed jobs
         $this->assertEmpty($this->getJobs(MemberConnector::JOB_EXPORT, BatchStatus::FAILED));
         $this->assertEmpty($this->getJobs(StaticSegmentConnector::JOB_EXPORT, BatchStatus::FAILED));
 
-        // 2 members from data fixtures + 1 from marketing list
-        $this->assertMembers(3);
+        // 2 members from data fixtures + 1 from marketing list - 1 unsubscribed and deleted from segment
+        $this->assertMembers(2);
 
         // 1 subscribed segment
         $this->assertStaticSegment(1, 'assertNotEmpty');
@@ -160,7 +187,13 @@ class MailChimpExportCommandTest extends WebTestCase
                             'leid' => time(),
                         ]
                     ],
-                    'updates' => [],
+                    'updates' => [
+                        [   // used to test a case when returned my MailChimp email does not exist in Oro
+                            'email' => 'miranda.case@example.com',
+                            'euid' => null,
+                            'leid' => null
+                        ]
+                    ],
                     'add_count' => 1,
                     'update_count' => 0,
                     'error_count' => 0,
@@ -178,6 +211,27 @@ class MailChimpExportCommandTest extends WebTestCase
                     'success_count' => 1,
                     'error_count' => 0,
                     'errors' => [],
+                ],
+                'addExtendedMergeVars' => [
+                    'success_count' => 1,
+                    'error_count' => 0,
+                    'errors' => []
+                ],
+                'subscriberListMergeVars' => [
+                    'success_count' => 0,
+                    'data' => [],
+                    'error_count' => 0,
+                    'errors' => []
+                ],
+                'updateListMember' => [
+                    'success_count' => 1,
+                    'error_count' => 0,
+                    'errors' => []
+                ],
+                'batchUnsubscribe' => [
+                    'success_count' => 0,
+                    'error_count' => 0,
+                    'errors' => []
                 ],
                 'resultMembers' => [1],
             ]

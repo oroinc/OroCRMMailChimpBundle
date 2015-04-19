@@ -2,53 +2,44 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
+use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
+use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 
 class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
 {
     /**
-     * @var DecisionHandler
-     */
-    private $decisionHandler;
-
-    /**
      * @var DoctrineHelper
      */
-    private $doctrineHelper;
+    protected $doctrineHelper;
 
     /**
      * @var string
      */
-    private $extendedMergeVarClassName;
+    protected $extendedMergeVarClassName;
 
     /**
-     * @var ColumnDefinitionListFactory
+     * @var ProviderInterface
      */
-    private $columnDefinitionListFactory;
+    protected $provider;
 
     /**
-     * @param DecisionHandler $decisionHandler
      * @param DoctrineHelper $doctrineHelper
-     * @param string $mmbrExtdMergeVarClassName
-     * @param ColumnDefinitionListFactory $columnDefinitionListFactory
+     * @param ProviderInterface $provider
+     * @param string $extendedMergeVarClassName
      */
     public function __construct(
-        DecisionHandler $decisionHandler,
         DoctrineHelper $doctrineHelper,
-        $mmbrExtdMergeVarClassName,
-        ColumnDefinitionListFactory $columnDefinitionListFactory
+        ProviderInterface $provider,
+        $extendedMergeVarClassName
     ) {
-        if (false === is_string($mmbrExtdMergeVarClassName) || empty($mmbrExtdMergeVarClassName)) {
-            throw new \InvalidArgumentException('ExtendedMergeVar class name must be a not empty string.');
+        if (!is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
+            throw new \InvalidArgumentException('ExtendedMergeVar class name must be provided.');
         }
 
-        $this->decisionHandler = $decisionHandler;
         $this->doctrineHelper = $doctrineHelper;
-        $this->extendedMergeVarClassName = $mmbrExtdMergeVarClassName;
-        $this->columnDefinitionListFactory = $columnDefinitionListFactory;
+        $this->provider = $provider;
+        $this->extendedMergeVarClassName = $extendedMergeVarClassName;
     }
 
     /**
@@ -64,18 +55,13 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        if (false === $this->decisionHandler->isAllow($staticSegment->getMarketingList())) {
-            return new \ArrayIterator(array());
-        }
+        $vars = $this->provider->provideExtendedMergeVars($staticSegment->getMarketingList());
 
-        $columnDefinitionList = $this->columnDefinitionListFactory
-            ->create($staticSegment->getMarketingList());
-
-        $vars = array_map(
+        $varNames = array_map(
             function ($each) {
                 return $each['name'];
             },
-            $columnDefinitionList->getColumns()
+            $vars
         );
 
         $qb = $this->doctrineHelper
@@ -83,29 +69,28 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
             ->getRepository($this->extendedMergeVarClassName)
             ->createQueryBuilder('extendedMergeVar');
 
-        $qb->select('extendedMergeVar.name');
-        $qb->andWhere($qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'));
-        $qb->andWhere($qb->expr()->in('extendedMergeVar.name', ':vars'));
-        $qb->andWhere($qb->expr()->notIn('extendedMergeVar.state', ':states'));
-        $qb->setParameters(
-            array(
-                'staticSegment' => $staticSegment,
-                'vars' => $vars,
-                'states' => array(ExtendedMergeVar::STATE_REMOVE, ExtendedMergeVar::STATE_DROPPED)
+        $qb
+            ->select('extendedMergeVar.name')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'),
+                    $qb->expr()->in('extendedMergeVar.name', ':vars'),
+                    $qb->expr()->notIn('extendedMergeVar.state', ':states')
+                )
             )
-        );
+            ->setParameter(':staticSegment', $staticSegment)
+            ->setParameter(':vars', $varNames)
+            ->setParameter(':states', [ExtendedMergeVar::STATE_REMOVE, ExtendedMergeVar::STATE_DROPPED]);
 
         $existingVars = array_map(
             function ($each) {
-                if (isset($each['name'])) {
-                    return $each['name'];
-                }
+                return $each['name'];
             },
             $qb->getQuery()->getArrayResult()
         );
 
         return new \CallbackFilterIterator(
-            new \ArrayIterator($columnDefinitionList->getColumns()),
+            new \ArrayIterator($vars),
             function (&$current) use ($staticSegment, $existingVars) {
                 if (is_array($current) && isset($current['name'])) {
                     if (in_array($current['name'], $existingVars)) {

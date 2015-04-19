@@ -11,7 +11,8 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
  * @ORM\Table(
  *      name="orocrm_mc_mmbr_extd_merge_var",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="mc_mmbr_extd_merge_var_sid_mmbr_unq", columns={"static_segment_id", "member_id"})
+ *          @ORM\UniqueConstraint(name="mc_mmbr_emv_sid_mmbr_unq",
+ *          columns={"static_segment_id", "member_id"})
  *     }
  * )
  * @ORM\HasLifecycleCallbacks()
@@ -52,7 +53,7 @@ class MemberExtendedMergeVar
      * @var Member
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Member")
-     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
@@ -77,8 +78,14 @@ class MemberExtendedMergeVar
      */
     protected $state;
 
+    /**
+     * @var array
+     */
+    protected $mergeVarValuesContext;
+
     public function __construct()
     {
+        $this->mergeVarValues = [];
         $this->state = self::STATE_ADD;
     }
 
@@ -100,7 +107,7 @@ class MemberExtendedMergeVar
 
     /**
      * @param StaticSegment $staticSegment
-     * @return ExtendedMergeVar
+     * @return MemberExtendedMergeVar
      */
     public function setStaticSegment(StaticSegment $staticSegment)
     {
@@ -118,10 +125,12 @@ class MemberExtendedMergeVar
 
     /**
      * @param Member $member
+     * @return MemberExtendedMergeVar
      */
     public function setMember(Member $member)
     {
         $this->member = $member;
+        return $this;
     }
 
     /**
@@ -135,7 +144,7 @@ class MemberExtendedMergeVar
     /**
      * @param array $mergeVarValues
      */
-    public function setMergeVarValues($mergeVarValues)
+    public function setMergeVarValues(array $mergeVarValues)
     {
         $this->mergeVarValues = $mergeVarValues;
     }
@@ -170,5 +179,23 @@ class MemberExtendedMergeVar
     public function isAddState()
     {
         return $this->state === self::STATE_ADD;
+    }
+
+    /**
+     * @param array $context
+     * @return MemberExtendedMergeVar
+     */
+    public function setMergeVarValuesContext(array $context)
+    {
+        $this->mergeVarValuesContext = $context;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMergeVarValuesContext()
+    {
+        return $this->mergeVarValuesContext;
     }
 }

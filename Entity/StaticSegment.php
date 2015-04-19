@@ -105,14 +105,14 @@ class StaticSegment implements OriginAwareInterface
     protected $subscribersList;
 
     /**
-     * @var Collection|ArrayCollection|Member[]
+     * @var Collection|Member[]
      *
      * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="staticSegment")
      */
     protected $segmentMembers;
 
     /**
-     * @var Collection|ArrayCollection|ExtendedMergeVar[]
+     * @var Collection|ExtendedMergeVar[]
      *
      * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar", mappedBy="staticSegment")
      */
@@ -173,6 +173,11 @@ class StaticSegment implements OriginAwareInterface
      * @ORM\Column(name="member_count", type="integer", nullable=true)
      */
     protected $memberCount;
+
+    public function __construct()
+    {
+        $this->extendedMergeVars = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -520,12 +525,52 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
-     * Retrieves extended merge vars
-     *
-     * @return ArrayCollection|Collection|ExtendedMergeVar[]
+     * @param ExtendedMergeVar $extendedMergeVar
+     * @return ExtendedMergeVar
      */
-    public function getExtendedMergeVars()
+    public function addExtendedMergeVar(ExtendedMergeVar $extendedMergeVar)
     {
+        if (!$this->extendedMergeVars->contains($extendedMergeVar)) {
+            $this->extendedMergeVars->add($extendedMergeVar);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ExtendedMergeVar $extendedMergeVar
+     * @return ExtendedMergeVar
+     */
+    public function removeExtendedMergeVar(ExtendedMergeVar $extendedMergeVar)
+    {
+        if ($this->extendedMergeVars->contains($extendedMergeVar)) {
+            $this->extendedMergeVars->removeElement($extendedMergeVar);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieves extended merge vars.
+     *
+     * @param array $filterByStates
+     * @return Collection|ExtendedMergeVar[]
+     */
+    public function getExtendedMergeVars(array $filterByStates = [])
+    {
+        if (!empty($filterByStates)) {
+            return $this->extendedMergeVars->filter(function(ExtendedMergeVar $extendedMergeVar) use ($filterByStates) {
+                return in_array($extendedMergeVar->getState(), $filterByStates, true);
+            });
+        }
         return $this->extendedMergeVars;
+    }
+
+    /**
+     * @return Collection|ExtendedMergeVar[]
+     */
+    public function getSyncedExtendedMergeVars()
+    {
+        return $this->getExtendedMergeVars([ExtendedMergeVar::STATE_SYNCED]);
     }
 }

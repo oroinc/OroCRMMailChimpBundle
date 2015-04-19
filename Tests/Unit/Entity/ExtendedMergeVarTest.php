@@ -2,15 +2,16 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+
+use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 
 class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ExtendedMergeVar
      */
-    private $entity;
+    protected $entity;
 
     protected function setUp()
     {
@@ -22,8 +23,8 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
         $entity = new ExtendedMergeVar();
 
         $this->assertEquals(ExtendedMergeVar::STATE_ADD, $entity->getState());
-        $this->assertEquals(ExtendedMergeVar::TAG_FIELD_TYPE, $entity->getFieldType());
-        $this->assertFalse($entity->getRequire());
+        $this->assertEquals(ExtendedMergeVar::TAG_TEXT_FIELD_TYPE, $entity->getFieldType());
+        $this->assertFalse($entity->isRequired());
         $this->assertNull($entity->getName());
         $this->assertNull($entity->getLabel());
         $this->assertNull($entity->getTag());
@@ -88,12 +89,12 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 
     public function setNameDataProvider()
     {
-        return array(
-            array(''),
-            array(123),
-            array(array()),
-            array(new \ArrayIterator(array()))
-        );
+        return [
+            [''],
+            [123],
+            [[]],
+            [new \ArrayIterator([])]
+        ];
     }
 
     public function testSetAndGetName()
@@ -121,11 +122,11 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 
     public function tagGenerationDataProvider()
     {
-        return array(
-            array('total', ExtendedMergeVar::TAG_PREFIX . 'TOTAL'),
-            array('entity_total', ExtendedMergeVar::TAG_PREFIX . 'NTTY_TTL'),
-            array('anyEntityAttr', ExtendedMergeVar::TAG_PREFIX . 'NYNTTYTT')
-        );
+        return [
+            ['total', ExtendedMergeVar::TAG_PREFIX . 'TOTAL'],
+            ['entity_total', ExtendedMergeVar::TAG_PREFIX . 'NTTY_TTL'],
+            ['anyEntityAttr', ExtendedMergeVar::TAG_PREFIX . 'NYNTTYTT']
+        ];
     }
 
     public function testIsAddState()
@@ -142,13 +143,13 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 
     public function testSetSyncedState()
     {
-        $this->entity->setSyncedState();
+        $this->entity->markSynced();
         $this->assertEquals(ExtendedMergeVar::STATE_SYNCED, $this->entity->getState());
     }
 
     public function testSetDroppedState()
     {
-        $this->entity->setDroppedState();
+        $this->entity->markDropped();
         $this->assertEquals(ExtendedMergeVar::STATE_DROPPED, $this->entity->getState());
     }
 }

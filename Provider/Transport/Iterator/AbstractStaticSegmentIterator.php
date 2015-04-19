@@ -49,6 +49,21 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     protected $memberClassName;
 
     /**
+     * @var string
+     */
+    protected $removedItemClassName;
+
+    /**
+     * @var string
+     */
+    protected $unsubscribedItemClassName;
+
+    /**
+     * @var string
+     */
+    protected $segmentMemberClassName;
+
+    /**
      * @param MarketingListProvider $marketingListProvider
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param FieldHelper $fieldHelper
@@ -62,7 +77,9 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         FieldHelper $fieldHelper,
         OwnershipMetadataProvider $ownershipMetadataProvider,
         DQLNameFormatter $formatter,
-        $memberClassName
+        $memberClassName,
+        $removedItemClassName,
+        $unsubscribedItemClassName
     ) {
         $this->marketingListProvider            = $marketingListProvider;
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
@@ -70,6 +87,16 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         $this->ownershipMetadataProvider        = $ownershipMetadataProvider;
         $this->formatter                        = $formatter;
         $this->memberClassName                  = $memberClassName;
+        $this->removedItemClassName             = $removedItemClassName;
+        $this->unsubscribedItemClassName        = $unsubscribedItemClassName;
+    }
+
+    /**
+     * @param string $segmentMemberClassName
+     */
+    public function setSegmentMemberClassName($segmentMemberClassName)
+    {
+        $this->segmentMemberClassName = $segmentMemberClassName;
     }
 
     /**
@@ -93,7 +120,10 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         }
 
         $marketingList = $staticSegment->getMarketingList();
-        $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
+        $qb = $this->marketingListProvider->getMarketingListEntitiesQueryBuilder(
+            $marketingList,
+            MarketingListProvider::FULL_ENTITIES_MIXIN
+        );
 
         $this->prepareIteratorPart($qb);
 
@@ -166,23 +196,23 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
-        $from = $qb->getDQLPart('from');
-        $entityAlias = $from[0]->getAlias();
+        $rootAliases = $qb->getRootAliases();
+        $entityAlias = reset($rootAliases);
 
         $qb
             ->leftJoin(
-                'OroCRMMarketingListBundle:MarketingListRemovedItem',
+                $this->removedItemClassName,
                 'mlr',
                 Join::WITH,
                 "mlr.entityId = $entityAlias.id"
             )
-            ->andWhere('mlr.id IS NULL')
+            ->andWhere($qb->expr()->isNull('mlr.id'))
             ->leftJoin(
-                'OroCRMMarketingListBundle:MarketingListUnsubscribedItem',
+                $this->unsubscribedItemClassName,
                 'mlu',
                 Join::WITH,
-                "mlu.entityId = $entityAlias"
+                "mlu.entityId = $entityAlias.id"
             )
-            ->andWhere('mlu.id IS NULL');
+            ->andWhere($qb->expr()->isNull('mlu.id'));
     }
 }

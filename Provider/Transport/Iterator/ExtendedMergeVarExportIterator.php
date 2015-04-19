@@ -6,50 +6,41 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
-use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\DecisionHandler;
 
 class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator implements SubordinateReaderInterface
 {
     /**
      * @var string
      */
-    private $extendedMergeVarClassName;
-
-    /**
-     * @var DecisionHandler
-     */
-    private $decisionHandler;
+    protected $extendedMergeVarClassName;
 
     /**
      * @var DoctrineHelper
      */
-    private $doctrineHelper;
+    protected $doctrineHelper;
 
     /**
      * @param \Iterator $mainIterator
-     * @param DecisionHandler $decisionHandler
      * @param DoctrineHelper $doctrineHelper
      * @param string $extendedMergeVarClassName
      */
     public function __construct(
         \Iterator $mainIterator,
-        DecisionHandler $decisionHandler,
         DoctrineHelper $doctrineHelper,
         $extendedMergeVarClassName
     ) {
         parent::__construct($mainIterator);
 
-        if (false === is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
-            throw new \InvalidArgumentException('ExtendedMergeVar class must be a not empty string.');
+        if (!is_string($extendedMergeVarClassName) || empty($extendedMergeVarClassName)) {
+            throw new \InvalidArgumentException('ExtendedMergeVar class must be provided.');
         }
 
-        $this->decisionHandler = $decisionHandler;
         $this->doctrineHelper = $doctrineHelper;
         $this->extendedMergeVarClassName = $extendedMergeVarClassName;
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function writeRequired()
     {
@@ -65,25 +56,21 @@ class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator impleme
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        if (false === $this->decisionHandler->isAllow($staticSegment->getMarketingList())) {
-            return new \ArrayIterator(array());
-        }
-
         $qb = $this->doctrineHelper
             ->getEntityManager($this->extendedMergeVarClassName)
             ->getRepository($this->extendedMergeVarClassName)
             ->createQueryBuilder('extendedMergeVar');
 
-        $qb->select('extendedMergeVar')
-            ->andWhere($qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'))
-            ->andWhere($qb->expr()->notIn('extendedMergeVar.state', ':states'))
-            ->setParameters(
-                array(
-                    'staticSegment' => $staticSegment,
-                    'states' => array(ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_DROPPED)
+        $qb
+            ->select('extendedMergeVar')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('extendedMergeVar.staticSegment', ':staticSegment'),
+                    $qb->expr()->notIn('extendedMergeVar.state', ':states')
                 )
             )
-            ->orderBy('extendedMergeVar.staticSegment');
+            ->setParameter('staticSegment', $staticSegment)
+            ->setParameter('states', [ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_DROPPED]);
 
         return new BufferedQueryResultIterator($qb);
     }

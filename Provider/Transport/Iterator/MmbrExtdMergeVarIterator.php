@@ -17,8 +17,11 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     /**
      * @var QueryDecorator
      */
-    private $queryDecorator;
+    protected $queryDecorator;
 
+    /**
+     * @param QueryDecorator $queryDecorator
+     */
     public function setExtendedMergeVarQueryDecorator(QueryDecorator $queryDecorator)
     {
         $this->queryDecorator = $queryDecorator;
@@ -32,7 +35,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     protected function createSubordinateIterator($staticSegment)
     {
         if (!$staticSegment->getExtendedMergeVars()) {
-            return new \ArrayIterator(array());
+            return new \EmptyIterator();
         }
 
         $qb = $this->getIteratorQueryBuilder($staticSegment);
@@ -41,7 +44,9 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         $marketingList = $staticSegment->getMarketingList();
         $fieldExpr = $this->fieldHelper
             ->getFieldExpr(
-                $marketingList->getEntity(), $qb, 'id'
+                $marketingList->getEntity(),
+                $qb,
+                'id'
             );
         $qb->addSelect($fieldExpr . ' AS entity_id');
         $qb->addSelect(self::MEMBER_ALIAS . '.id AS member_id');
@@ -55,11 +60,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
             function (&$current) use ($staticSegment) {
                 if (is_array($current)) {
                     $current['subscribersList_id'] = $staticSegment->getSubscribersList()->getId();
-                    $current['entityClass']        = $staticSegment->getMarketingList()->getEntity();
                     $current['static_segment_id']  = $staticSegment->getId();
-                    if ($staticSegment->getExtendedMergeVars()) {
-                        $current['extended_merge_vars'] = $staticSegment->getExtendedMergeVars();
-                    }
                 }
                 return true;
             }
@@ -67,7 +68,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
     {
@@ -84,8 +85,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         }
 
         $qb = clone $this->marketingListProvider->getMarketingListQueryBuilder($marketingList, $mixin);
-
-        $this->prepareIteratorPart($qb);
 
         $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
             $marketingList,

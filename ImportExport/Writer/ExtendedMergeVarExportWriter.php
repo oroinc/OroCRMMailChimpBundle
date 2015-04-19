@@ -4,18 +4,8 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\AddMergeVars;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\Handler;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\RemoveMergeVars;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\ExtendedMergeVar\UpdateMergeVars;
-use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ExtendedMergeVarExportWriter extends AbstractExportWriter
 {
@@ -32,20 +22,25 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
 
         $items = new ArrayCollection($items);
 
-        $itemsToWrite = array();
+        $itemsToWrite = [];
 
-        $addedItems = $this->add($items);
-        $removedItems = $this->remove($items);
+        try {
+            $addedItems = $this->add($items);
+            $removedItems = $this->remove($items);
 
-        if ($addedItems) {
-            $this->logger->info(sprintf('Extended merge vars: [%s] added', count($addedItems)));
+            if ($addedItems) {
+                $this->logger->info(sprintf('Extended merge vars: [%s] added', count($addedItems)));
+            }
+
+            if ($removedItems) {
+                $this->logger->info(sprintf('Extended merge vars: [%s] removed', count($addedItems)));
+            }
+
+            $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            $this->stepExecution->addFailureException($e);
         }
-
-        if ($removedItems) {
-            $this->logger->info(sprintf('Extended merge vars: [%s] removed', count($addedItems)));
-        }
-
-        $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
 
         parent::write($itemsToWrite);
     }
@@ -56,44 +51,43 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
      */
     protected function add(ArrayCollection $items)
     {
-        $items = $items->filter($this->addedItemsFilter());
+        $items = $items->filter(function(ExtendedMergeVar $extendedMergeVar) {
+            return $extendedMergeVar->isAddState();
+        });
 
         if ($items->isEmpty()) {
-            return array();
+            return [];
         }
 
         $mergeVars = $this->getSubscribersListMergeVars(
             $items->first()->getStaticSegment()->getSubscribersList()
         );
 
-        $successItems = array();
+        $successItems = [];
         /** @var ExtendedMergeVar $each */
         foreach ($items as $each) {
             $exists = array_filter($mergeVars, function ($var) use ($each) {
-                if ($var['tag'] == $each->getTag()) {
-                    return true;
-                }
-                return false;
+                return $var['tag'] === $each->getTag();
             });
-            $response = array();
+            $response = [];
             if (empty($exists)) {
                 $response = $this->transport->addListMergeVar(
-                    array(
+                    [
                         'id' => $each->getStaticSegment()->getSubscribersList()->getOriginId(),
                         'tag' => $each->getTag(),
                         'name' => $each->getLabel(),
-                        'options' => array(
+                        'options' => [
                             'field_type' => $each->getFieldType(),
-                            'require' => $each->getRequire()
-                        )
-                    )
+                            'require' => $each->isRequired()
+                        ]
+                    ]
                 );
             }
             if (is_array($response)) {
                 $this->handleErrorResponse($response);
-                if (false === isset($response['errors'])) {
-                    $each->setSyncedState();
-                    array_push($successItems, $each);
+                if (!isset($response['errors']) || empty($response['errors'])) {
+                    $each->markSynced();
+                    $successItems[] = $each;
                 }
             }
         }
@@ -106,14 +100,18 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
      */
     protected function remove(ArrayCollection $items)
     {
+        $items = $items->filter(function(ExtendedMergeVar $extendedMergeVar) {
+            return $extendedMergeVar->isRemoveState();
+        });
+
         if ($items->isEmpty()) {
-            return array();
+            return [];
         }
-        $successItems = array();
+        $successItems = [];
         /** @var ExtendedMergeVar $each */
-        foreach ($items->filter($this->removedItemsFilter()) as $each) {
-            $each->setDroppedState();
-            array_push($successItems, $each);
+        foreach ($items as $each) {
+            $each->markDropped();
+            $successItems[] = $each;
         }
         return $successItems;
     }
@@ -125,17 +123,23 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
     protected function getSubscribersListMergeVars(SubscribersList $subscribersList)
     {
         $response = $this->transport->getListMergeVars(
-            array(
-                'id' => array($subscribersList->getOriginId())
-            )
+            [
+                'id' => [
+                    $subscribersList->getOriginId()
+                ]
+            ]
         );
-        if (false === is_array($response)) {
-            return array();
-        }
-        $this->handleErrorResponse($response);
-        if (isset($response['errors']) && !empty($response['errors'])) {
+
+        if (!is_array($response)) {
             throw new \RuntimeException('Can not get list of merge vars.');
         }
+
+        $this->handleErrorResponse($response);
+
+        if (!empty($response['errors'])) {
+            throw new \RuntimeException('Can not get list of merge vars.');
+        }
+
         return $this->extractMergeVarsFromResponse($response);
     }
 
@@ -146,33 +150,13 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
     protected function extractMergeVarsFromResponse(array $response)
     {
         if (!isset($response['data'])) {
-            return array();
+            throw new \RuntimeException('Can not extract merge vars data from response.');
         }
         $data = reset($response['data']);
-        if (!isset($data['merge_vars'])) {
-            return array();
+        if (!is_array($data) || !isset($data['merge_vars']) || !is_array($data['merge_vars'])) {
+            return [];
         }
         return $data['merge_vars'];
-    }
-
-    /**
-     * @return callable
-     */
-    protected function addedItemsFilter()
-    {
-        return function (ExtendedMergeVar $extendedMergeVar) {
-            return $extendedMergeVar->isAddState();
-        };
-    }
-
-    /**
-     * @return callable
-     */
-    protected function removedItemsFilter()
-    {
-        return function (ExtendedMergeVar $extendedMergeVar) {
-            return $extendedMergeVar->isRemoveState();
-        };
     }
 
     /**
@@ -181,9 +165,9 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
      */
     protected function handleErrorResponse(array $response)
     {
-        if (isset($response['errors'])) {
+        if (!empty($response['errors'])) {
             foreach ($response['errors'] as $error) {
-                $this->logErrors(array('code' => $error['code'], 'error' => $error['error']));
+                $this->logErrors(['code' => $error['code'], 'error' => $error['error']]);
             }
         }
     }
@@ -192,7 +176,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
      * @param array $errors
      * @return void
      */
-    private function logErrors(array $errors)
+    protected function logErrors(array $errors)
     {
         if (empty($errors)) {
             return;

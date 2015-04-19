@@ -11,7 +11,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
  * @ORM\Table(
  *      name="orocrm_mc_extended_merge_var",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="mc_extended_merge_var_sid_name_unq", columns={"static_segment_id", "name"})
+ *          @ORM\UniqueConstraint(name="mc_emv_sid_name_unq", columns={"static_segment_id", "name"})
  *     }
  * )
  * @ORM\HasLifecycleCallbacks()
@@ -24,7 +24,7 @@ class ExtendedMergeVar
     const STATE_SYNCED = 'synced';
     const STATE_DROPPED = 'dropped';
 
-    const TAG_FIELD_TYPE = 'text';
+    const TAG_TEXT_FIELD_TYPE = 'text';
 
     const TAG_PREFIX = 'E_';
     const MAXIMUM_TAG_LENGTH = 10;
@@ -70,28 +70,28 @@ class ExtendedMergeVar
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(name="label", type="string", length=255, nullable=false)
      */
     protected $label;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="is_require", type="boolean", options={"default"=false})
+     * @ORM\Column(name="is_required", type="boolean")
      */
-    protected $require;
+    protected $required;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="field_type", type="string", length=255, nullable=false, options={"default"="text"})
+     * @ORM\Column(name="field_type", type="string", length=255, nullable=false)
      */
     protected $fieldType;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=10, nullable=false)
+     * @ORM\Column(name="tag", type="string", length=10, nullable=false)
      */
     protected $tag;
 
@@ -102,13 +102,19 @@ class ExtendedMergeVar
      */
     protected $state;
 
+    /**
+     * Initialize default values for the entity
+     */
     public function __construct()
     {
-        $this->require = false;
-        $this->fieldType = self::TAG_FIELD_TYPE;
+        $this->required = false;
+        $this->fieldType = self::TAG_TEXT_FIELD_TYPE;
         $this->state = self::STATE_ADD;
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
@@ -177,9 +183,9 @@ class ExtendedMergeVar
     /**
      * @return boolean
      */
-    public function getRequire()
+    public function isRequired()
     {
-        return $this->require;
+        return $this->required;
     }
 
     /**
@@ -221,7 +227,7 @@ class ExtendedMergeVar
      */
     public function isAddState()
     {
-        return self::STATE_ADD == $this->state;
+        return self::STATE_ADD === $this->state;
     }
 
     /**
@@ -229,13 +235,13 @@ class ExtendedMergeVar
      */
     public function isRemoveState()
     {
-        return self::STATE_REMOVE == $this->state;
+        return self::STATE_REMOVE === $this->state;
     }
 
     /**
      * @return void
      */
-    public function setSyncedState()
+    public function markSynced()
     {
         $this->state = self::STATE_SYNCED;
     }
@@ -243,7 +249,7 @@ class ExtendedMergeVar
     /**
      * @return void
      */
-    public function setDroppedState()
+    public function markDropped()
     {
         $this->state = self::STATE_DROPPED;
     }

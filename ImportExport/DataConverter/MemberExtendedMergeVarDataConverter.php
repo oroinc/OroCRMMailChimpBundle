@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
 use Oro\Bundle\ImportExportBundle\Converter\AbstractTableDataConverter;
 
-class ExtendedMergeVarDataConverter extends AbstractTableDataConverter
+class MemberExtendedMergeVarDataConverter extends AbstractTableDataConverter
 {
     /**
      * {@inheritdoc}
@@ -12,9 +12,8 @@ class ExtendedMergeVarDataConverter extends AbstractTableDataConverter
     protected function getHeaderConversionRules()
     {
         return [
-            'name' => 'name',
-            'label' => 'label',
             'static_segment_id' => 'staticSegment:id',
+            'member_id' => 'member:id',
             'state' => 'state'
         ];
     }

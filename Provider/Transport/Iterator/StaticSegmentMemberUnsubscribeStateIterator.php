@@ -2,28 +2,15 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
+
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
-use Doctrine\ORM\Query\Expr\Join;
-use Doctrine\ORM\QueryBuilder;
-
 class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentIterator
 {
-    /**
-     * @var string
-     */
-    protected $segmentMemberClassName;
-
-    /**
-     * @param string $segmentMemberClassName
-     */
-    public function setSegmentMemberClassName($segmentMemberClassName)
-    {
-        $this->segmentMemberClassName = $segmentMemberClassName;
-    }
-
     /**
      * @param StaticSegment $staticSegment
      *
@@ -53,7 +40,7 @@ class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentI
             ->join('segmentMember.member', 'smmb')
             ->join('segmentMember.staticSegment', 'staticSegment')
             ->andWhere($qb->expr()->eq('staticSegment.id', $staticSegment->getId()))
-            ->andWhere($segmentMembersQb->expr()->In('smmb.id', $qb->getDQL()));
+            ->andWhere($segmentMembersQb->expr()->in('smmb.id', $qb->getDQL()));
 
         $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
         $bufferedIterator->setReverse(true);
@@ -66,18 +53,16 @@ class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentI
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
-        $from = $qb->getDQLPart('from');
-        $entityAlias = $from[0]->getAlias();
+        $rootAliases = $qb->getRootAliases();
+        $entityAlias = reset($rootAliases);
 
         $qb
             ->leftJoin(
-                'OroCRMMarketingListBundle:MarketingListUnsubscribedItem',
+                $this->unsubscribedItemClassName,
                 'mlu',
                 Join::WITH,
-                "mlu.entityId = $entityAlias"
+                "mlu.entityId = $entityAlias.id"
             )
-            ->andWhere('mlu.id IS NOT NULL');
+            ->andWhere($qb->expr()->isNotNull('mlu.id'));
     }
-
-
 }
