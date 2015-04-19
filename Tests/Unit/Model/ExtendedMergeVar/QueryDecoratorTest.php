@@ -35,29 +35,61 @@ class QueryDecoratorTest extends \PHPUnit_Framework_TestCase
         unset($this->queryDecorator);
     }
 
-    public function testDecorate()
+    /**
+     * @dataProvider selectsDataProvider
+     * @param string|array $select
+     * @param array $expected
+     */
+    public function testDecorate($select, array $expected = [])
     {
         $selects = [
-            new Select('t1.email as c1'),
-            new Select('t1.fname as c2'),
-            new Select('t1.id'),
-            new Select('t1.lname as c3'),
-            new Select('name')
+            new Select($select)
         ];
+
         $this->queryBuilder->expects($this->once())->method('getDQLPart')
             ->with('select')->will($this->returnValue($selects));
-        $this->queryBuilder->expects($this->once())->method('resetDQLPart')->with('select');
-        $this->queryBuilder->expects($this->once())->method('getRootAliases')
-            ->will($this->returnValue(array('t1')));
 
-        $this->queryBuilder->expects($this->at(3))->method('addSelect')->with($selects[0]);
-        $this->queryBuilder->expects($this->at(4))->method('addSelect')->with('t1.email as c1_email');
-        $this->queryBuilder->expects($this->at(5))->method('addSelect')->with($selects[1]);
-        $this->queryBuilder->expects($this->at(6))->method('addSelect')->with('t1.fname as c2_fname');
-        $this->queryBuilder->expects($this->at(7))->method('addSelect')->with($selects[3]);
-        $this->queryBuilder->expects($this->at(8))->method('addSelect')->with('t1.lname as c3_lname');
-        $this->queryBuilder->expects($this->at(9))->method('addSelect')->with($selects[4]);
+        foreach ($expected as $index => $expectedSelect) {
+            $this->queryBuilder->expects($this->at($index))->method('addSelect')->with($expectedSelect);
+        }
+
+        if (empty($expected)) {
+            $this->queryBuilder->expects($this->never())->method('addSelect');
+        }
 
         $this->queryDecorator->decorate($this->queryBuilder);
+    }
+
+    /**
+     * @return array
+     */
+    public function selectsDataProvider()
+    {
+        return [
+            [
+                't1.email as c1',
+                [1 => 't1.email as c1_email']
+            ],
+            [
+                't1.fname as c2',
+                [1 => 't1.fname as c2_fname']
+            ],
+            [
+                't1.id',
+                []
+            ],
+            [
+                ['t1.lname AS c3', 'name'],
+                [1 => 't1.lname as c3_lname']
+            ],
+            [
+                '1 as entity',
+                []
+            ],
+            [
+                't1.status as c4, t1.total as c5',
+                [1 => 't1.status as c4_status', 2 => 't1.total as c5_total']
+            ]
+        ];
     }
 }

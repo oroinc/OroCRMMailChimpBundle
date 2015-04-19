@@ -41,7 +41,6 @@ class OroCRMMailChimpBundle implements Migration
         $table->addColumn('state', 'string', ['length' => 255]);
         $table->setPrimaryKey(['id']);
         $table->addUniqueIndex(['static_segment_id', 'name'], 'mc_emv_sid_name_unq');
-        $table->addIndex(['static_segment_id'], 'IDX_DDE321ACF8DF7CF6', []);
     }
 
     /**
@@ -59,8 +58,6 @@ class OroCRMMailChimpBundle implements Migration
         $table->addColumn('state', 'string', ['length' => 255]);
         $table->setPrimaryKey(['id']);
         $table->addUniqueIndex(['static_segment_id', 'member_id'], 'mc_mmbr_emv_sid_mmbr_unq');
-        $table->addIndex(['static_segment_id'], 'IDX_507F296DF8DF7CF6', []);
-        $table->addIndex(['member_id'], 'IDX_507F296D7597D3FE', []);
     }
 
     /**

@@ -9,44 +9,56 @@ class QueryDecorator
 {
     /**
      * @param QueryBuilder $queryBuilder
-     * @return void
      */
     public function decorate(QueryBuilder $queryBuilder)
     {
         /** @var Select[] $selects */
         $selects = $queryBuilder->getDQLPart('select');
-        $selectParts = [];
+
         foreach ($selects as $select) {
-            $parts = $select->getParts();
-            $selectParts = array_merge($selectParts, $parts);
+
+            foreach ($this->extractSelectParts($select) as $each) {
+
+                $each = preg_replace('/ as /i', ' as ', $each);
+
+                if (!strpos($each, ' as ')) {
+                    continue;
+                }
+
+                list($field, $alias) = explode(' as ', $each);
+
+                $tableAlias = null;
+                $columnName = $field;
+
+                if (strpos($field, '.')) {
+                    list($tableAlias, $columnName) = explode('.', $field, 2);
+                }
+
+                if ($tableAlias && $columnName && $alias) {
+                    $queryBuilder->addSelect(
+                        sprintf('%s.%s as %s_%s', $tableAlias, $columnName, $alias, $columnName)
+                    );
+                }
+            }
         }
-        $queryBuilder->resetDQLPart('select');
-        $rootAliases = $queryBuilder->getRootAliases();
-        $rootAlias = reset($rootAliases);
-        foreach ($selectParts as $each) {
-            $exprParts = explode(' ', $each);
+    }
 
-            $columnWithTableAlias = $exprParts[0];
-
-            $alias = $rootAlias;
-            $columnName = $columnWithTableAlias;
-
-            if (strpos($columnWithTableAlias, '.')) {
-                list($alias, $columnName) = explode('.', $columnWithTableAlias);
-            }
-
-            $columnAlias = $columnName;
-
-            if (isset($exprParts[2])) {
-                $columnAlias = $exprParts[2];
-            }
-
-            if ($alias == $rootAlias && $columnName == 'id') {
-                continue;
-            }
-
-            $queryBuilder->addSelect($each);
-            $queryBuilder->addSelect(sprintf('%s as %s_%s', $columnWithTableAlias, $columnAlias, $columnName));
+    /**
+     * @param Select $select
+     * @return array
+     */
+    protected function extractSelectParts(Select $select)
+    {
+        $select = (string) $select;
+        if (!strpos($select, ',')) {
+            return [$select];
         }
+
+        $selects = [];
+        $parts = explode(',', $select);
+        foreach ($parts as $part) {
+            $selects[] = trim($part);
+        }
+        return $selects;
     }
 }
