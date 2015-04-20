@@ -14,15 +14,6 @@ connector:
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
-                import_automation_campaign:
-                    title: import
-                    class: Oro\Bundle\BatchBundle\Step\ItemStep
-                    services:
-                        reader:    orocrm_mailchimp.connector.automation_campaign
-                        processor: orocrm_mailchimp.importexport.processor.campaign
-                        writer:    oro_integration.writer.persistent_batch_writer
-                    parameters:
-                        batch_size: 25
                 remove:
                     title: import
                     class: Oro\Bundle\BatchBundle\Step\ItemStep

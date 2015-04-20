@@ -13,7 +13,6 @@ use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\AutomationCampaignIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberAbuseIterator;
@@ -122,20 +121,6 @@ class MailChimpTransport implements TransportInterface
         $filters['exact'] = false;
 
         return new CampaignIterator($this->client, $filters);
-    }
-
-    /**
-     * @link http://apidocs.mailchimp.com/api/2.0/campaigns/list.php
-     * @param Channel $channel
-     * @return \Iterator List of Automation Campaigns
-     */
-    public function getAutomationCampaigns(Channel $channel)
-    {
-        $campaignIterator = $this->getCampaigns($channel, Campaign::STATUS_SENDING);
-        if ($campaignIterator instanceof \ArrayIterator) {
-            return $campaignIterator;
-        }
-        return new AutomationCampaignIterator($campaignIterator);
     }
 
     /**

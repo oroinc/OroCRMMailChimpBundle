@@ -23,9 +23,6 @@ orocrm:
             campaign:
                 label: Campaign Connector
                 job: Import campaigns from MailChimp
-            automation_campaign:
-                label: Automation Campaign Connector
-                job: Import automation campaigns from MailChimp
             staticSegment:
                 label: Static Segment Connector
                 job: Import statics segments from MailChimp
