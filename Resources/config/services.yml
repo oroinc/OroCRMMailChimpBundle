@@ -886,7 +886,6 @@ services:
             - @orocrm_marketing_list.provider.contact_information_fields
             - @orocrm_mailchimp.model.field_helper
             - @oro_security.owner.ownership_metadata_provider
-            - @oro_locale.dql.formatter.name
             - %orocrm_mailchimp.entity.member.class%
 
     # Iterators

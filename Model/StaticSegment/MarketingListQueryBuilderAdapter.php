@@ -52,7 +52,6 @@ class MarketingListQueryBuilderAdapter
      * @param ContactInformationFieldsProvider $contactInformationFieldsProvider
      * @param FieldHelper $fieldHelper
      * @param OwnershipMetadataProvider $ownershipMetadataProvider
-     * @param DQLNameFormatter $formatter
      * @param string $memberClassName
      */
     public function __construct(
@@ -60,14 +59,12 @@ class MarketingListQueryBuilderAdapter
         ContactInformationFieldsProvider $contactInformationFieldsProvider,
         FieldHelper $fieldHelper,
         OwnershipMetadataProvider $ownershipMetadataProvider,
-        DQLNameFormatter $formatter,
         $memberClassName
     ) {
         $this->marketingListProvider            = $marketingListProvider;
         $this->contactInformationFieldsProvider = $contactInformationFieldsProvider;
         $this->fieldHelper                      = $fieldHelper;
         $this->ownershipMetadataProvider        = $ownershipMetadataProvider;
-        $this->formatter                        = $formatter;
         $this->memberClassName                  = $memberClassName;
     }
 

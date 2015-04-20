@@ -136,7 +136,7 @@ class StaticSegmentsMemberStateManager
             ->createQueryBuilder('evmmb');
 
         $qb
-            ->delete($this->extMergeVar, 'evmmb')
+            ->delete($this->extMergeVarClassName, 'evmmb')
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->in('evmmb.member', ':deletedMembersIds'),
