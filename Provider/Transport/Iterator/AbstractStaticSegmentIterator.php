@@ -122,6 +122,10 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
+        if (!$this->removedItemClassName || !$this->unsubscribedItemClassName) {
+            throw new \InvalidArgumentException('Removed and Unsubscribed Items Class names must be provided');
+        }
+
         $rootAliases = $qb->getRootAliases();
         $entityAlias = reset($rootAliases);
 

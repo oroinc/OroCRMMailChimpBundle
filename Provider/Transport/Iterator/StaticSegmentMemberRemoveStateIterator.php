@@ -54,6 +54,10 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
+        if (!$this->removedItemClassName) {
+            throw new \InvalidArgumentException('Removed Item Class name must be provided');
+        }
+
         $rootAliases = $qb->getRootAliases();
         $entityAlias = reset($rootAliases);
 

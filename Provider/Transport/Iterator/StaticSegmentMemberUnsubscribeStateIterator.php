@@ -54,6 +54,10 @@ class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentI
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
+        if (!$this->unsubscribedItemClassName) {
+            throw new \InvalidArgumentException('Unsubscribed Item Class name must be provided');
+        }
+
         $rootAliases = $qb->getRootAliases();
         $entityAlias = reset($rootAliases);
 
