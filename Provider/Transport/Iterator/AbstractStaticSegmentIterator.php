@@ -12,7 +12,6 @@ use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberSyncDataConverter;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
-
 abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 {
     /**
