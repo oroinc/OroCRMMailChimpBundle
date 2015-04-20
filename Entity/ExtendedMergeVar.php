@@ -57,7 +57,7 @@ class ExtendedMergeVar
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
