@@ -76,7 +76,7 @@ class ExtendedMergeVar
     protected $label;
 
     /**
-     * @var bool
+     * @var boolean
      *
      * @ORM\Column(name="is_required", type="boolean")
      */
@@ -214,11 +214,14 @@ class ExtendedMergeVar
     }
 
     /**
-     * @param string $state
+     * @param $state
+     * @return $this
      */
     public function setState($state)
     {
         $this->state = $state;
+
+        return $this;
     }
 
     /**

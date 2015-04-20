@@ -144,10 +144,13 @@ class MemberExtendedMergeVar
 
     /**
      * @param array $mergeVarValues
+     * @return $this
      */
     public function setMergeVarValues(array $mergeVarValues)
     {
         $this->mergeVarValues = $mergeVarValues;
+
+        return $this;
     }
 
     /**
@@ -159,11 +162,14 @@ class MemberExtendedMergeVar
     }
 
     /**
-     * @param string $state
+     * @param $state
+     * @return $this
      */
     public function setState($state)
     {
         $this->state = $state;
+
+        return $this;
     }
 
     /**
