@@ -24,25 +24,30 @@ class StaticSegmentsMemberStateManager
     /**
      * @var string
      */
-    protected $mailChimpMember;
+    protected $mailChimpMemberСlassName;
 
     /**
      * @var string
      */
-    protected $extMergeVar;
+    protected $extMergeVarClassName;
 
     /**
      * @param DoctrineHelper $doctrineHelper
-     * @param string $staticSegmentMember
-     * @param string $mailChimpMember
-     * @param string $extMergeVar
+     * @param $staticSegmentMember
+     * @param $mailChimpMemberСlassName
+     * @param $extMergeVarClassName
      */
-    public function __construct(DoctrineHelper $doctrineHelper, $staticSegmentMember, $mailChimpMember, $extMergeVar)
+    public function __construct(
+        DoctrineHelper $doctrineHelper,
+        $staticSegmentMember,
+        $mailChimpMemberСlassName,
+        $extMergeVarClassName
+    )
     {
         $this->doctrineHelper = $doctrineHelper;
         $this->staticSegmentMember = $staticSegmentMember;
-        $this->mailChimpMember = $mailChimpMember;
-        $this->extMergeVar = $extMergeVar;
+        $this->mailChimpMemberСlassName = $mailChimpMemberСlassName;
+        $this->extMergeVarClassName = $extMergeVarClassName;
     }
 
     /**
@@ -104,11 +109,11 @@ class StaticSegmentsMemberStateManager
     protected function deleteMailChimpMembers(array $deletedMembersIds, SubscribersList $subscribersList)
     {
         $qb = $this->doctrineHelper
-            ->getEntityManager($this->mailChimpMember)
+            ->getEntityManager($this->mailChimpMemberСlassName)
             ->createQueryBuilder('mmb');
 
         $qb
-            ->delete($this->mailChimpMember, 'mmb')
+            ->delete($this->mailChimpMemberСlassName, 'mmb')
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->in('mmb.id', ':deletedMembersIds'),
@@ -127,7 +132,7 @@ class StaticSegmentsMemberStateManager
     protected function deleteMailChimpMembersExtendedVars(array $deletedMembersIds, $staticSegmentId)
     {
         $qb = $this->doctrineHelper
-            ->getEntityManager($this->extMergeVar)
+            ->getEntityManager($this->extMergeVarClassName)
             ->createQueryBuilder('evmmb');
 
         $qb
