@@ -7,6 +7,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
 {
@@ -18,18 +19,18 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
     protected function createSubordinateIterator($staticSegment)
     {
         $qb = $this->getIteratorQueryBuilder($staticSegment);
-        $alias = sprintf('%s.id', self::MEMBER_ALIAS);
+        $alias = sprintf('%s.id', MarketingListQueryBuilderAdapter::MEMBER_ALIAS);
 
         $qb
             ->select(
                 [
-                    self::MEMBER_ALIAS . '.id member_id',
+                    MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id member_id',
                     $staticSegment->getId() . ' static_segment_id',
                     $qb->expr()->literal(StaticSegmentMember::STATE_ADD) . ' state'
                 ]
             )
             ->leftJoin(
-                sprintf('%s.segmentMembers', self::MEMBER_ALIAS),
+                sprintf('%s.segmentMembers', MarketingListQueryBuilderAdapter::MEMBER_ALIAS),
                 'segmentMembers',
                 Join::WITH,
                 $qb->expr()->eq('segmentMembers.staticSegment', $staticSegment->getId())
@@ -37,8 +38,12 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
             ->andWhere(
                 $qb->expr()->andX(
                     $qb->expr()->isNull('segmentMembers'),
-                    $qb->expr()->isNotNull(sprintf('%s.originId', self::MEMBER_ALIAS)),
-                    $qb->expr()->eq(sprintf('%s.subscribersList', self::MEMBER_ALIAS), ':subscribersList')
+                    $qb->expr()->isNotNull(sprintf('%s.originId', MarketingListQueryBuilderAdapter::MEMBER_ALIAS)),
+                    $qb->expr()
+                        ->eq(
+                            sprintf('%s.subscribersList', MarketingListQueryBuilderAdapter::MEMBER_ALIAS),
+                            ':subscribersList'
+                        )
                 )
             )
             ->setParameter('subscribersList', $staticSegment->getSubscribersList())

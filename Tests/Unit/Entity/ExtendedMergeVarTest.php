@@ -87,6 +87,9 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
         $this->entity->setName($value);
     }
 
+    /**
+     * @return array
+     */
     public function setNameDataProvider()
     {
         return [

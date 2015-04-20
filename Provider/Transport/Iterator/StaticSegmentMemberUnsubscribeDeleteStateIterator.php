@@ -7,6 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 class StaticSegmentMemberUnsubscribeDeleteStateIterator extends AbstractStaticSegmentIterator
 {
@@ -23,7 +24,7 @@ class StaticSegmentMemberUnsubscribeDeleteStateIterator extends AbstractStaticSe
 
         $qb = $this
             ->getIteratorQueryBuilder($staticSegment)
-            ->select(self::MEMBER_ALIAS . '.id');
+            ->select(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id');
 
         $segmentMembersQb = clone $qb;
         $segmentMembersQb

@@ -83,14 +83,19 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
                     ]
                 );
             }
-            if (is_array($response)) {
-                $this->handleErrorResponse($response);
-                if (!isset($response['errors']) || empty($response['errors'])) {
-                    $each->markSynced();
-                    $successItems[] = $each;
-                }
-            }
+
+            $this
+                ->handleResponse(
+                    $response,
+                    function($response) use (&$successItems, $each) {
+                        if (empty($response['errors'])) {
+                            $each->markSynced();
+                            $successItems[] = $each;
+                        }
+                    }
+                );
         }
+
         return $successItems;
     }
 
@@ -130,11 +135,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
             ]
         );
 
-        if (!is_array($response)) {
-            throw new \RuntimeException('Can not get list of merge vars.');
-        }
-
-        $this->handleErrorResponse($response);
+        $this->handleResponse($response);
 
         if (!empty($response['errors'])) {
             throw new \RuntimeException('Can not get list of merge vars.');
@@ -157,34 +158,5 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
             return [];
         }
         return $data['merge_vars'];
-    }
-
-    /**
-     * @param array $response
-     * @return void
-     */
-    protected function handleErrorResponse(array $response)
-    {
-        if (!empty($response['errors'])) {
-            foreach ($response['errors'] as $error) {
-                $this->logErrors(['code' => $error['code'], 'error' => $error['error']]);
-            }
-        }
-    }
-
-    /**
-     * @param array $errors
-     * @return void
-     */
-    protected function logErrors(array $errors)
-    {
-        if (empty($errors)) {
-            return;
-        }
-        foreach ($errors as $error) {
-            $this->logger->warning(
-                sprintf('[Error #%s] %s', $error['code'], $error['error'])
-            );
-        }
     }
 }

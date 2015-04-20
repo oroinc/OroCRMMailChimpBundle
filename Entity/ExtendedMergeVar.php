@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 
@@ -152,7 +153,7 @@ class ExtendedMergeVar
      */
     public function setName($name)
     {
-        if (false === is_string($name) || empty($name)) {
+        if (!is_string($name) || empty($name)) {
             throw new \InvalidArgumentException('Name must be not empty string.');
         }
         if ($name !== $this->name) {

@@ -3,14 +3,15 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\AbstractQuery;
-use Doctrine\ORM\Query\Expr\Join;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\QueryDecorator;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
-use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
 {
@@ -18,6 +19,16 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
      * @var QueryDecorator
      */
     protected $queryDecorator;
+
+    /**
+     * @var DoctrineHelper
+     */
+    protected $doctrineHelper;
+
+    /**
+     * @var FieldHelper
+     */
+    protected $fieldHelper;
 
     /**
      * @param QueryDecorator $queryDecorator
@@ -28,12 +39,30 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     }
 
     /**
+     * @param DoctrineHelper $doctrineHelper
+     */
+    public function setDoctrineHelper($doctrineHelper)
+    {
+        $this->doctrineHelper = $doctrineHelper;
+    }
+
+    /**
+     * @param FieldHelper $fieldHelper
+     */
+    public function setFieldHelper($fieldHelper)
+    {
+        $this->fieldHelper = $fieldHelper;
+    }
+
+    /**
      * @param StaticSegment $staticSegment
      *
      * {@inheritdoc}
      */
     protected function createSubordinateIterator($staticSegment)
     {
+        $this->assertRequiredDependencies();
+
         if (!$staticSegment->getExtendedMergeVars()) {
             return new \EmptyIterator();
         }
@@ -46,10 +75,10 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
             ->getFieldExpr(
                 $marketingList->getEntity(),
                 $qb,
-                'id'
+                $this->doctrineHelper->getSingleEntityIdentifierFieldName($marketingList)
             );
         $qb->addSelect($fieldExpr . ' AS entity_id');
-        $qb->addSelect(self::MEMBER_ALIAS . '.id AS member_id');
+        $qb->addSelect(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id AS member_id');
         $qb->addSelect($qb->expr()->literal(MemberExtendedMergeVar::STATE_ADD) . ' state');
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
@@ -68,14 +97,28 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     }
 
     /**
+     * @throws \InvalidArgumentException
+     */
+    protected function assertRequiredDependencies()
+    {
+        if (!$this->doctrineHelper) {
+            throw new \InvalidArgumentException('DoctrineHelper must be provided.');
+        }
+
+        if (!$this->queryDecorator) {
+            throw new \InvalidArgumentException('QueryDecorator must be provided.');
+        }
+
+        if (!$this->fieldHelper) {
+            throw new \InvalidArgumentException('FieldHelper must be provided.');
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
     {
-        if (!$this->memberClassName) {
-            throw new \InvalidArgumentException('Member class name must be provided');
-        }
-
         $marketingList = $staticSegment->getMarketingList();
 
         if ($marketingList->isManual()) {
@@ -86,50 +129,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
 
         $qb = clone $this->marketingListProvider->getMarketingListQueryBuilder($marketingList, $mixin);
 
-        $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
-            $marketingList,
-            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
-        );
-
-        $expr = $qb->expr()->orX();
-        foreach ($contactInformationFields as $contactInformationField) {
-            $contactInformationFieldExpr = $this->fieldHelper
-                ->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField);
-
-            $expr->add(
-                $qb->expr()->eq(
-                    $contactInformationFieldExpr,
-                    sprintf('%s.%s', self::MEMBER_ALIAS, self::MEMBER_EMAIL_FIELD)
-                )
-            );
-        }
-
-        $organization = $staticSegment->getChannel()->getOrganization();
-        $metadata = $this->ownershipMetadataProvider->getMetadata($marketingList->getEntity());
-
-        if ($organization && $fieldName = $metadata->getOrganizationFieldName()) {
-            $aliases = $qb->getRootAliases();
-            $qb->andWhere(
-                $qb->expr()->eq(
-                    sprintf('%s.%s', reset($aliases), $fieldName),
-                    ':organization'
-                )
-            );
-
-            $qb->setParameter('organization', $organization);
-        }
-
-        $qb
-            ->leftJoin(
-                $this->memberClassName,
-                self::MEMBER_ALIAS,
-                Join::WITH,
-                $qb->expr()->andX(
-                    $expr,
-                    $qb->expr()->eq(sprintf('%s.subscribersList', self::MEMBER_ALIAS), ':subscribersList')
-                )
-            )
-            ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId());
+        $this->marketingListQueryBuilderAdapter->prepareMarketingListEntities($staticSegment, $qb);
 
         return $qb;
     }

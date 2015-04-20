@@ -70,10 +70,12 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
      * @dataProvider extendedMergeVarsDataProvider
      * @param array $segmentExtendedMergeVars
      * @param array $externalProviderMergeVars
+     * @param array $inheritedProviderMergeVars
      */
     public function testProvideExtendedMergeVarsWithExternalProviders(
-        $segmentExtendedMergeVars,
-        $externalProviderMergeVars
+        array $segmentExtendedMergeVars,
+        array $externalProviderMergeVars,
+        array $inheritedProviderMergeVars
     ) {
         $this->columnDefinitionList->expects($this->once())->method('getColumns')
             ->will($this->returnValue($segmentExtendedMergeVars));
@@ -83,7 +85,16 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
         $externalProvider->expects($this->once())->method('provideExtendedMergeVars')
             ->will($this->returnValue($externalProviderMergeVars));
 
+        $inheritedExternalProvider = $this
+            ->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface')
+            ->setMockClassName('InheritedProvider')
+            ->getMock();
+        $externalProvider->expects($this->once())->method('provideExtendedMergeVars')
+            ->will($this->returnValue($inheritedProviderMergeVars));
+
         $this->provider->addProvider($externalProvider);
+        $this->provider->addProvider($externalProvider);
+        $this->provider->addProvider($inheritedExternalProvider);
 
         $actual = $this->provider->provideExtendedMergeVars($this->marketingList);
 
@@ -107,6 +118,12 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
                     [
                         'name' => 'e_dummy_name',
                         'label' => 'e_dummy_label'
+                    ]
+                ],
+                [
+                    [
+                        'name' => 'inherited_name',
+                        'label' => 'inherited_label'
                     ]
                 ]
             ]

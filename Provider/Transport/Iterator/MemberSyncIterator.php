@@ -6,6 +6,7 @@ use Doctrine\ORM\AbstractQuery;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 class MemberSyncIterator extends AbstractStaticSegmentIterator
 {
@@ -18,7 +19,7 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
     {
         $qb = $this->getIteratorQueryBuilder($staticSegment);
 
-        $qb->andWhere($qb->expr()->isNull(self::MEMBER_ALIAS));
+        $qb->andWhere($qb->expr()->isNull(MarketingListQueryBuilderAdapter::MEMBER_ALIAS));
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);

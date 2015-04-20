@@ -31,6 +31,9 @@ class Provider implements CompositeProviderInterface
      */
     public function addProvider(ProviderInterface $provider)
     {
+        if (in_array($provider, $this->providers, true)) {
+            return;
+        }
         $this->providers[] = $provider;
     }
 

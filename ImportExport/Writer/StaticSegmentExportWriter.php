@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Psr\Log\LoggerInterface;
+
 use Doctrine\Common\Collections\ArrayCollection;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -140,7 +142,21 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             ]
         );
 
-        $this->handleResponse($staticSegment, $response);
+        $this
+            ->handleResponse(
+                $response,
+                function($response, LoggerInterface $logger) use ($staticSegment) {
+                    $logger->info(
+                        sprintf(
+                            'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',
+                            $staticSegment->getId(),
+                            $staticSegment->getOriginId(),
+                            $response['success_count'],
+                            $response['error_count']
+                        )
+                    );
+                }
+            );
 
         $emailsWithErrors = $this->getArrayData($response, 'errors');
 
@@ -159,38 +175,5 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         }
 
         return $itemsToWrite;
-    }
-
-    /**
-     * @param StaticSegment $staticSegment
-     * @param mixed $response
-     */
-    protected function handleResponse(StaticSegment $staticSegment, $response)
-    {
-        if (!is_array($response)) {
-            return;
-        }
-
-        if (!$this->logger) {
-            return;
-        }
-
-        $this->logger->info(
-            sprintf(
-                'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',
-                $staticSegment->getId(),
-                $staticSegment->getOriginId(),
-                $response['success_count'],
-                $response['error_count']
-            )
-        );
-
-        if ($response['errors']) {
-            foreach ($response['errors'] as $error) {
-                $this->logger->warning(
-                    sprintf('[Error #%s] %s', $error['code'], $error['error'])
-                );
-            }
-        }
     }
 }
