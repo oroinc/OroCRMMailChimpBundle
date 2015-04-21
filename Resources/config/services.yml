@@ -54,6 +54,7 @@ parameters:
 
     # Serializers
     orocrm_mailchimp.importexport.serializer.datetime.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer\DateTimeSerializer
+    orocrm_mailchimp.importexport.serializer.memeber_extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer\MemberExtendedMergeVarSerializer
 
     # Strategies
     orocrm_mailchimp.importexport.strategy.abstract.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\AbstractImportStrategy
@@ -63,7 +64,6 @@ parameters:
     orocrm_mailchimp.importexport.strategy.member.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberImportStrategy
     orocrm_mailchimp.importexport.strategy.member_activity.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberActivityImportStrategy
     orocrm_mailchimp.importexport.strategy.static_segment.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\StaticSegmentImportStrategy
-    orocrm_mailchimp.importexport.strategy.member_extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberExtendedMergeVarStrategy
 
     # Connectors
     orocrm_mailchimp.connector.template.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\TemplateConnector
@@ -316,6 +316,19 @@ services:
     #Serializers
     orocrm_mailchimp.importexport.serializer.datetime:
         class: %orocrm_mailchimp.importexport.serializer.datetime.class%
+        tags:
+            - { name: oro_importexport.normalizer }
+
+    orocrm_mailchimp.importexport.serializer.memeber_extended_merge_var:
+        class: %orocrm_mailchimp.importexport.serializer.memeber_extended_merge_var.class%
+        arguments:
+            - @oro_importexport.field.field_helper
+            - @oro_importexport.field.database_helper
+            - @orocrm_mailchimp.marketinglist.datagrid_provider
+            - @translator
+            - @oro_locale.formatter.number
+            - @oro_locale.formatter.date_time
+            - %orocrm_mailchimp.entity.member_extended_merge_var.class%
         tags:
             - { name: oro_importexport.normalizer }
 
@@ -607,16 +620,6 @@ services:
         parent: oro_importexport.strategy.configurable_add_or_replace
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.extended_merge_var.class%]]
-
-    orocrm_mailchimp.importexport.strategy.member_extended_merge_var:
-        class: %orocrm_mailchimp.importexport.strategy.member_extended_merge_var.class%
-        parent: oro_importexport.strategy.configurable_add_or_replace
-        calls:
-            - [setEntityName, [%orocrm_mailchimp.entity.member_extended_merge_var.class%]]
-            - [setDataGridProvider, [@orocrm_mailchimp.marketinglist.datagrid_provider]]
-            - [setTranslator, [@translator]]
-            - [setNumberFormatter, [@oro_locale.formatter.number]]
-            - [setDateTimeFormatter, [@oro_locale.formatter.date_time]]
 
     orocrm_mailchimp.importexport.strategy.export_member_extended_merge_var:
         parent: oro_importexport.strategy.configurable_add_or_replace

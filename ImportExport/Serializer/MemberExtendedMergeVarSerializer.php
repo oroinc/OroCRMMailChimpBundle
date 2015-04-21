@@ -1,11 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
+namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer;
 
-use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\TranslatorInterface;
 
 use Oro\Bundle\DataGridBundle\Extension\Formatter\Property\PropertyInterface;
-use Oro\Bundle\ImportExportBundle\Strategy\Import\ConfigurableAddOrReplaceStrategy;
+use Oro\Bundle\ImportExportBundle\Field\DatabaseHelper;
+use Oro\Bundle\ImportExportBundle\Field\FieldHelper;
+use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\ConfigurableEntityNormalizer;
 use Oro\Bundle\LocaleBundle\Formatter\NumberFormatter;
 use Oro\Bundle\LocaleBundle\Formatter\DateTimeFormatter;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
@@ -13,10 +15,15 @@ use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\MarketingList\DataGridProviderInterface;
 
-class MemberExtendedMergeVarStrategy extends ConfigurableAddOrReplaceStrategy
+class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
 {
     const YES_LABEL_KEY = 'oro.filter.form.label_type_yes';
     const NO_LABEL_KEY  = 'oro.filter.form.label_type_no';
+
+    /**
+     * @var DatabaseHelper
+     */
+    protected $databaseHelper;
 
     /**
      * @var DataGridProviderInterface
@@ -24,7 +31,7 @@ class MemberExtendedMergeVarStrategy extends ConfigurableAddOrReplaceStrategy
     protected $dataGridProvider;
 
     /**
-     * @var Translator
+     * @var TranslatorInterface
      */
     protected $translator;
 
@@ -39,81 +46,86 @@ class MemberExtendedMergeVarStrategy extends ConfigurableAddOrReplaceStrategy
     protected $dateTimeFormatter;
 
     /**
+     * @var string
+     */
+    protected $memberExtendedMergeVarClassName;
+
+    /**
+     * @param FieldHelper $fieldHelper
+     * @param DatabaseHelper $databaseHelper
      * @param DataGridProviderInterface $dataGridProvider
-     */
-    public function setDataGridProvider(DataGridProviderInterface $dataGridProvider)
-    {
-        $this->dataGridProvider = $dataGridProvider;
-    }
-
-    /**
-     * @param Translator $translator
-     */
-    public function setTranslator($translator)
-    {
-        $this->translator = $translator;
-    }
-
-    /**
+     * @param TranslatorInterface $translator
      * @param NumberFormatter $numberFormatter
-     */
-    public function setNumberFormatter($numberFormatter)
-    {
-        $this->numberFormatter = $numberFormatter;
-    }
-
-    /**
      * @param DateTimeFormatter $dateTimeFormatter
+     * @param string $memberExtendedMergeVarClassName
      */
-    public function setDateTimeFormatter($dateTimeFormatter)
-    {
-        $this->dateTimeFormatter = $dateTimeFormatter;
+    public function __construct(
+        FieldHelper $fieldHelper,
+        DatabaseHelper $databaseHelper,
+        DataGridProviderInterface $dataGridProvider,
+        TranslatorInterface $translator,
+        NumberFormatter $numberFormatter,
+        DateTimeFormatter $dateTimeFormatter,
+        $memberExtendedMergeVarClassName
+    ) {
+        parent::__construct($fieldHelper);
+
+        if (!is_string($memberExtendedMergeVarClassName) || empty($memberExtendedMergeVarClassName)) {
+            throw new \InvalidArgumentException('MemberExtendedMergeVar class name should be provided.');
+        }
+
+        $this->databaseHelper                  = $databaseHelper;
+        $this->dataGridProvider                = $dataGridProvider;
+        $this->translator                      = $translator;
+        $this->numberFormatter                 = $numberFormatter;
+        $this->dateTimeFormatter               = $dateTimeFormatter;
+        $this->memberExtendedMergeVarClassName = $memberExtendedMergeVarClassName;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function afterProcessEntity($entity)
+    public function denormalize($data, $class, $format = null, array $context = [])
     {
-        $this->prepareMmbrExtdMergeVarValues($entity);
-        return parent::afterProcessEntity($entity);
-    }
+        /** @var MemberExtendedMergeVar $entity */
+        $entity = parent::denormalize($data, $class, $format, $context);
 
-    /**
-     * @param MemberExtendedMergeVar $entity
-     * @return void
-     * @throws \Exception
-     */
-    protected function prepareMmbrExtdMergeVarValues(MemberExtendedMergeVar $entity)
-    {
         /** @var StaticSegment $staticSegment */
         $staticSegment = $this->databaseHelper->getEntityReference($entity->getStaticSegment());
 
         if (!$staticSegment) {
-            return;
+            return $entity;
         }
 
         $extendedMergeVars = $staticSegment->getSyncedExtendedMergeVars();
 
         if ($extendedMergeVars->isEmpty()) {
-            return;
+            return $entity;
         }
-
-        $itemData = $this->context->getValue('itemData');
 
         $columns = $this->dataGridProvider
             ->getDataGridColumns($staticSegment->getMarketingList());
 
         $mergeVarValues = array();
         foreach ($extendedMergeVars as $extendedMergeVar) {
-            $value = $this->getValue($extendedMergeVar, $itemData, $columns);
+            $value = $this->getValue($extendedMergeVar, $data, $columns);
             if ($value) {
                 $mergeVarValues[$extendedMergeVar->getTag()] = $value;
             }
         }
 
-        $entity->setMergeVarValues($mergeVarValues);
-        $entity->setMergeVarValuesContext($itemData);
+        $this->fieldHelper->setObjectValue($entity, 'merge_var_values', $mergeVarValues);
+        $this->fieldHelper->setObjectValue($entity, 'merge_var_values_context', $data);
+
+        return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsDenormalization($data, $type, $format = null, array $context = [])
+    {
+        return $type === $this->memberExtendedMergeVarClassName;
     }
 
     /**
