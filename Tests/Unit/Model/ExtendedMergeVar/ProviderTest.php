@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\ExtendedMergeVar;
 
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\Provider;
+use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListInterface;
 
@@ -80,11 +81,13 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
         $this->columnDefinitionList->expects($this->once())->method('getColumns')
             ->will($this->returnValue($segmentExtendedMergeVars));
 
+        /** @var \PHPUnit_Framework_MockObject_MockObject|ProviderInterface $externalProvider */
         $externalProvider = $this
             ->getMock('OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface');
         $externalProvider->expects($this->once())->method('provideExtendedMergeVars')
             ->will($this->returnValue($externalProviderMergeVars));
 
+        /** @var \PHPUnit_Framework_MockObject_MockObject|ProviderInterface $inheritedExternalProvider */
         $inheritedExternalProvider = $this
             ->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface')
             ->setMockClassName('InheritedProvider')
