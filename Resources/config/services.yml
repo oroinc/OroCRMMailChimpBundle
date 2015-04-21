@@ -621,6 +621,11 @@ services:
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.extended_merge_var.class%]]
 
+    orocrm_mailchimp.importexport.strategy.member_extended_merge_var:
+        parent: oro_importexport.strategy.configurable_add_or_replace
+        calls:
+            - [setEntityName, [%orocrm_mailchimp.entity.member_extended_merge_var.class%]]
+
     orocrm_mailchimp.importexport.strategy.export_member_extended_merge_var:
         parent: oro_importexport.strategy.configurable_add_or_replace
         calls:
