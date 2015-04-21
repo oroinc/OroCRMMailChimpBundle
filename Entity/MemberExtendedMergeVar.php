@@ -83,6 +83,9 @@ class MemberExtendedMergeVar
      */
     protected $mergeVarValuesContext;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->state = self::STATE_ADD;

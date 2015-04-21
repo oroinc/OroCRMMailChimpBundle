@@ -123,6 +123,9 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->entity->getTag());
     }
 
+    /**
+     * @return array
+     */
     public function tagGenerationDataProvider()
     {
         return [

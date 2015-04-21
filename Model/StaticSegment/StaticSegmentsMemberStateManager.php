@@ -5,8 +5,6 @@ namespace OroCRM\Bundle\MailChimpBundle\Model\StaticSegment;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 class StaticSegmentsMemberStateManager

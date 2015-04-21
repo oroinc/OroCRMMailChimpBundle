@@ -106,7 +106,7 @@ class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
         $columns = $this->dataGridProvider
             ->getDataGridColumns($staticSegment->getMarketingList());
 
-        $mergeVarValues = array();
+        $mergeVarValues = [];
         foreach ($extendedMergeVars as $extendedMergeVar) {
             $value = $this->getValue($extendedMergeVar, $data, $columns);
             if ($value) {
