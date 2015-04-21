@@ -42,8 +42,7 @@ class StaticSegmentsMemberStateManager
         $staticSegmentMember,
         $mailChimpMemberСlassName,
         $extMergeVarClassName
-    )
-    {
+    ) {
         $this->doctrineHelper = $doctrineHelper;
         $this->staticSegmentMember = $staticSegmentMember;
         $this->mailChimpMemberСlassName = $mailChimpMemberСlassName;
