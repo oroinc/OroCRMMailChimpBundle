@@ -35,7 +35,7 @@ class ColumnDefinitionList implements ColumnDefinitionListInterface
         foreach ($definition['columns'] as $column) {
             $columnDefinition = $this->createColumnDefinition($column);
             if (!empty($columnDefinition)) {
-                array_push($this->columns, $columnDefinition);
+                $this->columns[] = $columnDefinition;
             }
         }
     }

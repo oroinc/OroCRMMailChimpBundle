@@ -85,8 +85,9 @@ class MemberExtendedMergeVar
 
     public function __construct()
     {
-        $this->mergeVarValues = [];
         $this->state = self::STATE_ADD;
+        $this->mergeVarValues = [];
+        $this->mergeVarValuesContext = [];
     }
 
     /**
@@ -143,10 +144,13 @@ class MemberExtendedMergeVar
 
     /**
      * @param array $mergeVarValues
+     * @return $this
      */
     public function setMergeVarValues(array $mergeVarValues)
     {
         $this->mergeVarValues = $mergeVarValues;
+
+        return $this;
     }
 
     /**
@@ -158,17 +162,20 @@ class MemberExtendedMergeVar
     }
 
     /**
-     * @param string $state
+     * @param $state
+     * @return $this
      */
     public function setState($state)
     {
         $this->state = $state;
+
+        return $this;
     }
 
     /**
      * @return void
      */
-    public function setSyncedState()
+    public function markSynced()
     {
         $this->state = self::STATE_SYNCED;
     }

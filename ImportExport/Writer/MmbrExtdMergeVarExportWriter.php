@@ -50,53 +50,27 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
         }
 
         $successItems = [];
-        /** @var MemberExtendedMergeVar $mmbrExtdMergeVar */
-        foreach ($items as $mmbrExtdMergeVar) {
+        /** @var MemberExtendedMergeVar $mmbrExtendedMergeVar */
+        foreach ($items as $mmbrExtendedMergeVar) {
             $response = $this->transport->updateListMember(
                 [
-                    'id' => $mmbrExtdMergeVar->getStaticSegment()->getSubscribersList()->getOriginId(),
-                    'email' => ['email' => $mmbrExtdMergeVar->getMember()->getEmail()],
-                    'merge_vars' => $mmbrExtdMergeVar->getMergeVarValues()
+                    'id' => $mmbrExtendedMergeVar->getStaticSegment()->getSubscribersList()->getOriginId(),
+                    'email' => ['email' => $mmbrExtendedMergeVar->getMember()->getEmail()],
+                    'merge_vars' => $mmbrExtendedMergeVar->getMergeVarValues()
                 ]
             );
 
-            if (is_array($response)) {
-                $this->handleErrorResponse($response);
-                if (!isset($response['errors']) || empty($response['errors'])) {
-                    $mmbrExtdMergeVar->setSyncedState();
-                    array_push($successItems, $mmbrExtdMergeVar);
-                }
-            }
+            $this
+                ->handleResponse(
+                    $response,
+                    function($response) use (&$successItems, $mmbrExtendedMergeVar) {
+                        if (empty($response['error'])) {
+                            $mmbrExtendedMergeVar->markSynced();
+                            $successItems[] = $mmbrExtendedMergeVar;
+                        }
+                    }
+                );
         }
         return $successItems;
-    }
-
-    /**
-     * @param array $response
-     * @return void
-     */
-    protected function handleErrorResponse(array $response)
-    {
-        if (!empty($response['errors'])) {
-            foreach ($response['errors'] as $error) {
-                $this->logErrors(['code' => $error['code'], 'error' => $error['error']]);
-            }
-        }
-    }
-
-    /**
-     * @param array $errors
-     * @return void
-     */
-    protected function logErrors(array $errors)
-    {
-        if (empty($errors)) {
-            return;
-        }
-        foreach ($errors as $error) {
-            $this->logger->warning(
-                sprintf('[Error #%s] %s', $error['code'], $error['error'])
-            );
-        }
     }
 }

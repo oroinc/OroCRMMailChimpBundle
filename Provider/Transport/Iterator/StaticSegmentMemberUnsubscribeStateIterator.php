@@ -8,6 +8,7 @@ use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentIterator
 {
@@ -24,7 +25,7 @@ class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentI
 
         $qb = $this
             ->getIteratorQueryBuilder($staticSegment)
-            ->select(self::MEMBER_ALIAS . '.id');
+            ->select(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id');
 
         $segmentMembersQb = clone $qb;
         $segmentMembersQb
@@ -53,6 +54,10 @@ class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentI
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
+        if (!$this->unsubscribedItemClassName) {
+            throw new \InvalidArgumentException('Unsubscribed Item Class name must be provided');
+        }
+
         $rootAliases = $qb->getRootAliases();
         $entityAlias = reset($rootAliases);
 

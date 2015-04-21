@@ -8,6 +8,7 @@ use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterator
 {
@@ -24,7 +25,7 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
 
         $qb = $this
             ->getIteratorQueryBuilder($staticSegment)
-            ->select(self::MEMBER_ALIAS . '.id');
+            ->select(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id');
 
         $segmentMembersQb = clone $qb;
         $segmentMembersQb
@@ -39,8 +40,12 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             ->from($this->segmentMemberClassName, 'segmentMember')
             ->join('segmentMember.member', 'smmb')
             ->join('segmentMember.staticSegment', 'staticSegment')
-            ->andWhere($qb->expr()->eq('staticSegment.id', $staticSegment->getId()))
-            ->andWhere($segmentMembersQb->expr()->in('smmb.id', $qb->getDQL()));
+            ->andWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('staticSegment.id', $staticSegment->getId()),
+                    $segmentMembersQb->expr()->in('smmb.id', $qb->getDQL())
+                )
+            );
 
         $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
         $bufferedIterator->setReverse(true);
@@ -53,6 +58,10 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
      */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
+        if (!$this->removedItemClassName) {
+            throw new \InvalidArgumentException('Removed Item Class name must be provided');
+        }
+
         $rootAliases = $qb->getRootAliases();
         $entityAlias = reset($rootAliases);
 

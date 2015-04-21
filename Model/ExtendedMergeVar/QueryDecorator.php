@@ -16,9 +16,7 @@ class QueryDecorator
         $selects = $queryBuilder->getDQLPart('select');
 
         foreach ($selects as $select) {
-
             foreach ($this->extractSelectParts($select) as $each) {
-
                 $each = preg_replace('/ as /i', ' as ', $each);
 
                 if (!strpos($each, ' as ')) {

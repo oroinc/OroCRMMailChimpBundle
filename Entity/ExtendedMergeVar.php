@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 
@@ -56,7 +57,7 @@ class ExtendedMergeVar
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
@@ -75,7 +76,7 @@ class ExtendedMergeVar
     protected $label;
 
     /**
-     * @var bool
+     * @var boolean
      *
      * @ORM\Column(name="is_required", type="boolean")
      */
@@ -152,7 +153,7 @@ class ExtendedMergeVar
      */
     public function setName($name)
     {
-        if (false === is_string($name) || empty($name)) {
+        if (!is_string($name) || empty($name)) {
             throw new \InvalidArgumentException('Name must be not empty string.');
         }
         if ($name !== $this->name) {
@@ -213,11 +214,14 @@ class ExtendedMergeVar
     }
 
     /**
-     * @param string $state
+     * @param $state
+     * @return $this
      */
     public function setState($state)
     {
         $this->state = $state;
+
+        return $this;
     }
 
     /**
