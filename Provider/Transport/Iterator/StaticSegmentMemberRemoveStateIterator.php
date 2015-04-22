@@ -32,7 +32,6 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
         if (!$this->segmentMemberClassName) {
             throw new \InvalidArgumentException('StaticSegmentMember class name must be provided');
         }
-        /** @var QueryBuilder $qb */
         $qb = $this
             ->getIteratorQueryBuilder($staticSegment);
 
