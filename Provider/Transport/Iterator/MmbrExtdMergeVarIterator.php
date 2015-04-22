@@ -80,7 +80,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         $qb->addSelect($fieldExpr . ' AS entity_id');
         $qb->addSelect(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id AS member_id');
         $qb->addSelect($qb->expr()->literal(MemberExtendedMergeVar::STATE_ADD) . ' state');
-
+        $qb->andWhere($qb->expr()->isNotNull(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id'));
         $qb->addGroupBy(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id');
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
