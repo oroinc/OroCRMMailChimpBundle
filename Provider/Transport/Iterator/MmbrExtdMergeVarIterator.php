@@ -31,6 +31,11 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     protected $fieldHelper;
 
     /**
+     * @var array
+     */
+    protected $uniqueMembers = [];
+
+    /**
      * @param QueryDecorator $queryDecorator
      */
     public function setExtendedMergeVarQueryDecorator(QueryDecorator $queryDecorator)
@@ -52,6 +57,15 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     public function setFieldHelper($fieldHelper)
     {
         $this->fieldHelper = $fieldHelper;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rewind()
+    {
+        parent::rewind();
+        $this->uniqueMembers = [];
     }
 
     /**
@@ -81,17 +95,22 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         $qb->addSelect(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id AS member_id');
         $qb->addSelect($qb->expr()->literal(MemberExtendedMergeVar::STATE_ADD) . ' state');
         $qb->andWhere($qb->expr()->isNotNull(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id'));
-        $qb->addGroupBy(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id');
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
 
+        $uniqueMembers = &$this->uniqueMembers;
+
         return new \CallbackFilterIterator(
             $bufferedIterator,
-            function (&$current) use ($staticSegment) {
+            function (&$current) use ($staticSegment, &$uniqueMembers) {
                 if (is_array($current)) {
+                    if (!empty($current['member_id']) && in_array($current['member_id'], $uniqueMembers, true)) {
+                        return false;
+                    }
                     $current['subscribersList_id'] = $staticSegment->getSubscribersList()->getId();
                     $current['static_segment_id']  = $staticSegment->getId();
+                    $uniqueMembers[] = $current['member_id'];
                 }
                 return true;
             }
