@@ -69,7 +69,6 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table = $schema->getTable('orocrm_cmpgn_transport_stngs');
         $table->addColumn('mailchimp_template_id', 'integer', ['notnull' => false]);
         $table->addColumn('mailchimp_channel_id', 'integer', ['notnull' => false]);
-        $table->addIndex(['mailchimp_channel_id'], 'idx_16e86bf27bc28329', []);
     }
 
     /**
@@ -90,11 +89,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addColumn('ip_address', 'string', ['notnull' => false, 'length' => 45]);
         $table->addColumn('activity_time', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
         $table->addColumn('url', 'text', ['notnull' => false]);
-        $table->addIndex(['channel_id'], 'idx_4a03a2e172f5a1aa', []);
-        $table->addIndex(['member_id'], 'idx_4a03a2e17597d3fe', []);
-        $table->addIndex(['owner_id'], 'idx_4a03a2e17e3c61f9', []);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(['campaign_id'], 'idx_4a03a2e1f639f774', []);
     }
 
     /**
@@ -146,13 +141,8 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addColumn('created_at', 'datetime', ['comment' => '(DC2Type:datetime)']);
         $table->addColumn('updated_at', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(['static_segment_id'], 'idx_9472018cf8df7cf6', []);
-        $table->addIndex(['channel_id'], 'idx_9472018c72f5a1aa', []);
         $table->addUniqueIndex(['origin_id', 'channel_id'], 'mc_campaign_oid_cid_unq');
         $table->addUniqueIndex(['email_campaign_id'], 'uniq_9472018ce0f98bc3');
-        $table->addIndex(['subscribers_list_id'], 'idx_9472018c5eed197e', []);
-        $table->addIndex(['template_id'], 'idx_9472018c5da0fb8', []);
-        $table->addIndex(['owner_id'], 'idx_9472018c7e3c61f9', []);
     }
 
     /**
@@ -176,8 +166,6 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addColumn('created_at', 'datetime', ['comment' => '(DC2Type:datetime)']);
         $table->addColumn('updated_at', 'datetime', ['comment' => '(DC2Type:datetime)']);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(['owner_id'], 'idx_1c070cd27e3c61f9', []);
-        $table->addIndex(['channel_id'], 'idx_1c070cd272f5a1aa', []);
         $table->addIndex(['category'], 'mc_template_category', []);
         $table->addUniqueIndex(['origin_id', 'channel_id'], 'mc_template_oid_cid_unq');
         $table->addIndex(['name'], 'mc_template_name', []);
@@ -218,10 +206,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addColumn('merge_var_values', 'json_array', ['notnull' => false, 'comment' => '(DC2Type:json_array)']);
         $table->addColumn('created_at', 'datetime', ['comment' => '(DC2Type:datetime)']);
         $table->addColumn('updated_at', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
-        $table->addIndex(['subscribers_list_id'], 'idx_d057c915eed197e', []);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(['owner_id'], 'idx_d057c917e3c61f9', []);
-        $table->addIndex(['channel_id'], 'idx_d057c9172f5a1aa', []);
     }
 
     /**
@@ -237,8 +222,6 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addColumn('static_segment_id', 'integer', []);
         $table->addColumn('state', 'string', ['length' => 255]);
         $table->addUniqueIndex(['static_segment_id', 'member_id'], 'mc_segment_sid_mid_unq');
-        $table->addIndex(['member_id'], 'idx_209bd0dc7597d3fe', []);
-        $table->addIndex(['static_segment_id'], 'idx_209bd0dcf8df7cf6', []);
         $table->setPrimaryKey(['id']);
     }
 
@@ -264,11 +247,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addColumn('updated_at', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
         $table->addColumn('last_reset', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
         $table->addColumn('member_count', 'integer', ['notnull' => false]);
-        $table->addIndex(['owner_id'], 'idx_2a00ac2c7e3c61f9', []);
-        $table->addIndex(['channel_id'], 'idx_2a00ac2c72f5a1aa', []);
         $table->setPrimaryKey(['id']);
-        $table->addIndex(['subscribers_list_id'], 'idx_2a00ac2c5eed197e', []);
-        $table->addIndex(['marketing_list_id'], 'idx_2a00ac2c96434d04', []);
     }
 
     /**
@@ -314,8 +293,6 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addColumn('merge_var_config', 'json_array', ['notnull' => false, 'comment' => '(DC2Type:json_array)']);
         $table->addColumn('created_at', 'datetime', ['comment' => '(DC2Type:datetime)']);
         $table->addColumn('updated_at', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
-        $table->addIndex(['owner_id'], 'idx_4e5e04c37e3c61f9', []);
-        $table->addIndex(['channel_id'], 'idx_4e5e04c372f5a1aa', []);
         $table->setPrimaryKey(['id']);
     }
 

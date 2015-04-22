@@ -83,7 +83,7 @@ class StaticSegmentsMemberStateManager
     protected function handleDroppedMembers(StaticSegment $staticSegment)
     {
         $qb = $this->doctrineHelper
-            ->getEntityManager($this->staticSegmentMember)
+            ->getEntityRepository($this->staticSegmentMember)
             ->createQueryBuilder('smmb');
 
         $qb
@@ -106,7 +106,7 @@ class StaticSegmentsMemberStateManager
     protected function deleteMailChimpMembers(array $deletedMembersIds, SubscribersList $subscribersList)
     {
         $qb = $this->doctrineHelper
-            ->getEntityManager($this->mailChimpMemberСlassName)
+            ->getEntityRepository($this->mailChimpMemberСlassName)
             ->createQueryBuilder('mmb');
 
         $qb
@@ -129,7 +129,7 @@ class StaticSegmentsMemberStateManager
     protected function deleteMailChimpMembersExtendedVars(array $deletedMembersIds, $staticSegmentId)
     {
         $qb = $this->doctrineHelper
-            ->getEntityManager($this->extMergeVarClassName)
+            ->getEntityRepository($this->extMergeVarClassName)
             ->createQueryBuilder('evmmb');
 
         $qb
