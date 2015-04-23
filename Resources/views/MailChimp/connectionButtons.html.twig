@@ -37,17 +37,10 @@
             'class': 'no-hash',
             'iCss': 'icon-edit'
         }) }}
-
-        {% placeholder mailchimp_workflow_button with {entity: marketingList} %}
-
         <li>
-            {% set url = 'orocrm_marketing_list_view' %}
-            {% if isAbandonedCart %}
-                {% set url = 'orocrm_abandoned_cart_list_view' %}
-            {% endif %}
             {{  UI.deleteLink({
                 'dataUrl': path('orocrm_api_delete_staticsegment', {id: staticSegment.id}),
-                'dataRedirect': path(url, {id: marketingList.id}),
+                'dataRedirect': path('orocrm_marketing_list_view', {id: marketingList.id}),
                 'dataMessage': 'orocrm.mailchimp.connection.confirmation.disconnect'|trans,
                 'aCss': 'no-hash remove-button',
                 'id': 'btn-remove-mailchimp-connection',

@@ -91,16 +91,9 @@ class MailChimpController extends Controller
      */
     public function connectionButtonsAction(MarketingList $marketingList)
     {
-        $isAbandonedCart = false;
-
-        if ($this->get('orocrm_abandonedcart.provider')->getAbandonedCartCampaign($marketingList)) {
-            $isAbandonedCart = true;
-        }
-
         return [
             'marketingList' => $marketingList,
             'staticSegment' => $this->getStaticSegmentByMarketingList($marketingList),
-            'isAbandonedCart' => $isAbandonedCart
         ];
     }
 

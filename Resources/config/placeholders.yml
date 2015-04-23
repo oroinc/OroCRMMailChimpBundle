@@ -1,7 +1,4 @@
 placeholders:
-    view_navButtons_before:
-        items:
-            orocrm_mailchimp_marketing_list_buttons: ~
     view_content_data_email_campaign_status:
         items:
             orocrm_mailchimp_emailcampaign_stats: ~
@@ -10,9 +7,6 @@ placeholders:
             orocrm_mailchimp_marketing_list_sync_data: ~
 
 items:
-    orocrm_mailchimp_marketing_list_buttons:
-        action: OroCRMMailChimpBundle:MailChimp:connectionButtons
-        applicable: @orocrm_mailchimp.placeholder.filter.buttons_filder->isApplicable($entity$)
     orocrm_mailchimp_emailcampaign_stats:
         action: OroCRMMailChimpBundle:MailChimp:emailCampaignStats
         applicable: @orocrm_mailchimp.placeholder.filter.email_campaign->isApplicableOnEmailCampaign($entity$)
