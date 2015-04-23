@@ -10,6 +10,7 @@ use Oro\Bundle\ImportExportBundle\Field\FieldHelper;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\ConfigurableEntityNormalizer;
 use Oro\Bundle\LocaleBundle\Formatter\NumberFormatter;
 use Oro\Bundle\LocaleBundle\Formatter\DateTimeFormatter;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -103,12 +104,12 @@ class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
             return $entity;
         }
 
-        $columns = $this->dataGridProvider
-            ->getDataGridColumns($staticSegment->getMarketingList());
+        $columns = $this->getColumns($staticSegment->getMarketingList());
+        $columnAliases = $this->getColumnAliases($staticSegment->getMarketingList());
 
         $mergeVarValues = [];
         foreach ($extendedMergeVars as $extendedMergeVar) {
-            $value = $this->getValue($extendedMergeVar, $data, $columns);
+            $value = $this->getValue($extendedMergeVar, $data, $columns, $columnAliases);
             if ($value) {
                 $mergeVarValues[$extendedMergeVar->getTag()] = $value;
             }
@@ -131,16 +132,20 @@ class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
      * @param ExtendedMergeVar $extendedMergeVar
      * @param array $itemData
      * @param array $columns
+     * @param array $columnAliases
      * @return null|string
      */
-    protected function getValue(ExtendedMergeVar $extendedMergeVar, array $itemData, array $columns)
-    {
+    protected function getValue(
+        ExtendedMergeVar $extendedMergeVar,
+        array $itemData,
+        array $columns,
+        array $columnAliases
+    ) {
         $value = null;
-        foreach ($columns as $columnName => $column) {
-            $itemValueKey = $columnName . '_' . $extendedMergeVar->getName();
-            if (isset($itemData[$itemValueKey])) {
-                $value = $this->applyFrontendFormatting($itemData[$itemValueKey], $column);
-                break;
+        if (array_key_exists($extendedMergeVar->getName(), $columnAliases)) {
+            $columnAlias = $columnAliases[$extendedMergeVar->getName()];
+            if (!empty($itemData[$columnAlias]) && !empty($columns[$columnAlias])) {
+                $value = $this->applyFrontendFormatting($itemData[$columnAlias], $columns[$columnAlias]);
             }
         }
 
@@ -185,5 +190,24 @@ class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
         }
 
         return $value;
+    }
+
+    /**
+     * @param MarketingList $marketingList
+     * @return array
+     */
+    protected function getColumns(MarketingList $marketingList)
+    {
+        return $this->dataGridProvider->getDataGridConfiguration($marketingList)->offsetGet('columns');
+    }
+
+    /**
+     * @param MarketingList $marketingList
+     * @return array
+     */
+    protected function getColumnAliases(MarketingList $marketingList)
+    {
+        return $this->dataGridProvider->getDataGridConfiguration($marketingList)
+            ->offsetGetByPath('[source][query_config][column_aliases]');
     }
 }

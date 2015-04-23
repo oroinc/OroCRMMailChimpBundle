@@ -2,13 +2,14 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Model\MarketingList;
 
+use Oro\Bundle\DataGridBundle\Datagrid\Common\DatagridConfiguration;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 interface DataGridProviderInterface
 {
     /**
      * @param MarketingList $marketingList
-     * @return array
+     * @return DatagridConfiguration
      */
-    public function getDataGridColumns(MarketingList $marketingList);
+    public function getDataGridConfiguration(MarketingList $marketingList);
 }

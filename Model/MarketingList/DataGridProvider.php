@@ -10,7 +10,7 @@ class DataGridProvider extends MarketingListProvider implements DataGridProvider
     /**
      * {@inheritdoc}
      */
-    public function getDataGridColumns(MarketingList $marketingList)
+    public function getDataGridConfiguration(MarketingList $marketingList)
     {
         if ($marketingList->isManual()) {
             $mixin = MarketingListProvider::MANUAL_RESULT_ENTITIES_MIXIN;
@@ -19,7 +19,6 @@ class DataGridProvider extends MarketingListProvider implements DataGridProvider
         }
 
         $dataGrid = $this->getMarketingListDataGrid($marketingList, $mixin);
-
-        return $dataGrid->getConfig()->offsetGet('columns');
+        return $dataGrid->getConfig();
     }
 }

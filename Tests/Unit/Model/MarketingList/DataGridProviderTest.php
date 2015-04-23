@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\MarketingList;
 use Oro\Bundle\DataGridBundle\Datagrid\Manager;
 
 use OroCRM\Bundle\MarketingListBundle\Datagrid\ConfigurationProvider;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Model\MarketingList\DataGridProvider;
@@ -43,11 +44,7 @@ class DataGridProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDataGridColumns($type)
     {
-        $expectedColumns = [
-            'column1',
-            'column2'
-        ];
-
+        /** @var \PHPUnit_Framework_MockObject_MockObject|MarketingList $marketingList */
         $marketingList = $this
             ->getMockBuilder('OroCRM\Bundle\MarketingListBundle\Entity\MarketingList')
             ->disableOriginalConstructor()
@@ -61,9 +58,7 @@ class DataGridProviderTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $dataGrid = $this
-            ->getMockBuilder('Oro\Bundle\DataGridBundle\Datagrid\DatagridInterface')
-            ->getMock();
+        $dataGrid = $this->getMock('Oro\Bundle\DataGridBundle\Datagrid\DatagridInterface');
 
         $dataGrid->expects($this->once())->method('getConfig')->will($this->returnValue($config));
 
@@ -84,12 +79,9 @@ class DataGridProviderTest extends \PHPUnit_Framework_TestCase
             )
             ->will($this->returnValue($dataGrid));
 
-        $config->expects($this->once())->method('offsetGet')
-            ->with('columns')->will($this->returnValue($expectedColumns));
+        $dataGridConfiguration = $this->dataGridProvider->getDataGridConfiguration($marketingList);
 
-        $actualColumns = $this->dataGridProvider->getDataGridColumns($marketingList);
-
-        $this->assertEquals($expectedColumns, $actualColumns);
+        $this->assertEquals($config, $dataGridConfiguration);
     }
 
     /**

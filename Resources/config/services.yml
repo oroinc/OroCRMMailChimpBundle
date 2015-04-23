@@ -138,7 +138,6 @@ parameters:
     # Extended Merge Vars
     orocrm_mailchimp.segment.column_definition.factory.class: OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory
     orocrm_mailchimp.extended_merge_var.composite_provider.class: OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\Provider
-    orocrm_mailchimp.extended_merge_var.query_decorator.class: OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\QueryDecorator
     orocrm_mailchimp.marketinglist.datagrid_provider.class: OroCRM\Bundle\MailChimpBundle\Model\MarketingList\DataGridProvider
 
 services:
@@ -956,7 +955,6 @@ services:
         class: %orocrm_mailchimp.iterator.mmbr_extd_merge_var.class%
         parent: orocrm_mailchimp.iterator.static_segment
         calls:
-            - [setExtendedMergeVarQueryDecorator, [@orocrm_mailchimp.extended_merge_var.query_decorator]]
             - [setDoctrineHelper, [@oro_entity.doctrine_helper]]
             - [setFieldHelper, [@orocrm_mailchimp.model.field_helper]]
 
@@ -986,9 +984,6 @@ services:
         class: %orocrm_mailchimp.extended_merge_var.composite_provider.class%
         arguments:
             - @orocrm_mailchimp.segment.column_definition.factory
-
-    orocrm_mailchimp.extended_merge_var.query_decorator:
-        class: %orocrm_mailchimp.extended_merge_var.query_decorator.class%
 
     orocrm_mailchimp.marketinglist.datagrid_provider:
         class: %orocrm_mailchimp.marketinglist.datagrid_provider.class%

@@ -8,17 +8,11 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\QueryDecorator;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
 {
-    /**
-     * @var QueryDecorator
-     */
-    protected $queryDecorator;
-
     /**
      * @var DoctrineHelper
      */
@@ -33,14 +27,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
      * @var array
      */
     protected $uniqueMembers = [];
-
-    /**
-     * @param QueryDecorator $queryDecorator
-     */
-    public function setExtendedMergeVarQueryDecorator(QueryDecorator $queryDecorator)
-    {
-        $this->queryDecorator = $queryDecorator;
-    }
 
     /**
      * @param DoctrineHelper $doctrineHelper
@@ -81,7 +67,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         }
 
         $qb = $this->getIteratorQueryBuilder($staticSegment);
-        $this->queryDecorator->decorate($qb);
 
         $marketingList = $staticSegment->getMarketingList();
         $fieldExpr = $this->fieldHelper
@@ -123,10 +108,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     {
         if (!$this->doctrineHelper) {
             throw new \InvalidArgumentException('DoctrineHelper must be provided.');
-        }
-
-        if (!$this->queryDecorator) {
-            throw new \InvalidArgumentException('QueryDecorator must be provided.');
         }
 
         if (!$this->fieldHelper) {
