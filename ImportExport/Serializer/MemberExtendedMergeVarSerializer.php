@@ -115,7 +115,6 @@ class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
         }
 
         $this->fieldHelper->setObjectValue($entity, 'merge_var_values', $mergeVarValues);
-        $this->fieldHelper->setObjectValue($entity, 'merge_var_values_context', $data);
 
         return $entity;
     }
