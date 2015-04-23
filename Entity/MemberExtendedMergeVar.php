@@ -147,11 +147,34 @@ class MemberExtendedMergeVar
 
     /**
      * @param array $mergeVarValues
-     * @return $this
+     * @return MemberExtendedMergeVar
      */
     public function setMergeVarValues(array $mergeVarValues)
     {
-        $this->mergeVarValues = $mergeVarValues;
+        foreach ($mergeVarValues as $mergeVarName => $mergeVarValue) {
+            $this->addMergeVarValue($mergeVarName, $mergeVarValue);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     * @return MemberExtendedMergeVar
+     */
+    public function addMergeVarValue($name, $value)
+    {
+        if (!is_string($name) || !is_string($value) || empty($name) || empty($value)) {
+            throw new \InvalidArgumentException('Merge name and value should be not empty strings.');
+        }
+
+        if (!empty($this->mergeVarValues[$name]) && $this->mergeVarValues[$name] === $value) {
+            return $this;
+        }
+
+        $this->mergeVarValues[$name] = $value;
+        $this->state = self::STATE_ADD;
 
         return $this;
     }

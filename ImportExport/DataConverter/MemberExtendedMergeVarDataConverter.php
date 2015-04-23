@@ -14,7 +14,6 @@ class MemberExtendedMergeVarDataConverter extends AbstractTableDataConverter
         return [
             'static_segment_id' => 'staticSegment:id',
             'member_id' => 'member:id',
-            'state' => 'state',
             'merge_var_values' => 'mergeVarValues'
         ];
     }

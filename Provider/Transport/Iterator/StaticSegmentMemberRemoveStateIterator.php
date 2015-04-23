@@ -27,7 +27,8 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             ->getIteratorQueryBuilder($staticSegment);
 
         $identity = MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id';
-        $qb->select($identity);
+        $qb->select($identity)
+            ->andWhere($qb->expr()->isNotNull($identity));
 
         $segmentMembersQb = clone $qb;
         $segmentMembersQb
@@ -44,7 +45,6 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             ->join('segmentMember.staticSegment', 'staticSegment')
             ->andWhere(
                 $qb->expr()->andX(
-                    $qb->expr()->isNotNull($identity),
                     $qb->expr()->eq('staticSegment.id', $staticSegment->getId()),
                     $segmentMembersQb->expr()->in('smmb.id', $qb->getDQL())
                 )
