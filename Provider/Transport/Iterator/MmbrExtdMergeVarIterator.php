@@ -111,6 +111,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
                     $current['subscribersList_id'] = $staticSegment->getSubscribersList()->getId();
                     $current['static_segment_id']  = $staticSegment->getId();
                     $uniqueMembers[] = $current['member_id'];
+                    unset($current['id']);
                 }
                 return true;
             }
