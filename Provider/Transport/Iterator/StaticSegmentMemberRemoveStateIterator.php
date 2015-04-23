@@ -6,6 +6,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
@@ -22,10 +23,11 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
         if (!$this->segmentMemberClassName) {
             throw new \InvalidArgumentException('StaticSegmentMember class name must be provided');
         }
-
         $qb = $this
-            ->getIteratorQueryBuilder($staticSegment)
-            ->select(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id');
+            ->getIteratorQueryBuilder($staticSegment);
+
+        $identity = MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id';
+        $qb->select($identity);
 
         $segmentMembersQb = clone $qb;
         $segmentMembersQb
@@ -42,6 +44,7 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             ->join('segmentMember.staticSegment', 'staticSegment')
             ->andWhere(
                 $qb->expr()->andX(
+                    $qb->expr()->isNotNull($identity),
                     $qb->expr()->eq('staticSegment.id', $staticSegment->getId()),
                     $segmentMembersQb->expr()->in('smmb.id', $qb->getDQL())
                 )
