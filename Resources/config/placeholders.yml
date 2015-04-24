@@ -10,7 +10,7 @@ placeholders:
             orocrm_mailchimp_marketing_list_sync_data: ~
 
 items:
-    marketing_list_nav_buttons:
+    orocrm_marketing_list_mailchimp_buttons:
         action: OroCRMMailChimpBundle:MailChimp:connectionButtons
         applicable: @orocrm_mailchimp.placeholder.filter.buttons_filder->isApplicable($entity$)
     orocrm_mailchimp_emailcampaign_stats:
