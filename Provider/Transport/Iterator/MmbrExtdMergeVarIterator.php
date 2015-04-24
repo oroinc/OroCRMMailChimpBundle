@@ -6,6 +6,7 @@ use Doctrine\ORM\AbstractQuery;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
@@ -69,6 +70,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         $qb = $this->getIteratorQueryBuilder($staticSegment);
 
         $marketingList = $staticSegment->getMarketingList();
+        $memberIdentifier = MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id';
         $fieldExpr = $this->fieldHelper
             ->getFieldExpr(
                 $marketingList->getEntity(),
@@ -76,8 +78,22 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
                 $this->doctrineHelper->getSingleEntityIdentifierFieldName($marketingList->getEntity())
             );
         $qb->addSelect($fieldExpr . ' AS entity_id');
-        $qb->addSelect(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id AS member_id');
-        $qb->andWhere($qb->expr()->isNotNull(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id'));
+        $qb->addSelect($memberIdentifier . ' AS member_id');
+
+        $qb->andWhere(
+            $qb->expr()->andX(
+                $qb->expr()->isNotNull($memberIdentifier),
+                $qb->expr()->in($memberIdentifier, ':segmentMembers')
+            )
+        );
+
+        $segmentMembers = $staticSegment->getSegmentMembers()->map(
+            function(StaticSegmentMember $staticSegmentMember) {
+                return $staticSegmentMember->getMember()->getId();
+            }
+        );
+
+        $qb->setParameter('segmentMembers', $segmentMembers->toArray());
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
