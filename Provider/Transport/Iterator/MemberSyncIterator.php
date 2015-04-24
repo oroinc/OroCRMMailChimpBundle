@@ -22,6 +22,7 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
+        $bufferedIterator->setBufferSize(self::BUFFER_SIZE);
 
         return new \CallbackFilterIterator(
             $bufferedIterator,
