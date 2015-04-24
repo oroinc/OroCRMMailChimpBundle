@@ -5,12 +5,12 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Processor;
 class CampaignRemoveProcessor extends RemoveProcessor
 {
     /**
-     * @var
+     * @var string
      */
     protected $campaignType;
 
     /**
-     * @param mixed $campaignType
+     * @param string $campaignType
      */
     public function setCampaignType($campaignType)
     {
