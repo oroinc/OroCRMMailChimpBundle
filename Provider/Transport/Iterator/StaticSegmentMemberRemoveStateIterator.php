@@ -32,10 +32,10 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
         if (!$this->segmentMemberClassName) {
             throw new \InvalidArgumentException('StaticSegmentMember class name must be provided');
         }
-        $qb = $this
-            ->getIteratorQueryBuilder($staticSegment);
-
+        $qb       = $this->getIteratorQueryBuilder($staticSegment);
         $identity = self::MEMBER_ALIAS . '.id';
+        $memberId = 'IDENTITY(segmentMember.member)';
+
         $qb->select($identity)
             ->andWhere($qb->expr()->isNotNull($identity));
 
@@ -45,13 +45,20 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             ->select(
                 [
                     'IDENTITY(segmentMember.staticSegment) as static_segment_id',
-                    'IDENTITY(segmentMember.member) as member_id',
+                    $memberId . ' as member_id',
                     $segmentMembersQb->expr()->literal(StaticSegmentMember::STATE_REMOVE) . ' state'
                 ]
             )
             ->from($this->segmentMemberClassName, 'segmentMember')
-            ->andWhere($qb->expr()->eq('IDENTITY(segmentMember.staticSegment)', $staticSegment->getId()))
-            ->andWhere($segmentMembersQb->expr()->notIn('IDENTITY(segmentMember.member)', $qb->getDQL()));
+            ->andWhere($qb->expr()->eq('IDENTITY(segmentMember.staticSegment)', $staticSegment->getId()));
+
+        $qb->andWhere($qb->expr()->eq($memberId, $identity));
+
+        $segmentMembersQb->andWhere(
+            $segmentMembersQb->expr()->not(
+                $segmentMembersQb->expr()->exists($qb->getDQL())
+            )
+        );
 
         $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
         $bufferedIterator->setReverse(true);
