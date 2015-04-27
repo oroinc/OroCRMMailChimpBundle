@@ -957,6 +957,7 @@ services:
         calls:
             - [setDoctrineHelper, [@oro_entity.doctrine_helper]]
             - [setFieldHelper, [@orocrm_mailchimp.model.field_helper]]
+            - [setSegmentMemberClassName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
 
     # Placeholder
     orocrm_mailchimp.placeholder.filter.sync_status:
