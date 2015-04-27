@@ -17,6 +17,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 {
     const MEMBER_ALIAS = 'mmb';
     const MEMBER_EMAIL_FIELD = 'email';
+    const BUFFER_SIZE = 1000;
 
     /**
      * @var MarketingListProvider
