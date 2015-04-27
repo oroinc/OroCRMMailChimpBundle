@@ -44,16 +44,14 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             ->resetDQLParts()
             ->select(
                 [
-                    'staticSegment.id static_segment_id',
-                    'smmb.id member_id',
+                    'IDENTITY(segmentMember.staticSegment) as static_segment_id',
+                    'IDENTITY(segmentMember.member) as member_id',
                     $segmentMembersQb->expr()->literal(StaticSegmentMember::STATE_REMOVE) . ' state'
                 ]
             )
             ->from($this->segmentMemberClassName, 'segmentMember')
-            ->join('segmentMember.member', 'smmb')
-            ->join('segmentMember.staticSegment', 'staticSegment')
-            ->andWhere($qb->expr()->eq('staticSegment.id', $staticSegment->getId()))
-            ->andWhere($segmentMembersQb->expr()->notIn('smmb.id', $qb->getDQL()));
+            ->andWhere($qb->expr()->eq('IDENTITY(segmentMember.staticSegment)', $staticSegment->getId()))
+            ->andWhere($segmentMembersQb->expr()->notIn('IDENTITY(segmentMember.member)', $qb->getDQL()));
 
         $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
         $bufferedIterator->setReverse(true);

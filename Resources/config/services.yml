@@ -58,6 +58,7 @@ parameters:
     orocrm_mailchimp.importexport.strategy.member_activity.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberActivityImportStrategy
     orocrm_mailchimp.importexport.strategy.static_segment.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\StaticSegmentImportStrategy
     orocrm_mailchimp.importexport.strategy.member_sync.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberSyncStrategy
+    orocrm_mailchimp.importexport.strategy.static_segment_member_add_state.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\StaticSegmentMemberSyncStrategy
 
     # Connectors
     orocrm_mailchimp.connector.template.class: OroCRM\Bundle\MailChimpBundle\Provider\Connector\TemplateConnector
@@ -509,7 +510,12 @@ services:
         parent: orocrm_mailchimp.importexport.strategy.abstract.add_or_replace
 
     orocrm_mailchimp.importexport.strategy.static_segment_member_add_state:
-        parent: oro_importexport.strategy.configurable_add_or_replace
+        class: %orocrm_mailchimp.importexport.strategy.static_segment_member_add_state.class%
+        arguments:
+            - @event_dispatcher
+            - @oro_importexport.strategy.import.helper
+            - @oro_importexport.field.field_helper
+            - @oro_importexport.field.database_helper
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
 
