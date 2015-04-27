@@ -17,7 +17,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        $qb = $this->getIteratorQueryBuilder($staticSegment);
+        $qb = clone $this->getIteratorQueryBuilder($staticSegment);
         $alias = sprintf('%s.id', self::MEMBER_ALIAS);
 
         $qb
@@ -42,13 +42,9 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
                 )
             )
             ->setParameter('subscribersList', $staticSegment->getSubscribersList())
-            ->orderBy($alias)
+            ->resetDQLPart('orderBy')
             ->groupBy($alias);
 
-        $bufferedIterator = new BufferedQueryResultIterator($qb);
-        $bufferedIterator->setReverse(true);
-        $bufferedIterator->setBufferSize(self::BUFFER_SIZE);
-
-        return $bufferedIterator;
+        return new \ArrayIterator([$qb]);
     }
 }
