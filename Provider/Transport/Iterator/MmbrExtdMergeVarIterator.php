@@ -130,7 +130,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
                     ->eq(
                         self::STATIC_SEGMENT_MEMBER_ALIAS . '.staticSegment',
                         ':staticSegment'
-                )
+                    )
             );
 
         $qb
