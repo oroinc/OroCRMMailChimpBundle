@@ -62,6 +62,8 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             if (!empty($response['id'])) {
                 $staticSegment->setOriginId($response['id']);
 
+                $this->logger->debug(sprintf('StaticSegment with id "%s" added', $staticSegment->getOriginId()));
+
                 return $staticSegment;
             }
         }
@@ -112,20 +114,30 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             ]
         );
 
-        $this->handleResponse($staticSegment, $response);
+        $this->handleResponse($response);
 
         $emailsWithErrors = $this->getArrayData($response, 'errors');
 
+        /** @var StaticSegmentMember[]|ArrayCollection $items */
         $items = new ArrayCollection($items);
 
         $items->filter(
             function (StaticSegmentMember $segmentMember) use ($emailsWithErrors) {
-                return !in_array($segmentMember->getMember()->getEmail(), $emailsWithErrors);
+                return !in_array($segmentMember->getMember()->getEmail(), $emailsWithErrors, true);
             }
         );
 
         foreach ($items as $item) {
             $item->setState($itemState);
+
+            $this->logger->debug(
+                sprintf(
+                    'Member with id "%s" and email "%s" got "%s" state',
+                    $item->getMember()->getOriginId(),
+                    $item->getMember()->getEmail(),
+                    $itemState
+                )
+            );
 
             $itemsToWrite[] = $item;
         }
@@ -134,30 +146,11 @@ class StaticSegmentExportWriter extends AbstractExportWriter
     }
 
     /**
-     * @param StaticSegment $staticSegment
      * @param mixed $response
      */
-    protected function handleResponse(StaticSegment $staticSegment, $response)
+    protected function handleResponse(array $response)
     {
-        if (!is_array($response)) {
-            return;
-        }
-
-        if (!$this->logger) {
-            return;
-        }
-
-        $this->logger->info(
-            sprintf(
-                'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',
-                $staticSegment->getId(),
-                $staticSegment->getOriginId(),
-                $response['success_count'],
-                $response['error_count']
-            )
-        );
-
-        if ($response['errors']) {
+        if (!empty($response['errors'])) {
             foreach ($response['errors'] as $error) {
                 $this->logger->warning(
                     sprintf('[Error #%s] %s', $error['code'], $error['error'])

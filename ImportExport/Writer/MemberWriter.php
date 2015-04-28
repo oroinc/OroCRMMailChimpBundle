@@ -31,7 +31,7 @@ class MemberWriter extends AbstractExportWriter
 
     /**
      * @param SubscribersList $subscribersList
-     * @param array $items
+     * @param array|ArrayCollection $items
      * @return array
      */
     protected function batchSubscribe(SubscribersList $subscribersList, array $items)
@@ -57,7 +57,7 @@ class MemberWriter extends AbstractExportWriter
             ]
         );
 
-        $this->handleResponse($subscribersList, $response);
+        $this->handleResponse($response);
 
         $emailsAdded = $this->getArrayData($response, 'adds');
         $emailsUpdated = $this->getArrayData($response, 'updates');
@@ -80,13 +80,10 @@ class MemberWriter extends AbstractExportWriter
                     ->setStatus(Member::STATUS_SUBSCRIBED);
 
                 $itemsToWrite[] = $member;
-            } elseif ($this->logger) {
-                $this->logger->info(
-                    sprintf(
-                        'A member with "%s" email was not found',
-                        $emailData['email']
-                    )
-                );
+
+                $this->logger->debug(sprintf('Member with data "%s" successfully processed', json_encode($emailData)));
+            } else {
+                $this->logger->warning(sprintf('A member with "%s" email was not found', $emailData['email']));
             }
         }
 
@@ -94,30 +91,11 @@ class MemberWriter extends AbstractExportWriter
     }
 
     /**
-     * @param SubscribersList $subscribersList
-     * @param $response
+     * @param array $response
      */
-    protected function handleResponse(SubscribersList $subscribersList, $response)
+    protected function handleResponse(array $response)
     {
-        if (!is_array($response)) {
-            return;
-        }
-        if (!$this->logger) {
-            return;
-        }
-
-        $this->logger->info(
-            sprintf(
-                'List #%s [origin_id=%s]: [%s] add, [%s] update, [%s] error',
-                $subscribersList->getId(),
-                $subscribersList->getOriginId(),
-                $response['add_count'],
-                $response['update_count'],
-                $response['error_count']
-            )
-        );
-
-        if ($response['errors']) {
+        if (!empty($response['errors'])) {
             foreach ($response['errors'] as $error) {
                 $this->logger->warning(
                     sprintf('[Error #%s] %s', $error['code'], $error['error'])
