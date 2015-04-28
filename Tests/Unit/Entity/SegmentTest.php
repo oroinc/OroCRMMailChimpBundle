@@ -2,12 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 
 class SegmentTest extends \PHPUnit_Framework_TestCase
 {
@@ -94,5 +92,60 @@ class SegmentTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->entity->getUpdatedAt());
         $this->entity->preUpdate();
         $this->assertInstanceOf('\DateTime', $this->entity->getUpdatedAt());
+    }
+
+    public function testGetExtendedMergeVars()
+    {
+        $this->assertEmpty($this->entity->getExtendedMergeVars());
+
+        $var = new ExtendedMergeVar();
+        $this->entity->addExtendedMergeVar($var);
+
+        $extendedMergeVars = $this->entity->getExtendedMergeVars();
+
+        $this->assertNotEmpty($extendedMergeVars);
+        $this->assertContains($var, $extendedMergeVars);
+
+        $this->entity->removeExtendedMergeVar($var);
+
+        $this->assertEmpty($this->entity->getExtendedMergeVars());
+    }
+
+    public function testGetExtendedMergeVarsWithFilterByState()
+    {
+        $this->assertEmpty($this->entity->getExtendedMergeVars());
+
+        $var1 = new ExtendedMergeVar();
+        $var2 = new ExtendedMergeVar();
+
+        $var1->markSynced();
+        $var2->markDropped();
+
+        $this->entity->addExtendedMergeVar($var1);
+        $this->entity->addExtendedMergeVar($var2);
+
+        $extendedMergeVars = $this->entity->getExtendedMergeVars([ExtendedMergeVar::STATE_SYNCED]);
+
+        $this->assertCount(1, $extendedMergeVars);
+        $this->assertContainsOnly($var1, $extendedMergeVars);
+    }
+
+    public function testGetSyncedExtendedMergeVars()
+    {
+        $this->assertEmpty($this->entity->getExtendedMergeVars());
+
+        $var1 = new ExtendedMergeVar();
+        $var2 = new ExtendedMergeVar();
+
+        $var1->markSynced();
+        $var2->markDropped();
+
+        $this->entity->addExtendedMergeVar($var1);
+        $this->entity->addExtendedMergeVar($var2);
+
+        $extendedMergeVars = $this->entity->getSyncedExtendedMergeVars();
+
+        $this->assertCount(1, $extendedMergeVars);
+        $this->assertContainsOnly($var1, $extendedMergeVars);
     }
 }

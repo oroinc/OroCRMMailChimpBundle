@@ -93,7 +93,7 @@ class MailChimpController extends Controller
     {
         return [
             'marketingList' => $marketingList,
-            'staticSegment' => $this->getStaticSegmentByMarketingList($marketingList)
+            'staticSegment' => $this->getStaticSegmentByMarketingList($marketingList),
         ];
     }
 

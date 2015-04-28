@@ -61,7 +61,7 @@ class Campaign implements OriginAwareInterface
     const TYPE_PLAINTEXT = 'plaintext';
     const TYPE_ABSPLIT = 'absplit';
     const TYPE_RSS = 'rss';
-    const TYPE_AUTO = 'auto';
+    const TYPE_AUTO = 'automation';
     /**#@-*/
 
     /**

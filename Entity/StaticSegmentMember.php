@@ -26,6 +26,8 @@ class StaticSegmentMember
     const STATE_REMOVE = 'remove';
     const STATE_SYNCED = 'synced';
     const STATE_DROP = 'drop';
+    const STATE_UNSUBSCRIBE = 'unsubscribe';
+    const STATE_UNSUBSCRIBE_DELETE = 'unsubscribe_delete';
     /**#@-*/
 
     /**

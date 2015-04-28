@@ -8,6 +8,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
@@ -253,6 +254,50 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-vars.php
+     *
+     * @param array $args
+     * @return array
+     */
+    public function getListMergeVars(array $args)
+    {
+        return $this->client->getListMergeVars($args);
+    }
+
+    /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-var-add.php
+     *
+     * @param array $args
+     * @return array
+     */
+    public function addListMergeVar(array $args)
+    {
+        return $this->client->addListMergeVar($args);
+    }
+
+    /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-var-del.php
+     *
+     * @param array $args
+     * @return array
+     */
+    public function deleteListMergeVar(array $args)
+    {
+        return $this->client->deleteListMergeVar($args);
+    }
+
+    /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/update-member.php
+     *
+     * @param array $args
+     * @return array
+     */
+    public function updateListMember(array $args)
+    {
+        return $this->client->updateListMember($args);
+    }
+
+    /**
      * @link http://apidocs.mailchimp.com/api/2.0/lists/batch-subscribe.php
      *
      * @param array $args
@@ -262,6 +307,18 @@ class MailChimpTransport implements TransportInterface
     public function batchSubscribe(array $args)
     {
         return $this->client->batchSubscribe($args);
+    }
+
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/batch-unsubscribe.php
+     *
+     * @param array $args
+     *
+     * @return array
+     */
+    public function batchUnsubscribe(array $args)
+    {
+        return $this->client->batchUnsubscribe($args);
     }
 
     /**
