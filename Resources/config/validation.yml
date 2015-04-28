@@ -90,3 +90,31 @@ OroCRM\Bundle\MailChimpBundle\Entity\Template:
             - NotBlank: ~
         name:
             - NotBlank: ~
+
+OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar:
+    properties:
+        staticSegment:
+            - NotBlank: ~
+        name:
+            - NotBlank: ~
+            - Length:
+                max: 255
+        label:
+            - NotBlank: ~
+            - Length:
+                max: 255
+        tag:
+            - NotBlank: ~
+            - Length:
+                max: 10
+        state:
+            - NotBlank: ~
+
+OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar:
+    proerties:
+        staticSegment:
+            - NotBlank: ~
+        member:
+            - NotBlank: ~
+        state:
+            - NotBlank: ~

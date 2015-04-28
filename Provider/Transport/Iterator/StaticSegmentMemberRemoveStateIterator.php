@@ -2,25 +2,17 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
+
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterator
 {
-    /**
-     * @var string
-     */
-    protected $segmentMemberClassName;
-
-    /**
-     * @param string $segmentMemberClassName
-     */
-    public function setSegmentMemberClassName($segmentMemberClassName)
-    {
-        $this->segmentMemberClassName = $segmentMemberClassName;
-    }
-
     /**
      * @param StaticSegment $staticSegment
      *
@@ -31,10 +23,12 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
         if (!$this->segmentMemberClassName) {
             throw new \InvalidArgumentException('StaticSegmentMember class name must be provided');
         }
-
         $qb = $this
-            ->getIteratorQueryBuilder($staticSegment)
-            ->select(self::MEMBER_ALIAS . '.id');
+            ->getIteratorQueryBuilder($staticSegment);
+
+        $identity = MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id';
+        $qb->select($identity)
+            ->andWhere($qb->expr()->isNotNull($identity));
 
         $segmentMembersQb = clone $qb;
         $segmentMembersQb
@@ -49,12 +43,39 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
             ->from($this->segmentMemberClassName, 'segmentMember')
             ->join('segmentMember.member', 'smmb')
             ->join('segmentMember.staticSegment', 'staticSegment')
-            ->andWhere($qb->expr()->eq('staticSegment.id', $staticSegment->getId()))
-            ->andWhere($segmentMembersQb->expr()->notIn('smmb.id', $qb->getDQL()));
+            ->andWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('staticSegment.id', $staticSegment->getId()),
+                    $segmentMembersQb->expr()->in('smmb.id', $qb->getDQL())
+                )
+            );
 
         $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
         $bufferedIterator->setReverse(true);
+        $bufferedIterator->setBufferSize(self::BUFFER_SIZE);
 
         return $bufferedIterator;
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     */
+    protected function prepareIteratorPart(QueryBuilder $qb)
+    {
+        if (!$this->removedItemClassName) {
+            throw new \InvalidArgumentException('Removed Item Class name must be provided');
+        }
+
+        $rootAliases = $qb->getRootAliases();
+        $entityAlias = reset($rootAliases);
+
+        $qb
+            ->leftJoin(
+                $this->removedItemClassName,
+                'mlr',
+                Join::WITH,
+                "mlr.entityId = $entityAlias.id"
+            )
+            ->andWhere($qb->expr()->isNotNull('mlr.id'));
     }
 }

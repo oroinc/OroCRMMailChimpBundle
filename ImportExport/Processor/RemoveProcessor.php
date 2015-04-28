@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Processor;
 
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
+use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Processor\EntityNameAwareInterface;
@@ -53,7 +54,7 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
      */
     public function process($item)
     {
-        if ($item) {
+        if (is_array($item)) {
             $this->updateContext($item);
         }
 
@@ -64,7 +65,7 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
      * @param array $item
      * @todo Delete count does not shown for second step because https://magecore.atlassian.net/browse/BAP-2600
      */
-    protected function updateContext($item)
+    protected function updateContext(array $item)
     {
         $context = $this->contextRegistry->getByStepExecution($this->stepExecution);
         $toDelete = (int)$context->getDeleteCount() + $this->getItemsToRemoveCount($item);
@@ -77,26 +78,37 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
      */
     protected function getItemsToRemoveCount(array $item)
     {
-        $em = $this->doctrineHelper->getEntityManager($this->entityName);
-        $identifierFieldName = $this->doctrineHelper->getSingleEntityIdentifierFieldName($this->entityName);
-        $qb = $em->createQueryBuilder();
-        $qb->select('COUNT(e.' . $identifierFieldName . ') as itemsCount')
-            ->from($this->entityName, 'e')
-            ->andWhere($qb->expr()->notIn('e.' . $this->field, ':items'))
-            ->setParameter('items', (array)$item[$this->field]);
-
-        // Workaround to limit by channel. Channel is not available in second step context.
-        if (array_key_exists('channel', $item)) {
-            $qb->andWhere($qb->expr()->eq('e.channel', ':channel'))
-                ->setParameter('channel', $item['channel']);
-        }
-
+        $qb = $this->createQueryBuilder($item);
         $result = $qb->getQuery()->getArrayResult();
         if ($result) {
             return (int)$result[0]['itemsCount'];
         }
 
         return 0;
+    }
+
+    /**
+     * @param array $item
+     * @return QueryBuilder
+     */
+    protected function createQueryBuilder(array $item)
+    {
+        $em = $this->doctrineHelper->getEntityManager($this->entityName);
+        $identifierFieldName = $this->doctrineHelper->getSingleEntityIdentifierFieldName($this->entityName);
+        $qb = $em->createQueryBuilder();
+        $qb->select('COUNT(e.' . $identifierFieldName . ') as itemsCount')
+            ->from($this->entityName, 'e');
+        if (array_key_exists($this->field, $item)) {
+            $qb->andWhere($qb->expr()->notIn('e.' . $this->field, ':items'))
+                ->setParameter('items', (array)$item[$this->field]);
+        }
+        // Workaround to limit by channel. Channel is not available in second step context.
+        if (array_key_exists('channel', $item)) {
+            $qb->andWhere($qb->expr()->eq('e.channel', ':channel'))
+                ->setParameter('channel', $item['channel']);
+        }
+
+        return $qb;
     }
 
     /**

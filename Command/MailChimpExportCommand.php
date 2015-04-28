@@ -90,26 +90,29 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         ];
 
         /** @var Channel[] $channelToSync */
-        $channelToSync = [];
-        $staticSegments = [];
+        $channelToSync   = [];
+        $staticSegments  = [];
+        $channelSegments = [];
 
         foreach ($iterator as $staticSegment) {
             $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_IN_PROGRESS);
-            $channel = $staticSegment->getChannel();
-            $channelToSync[$channel->getId()] = $channel;
+            $channel                                 = $staticSegment->getChannel();
+            $channelToSync[$channel->getId()]        = $channel;
             $staticSegments[$staticSegment->getId()] = $staticSegment;
+            $channelSegments[$channel->getId()][]    = $staticSegment->getId();
         }
 
         foreach ($channelToSync as $id => $channel) {
             $output->writeln(sprintf('<info>Channel #%s:</info>', $id));
             foreach ($exportJobs as $type => $jobName) {
                 $output->writeln(sprintf('    %s', $jobName));
-                $this->getReverseSyncProcessor()->process($channel, $type, []);
+                $parameters = ['segments' => $channelSegments[$id]];
+                $this->getReverseSyncProcessor()->process($channel, $type, $parameters);
             }
         }
 
         foreach ($staticSegments as $staticSegment) {
-            $this->getStaticSegmentStateManager()->handleDroppedMembers($staticSegment);
+            $this->getStaticSegmentStateManager()->handleMembers($staticSegment);
             $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED, true);
         }
     }

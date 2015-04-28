@@ -62,17 +62,20 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
                 $context->getOption('channel')
             );
             /** @var MemberSyncIterator $sourceIterator */
-            $sourceIterator->setMainIterator($this->getStaticSegmentIterator($channel));
+            $sourceIterator->setMainIterator(
+                $this->getStaticSegmentIterator($channel, $context->getOption('segments'))
+            );
             $this->setSourceIterator($sourceIterator);
         }
     }
 
     /**
-     * @param Channel $channel
+     * @param Channel    $channel
+     * @param array|null $segments
      *
      * @return BufferedQueryResultIterator
      */
-    protected function getStaticSegmentIterator(Channel $channel)
+    protected function getStaticSegmentIterator(Channel $channel, array $segments = null)
     {
         $qb = $this->doctrineHelper
             ->getEntityManager($this->staticSegmentClassName)
@@ -81,9 +84,17 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
 
         $qb
             ->join($this->marketingListClassName, 'ml', Join::WITH, 'staticSegment.marketingList = ml.id')
-            ->join('staticSegment.subscribersList', 'subscribersList')
-            ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
-            ->setParameter('channel', $channel);
+            ->join('staticSegment.subscribersList', 'subscribersList');
+
+        if ($segments) {
+            $qb
+                ->andWhere('staticSegment.id IN(:segments)')
+                ->setParameter('segments', $segments);
+        } else {
+            $qb
+                ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
+                ->setParameter('channel', $channel);
+        }
 
         return new BufferedQueryResultIterator($qb);
     }

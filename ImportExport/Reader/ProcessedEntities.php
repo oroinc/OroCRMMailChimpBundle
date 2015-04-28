@@ -15,8 +15,19 @@ class ProcessedEntities extends AbstractReader
         /** @var JobExecution $jobExecution */
         $jobExecution = $this->stepExecution->getJobExecution();
         $processedEntities = $jobExecution->getExecutionContext()->get('processed_entities');
-        $jobExecution->getExecutionContext()->put('processed_entities', null);
+        // Mark processed_entities as read
+        $jobExecution->getExecutionContext()->put('processed_entities', false);
 
-        return $processedEntities;
+        // For processed_entities
+        // null - no items were returned by API,
+        // false - them are already read
+        if ($processedEntities) {
+            return $processedEntities;
+        } elseif ($processedEntities === null) {
+            // In case when there are no campaigns returned - remove all saved campaigns
+            return ['channel' => $jobExecution->getExecutionContext()->get('channel')];
+        } else {
+            return null;
+        }
     }
 }

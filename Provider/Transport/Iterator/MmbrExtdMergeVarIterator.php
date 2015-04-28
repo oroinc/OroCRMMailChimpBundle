@@ -1,0 +1,183 @@
+<?php
+
+namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
+
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
+
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
+use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
+
+class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
+{
+    const STATIC_SEGMENT_MEMBER_ALIAS = 'ssm';
+
+    /**
+     * @var DoctrineHelper
+     */
+    protected $doctrineHelper;
+
+    /**
+     * @var FieldHelper
+     */
+    protected $fieldHelper;
+
+    /**
+     * @var array
+     */
+    protected $uniqueMembers = [];
+
+    /**
+     * @param DoctrineHelper $doctrineHelper
+     */
+    public function setDoctrineHelper($doctrineHelper)
+    {
+        $this->doctrineHelper = $doctrineHelper;
+    }
+
+    /**
+     * @param FieldHelper $fieldHelper
+     */
+    public function setFieldHelper($fieldHelper)
+    {
+        $this->fieldHelper = $fieldHelper;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rewind()
+    {
+        parent::rewind();
+        $this->uniqueMembers = [];
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     *
+     * {@inheritdoc}
+     */
+    protected function createSubordinateIterator($staticSegment)
+    {
+        $this->assertRequiredDependencies();
+
+        if (!$staticSegment->getExtendedMergeVars()) {
+            return new \EmptyIterator();
+        }
+
+        $qb = $this->getIteratorQueryBuilder($staticSegment);
+
+        $marketingList = $staticSegment->getMarketingList();
+        $memberIdentifier = MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id';
+        $fieldExpr = $this->fieldHelper
+            ->getFieldExpr(
+                $marketingList->getEntity(),
+                $qb,
+                $this->doctrineHelper->getSingleEntityIdentifierFieldName($marketingList->getEntity())
+            );
+        $qb->addSelect($fieldExpr . ' AS entity_id');
+        $qb->addSelect($memberIdentifier . ' AS member_id');
+
+        $qb->andWhere(
+            $qb->expr()->andX(
+                $qb->expr()->isNotNull($memberIdentifier)
+            )
+        );
+
+        $this->joinStaticSegmentMembers($staticSegment, $qb);
+
+        $bufferedIterator = new BufferedQueryResultIterator($qb);
+        $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
+
+        $uniqueMembers = &$this->uniqueMembers;
+
+        return new \CallbackFilterIterator(
+            $bufferedIterator,
+            function (&$current) use ($staticSegment, &$uniqueMembers) {
+                if (is_array($current)) {
+                    if (!empty($current['member_id']) && in_array($current['member_id'], $uniqueMembers, true)) {
+                        return false;
+                    }
+                    $current['subscribersList_id'] = $staticSegment->getSubscribersList()->getId();
+                    $current['static_segment_id']  = $staticSegment->getId();
+                    $uniqueMembers[] = $current['member_id'];
+                    unset($current['id']);
+                }
+                return true;
+            }
+        );
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     * @param QueryBuilder $qb
+     */
+    protected function joinStaticSegmentMembers(StaticSegment $staticSegment, QueryBuilder $qb)
+    {
+        $expr = $qb->expr()
+            ->andX(
+                $qb->expr()
+                    ->eq(
+                        MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id',
+                        self::STATIC_SEGMENT_MEMBER_ALIAS . '.member'
+                    ),
+                $qb->expr()
+                    ->eq(
+                        self::STATIC_SEGMENT_MEMBER_ALIAS . '.staticSegment',
+                        ':staticSegment'
+                    )
+            );
+
+        $qb
+            ->innerJoin(
+                $this->segmentMemberClassName,
+                self::STATIC_SEGMENT_MEMBER_ALIAS,
+                Join::WITH,
+                $expr
+            )
+            ->setParameter('staticSegment', $staticSegment->getId());
+    }
+
+    /**
+     * @throws \InvalidArgumentException
+     */
+    protected function assertRequiredDependencies()
+    {
+        if (!$this->doctrineHelper) {
+            throw new \InvalidArgumentException('DoctrineHelper must be provided.');
+        }
+
+        if (!$this->fieldHelper) {
+            throw new \InvalidArgumentException('FieldHelper must be provided.');
+        }
+
+        if (!$this->segmentMemberClassName) {
+            throw new \InvalidArgumentException('StaticSegmentMember class name must be provided.');
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
+    {
+        $marketingList = $staticSegment->getMarketingList();
+
+        if ($marketingList->isManual()) {
+            $mixin = MarketingListProvider::MANUAL_RESULT_ENTITIES_MIXIN;
+        } else {
+            $mixin = MarketingListProvider::RESULT_ENTITIES_MIXIN;
+        }
+
+        $qb = clone $this->marketingListProvider->getMarketingListQueryBuilder($marketingList, $mixin);
+
+        $this->marketingListQueryBuilderAdapter->prepareMarketingListEntities($staticSegment, $qb);
+
+        return $qb;
+    }
+}
