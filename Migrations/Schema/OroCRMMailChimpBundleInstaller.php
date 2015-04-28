@@ -14,7 +14,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
      */
     public function getMigrationVersion()
     {
-        return 'v1_1';
+        return 'v1_2';
     }
 
     /**
@@ -206,6 +206,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addColumn('merge_var_values', 'json_array', ['notnull' => false, 'comment' => '(DC2Type:json_array)']);
         $table->addColumn('created_at', 'datetime', ['comment' => '(DC2Type:datetime)']);
         $table->addColumn('updated_at', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
+        $table->addIndex(['email', 'subscribers_list_id'], 'mc_mmbr_email_list_idx');
         $table->setPrimaryKey(['id']);
     }
 

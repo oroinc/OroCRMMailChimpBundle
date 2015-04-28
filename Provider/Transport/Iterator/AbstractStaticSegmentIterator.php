@@ -14,6 +14,8 @@ use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderA
 
 abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 {
+    const BUFFER_SIZE = 1000;
+
     /**
      * @var MarketingListProvider
      */

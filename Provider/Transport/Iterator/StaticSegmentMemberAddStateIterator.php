@@ -52,6 +52,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setReverse(true);
+        $bufferedIterator->setBufferSize(self::BUFFER_SIZE);
 
         return $bufferedIterator;
     }

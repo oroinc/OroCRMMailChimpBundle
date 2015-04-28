@@ -53,7 +53,7 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
             );
 
             $iterator = new StaticSegmentExportListIterator(
-                $this->getSegmentsIterator($channel),
+                $this->getSegmentsIterator($channel, $context->getOption('segments')),
                 $this->doctrineHelper
             );
             $iterator->setStaticSegmentMemberClassName($this->staticSegmentMemberClassName);
@@ -63,11 +63,13 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
     }
 
     /**
-     * @param Channel $channel
+     * @param Channel    $channel
+     * @param array|null $segments
      *
      * @return BufferedQueryResultIterator
+     * @throws InvalidConfigurationException
      */
-    protected function getSegmentsIterator(Channel $channel)
+    protected function getSegmentsIterator(Channel $channel, array $segments = null)
     {
         if (!$this->staticSegmentClassName) {
             throw new InvalidConfigurationException('StaticSegment class name must be provided');
@@ -79,9 +81,15 @@ class StaticSegmentExportReader extends AbstractIteratorBasedReader
             ->createQueryBuilder('staticSegment')
             ->select('staticSegment');
 
-        $qb
-            ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
-            ->setParameter('channel', $channel);
+        if ($segments) {
+            $qb
+                ->andWhere('staticSegment.id IN(:segments)')
+                ->setParameter('segments', $segments);
+        } else {
+            $qb
+                ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
+                ->setParameter('channel', $channel);
+        }
 
         return new BufferedQueryResultIterator($qb);
     }
