@@ -14,7 +14,7 @@ class MemberExtendedMergeVarDataConverter extends AbstractTableDataConverter
         return [
             'static_segment_id' => 'staticSegment:id',
             'member_id' => 'member:id',
-            'state' => 'state'
+            'merge_var_values' => 'mergeVarValues'
         ];
     }
 
@@ -24,5 +24,17 @@ class MemberExtendedMergeVarDataConverter extends AbstractTableDataConverter
     protected function getBackendHeader()
     {
         throw new \BadMethodCallException('Normalization is not implemented!');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
+    {
+        $itemData = parent::convertToImportFormat($importedRecord, $skipNullValues);
+        if (empty($itemData['mergeVarValues'])) {
+            $itemData['mergeVarValues'] = [];
+        }
+        return $itemData;
     }
 }

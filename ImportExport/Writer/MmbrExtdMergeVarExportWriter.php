@@ -52,24 +52,29 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
         $successItems = [];
         /** @var MemberExtendedMergeVar $mmbrExtendedMergeVar */
         foreach ($items as $mmbrExtendedMergeVar) {
-            $response = $this->transport->updateListMember(
-                [
-                    'id' => $mmbrExtendedMergeVar->getStaticSegment()->getSubscribersList()->getOriginId(),
-                    'email' => ['email' => $mmbrExtendedMergeVar->getMember()->getEmail()],
-                    'merge_vars' => $mmbrExtendedMergeVar->getMergeVarValues()
-                ]
-            );
-
-            $this
-                ->handleResponse(
-                    $response,
-                    function($response) use (&$successItems, $mmbrExtendedMergeVar) {
-                        if (empty($response['error'])) {
-                            $mmbrExtendedMergeVar->markSynced();
-                            $successItems[] = $mmbrExtendedMergeVar;
-                        }
-                    }
+            try {
+                $response = $this->transport->updateListMember(
+                    [
+                        'id' => $mmbrExtendedMergeVar->getStaticSegment()->getSubscribersList()->getOriginId(),
+                        'email' => ['email' => $mmbrExtendedMergeVar->getMember()->getEmail()],
+                        'merge_vars' => $mmbrExtendedMergeVar->getMergeVarValues()
+                    ]
                 );
+
+                $this
+                    ->handleResponse(
+                        $response,
+                        function ($response) use (&$successItems, $mmbrExtendedMergeVar) {
+                            if (empty($response['error'])) {
+                                $mmbrExtendedMergeVar->markSynced();
+                                $successItems[] = $mmbrExtendedMergeVar;
+                            }
+                        }
+                    );
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
+                $this->stepExecution->addFailureException($e);
+            }
         }
         return $successItems;
     }

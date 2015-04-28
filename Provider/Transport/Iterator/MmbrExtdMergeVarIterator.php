@@ -3,22 +3,19 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\QueryDecorator;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
 {
-    /**
-     * @var QueryDecorator
-     */
-    protected $queryDecorator;
+    const STATIC_SEGMENT_MEMBER_ALIAS = 'ssm';
 
     /**
      * @var DoctrineHelper
@@ -34,14 +31,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
      * @var array
      */
     protected $uniqueMembers = [];
-
-    /**
-     * @param QueryDecorator $queryDecorator
-     */
-    public function setExtendedMergeVarQueryDecorator(QueryDecorator $queryDecorator)
-    {
-        $this->queryDecorator = $queryDecorator;
-    }
 
     /**
      * @param DoctrineHelper $doctrineHelper
@@ -82,9 +71,9 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         }
 
         $qb = $this->getIteratorQueryBuilder($staticSegment);
-        $this->queryDecorator->decorate($qb);
 
         $marketingList = $staticSegment->getMarketingList();
+        $memberIdentifier = MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id';
         $fieldExpr = $this->fieldHelper
             ->getFieldExpr(
                 $marketingList->getEntity(),
@@ -92,8 +81,15 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
                 $this->doctrineHelper->getSingleEntityIdentifierFieldName($marketingList->getEntity())
             );
         $qb->addSelect($fieldExpr . ' AS entity_id');
-        $qb->addSelect(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id AS member_id');
-        $qb->addSelect($qb->expr()->literal(MemberExtendedMergeVar::STATE_ADD) . ' state');
+        $qb->addSelect($memberIdentifier . ' AS member_id');
+
+        $qb->andWhere(
+            $qb->expr()->andX(
+                $qb->expr()->isNotNull($memberIdentifier)
+            )
+        );
+
+        $this->joinStaticSegmentMembers($staticSegment, $qb);
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
@@ -110,10 +106,41 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
                     $current['subscribersList_id'] = $staticSegment->getSubscribersList()->getId();
                     $current['static_segment_id']  = $staticSegment->getId();
                     $uniqueMembers[] = $current['member_id'];
+                    unset($current['id']);
                 }
                 return true;
             }
         );
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     * @param QueryBuilder $qb
+     */
+    protected function joinStaticSegmentMembers(StaticSegment $staticSegment, QueryBuilder $qb)
+    {
+        $expr = $qb->expr()
+            ->andX(
+                $qb->expr()
+                    ->eq(
+                        MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id',
+                        self::STATIC_SEGMENT_MEMBER_ALIAS . '.member'
+                    ),
+                $qb->expr()
+                    ->eq(
+                        self::STATIC_SEGMENT_MEMBER_ALIAS . '.staticSegment',
+                        ':staticSegment'
+                    )
+            );
+
+        $qb
+            ->innerJoin(
+                $this->segmentMemberClassName,
+                self::STATIC_SEGMENT_MEMBER_ALIAS,
+                Join::WITH,
+                $expr
+            )
+            ->setParameter('staticSegment', $staticSegment->getId());
     }
 
     /**
@@ -125,12 +152,12 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
             throw new \InvalidArgumentException('DoctrineHelper must be provided.');
         }
 
-        if (!$this->queryDecorator) {
-            throw new \InvalidArgumentException('QueryDecorator must be provided.');
-        }
-
         if (!$this->fieldHelper) {
             throw new \InvalidArgumentException('FieldHelper must be provided.');
+        }
+
+        if (!$this->segmentMemberClassName) {
+            throw new \InvalidArgumentException('StaticSegmentMember class name must be provided.');
         }
     }
 

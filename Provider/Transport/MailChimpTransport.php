@@ -8,6 +8,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;

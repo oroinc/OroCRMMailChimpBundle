@@ -52,6 +52,9 @@ class StaticSegmentMemberUnsubscribeDeleteStateIterator extends AbstractStaticSe
         return $bufferedIterator;
     }
 
+    /**
+     * @param QueryBuilder $qb
+     */
     protected function prepareIteratorPart(QueryBuilder $qb)
     {
         return;

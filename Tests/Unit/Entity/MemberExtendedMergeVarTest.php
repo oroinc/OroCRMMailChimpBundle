@@ -71,7 +71,7 @@ class MemberExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
         return [
             ['staticSegment', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')],
             ['state', MemberExtendedMergeVar::STATE_SYNCED, MemberExtendedMergeVar::STATE_ADD],
-            ['merge_var_values', ['var'], []],
+            ['merge_var_values', ['var' => 'value'], []],
             ['merge_var_values_context', ['context'], []]
         ];
     }
@@ -86,5 +86,80 @@ class MemberExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
     {
         $this->entity->markSynced();
         $this->assertEquals(MemberExtendedMergeVar::STATE_SYNCED, $this->entity->getState());
+    }
+
+    /**
+     * @dataProvider invalidMergeVarNamesAndValues
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Merge name and value should be not empty strings.
+     *
+     * @param string $name
+     * @param string $value
+     */
+    public function testAddMergeVarValueWhenNameOrValueIsInvalid($name, $value)
+    {
+        $this->entity->addMergeVarValue($name, $value);
+    }
+
+    /**
+     * @return array
+     */
+    public function invalidMergeVarNamesAndValues()
+    {
+        return [
+            ['', ''],
+            ['', 'value'],
+            ['name', ''],
+            ['name', []],
+            [[], 'value']
+        ];
+    }
+
+    /**
+     * @dataProvider validMergeVarNamesAndValues
+     *
+     * @param array $initialMergeVarValues
+     * @param array $newMergeVarValues
+     * @param string $initialState
+     * @param string $expectedState
+     */
+    public function testAddMergeVarValue(
+        array $initialMergeVarValues,
+        array $newMergeVarValues,
+        $initialState,
+        $expectedState
+    ) {
+        foreach ($initialMergeVarValues as $name => $value) {
+            $this->entity->addMergeVarValue($name, $value);
+        }
+
+        $this->entity->setState($initialState);
+
+        foreach ($newMergeVarValues as $name => $value) {
+            $this->entity->addMergeVarValue($name, $value);
+        }
+
+        $this->assertEquals($expectedState, $this->entity->getState());
+    }
+
+    /**
+     * @return array
+     */
+    public function validMergeVarNamesAndValues()
+    {
+        return [
+            [
+                ['name' => 'value'], ['name_new' => 'value', 'name' => 'value_new'], 'sync', 'add'
+            ],
+            [
+                ['name' => 'value'], ['name_new' => 'value'], 'sync', 'add'
+            ],
+            [
+                ['name' => 'value'], ['name' => 'value_new'], 'sync', 'add'
+            ],
+            [
+                ['name' => 'value'], ['name' => 'value'], 'sync', 'sync'
+            ]
+        ];
     }
 }
