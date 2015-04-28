@@ -89,7 +89,6 @@ class SyncListTest extends WebTestCase
     }
 
     /**
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @return array
      */
     public function commandListOptionsProvider()
@@ -111,8 +110,8 @@ class SyncListTest extends WebTestCase
                     'Run sync for "mailchimp1" integration.',
                     'Start processing "list" connector',
                     'invalid entities: [0]',
-                    'processed [' . count($data['response']['data']) . ']',
-                    'deleted [0]',
+                    'processed [' . (count($data['response']['data']) + (int)$data['response']['deleted']) . ']',
+                    'deleted [' . $data['response']['deleted'] . ']',
                     'updated [0]',
                     'read [' . count($data['response']['data']) . ']',
                     'added [' . count($data['response']['data']) . ']'
