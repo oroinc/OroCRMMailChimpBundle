@@ -166,7 +166,7 @@ connector:
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.member_export
-                        processor: orocrm_mailchimp.importexport.processor.export_member
+                        processor: orocrm_mailchimp.importexport.processor.dummy
                         writer:    orocrm_mailchimp.importexport.writer.member
                     parameters:
                         batch_size: 2000

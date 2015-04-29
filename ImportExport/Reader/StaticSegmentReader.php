@@ -53,20 +53,21 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
             throw new InvalidConfigurationException('StaticSegment class name must be provided');
         }
 
+        /** @var Channel $channel */
+        $channel = $this->doctrineHelper->getEntityReference(
+            $this->channelClassName,
+            $context->getOption('channel')
+        );
+
         $iterator = $this->getSourceIterator();
         if ($iterator) {
-            $sourceIterator = clone $iterator;
-
-            /** @var Channel $channel */
-            $channel = $this->doctrineHelper->getEntityReference(
-                $this->channelClassName,
-                $context->getOption('channel')
-            );
-            /** @var MemberSyncIterator $sourceIterator */
-            $sourceIterator->setMainIterator(
+            /** @var MemberSyncIterator $iterator */
+            $iterator->setMainIterator(
                 $this->getStaticSegmentIterator($channel, $context->getOption('segments'))
             );
-            $this->setSourceIterator($sourceIterator);
+            $this->setSourceIterator($iterator);
+        } else {
+            $this->setSourceIterator($this->getStaticSegmentIterator($channel, $context->getOption('segments')));
         }
     }
 
