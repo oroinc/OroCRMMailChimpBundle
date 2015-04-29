@@ -53,7 +53,8 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
             throw new InvalidConfigurationException('StaticSegment class name must be provided');
         }
 
-        if ($iterator = $this->getSourceIterator()) {
+        $iterator = $this->getSourceIterator();
+        if ($iterator) {
             $sourceIterator = clone $iterator;
 
             /** @var Channel $channel */
@@ -86,14 +87,14 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
             ->join($this->marketingListClassName, 'ml', Join::WITH, 'staticSegment.marketingList = ml.id')
             ->join('staticSegment.subscribersList', 'subscribersList');
 
+        $qb
+            ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
+            ->setParameter('channel', $channel);
+
         if ($segments) {
             $qb
-                ->andWhere('staticSegment.id IN(:segments)')
+                ->andWhere($qb->expr()->in('staticSegment.id', ':segments'))
                 ->setParameter('segments', $segments);
-        } else {
-            $qb
-                ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
-                ->setParameter('channel', $channel);
         }
 
         return new BufferedQueryResultIterator($qb);

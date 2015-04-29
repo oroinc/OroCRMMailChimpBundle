@@ -30,17 +30,14 @@ class StaticSegmentExportWriter extends AbstractExportWriter
      */
     public function write(array $items)
     {
-        /** @var StaticSegmentMember $item */
-        $item = reset($items);
+        /** @var StaticSegment $staticSegment */
+        $staticSegment = reset($items);
 
-        $staticSegment = $item->getStaticSegment();
         $channel = $staticSegment->getChannel();
 
         $this->transport->init($channel->getTransport());
 
         $this->addStaticListSegment($staticSegment);
-
-        $itemsToWrite = [$staticSegment];
 
         $this->handleMembersUpdate(
             $staticSegment,
@@ -55,13 +52,10 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             'deleteStaticSegmentMembers',
             StaticSegmentMember::STATE_DROP
         );
-
-        parent::write($itemsToWrite);
     }
 
     /**
      * @param StaticSegment $staticSegment
-     * @return null|StaticSegment
      */
     protected function addStaticListSegment(StaticSegment $staticSegment)
     {
@@ -76,11 +70,9 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             if (!empty($response['id'])) {
                 $staticSegment->setOriginId($response['id']);
 
-                return $staticSegment;
+                parent::write([$staticSegment]);
             }
         }
-
-        return null;
     }
 
     /**
@@ -105,6 +97,8 @@ class StaticSegmentExportWriter extends AbstractExportWriter
 
             if (count($emailsToProcess) % self::BATCH_SIZE === 0) {
                 $this->handleEmailsBatch($staticSegment, $method, $emailsToProcess, $itemState);
+
+                $emailsToProcess = [];
             }
 
             $emailsIterator->next();
@@ -183,6 +177,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
 
         $iterator = new BufferedQueryResultIterator($qb);
         $iterator->setBufferSize(self::BATCH_SIZE);
+        $iterator->setReverse(true);
 
         return $iterator;
     }
