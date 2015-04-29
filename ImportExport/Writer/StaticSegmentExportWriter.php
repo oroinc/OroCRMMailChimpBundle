@@ -141,9 +141,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         );
 
         $this->handleResponse($staticSegment, $response);
-
-        $emailsWithErrors = $this->getArrayData($response, 'errors');
-        $emailsToUpdate = array_diff($emailsToProcess, $emailsWithErrors);
+        $emailsToUpdate = array_diff($emailsToProcess, $this->getEmailsWithErrors($response));
 
         if (!$emailsToUpdate) {
             return;
@@ -232,5 +230,19 @@ class StaticSegmentExportWriter extends AbstractExportWriter
                 );
             }
         }
+    }
+
+    /**
+     * @param array $response
+     * @return array
+     */
+    protected function getEmailsWithErrors(array $response)
+    {
+        return array_map(
+            function ($item) {
+                return $item['email'];
+            },
+            $this->getArrayData($response, 'errors', 'email')
+        );
     }
 }
