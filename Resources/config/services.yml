@@ -245,6 +245,8 @@ services:
     orocrm_mailchimp.importexport.writer.static_segment:
         class: %orocrm_mailchimp.importexport.writer.static_segment.class%
         parent: orocrm_mailchimp.importexport.writer.abstract_export
+        calls:
+            - [setStaticSegmentMemberClassName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
 
     orocrm_mailchimp.importexport.writer.static_segment_member_add:
         class: %orocrm_mailchimp.importexport.writer.static_segment_member_add.class%
