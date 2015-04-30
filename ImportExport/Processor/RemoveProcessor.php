@@ -63,7 +63,6 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
 
     /**
      * @param array $item
-     * @todo Delete count does not shown for second step because https://magecore.atlassian.net/browse/BAP-2600
      */
     protected function updateContext(array $item)
     {
