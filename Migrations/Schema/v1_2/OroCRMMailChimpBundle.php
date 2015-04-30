@@ -14,6 +14,9 @@ class OroCRMMailChimpBundle implements Migration
      */
     public function up(Schema $schema, QueryBag $queries)
     {
+        $table = $schema->getTable('orocrm_mc_static_segment_mmbr');
+        $table->addIndex(['static_segment_id', 'state'], 'mc_segment_mmbr_sid_st');
+
         $this->createOrocrmMailchimpMlEmailTable($schema);
         $this->addOrocrmMailchimpMlEmailForeignKeys($schema);
     }

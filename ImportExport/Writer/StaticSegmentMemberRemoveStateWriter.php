@@ -38,7 +38,7 @@ class StaticSegmentMemberRemoveStateWriter implements ItemWriterInterface
 
     /**
      * @param string $entityName
-     * @return AbstractInsertFromSelectWriter
+     * @return StaticSegmentMemberRemoveStateWriter
      */
     public function setEntityName($entityName)
     {

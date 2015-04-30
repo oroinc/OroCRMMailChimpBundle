@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
- * @todo Add migration and update installer
  * @ORM\Entity
  * @ORM\Table(
  *      name="orocrm_mailchimp_ml_email",

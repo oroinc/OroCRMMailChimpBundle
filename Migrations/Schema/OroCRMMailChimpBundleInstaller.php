@@ -320,25 +320,8 @@ class OroCRMMailChimpBundleInstaller implements Installation
      */
     protected function createOroIntegrationTransportTable(Schema $schema)
     {
-        $table = $schema->createTable('oro_integration_transport');
-        $table->addColumn('id', 'integer', ['autoincrement' => true]);
-        $table->addColumn('type', 'string', ['length' => 30]);
-        $table->addColumn('wsdl_url', 'string', ['notnull' => false, 'length' => 255]);
-        $table->addColumn('api_user', 'string', ['notnull' => false, 'length' => 255]);
-        $table->addColumn('api_key', 'string', ['notnull' => false, 'length' => 255]);
-        $table->addColumn('sync_start_date', 'date', ['notnull' => false, 'comment' => '(DC2Type:date)']);
-        $table->addColumn('sync_range', 'string', ['notnull' => false, 'length' => 50]);
-        $table->addColumn('website_id', 'integer', ['notnull' => false]);
-        $table->addColumn('websites', 'array', ['notnull' => false, 'comment' => '(DC2Type:array)']);
-        $table->addColumn('is_extension_installed', 'boolean', ['notnull' => false]);
-        $table->addColumn('is_wsi_mode', 'boolean', ['notnull' => false]);
-        $table->addColumn('admin_url', 'string', ['notnull' => false, 'length' => 255]);
-        $table->addColumn('orocrm_zd_email', 'string', ['notnull' => false, 'length' => 100]);
-        $table->addColumn('orocrm_zd_url', 'string', ['notnull' => false, 'length' => 255]);
-        $table->addColumn('orocrm_zd_token', 'string', ['notnull' => false, 'length' => 255]);
-        $table->addColumn('orocrm_zd_default_user_email', 'string', ['notnull' => false, 'length' => 100]);
+        $table = $schema->getTable('oro_integration_transport');
         $table->addColumn('orocrm_mailchimp_apikey', 'string', ['notnull' => false, 'length' => 255]);
-        $table->setPrimaryKey(['id']);
     }
 
     /**
@@ -348,16 +331,10 @@ class OroCRMMailChimpBundleInstaller implements Installation
      */
     protected function createOrocrmCmpgnTransportStngsTable(Schema $schema)
     {
-        $table = $schema->createTable('orocrm_cmpgn_transport_stngs');
-        $table->addColumn('id', 'integer', ['autoincrement' => true]);
-        $table->addColumn('email_template_id', 'integer', ['notnull' => false]);
+        $table = $schema->getTable('orocrm_cmpgn_transport_stngs');
         $table->addColumn('mailchimp_template_id', 'integer', ['notnull' => false]);
         $table->addColumn('mailchimp_channel_id', 'integer', ['notnull' => false]);
-        $table->addColumn('type', 'string', ['length' => 50]);
-        $table->addIndex(['email_template_id'], 'idx_16e86bf2131a730f', []);
         $table->addIndex(['mailchimp_channel_id'], 'idx_16e86bf27bc28329', []);
-        $table->setPrimaryKey(['id']);
-        $table->addIndex(['mailchimp_template_id'], 'idx_16e86bf27162ea00', []);
     }
 
     /**
@@ -592,12 +569,6 @@ class OroCRMMailChimpBundleInstaller implements Installation
     protected function addOrocrmCmpgnTransportStngsForeignKeys(Schema $schema)
     {
         $table = $schema->getTable('orocrm_cmpgn_transport_stngs');
-        $table->addForeignKeyConstraint(
-            $schema->getTable('oro_email_template'),
-            ['email_template_id'],
-            ['id'],
-            ['onUpdate' => null, 'onDelete' => 'SET NULL']
-        );
         $table->addForeignKeyConstraint(
             $schema->getTable('orocrm_mailchimp_template'),
             ['mailchimp_template_id'],
