@@ -70,4 +70,30 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Ite
 
         return [];
     }
+
+    /**
+     * @param mixed $response
+     * @param callable $func
+     */
+    protected function handleResponse($response, \Closure $func = null)
+    {
+        if (!is_array($response)) {
+            return;
+        }
+        if (!$this->logger) {
+            return;
+        }
+
+        if ($func) {
+            $func($response, $this->logger);
+        }
+
+        if (!empty($response['errors']) && is_array($response['errors'])) {
+            foreach ($response['errors'] as $error) {
+                $this->logger->warning(
+                    sprintf('[Error #%s] %s', $error['code'], $error['error'])
+                );
+            }
+        }
+    }
 }

@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Processor;
 
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
+use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Context\ContextRegistry;
 use Oro\Bundle\ImportExportBundle\Processor\EntityNameAwareInterface;
@@ -62,7 +63,6 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
 
     /**
      * @param array $item
-     * @todo Delete count does not shown for second step because https://magecore.atlassian.net/browse/BAP-2600
      */
     protected function updateContext(array $item)
     {
@@ -76,6 +76,21 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
      * @return int
      */
     protected function getItemsToRemoveCount(array $item)
+    {
+        $qb = $this->createQueryBuilder($item);
+        $result = $qb->getQuery()->getArrayResult();
+        if ($result) {
+            return (int)$result[0]['itemsCount'];
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param array $item
+     * @return QueryBuilder
+     */
+    protected function createQueryBuilder(array $item)
     {
         $em = $this->doctrineHelper->getEntityManager($this->entityName);
         $identifierFieldName = $this->doctrineHelper->getSingleEntityIdentifierFieldName($this->entityName);
@@ -92,12 +107,7 @@ class RemoveProcessor implements StepExecutionAwareProcessor, EntityNameAwareInt
                 ->setParameter('channel', $item['channel']);
         }
 
-        $result = $qb->getQuery()->getArrayResult();
-        if ($result) {
-            return (int)$result[0]['itemsCount'];
-        }
-
-        return 0;
+        return $qb;
     }
 
     /**

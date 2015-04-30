@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Psr\Log\LoggerInterface;
+
 use Doctrine\Common\Collections\ArrayCollection;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -40,7 +42,28 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             StaticSegmentMember::STATE_DROP
         );
 
-        $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
+        $unsubscribedItems = $this->handleMembersUpdate(
+            $staticSegment,
+            StaticSegmentMember::STATE_UNSUBSCRIBE,
+            'batchUnsubscribe',
+            StaticSegmentMember::STATE_DROP
+        );
+
+        $unsubscribedDeletedItems = $this->handleMembersUpdate(
+            $staticSegment,
+            StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE,
+            'batchUnsubscribe',
+            StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE,
+            true
+        );
+
+        $itemsToWrite = array_merge(
+            $itemsToWrite,
+            $addedItems,
+            $removedItems,
+            $unsubscribedItems,
+            $unsubscribedDeletedItems
+        );
 
         parent::write($itemsToWrite);
     }
@@ -76,10 +99,16 @@ class StaticSegmentExportWriter extends AbstractExportWriter
      * @param string $segmentStateFilter
      * @param string $method
      * @param string $itemState
-     * @return StaticSegmentMember[]
+     * @param bool $deleteMember
+     * @return array
      */
-    public function handleMembersUpdate(StaticSegment $staticSegment, $segmentStateFilter, $method, $itemState)
-    {
+    public function handleMembersUpdate(
+        StaticSegment $staticSegment,
+        $segmentStateFilter,
+        $method,
+        $itemState,
+        $deleteMember = false
+    ) {
         $itemsToWrite = [];
 
         $items = $staticSegment->getSegmentMembers()
@@ -110,11 +139,26 @@ class StaticSegmentExportWriter extends AbstractExportWriter
                         return ['email' => $email];
                     },
                     $emails
-                )
+                ),
+                'delete_member' => $deleteMember
             ]
         );
 
-        $this->handleResponse($response);
+        $this
+            ->handleResponse(
+                $response,
+                function($response, LoggerInterface $logger) use ($staticSegment) {
+                    $logger->info(
+                        sprintf(
+                            'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',
+                            $staticSegment->getId(),
+                            $staticSegment->getOriginId(),
+                            $response['success_count'],
+                            $response['error_count']
+                        )
+                    );
+                }
+            );
 
         $emailsWithErrors = $this->getArrayData($response, 'errors');
 
@@ -143,19 +187,5 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         }
 
         return $itemsToWrite;
-    }
-
-    /**
-     * @param mixed $response
-     */
-    protected function handleResponse(array $response)
-    {
-        if (!empty($response['errors'])) {
-            foreach ($response['errors'] as $error) {
-                $this->logger->warning(
-                    sprintf('[Error #%s] %s', $error['code'], $error['error'])
-                );
-            }
-        }
     }
 }

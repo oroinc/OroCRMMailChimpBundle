@@ -2,7 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Psr\Log\LoggerInterface;
+
 use Doctrine\Common\Collections\ArrayCollection;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
@@ -57,7 +60,22 @@ class MemberWriter extends AbstractExportWriter
             ]
         );
 
-        $this->handleResponse($response);
+        $this
+            ->handleResponse(
+                $response,
+                function($response, LoggerInterface $logger) use ($subscribersList) {
+                    $logger->info(
+                        sprintf(
+                            'List #%s [origin_id=%s]: [%s] add, [%s] update, [%s] error',
+                            $subscribersList->getId(),
+                            $subscribersList->getOriginId(),
+                            $response['add_count'],
+                            $response['update_count'],
+                            $response['error_count']
+                        )
+                    );
+                }
+            );
 
         $emailsAdded = $this->getArrayData($response, 'adds');
         $emailsUpdated = $this->getArrayData($response, 'updates');
@@ -88,19 +106,5 @@ class MemberWriter extends AbstractExportWriter
         }
 
         return $itemsToWrite;
-    }
-
-    /**
-     * @param array $response
-     */
-    protected function handleResponse(array $response)
-    {
-        if (!empty($response['errors'])) {
-            foreach ($response['errors'] as $error) {
-                $this->logger->warning(
-                    sprintf('[Error #%s] %s', $error['code'], $error['error'])
-                );
-            }
-        }
     }
 }

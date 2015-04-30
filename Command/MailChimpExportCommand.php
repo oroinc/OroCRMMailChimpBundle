@@ -110,7 +110,7 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         }
 
         foreach ($staticSegments as $staticSegment) {
-            $this->getStaticSegmentStateManager()->handleDroppedMembers($staticSegment);
+            $this->getStaticSegmentStateManager()->handleMembers($staticSegment);
             $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED, true);
         }
     }
