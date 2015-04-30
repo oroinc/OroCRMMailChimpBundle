@@ -2,52 +2,60 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityRepository;
 
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
 class StaticSegmentExportWriter extends AbstractExportWriter
 {
+    const BATCH_SIZE = 2000;
+
+    /**
+     * @var string
+     */
+    protected $staticSegmentMemberClassName;
+
+    /**
+     * @param string $staticSegmentMemberClassName
+     */
+    public function setStaticSegmentMemberClassName($staticSegmentMemberClassName)
+    {
+        $this->staticSegmentMemberClassName = $staticSegmentMemberClassName;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function write(array $items)
     {
-        /** @var StaticSegmentMember $item */
-        $item = reset($items);
+        /** @var StaticSegment $staticSegment */
+        $staticSegment = reset($items);
 
-        $staticSegment = $item->getStaticSegment();
         $channel = $staticSegment->getChannel();
 
         $this->transport->init($channel->getTransport());
 
         $this->addStaticListSegment($staticSegment);
 
-        $itemsToWrite = [$staticSegment];
-
-        $addedItems = $this->handleMembersUpdate(
+        $this->handleMembersUpdate(
             $staticSegment,
             StaticSegmentMember::STATE_ADD,
             'addStaticSegmentMembers',
             StaticSegmentMember::STATE_SYNCED
         );
 
-        $removedItems = $this->handleMembersUpdate(
+        $this->handleMembersUpdate(
             $staticSegment,
             StaticSegmentMember::STATE_REMOVE,
             'deleteStaticSegmentMembers',
             StaticSegmentMember::STATE_DROP
         );
-
-        $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
-
-        parent::write($itemsToWrite);
     }
 
     /**
      * @param StaticSegment $staticSegment
-     * @return null|StaticSegment
      */
     protected function addStaticListSegment(StaticSegment $staticSegment)
     {
@@ -62,11 +70,9 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             if (!empty($response['id'])) {
                 $staticSegment->setOriginId($response['id']);
 
-                return $staticSegment;
+                parent::write([$staticSegment]);
             }
         }
-
-        return null;
     }
 
     /**
@@ -78,27 +84,43 @@ class StaticSegmentExportWriter extends AbstractExportWriter
      */
     public function handleMembersUpdate(StaticSegment $staticSegment, $segmentStateFilter, $method, $itemState)
     {
-        $itemsToWrite = [];
-
-        $items = $staticSegment->getSegmentMembers()
-            ->filter(
-                function (StaticSegmentMember $segmentMember) use ($segmentStateFilter) {
-                    return $segmentMember->getState() === $segmentStateFilter;
-                }
-            )
-            ->toArray();
-
-        if (empty($items)) {
-            return [];
+        $emailsIterator = $this->getSegmentMembersEmailsIterator($staticSegment, $segmentStateFilter);
+        if (!$emailsIterator->count()) {
+            return;
         }
 
-        $emails = array_map(
-            function (StaticSegmentMember $segmentMember) {
-                return $segmentMember->getMember()->getEmail();
-            },
-            $items
-        );
+        $emailsToProcess = [];
+        $emailsIterator->next();
+        while ($emailsIterator->valid()) {
+            $data = $emailsIterator->current();
+            $emailsToProcess[$data['staticSegmentMemberId']] = $data['memberEmail'];
 
+            if (count($emailsToProcess) % self::BATCH_SIZE === 0) {
+                $this->handleEmailsBatch($staticSegment, $method, $emailsToProcess, $itemState);
+
+                $emailsToProcess = [];
+            }
+
+            $emailsIterator->next();
+        }
+
+        if (count($emailsToProcess)) {
+            $this->handleEmailsBatch($staticSegment, $method, $emailsToProcess, $itemState);
+        }
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     * @param string $method
+     * @param array $emailsToProcess
+     * @param string $itemState
+     */
+    protected function handleEmailsBatch(
+        StaticSegment $staticSegment,
+        $method,
+        array $emailsToProcess,
+        $itemState
+    ) {
         $response = $this->transport->$method(
             [
                 'id' => $staticSegment->getSubscribersList()->getOriginId(),
@@ -107,30 +129,69 @@ class StaticSegmentExportWriter extends AbstractExportWriter
                     function ($email) {
                         return ['email' => $email];
                     },
-                    $emails
+                    $emailsToProcess
                 )
             ]
         );
 
         $this->handleResponse($staticSegment, $response);
+        $emailsToUpdate = array_diff($emailsToProcess, $this->getEmailsWithErrors($response));
 
-        $emailsWithErrors = $this->getArrayData($response, 'errors');
-
-        $items = new ArrayCollection($items);
-
-        $items->filter(
-            function (StaticSegmentMember $segmentMember) use ($emailsWithErrors) {
-                return !in_array($segmentMember->getMember()->getEmail(), $emailsWithErrors);
-            }
-        );
-
-        foreach ($items as $item) {
-            $item->setState($itemState);
-
-            $itemsToWrite[] = $item;
+        if (!$emailsToUpdate) {
+            return;
         }
 
-        return $itemsToWrite;
+        $qb = $this->getRepository()->createQueryBuilder('staticSegmentMember');
+
+        $qb
+            ->update()
+            ->set('staticSegmentMember.state', ':state')
+            ->setParameter('state', $itemState)
+            ->where($qb->expr()->in('staticSegmentMember.id', ':ids'))
+            ->setParameter('ids', array_keys($emailsToUpdate))
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     * @param string $state
+     *
+     * @return BufferedQueryResultIterator
+     */
+    protected function getSegmentMembersEmailsIterator(StaticSegment $staticSegment, $state)
+    {
+        $qb = $this->getRepository()->createQueryBuilder('staticSegmentMember');
+
+        $qb
+            ->select('staticSegmentMember.id as staticSegmentMemberId, mmbr.email as memberEmail')
+            ->leftJoin('staticSegmentMember.member', 'mmbr')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('staticSegmentMember.staticSegment', ':staticSegment'),
+                    $qb->expr()->eq('staticSegmentMember.state', ':state')
+                )
+            )
+            ->setParameter('staticSegment', $staticSegment)
+            ->setParameter('state', $state);
+
+        $iterator = new BufferedQueryResultIterator($qb);
+        $iterator->setBufferSize(self::BATCH_SIZE);
+        $iterator->setReverse(true);
+
+        return $iterator;
+    }
+
+    /**
+     * @return EntityRepository
+     */
+    protected function getRepository()
+    {
+        if (!$this->staticSegmentMemberClassName) {
+            throw new \InvalidArgumentException('Missing StaticSegmentMember class name');
+        }
+
+        return $this->registry->getRepository($this->staticSegmentMemberClassName);
     }
 
     /**
@@ -164,5 +225,19 @@ class StaticSegmentExportWriter extends AbstractExportWriter
                 );
             }
         }
+    }
+
+    /**
+     * @param array $response
+     * @return array
+     */
+    protected function getEmailsWithErrors(array $response)
+    {
+        return array_map(
+            function ($item) {
+                return $item['email'];
+            },
+            $this->getArrayData($response, 'errors', 'email')
+        );
     }
 }
