@@ -99,7 +99,7 @@ definitions:
                 actions:
                     - @format_string:
                         attribute: $.segmentArguments
-                        string: '--segments=%segment_id%'
+                        string: '--segments=%segment_id% -v'
                         arguments:
                             segment_id: $id
                     - @create_entity:

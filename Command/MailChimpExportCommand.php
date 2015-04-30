@@ -103,9 +103,7 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         }
 
         foreach ($channelToSync as $id => $channel) {
-            $output->writeln(sprintf('<info>Channel #%s:</info>', $id));
             foreach ($exportJobs as $type => $jobName) {
-                $output->writeln(sprintf('    %s', $jobName));
                 $parameters = ['segments' => $channelSegments[$id]];
                 $this->getReverseSyncProcessor()->process($channel, $type, $parameters);
             }
