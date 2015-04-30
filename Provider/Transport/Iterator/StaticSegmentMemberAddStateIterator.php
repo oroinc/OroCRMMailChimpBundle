@@ -2,14 +2,83 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\Join;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractInsertFromSelectWriter;
 
-class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
+class StaticSegmentMemberAddStateIterator extends AbstractSubordinateIterator
 {
+    /**
+     * @var ManagerRegistry
+     */
+    protected  $registry;
+
+    /**
+     * @var string
+     */
+    protected $memberEntity;
+
+    /**
+     * @var string
+     */
+    protected $marketingListEmailEntity;
+
+    /**
+     * @param \Iterator|null $mainIterator
+     */
+    public function __construct(\Iterator $mainIterator = null)
+    {
+        if ($mainIterator) {
+            $this->setMainIterator($mainIterator);
+        }
+    }
+
+    /**
+     * @param \Iterator $mainIterator
+     */
+    public function setMainIterator(\Iterator $mainIterator)
+    {
+        $this->mainIterator = $mainIterator;
+    }
+
+    /**
+     * @param ManagerRegistry $registry
+     * @return StaticSegmentMemberAddStateIterator
+     */
+    public function setRegistry(ManagerRegistry $registry)
+    {
+        $this->registry = $registry;
+
+        return $this;
+    }
+
+    /**
+     * @param string $memberEntity
+     * @return StaticSegmentMemberAddStateIterator
+     */
+    public function setMemberEntity($memberEntity)
+    {
+        $this->memberEntity = $memberEntity;
+
+        return $this;
+    }
+
+    /**
+     * @param string $marketingListEmailEntity
+     * @return StaticSegmentMemberAddStateIterator
+     */
+    public function setMarketingListEmailEntity($marketingListEmailEntity)
+    {
+        $this->marketingListEmailEntity = $marketingListEmailEntity;
+
+        return $this;
+    }
+
     /**
      * @param StaticSegment $staticSegment
      *
@@ -17,34 +86,46 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        $qb = clone $this->getIteratorQueryBuilder($staticSegment);
-        $alias = sprintf('%s.id', self::MEMBER_ALIAS);
+        /** @var EntityManager $repository */
+        $repository = $this->registry->getManager();
+        $qb = $repository->createQueryBuilder();
 
         $qb
             ->select(
                 [
-                    self::MEMBER_ALIAS . '.id member_id',
+                    'mmb.id member_id',
                     $staticSegment->getId() . ' static_segment_id',
                     $qb->expr()->literal(StaticSegmentMember::STATE_ADD) . ' state'
                 ]
             )
+            ->from($this->marketingListEmailEntity, 'mlEmail')
+            ->innerJoin(
+                $this->memberEntity,
+                'mmb',
+                Join::WITH,
+                $qb->expr()->eq('mmb.email', 'mlEmail.email')
+            )
             ->leftJoin(
-                sprintf('%s.segmentMembers', self::MEMBER_ALIAS),
+                'mmb.segmentMembers',
                 'segmentMembers',
                 Join::WITH,
                 $qb->expr()->eq('segmentMembers.staticSegment', $staticSegment->getId())
             )
-            ->andWhere(
+            ->where(
                 $qb->expr()->andX(
                     $qb->expr()->isNull('segmentMembers'),
-                    $qb->expr()->isNotNull(sprintf('%s.originId', self::MEMBER_ALIAS)),
-                    $qb->expr()->eq(sprintf('%s.subscribersList', self::MEMBER_ALIAS), ':subscribersList')
+                    $qb->expr()->isNotNull('mmb.originId'),
+                    $qb->expr()->eq('mmb.subscribersList', ':subscribersList'),
+                    $qb->expr()->eq('mlEmail.marketingList', ':marketingList')
                 )
             )
-            ->setParameter('subscribersList', $staticSegment->getSubscribersList())
-            ->resetDQLPart('orderBy')
-            ->groupBy($alias);
+            ->setParameter('marketingList', $staticSegment->getMarketingList())
+            ->setParameter('subscribersList', $staticSegment->getSubscribersList());
 
-        return new \ArrayIterator([$qb]);
+        return new \ArrayIterator(
+            [
+                [AbstractInsertFromSelectWriter::QUERY_BUILDER => $qb]
+            ]
+        );
     }
 }

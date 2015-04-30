@@ -2,24 +2,79 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\Expr\Join;
+
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
-class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterator
+class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
 {
+    /**
+     * @var ManagerRegistry
+     */
+    protected  $registry;
+
     /**
      * @var string
      */
-    protected $segmentMemberClassName;
+    protected $memberEntity;
 
     /**
-     * @param string $segmentMemberClassName
+     * @var string
      */
-    public function setSegmentMemberClassName($segmentMemberClassName)
+    protected $marketingListEmailEntity;
+
+    /**
+     * @param \Iterator|null $mainIterator
+     */
+    public function __construct(\Iterator $mainIterator = null)
     {
-        $this->segmentMemberClassName = $segmentMemberClassName;
+        if ($mainIterator) {
+            $this->setMainIterator($mainIterator);
+        }
+    }
+
+    /**
+     * @param \Iterator $mainIterator
+     */
+    public function setMainIterator(\Iterator $mainIterator)
+    {
+        $this->mainIterator = $mainIterator;
+    }
+
+    /**
+     * @param ManagerRegistry $registry
+     * @return StaticSegmentMemberRemoveStateIterator
+     */
+    public function setRegistry(ManagerRegistry $registry)
+    {
+        $this->registry = $registry;
+
+        return $this;
+    }
+
+    /**
+     * @param string $memberEntity
+     * @return StaticSegmentMemberRemoveStateIterator
+     */
+    public function setMemberEntity($memberEntity)
+    {
+        $this->memberEntity = $memberEntity;
+
+        return $this;
+    }
+
+    /**
+     * @param string $marketingListEmailEntity
+     * @return StaticSegmentMemberRemoveStateIterator
+     */
+    public function setMarketingListEmailEntity($marketingListEmailEntity)
+    {
+        $this->marketingListEmailEntity = $marketingListEmailEntity;
+
+        return $this;
     }
 
     /**
@@ -29,40 +84,46 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        if (!$this->segmentMemberClassName) {
-            throw new \InvalidArgumentException('StaticSegmentMember class name must be provided');
-        }
-        $qb       = $this->getIteratorQueryBuilder($staticSegment);
-        $identity = self::MEMBER_ALIAS . '.id';
-        $memberId = 'IDENTITY(segmentMember.member)';
+        /** @var EntityManager $repository */
+        $repository = $this->registry->getManager();
+        $qb = $repository->createQueryBuilder();
 
-        $qb->select($identity)
-            ->andWhere($qb->expr()->isNotNull($identity));
-
-        $segmentMembersQb = clone $qb;
-        $segmentMembersQb
-            ->resetDQLParts()
+        $qb
             ->select(
                 [
-                    'IDENTITY(segmentMember.staticSegment) as static_segment_id',
-                    $memberId . ' as member_id',
-                    $segmentMembersQb->expr()->literal(StaticSegmentMember::STATE_REMOVE) . ' state'
+                    'mmb.id member_id'
                 ]
             )
-            ->from($this->segmentMemberClassName, 'segmentMember')
-            ->andWhere($qb->expr()->eq('IDENTITY(segmentMember.staticSegment)', $staticSegment->getId()));
-
-        $qb->andWhere($qb->expr()->eq($memberId, $identity));
-
-        $segmentMembersQb->andWhere(
-            $segmentMembersQb->expr()->not(
-                $segmentMembersQb->expr()->exists($qb->getDQL())
+            ->from($this->memberEntity, 'mmb')
+            ->innerJoin(
+                'mmb.segmentMembers',
+                'segmentMembers',
+                Join::WITH,
+                $qb->expr()->eq('segmentMembers.staticSegment', $staticSegment->getId())
             )
-        );
+            ->leftJoin(
+                $this->marketingListEmailEntity,
+                'mlEmail',
+                Join::WITH,
+                $qb->expr()->andX(
+                    $qb->expr()->eq('mmb.email', 'mlEmail.email'),
+                    $qb->expr()->eq('mlEmail.marketingList', ':marketingList')
+                )
+            )
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->isNull('mlEmail'),
+                    $qb->expr()->isNotNull('mmb.originId'),
+                    $qb->expr()->eq('mmb.subscribersList', ':subscribersList')
+                )
+            )
+            ->setParameter('marketingList', $staticSegment->getMarketingList())
+            ->setParameter('subscribersList', $staticSegment->getSubscribersList());
 
-        $bufferedIterator = new BufferedQueryResultIterator($segmentMembersQb);
+        $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setReverse(true);
-        $bufferedIterator->setBufferSize(self::BUFFER_SIZE);
+        $bufferedIterator->setBufferSize(AbstractStaticSegmentIterator::BUFFER_SIZE);
+
 
         return $bufferedIterator;
     }
