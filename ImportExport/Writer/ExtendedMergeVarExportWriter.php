@@ -51,7 +51,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
      */
     protected function add(ArrayCollection $items)
     {
-        $items = $items->filter(function(ExtendedMergeVar $extendedMergeVar) {
+        $items = $items->filter(function (ExtendedMergeVar $extendedMergeVar) {
             return $extendedMergeVar->isAddState();
         });
 
@@ -87,7 +87,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
             $this
                 ->handleResponse(
                     $response,
-                    function($response) use (&$successItems, $each) {
+                    function ($response) use (&$successItems, $each) {
                         if (empty($response['errors'])) {
                             $each->markSynced();
                             $successItems[] = $each;
@@ -105,7 +105,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
      */
     protected function remove(ArrayCollection $items)
     {
-        $items = $items->filter(function(ExtendedMergeVar $extendedMergeVar) {
+        $items = $items->filter(function (ExtendedMergeVar $extendedMergeVar) {
             return $extendedMergeVar->isRemoveState();
         });
 

@@ -559,7 +559,8 @@ class StaticSegment implements OriginAwareInterface
     public function getExtendedMergeVars(array $filterByStates = [])
     {
         if (!empty($filterByStates)) {
-            return $this->extendedMergeVars->filter(function(ExtendedMergeVar $extendedMergeVar) use ($filterByStates) {
+            return $this->extendedMergeVars->
+            filter(function (ExtendedMergeVar $extendedMergeVar) use ($filterByStates) {
                 return in_array($extendedMergeVar->getState(), $filterByStates, true);
             });
         }

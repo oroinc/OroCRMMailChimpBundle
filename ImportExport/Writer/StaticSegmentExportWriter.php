@@ -147,7 +147,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         $this
             ->handleResponse(
                 $response,
-                function($response, LoggerInterface $logger) use ($staticSegment) {
+                function ($response, LoggerInterface $logger) use ($staticSegment) {
                     $logger->info(
                         sprintf(
                             'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',

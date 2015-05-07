@@ -63,7 +63,7 @@ class MemberWriter extends AbstractExportWriter
         $this
             ->handleResponse(
                 $response,
-                function($response, LoggerInterface $logger) use ($subscribersList) {
+                function ($response, LoggerInterface $logger) use ($subscribersList) {
                     $logger->info(
                         sprintf(
                             'List #%s [origin_id=%s]: [%s] add, [%s] update, [%s] error',

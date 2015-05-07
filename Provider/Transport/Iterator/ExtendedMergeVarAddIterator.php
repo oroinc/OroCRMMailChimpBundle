@@ -37,7 +37,7 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
 
         $existingVars = $staticSegment
             ->getExtendedMergeVars([ExtendedMergeVar::STATE_ADD, ExtendedMergeVar::STATE_SYNCED])
-            ->map(function(ExtendedMergeVar $extendedMergeVar) {
+            ->map(function (ExtendedMergeVar $extendedMergeVar) {
                 return $extendedMergeVar->getName();
             })
             ->toArray();
