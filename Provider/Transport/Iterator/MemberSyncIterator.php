@@ -19,7 +19,7 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
     {
         $qb = $this->getIteratorQueryBuilder($staticSegment);
 
-        $qb->andWhere($qb->expr()->isNull(MarketingListQueryBuilderAdapter::MEMBER_ALIAS));
+        $qb->andWhere($qb->expr()->isNull(MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id'));
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
