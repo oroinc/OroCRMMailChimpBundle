@@ -89,8 +89,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
             )
         );
 
-        $this->joinStaticSegmentMembers($staticSegment, $qb);
-
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
 
@@ -111,36 +109,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
                 return true;
             }
         );
-    }
-
-    /**
-     * @param StaticSegment $staticSegment
-     * @param QueryBuilder $qb
-     */
-    protected function joinStaticSegmentMembers(StaticSegment $staticSegment, QueryBuilder $qb)
-    {
-        $expr = $qb->expr()
-            ->andX(
-                $qb->expr()
-                    ->eq(
-                        MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id',
-                        self::STATIC_SEGMENT_MEMBER_ALIAS . '.member'
-                    ),
-                $qb->expr()
-                    ->eq(
-                        self::STATIC_SEGMENT_MEMBER_ALIAS . '.staticSegment',
-                        ':staticSegment'
-                    )
-            );
-
-        $qb
-            ->innerJoin(
-                $this->segmentMemberClassName,
-                self::STATIC_SEGMENT_MEMBER_ALIAS,
-                Join::WITH,
-                $expr
-            )
-            ->setParameter('staticSegment', $staticSegment->getId());
     }
 
     /**
