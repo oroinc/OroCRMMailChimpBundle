@@ -67,7 +67,7 @@ class DataGridProviderTest extends \PHPUnit_Framework_TestCase
                 ConfigurationProvider::GRID_PREFIX . $marketingList->getId(),
                 $this->logicalAnd(
                     $this->arrayHasKey('grid-mixin'),
-                    $this->callback(function($other) use ($type) {
+                    $this->callback(function ($other) use ($type) {
                         if ($type === MarketingListType::TYPE_MANUAL) {
                             $mixin = MarketingListProvider::MANUAL_RESULT_ENTITIES_MIXIN;
                         } else {

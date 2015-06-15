@@ -41,7 +41,7 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
      */
     protected function set(ArrayCollection $items)
     {
-        $items = $items->filter(function(MemberExtendedMergeVar $mmbrExtdMergeVar) {
+        $items = $items->filter(function (MemberExtendedMergeVar $mmbrExtdMergeVar) {
             return $mmbrExtdMergeVar->isAddState();
         });
 

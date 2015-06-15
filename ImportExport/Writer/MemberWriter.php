@@ -34,7 +34,7 @@ class MemberWriter extends AbstractExportWriter
 
     /**
      * @param SubscribersList $subscribersList
-     * @param array $items
+     * @param array|ArrayCollection $items
      * @return array
      */
     protected function batchSubscribe(SubscribersList $subscribersList, array $items)
@@ -63,7 +63,7 @@ class MemberWriter extends AbstractExportWriter
         $this
             ->handleResponse(
                 $response,
-                function($response, LoggerInterface $logger) use ($subscribersList) {
+                function ($response, LoggerInterface $logger) use ($subscribersList) {
                     $logger->info(
                         sprintf(
                             'List #%s [origin_id=%s]: [%s] add, [%s] update, [%s] error',
@@ -98,13 +98,10 @@ class MemberWriter extends AbstractExportWriter
                     ->setStatus(Member::STATUS_SUBSCRIBED);
 
                 $itemsToWrite[] = $member;
-            } elseif ($this->logger) {
-                $this->logger->info(
-                    sprintf(
-                        'A member with "%s" email was not found',
-                        $emailData['email']
-                    )
-                );
+
+                $this->logger->debug(sprintf('Member with data "%s" successfully processed', json_encode($emailData)));
+            } else {
+                $this->logger->warning(sprintf('A member with "%s" email was not found', $emailData['email']));
             }
         }
 

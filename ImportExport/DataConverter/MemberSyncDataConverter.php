@@ -46,7 +46,7 @@ class MemberSyncDataConverter extends MemberDataConverter
         ];
 
         $item = array_map(
-            function($value) use ($importedRecord) {
+            function ($value) use ($importedRecord) {
                 return !empty($importedRecord[$value]) ? $importedRecord[$value] : null;
             },
             $itemDataMap

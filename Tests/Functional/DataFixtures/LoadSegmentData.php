@@ -19,30 +19,28 @@ class LoadSegmentData extends AbstractMailChimpFixture
             'description' => 'description',
             'entity' => 'OroCRM\Bundle\ContactBundle\Entity\Contact',
             'definition' => [
-                'columns' =>
+                'columns' => [
                     [
-                        [
-                            'name' => 'primaryEmail',
-                            'label' => 'Primary Email',
-                            'sorting' => '',
-                            'func' => null,
-                        ],
+                        'name' => 'primaryEmail',
+                        'label' => 'Primary Email',
+                        'sorting' => '',
+                        'func' => null,
                     ],
-                'filters' =>
+                ],
+                'filters' => [
                     [
-                        [
-                            'columnName' => 'lastName',
-                            'criterion' =>
-                                [
-                                    'filter' => 'string',
-                                    'data' =>
-                                        [
-                                            'value' => 'Case',
-                                            'type' => '1',
-                                        ],
-                                ],
-                        ],
+                        'columnName' => 'lastName',
+                        'criterion' =>
+                            [
+                                'filter' => 'string',
+                                'data' =>
+                                    [
+                                        'value' => 'Case',
+                                        'type' => '1',
+                                    ],
+                            ],
                     ],
+                ],
             ],
             'reference' => 'mailchimp:ml_one:segment',
         ],

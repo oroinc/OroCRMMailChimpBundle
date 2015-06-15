@@ -85,6 +85,8 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             if (!empty($response['id'])) {
                 $staticSegment->setOriginId($response['id']);
 
+                $this->logger->debug(sprintf('StaticSegment with id "%s" added', $staticSegment->getOriginId()));
+
                 return $staticSegment;
             }
         }
@@ -145,7 +147,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         $this
             ->handleResponse(
                 $response,
-                function($response, LoggerInterface $logger) use ($staticSegment) {
+                function ($response, LoggerInterface $logger) use ($staticSegment) {
                     $logger->info(
                         sprintf(
                             'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',
@@ -160,16 +162,26 @@ class StaticSegmentExportWriter extends AbstractExportWriter
 
         $emailsWithErrors = $this->getArrayData($response, 'errors');
 
+        /** @var StaticSegmentMember[]|ArrayCollection $items */
         $items = new ArrayCollection($items);
 
         $items->filter(
             function (StaticSegmentMember $segmentMember) use ($emailsWithErrors) {
-                return !in_array($segmentMember->getMember()->getEmail(), $emailsWithErrors);
+                return !in_array($segmentMember->getMember()->getEmail(), $emailsWithErrors, true);
             }
         );
 
         foreach ($items as $item) {
             $item->setState($itemState);
+
+            $this->logger->debug(
+                sprintf(
+                    'Member with id "%s" and email "%s" got "%s" state',
+                    $item->getMember()->getOriginId(),
+                    $item->getMember()->getEmail(),
+                    $itemState
+                )
+            );
 
             $itemsToWrite[] = $item;
         }
