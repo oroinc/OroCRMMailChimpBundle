@@ -15,6 +15,9 @@ class OroCRMMailChimpBundle implements Migration, DatabasePlatformAwareInterface
     /** @var AbstractPlatform; */
     protected $platform;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDatabasePlatform(AbstractPlatform $platform)
     {
         $this->platform = $platform;
@@ -25,10 +28,10 @@ class OroCRMMailChimpBundle implements Migration, DatabasePlatformAwareInterface
      */
     public function up(Schema $schema, QueryBag $queries)
     {
-        $ddlQuery = new ddlQuery();
         $table = $schema->getTable('orocrm_mailchimp_ml_email');
 
         if ($this->platform instanceof PostgreSqlPlatform) {
+            $ddlQuery = new DdlQuery();
             $sql = 'ALTER TABLE orocrm_mailchimp_ml_email DROP CONSTRAINT ' . $table->getPrimaryKey()->getName();
             $ddlQuery->addSql($sql);
             $sql = 'ALTER TABLE orocrm_mailchimp_ml_email DROP COLUMN id';

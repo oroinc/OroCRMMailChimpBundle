@@ -6,7 +6,7 @@ use Psr\Log\LoggerInterface;
 
 use Oro\Bundle\MigrationBundle\Migration\SqlMigrationQuery;
 
-class ddlQuery extends SqlMigrationQuery
+class DdlQuery extends SqlMigrationQuery
 {
     /**
      * @param LoggerInterface $logger
@@ -15,9 +15,22 @@ class ddlQuery extends SqlMigrationQuery
      */
     public function execute(LoggerInterface $logger)
     {
+        $this->doExecute($logger);
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     * @param bool $dryRun
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function doExecute(LoggerInterface $logger, $dryRun = false)
+    {
         foreach ($this->queries as $query) {
             $logger->notice($query);
-            $this->connection->exec($query);
+            if (!$dryRun) {
+                $this->connection->exec($query);
+            }
         }
     }
 
