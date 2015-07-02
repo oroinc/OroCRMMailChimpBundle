@@ -18,36 +18,21 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 class MarketingListEmail
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
-
-    /**
      * @var MarketingList
      *
+     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MarketingListBundle\Entity\MarketingList")
-     * @ORM\JoinColumn(name="marketing_list_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="marketing_list_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */
     protected $marketingList;
 
     /**
      * @var string
      *
+     * @ORM\Id
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
      */
     protected $email;
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * @return string

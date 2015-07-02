@@ -58,10 +58,9 @@ class OroCRMMailChimpBundleInstaller implements Installation
     protected function createOrocrmMailchimpMlEmailTable(Schema $schema)
     {
         $table = $schema->createTable('orocrm_mailchimp_ml_email');
-        $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('marketing_list_id', 'integer', ['notnull' => false]);
         $table->addColumn('email', 'string', ['length' => 255]);
-        $table->setPrimaryKey(['id']);
+        $table->setPrimaryKey(['marketing_list_id', 'email']);
         $table->addIndex(['marketing_list_id'], 'idx_35d56e8896434d04', []);
         $table->addIndex(['email'], 'mc_ml_email_idx', []);
     }
