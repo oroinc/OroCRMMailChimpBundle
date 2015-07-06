@@ -1,11 +1,9 @@
-/*jslint nomen: true*/
-/*global define*/
 define(function(require) {
     'use strict';
 
-    var ConnectButtonComponent,
-        WidgetComponent = require('oroui/js/app/components/widget-component'),
-        mediator = require('oroui/js/mediator');
+    var ConnectButtonComponent;
+    var WidgetComponent = require('oroui/js/app/components/widget-component');
+    var mediator = require('oroui/js/mediator');
 
     ConnectButtonComponent = WidgetComponent.extend({
         defaults: {
