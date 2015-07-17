@@ -37,7 +37,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractStaticSegmentIterator
             )
             ->andWhere(
                 $qb->expr()->andX(
-                    $qb->expr()->isNull('segmentMembers'),
+                    $qb->expr()->isNull('segmentMembers.id'),
                     $qb->expr()->isNotNull(sprintf('%s.originId', MarketingListQueryBuilderAdapter::MEMBER_ALIAS)),
                     $qb->expr()
                         ->eq(
