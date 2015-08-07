@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+use Oro\Bundle\OrganizationBundle\Migrations\Data\ORM\LoadOrganizationAndBusinessUnitData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
@@ -61,10 +62,16 @@ class LoadChannelData extends AbstractMailChimpFixture implements DependentFixtu
     {
         $userManager = $this->container->get('oro_user.manager');
         $admin = $userManager->findUserByEmail(LoadAdminUserData::DEFAULT_ADMIN_EMAIL);
+        $organizationManager = $this->container->get('oro_organization.organization_manager');
+        $organization = $organizationManager->getOrganizationByName(
+            LoadOrganizationAndBusinessUnitData::MAIN_ORGANIZATION
+        );
+
         foreach ($this->channelData as $data) {
             $entity = new Channel();
             $data['transport'] = $this->getReference($data['transport']);
             $entity->setDefaultUserOwner($admin);
+            $entity->setOrganization($organization);
             $this->setEntityPropertyValues($entity, $data, ['reference', 'synchronizationSettings']);
             $this->setReference($data['reference'], $entity);
             if (isset($data['synchronizationSettings'])) {
