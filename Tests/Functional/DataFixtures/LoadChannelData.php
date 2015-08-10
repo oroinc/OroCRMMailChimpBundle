@@ -5,7 +5,6 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use Oro\Bundle\OrganizationBundle\Migrations\Data\ORM\LoadOrganizationAndBusinessUnitData;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
@@ -87,8 +86,7 @@ class LoadChannelData extends AbstractMailChimpFixture implements DependentFixtu
     public function getDependencies()
     {
         return [
-            __NAMESPACE__ . '\LoadTransportData',
-            'Oro\Bundle\OrganizationBundle\Migrations\Data\ORM\LoadOrganizationAndBusinessUnitData'
+            __NAMESPACE__ . '\LoadTransportData'
         ];
     }
 }
