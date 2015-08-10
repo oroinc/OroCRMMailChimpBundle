@@ -36,8 +36,12 @@ class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtur
      */
     public function load(ObjectManager $manager)
     {
+        $organization = $manager->getRepository('OroOrganizationBundle:Organization')
+            ->getFirst();
+
         foreach ($this->data as $data) {
             $entity = new Member();
+            $entity->setOwner($organization);
             $data['subscribersList'] = $this->getReference($data['subscribersList']);
             $data['channel'] = $this->getReference($data['channel']);
             $this->setEntityPropertyValues($entity, $data, ['reference']);

@@ -81,8 +81,12 @@ class LoadCampaignData extends AbstractMailChimpFixture implements DependentFixt
      */
     public function load(ObjectManager $manager)
     {
+        $organization = $manager->getRepository('OroOrganizationBundle:Organization')
+            ->getFirst();
+
         foreach ($this->data as $data) {
             $entity = new Campaign();
+            $entity->setOwner($organization);
             $data['subscribersList'] = $this->getReference($data['subscribersList']);
             $data['channel'] = $this->getReference($data['channel']);
             $this->setEntityPropertyValues($entity, $data, ['reference']);
