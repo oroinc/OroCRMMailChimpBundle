@@ -62,10 +62,7 @@ class LoadChannelData extends AbstractMailChimpFixture implements DependentFixtu
     {
         $userManager = $this->container->get('oro_user.manager');
         $admin = $userManager->findUserByEmail(LoadAdminUserData::DEFAULT_ADMIN_EMAIL);
-        $organizationManager = $this->container->get('oro_organization.organization_manager');
-        $organization = $organizationManager->getOrganizationByName(
-            LoadOrganizationAndBusinessUnitData::MAIN_ORGANIZATION
-        );
+        $organization = $manager->getRepository('OroOrganizationBundle:Organization')->getFirst();
 
         foreach ($this->channelData as $data) {
             $entity = new Channel();
