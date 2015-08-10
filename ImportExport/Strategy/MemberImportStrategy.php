@@ -116,6 +116,10 @@ class MemberImportStrategy extends AbstractImportStrategy
         $jobContext = $this->getJobContext();
         $processedMembers = (array)$jobContext->get('processed_members');
 
+        if ($entity->getSubscribersList() === null) {
+            return false;
+        }
+
         return !empty($processedMembers[$entity->getSubscribersList()->getId()][$entity->getEmail()]);
     }
 
