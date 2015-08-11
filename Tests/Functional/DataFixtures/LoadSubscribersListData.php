@@ -71,8 +71,12 @@ class LoadSubscribersListData extends AbstractMailChimpFixture implements Depend
      */
     public function load(ObjectManager $manager)
     {
+        $organization = $manager->getRepository('OroOrganizationBundle:Organization')
+            ->getFirst();
+
         foreach ($this->data as $data) {
             $entity = new SubscribersList();
+            $entity->setOwner($organization);
             $data['channel'] = $this->getReference($data['channel']);
             $this->setEntityPropertyValues($entity, $data, ['reference']);
             $this->setReference($data['reference'], $entity);
