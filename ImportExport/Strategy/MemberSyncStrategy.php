@@ -134,4 +134,3 @@ class MemberSyncStrategy extends BaseStrategy
         return $entity;
     }
 }
-q
