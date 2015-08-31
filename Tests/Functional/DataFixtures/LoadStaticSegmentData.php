@@ -29,8 +29,12 @@ class LoadStaticSegmentData extends AbstractMailChimpFixture implements Dependen
      */
     public function load(ObjectManager $manager)
     {
+        $organization = $manager->getRepository('OroOrganizationBundle:Organization')
+            ->getFirst();
+
         foreach ($this->segmentData as $data) {
             $entity = new StaticSegment();
+            $entity->setOwner($organization);
             $data['marketingList'] = $this->getReference($data['marketingList']);
             $data['subscribersList'] = $this->getReference($data['subscribersList']);
             $data['channel'] = $this->getReference($data['channel']);

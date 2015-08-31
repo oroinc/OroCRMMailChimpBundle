@@ -35,6 +35,7 @@ class MemberSyncStrategy extends BaseStrategy
         $entity = $this->beforeProcessEntity($entity);
         $entity = $this->processEntity($entity);
         $entity = $this->afterProcessEntity($entity);
+        $entity = $this->validateAndUpdateContext($entity);
 
         return $entity;
     }
@@ -111,5 +112,25 @@ class MemberSyncStrategy extends BaseStrategy
     public function setMergeVarProvider(MergeVarProviderInterface $mergeVarProvider)
     {
         $this->mergeVarProvider = $mergeVarProvider;
+    }
+
+    /**
+     * @param Member $entity
+     * @return null|Member
+     */
+    protected function validateAndUpdateContext(Member $entity)
+    {
+        // validate entity
+        $validationErrors = $this->strategyHelper->validateEntity($entity);
+        if ($validationErrors) {
+            $this->context->incrementErrorEntriesCount();
+            $this->strategyHelper->addValidationErrors($validationErrors, $this->context);
+            return null;
+        }
+
+        // increment context counter
+        $this->context->incrementAddCount();
+
+        return $entity;
     }
 }
