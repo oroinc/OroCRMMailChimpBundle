@@ -242,8 +242,8 @@ orocrm:
             static_segment.label: MailChimp Static Segment
 
         memberextendedmergevar:
-            entity_label: Member Exteneded Merge Var
-            entity_plural_label: Member Exteneded Merge Var
+            entity_label: Member Extended Merge Var
+            entity_plural_label: Member Extended Merge Var
             id.label: Id
             merge_var_values.label: Member Merge Var Values
             state.label: State
@@ -251,8 +251,8 @@ orocrm:
             static_segment.label: Static Segment
 
         extendedmergevar:
-            entity_label: Exteneded Merge Var
-            entity_plural_label: Exteneded Merge Var
+            entity_label: Extended Merge Var
+            entity_plural_label: Extended Merge Var
             field_type.label: Field Type
             id.label: Id
             label.label: Label
