@@ -33,7 +33,6 @@ parameters:
     # Integration related services
     orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport
     orocrm_mailchimp.provider.channel_type.class: OroCRM\Bundle\MailChimpBundle\Provider\ChannelType
-    orocrm_mailchimp.client.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient
     orocrm_mailchimp.client.factory.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory
 
     # Readers
