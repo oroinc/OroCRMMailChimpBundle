@@ -26,15 +26,14 @@ class MailChimpExportCommandTest extends WebTestCase
                 'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentMemberData',
             ]
         );
+
+        $this->getContainer()->get('akeneo_batch.job_repository')->getJobManager()->beginTransaction();
     }
 
     protected function tearDown()
     {
         // clear DB from separate connection
-        $batchJobManager = $this->getContainer()->get('akeneo_batch.job_repository')->getJobManager();
-        $batchJobManager->createQuery('DELETE AkeneoBatchBundle:JobInstance')->execute();
-        $batchJobManager->createQuery('DELETE AkeneoBatchBundle:JobExecution')->execute();
-        $batchJobManager->createQuery('DELETE AkeneoBatchBundle:StepExecution')->execute();
+        $this->getContainer()->get('akeneo_batch.job_repository')->getJobManager()->rollback();
 
         parent::tearDown();
     }
