@@ -33,7 +33,9 @@ class MailChimpExportCommandTest extends WebTestCase
     protected function tearDown()
     {
         // clear DB from separate connection
-        $this->getContainer()->get('akeneo_batch.job_repository')->getJobManager()->rollback();
+        $manager = $this->getContainer()->get('akeneo_batch.job_repository')->getJobManager();
+        $manager->rollback();
+        $manager->getConnection()->close();
 
         parent::tearDown();
     }
