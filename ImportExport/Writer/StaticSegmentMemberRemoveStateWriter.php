@@ -6,8 +6,10 @@ use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberToRemoveIterator;
 
 class StaticSegmentMemberRemoveStateWriter implements ItemWriterInterface
 {
@@ -52,15 +54,23 @@ class StaticSegmentMemberRemoveStateWriter implements ItemWriterInterface
      */
     public function write(array $items)
     {
-        $updateQb = $this->getEntityManager()->createQueryBuilder();
-        $updateQb
-            ->update($this->entityName, 'e')
-            ->set('e.state', ':state')
-            ->where($updateQb->expr()->in('e.member', ':items'))
-            ->setParameter('state', StaticSegmentMember::STATE_REMOVE)
-            ->setParameter('items', $items);
+        foreach ($items as $item) {
+            /** @var QueryBuilder $itemsQb */
+            $itemsQb = $item[StaticSegmentMemberToRemoveIterator::QUERY_BUILDER];
+            $staticSegmentId = $item[StaticSegmentMemberToRemoveIterator::STATIC_SEGMENT_ID];
 
-        $updateQb->getQuery()->execute();
+            $updateQb = $this->getEntityManager()->createQueryBuilder();
+            $updateQb
+                ->update($this->entityName, 'e')
+                ->set('e.state', ':state')
+                ->where($updateQb->expr()->in('e.member', ':items'))
+                ->andWhere($updateQb->expr()->eq('IDENTITY(e.staticSegment)', ':staticSegmentId'))
+                ->setParameter('state', StaticSegmentMember::STATE_REMOVE)
+                ->setParameter('staticSegmentId', $staticSegmentId)
+                ->setParameter('items', $itemsQb->getQuery());
+
+            $updateQb->getQuery()->execute();
+        }
     }
 
     /**

@@ -193,15 +193,24 @@ connector:
                         writer:    orocrm_mailchimp.importexport.writer.static_segment_member_add
                     parameters:
                         batch_size: 1
-                handle_remove_state:
+                prepare_members_to_remove:
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.static_segment_member_remove_state
-                        processor: orocrm_mailchimp.importexport.processor.static_segment_remove
+                        processor: orocrm_mailchimp.importexport.processor.dummy
+                        writer:    orocrm_mailchimp.importexport.writer.prepare_static_segment_member_to_remove
+                    parameters:
+                        batch_size: 1
+                handle_remove_state:
+                    title: export
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.static_segment_member_to_remove
+                        processor: orocrm_mailchimp.importexport.processor.dummy
                         writer:    orocrm_mailchimp.importexport.writer.static_segment_member_remove
                     parameters:
-                        batch_size: 2000
+                        batch_size: 1
                 export:
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep

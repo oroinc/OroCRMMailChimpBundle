@@ -6,8 +6,8 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\Join;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractInsertFromSelectWriter;
 
 class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
 {
@@ -80,7 +80,7 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
     /**
      * @param StaticSegment $staticSegment
      *
-     * @return \Iterator|BufferedQueryResultIterator
+     * @return \Iterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
@@ -91,7 +91,8 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
         $qb
             ->select(
                 [
-                    'mmb.id member_id'
+                    'mmb.id member_id',
+                    'IDENTITY(segmentMembers.staticSegment) static_segment_id'
                 ]
             )
             ->from($this->memberEntity, 'mmb')
@@ -120,11 +121,13 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
             ->setParameter('marketingList', $staticSegment->getMarketingList())
             ->setParameter('subscribersList', $staticSegment->getSubscribersList());
 
-        $bufferedIterator = new BufferedQueryResultIterator($qb);
-        $bufferedIterator->setReverse(true);
-        $bufferedIterator->setBufferSize(AbstractStaticSegmentIterator::BUFFER_SIZE);
-
-
-        return $bufferedIterator;
+        return new \ArrayIterator(
+            [
+                [
+                    AbstractInsertFromSelectWriter::QUERY_BUILDER => $qb,
+                    'static_segment_id' => $staticSegment->getId()
+                ]
+            ]
+        );
     }
 }

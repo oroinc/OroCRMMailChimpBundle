@@ -18,7 +18,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
      */
     public function getMigrationVersion()
     {
-        return 'v1_2';
+        return 'v1_4';
     }
 
     /**
@@ -37,6 +37,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $this->createOrocrmMcSubscribersListTable($schema);
         $this->createOroIntegrationTransportTable($schema);
         $this->createOrocrmCmpgnTransportStngsTable($schema);
+        $this->createOrocrmMcTmpMmbrToRemoveTable($schema);
 
         /** Foreign keys generation **/
         $this->addOrocrmMailchimpMlEmailForeignKeys($schema);
@@ -48,6 +49,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $this->addOrocrmMcStaticSegmentForeignKeys($schema);
         $this->addOrocrmMcSubscribersListForeignKeys($schema);
         $this->addOrocrmCmpgnTransportStngsForeignKeys($schema);
+        $this->addOrocrmMcTmpMmbrToRemoveForeignKeys($schema);
     }
 
     /**
@@ -337,6 +339,19 @@ class OroCRMMailChimpBundleInstaller implements Installation
     }
 
     /**
+     * Create orocrm_mc_tmp_mmbr_to_remove table
+     *
+     * @param Schema $schema
+     */
+    protected function createOrocrmMcTmpMmbrToRemoveTable(Schema $schema)
+    {
+        $table = $schema->createTable('orocrm_mc_tmp_mmbr_to_remove');
+        $table->addColumn('member_id', 'integer', []);
+        $table->addColumn('static_segment_id', 'integer', []);
+        $table->setPrimaryKey(['member_id']);
+    }
+
+    /**
      * Add orocrm_mailchimp_ml_email foreign keys.
      *
      * @param Schema $schema
@@ -579,6 +594,28 @@ class OroCRMMailChimpBundleInstaller implements Installation
             ['mailchimp_channel_id'],
             ['id'],
             ['onUpdate' => null, 'onDelete' => 'SET NULL']
+        );
+    }
+
+    /**
+     * Add orocrm_mc_tmp_mmbr_to_remove foreign keys.
+     *
+     * @param Schema $schema
+     */
+    protected function addOrocrmMcTmpMmbrToRemoveForeignKeys(Schema $schema)
+    {
+        $table = $schema->getTable('orocrm_mc_tmp_mmbr_to_remove');
+        $table->addForeignKeyConstraint(
+            $schema->getTable('orocrm_mailchimp_member'),
+            ['member_id'],
+            ['id'],
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
+        );
+        $table->addForeignKeyConstraint(
+            $schema->getTable('orocrm_mc_static_segment'),
+            ['static_segment_id'],
+            ['id'],
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
     }
 }
