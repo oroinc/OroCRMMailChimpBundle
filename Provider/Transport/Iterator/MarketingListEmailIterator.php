@@ -3,7 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractInsertFromSelectWriter;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractNativeQueryWriter;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
@@ -70,7 +70,7 @@ class MarketingListEmailIterator extends AbstractStaticSegmentIterator
         return new \ArrayIterator(
             [
                 [
-                    AbstractInsertFromSelectWriter::QUERY_BUILDER => $qb,
+                    AbstractNativeQueryWriter::QUERY_BUILDER => $qb,
                     'marketing_list_id' => $marketingList->getId()
                 ]
             ]

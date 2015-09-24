@@ -9,7 +9,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractInsertFromSelectWriter;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractNativeQueryWriter;
 
 class StaticSegmentMemberAddStateIterator extends AbstractSubordinateIterator
 {
@@ -124,7 +124,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractSubordinateIterator
 
         return new \ArrayIterator(
             [
-                [AbstractInsertFromSelectWriter::QUERY_BUILDER => $qb]
+                [AbstractNativeQueryWriter::QUERY_BUILDER => $qb]
             ]
         );
     }

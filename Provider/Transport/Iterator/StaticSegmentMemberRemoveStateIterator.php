@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\Join;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractInsertFromSelectWriter;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractNativeQueryWriter;
 
 class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
 {
@@ -124,7 +124,7 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
         return new \ArrayIterator(
             [
                 [
-                    AbstractInsertFromSelectWriter::QUERY_BUILDER => $qb,
+                    AbstractNativeQueryWriter::QUERY_BUILDER => $qb,
                     'static_segment_id' => $staticSegment->getId()
                 ]
             ]
