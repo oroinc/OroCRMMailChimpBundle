@@ -292,6 +292,9 @@ services:
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.static_segment_member_to_remove.class%]]
 
+    orocrm_mailchimp.importexport.writer.members_sync:
+        parent: oro_integration.writer.persistent_batch_writer
+
     #Serializers
     orocrm_mailchimp.importexport.serializer.datetime:
         class: %orocrm_mailchimp.importexport.serializer.datetime.class%

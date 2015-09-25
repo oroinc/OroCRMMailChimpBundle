@@ -158,7 +158,7 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.members_sync
                         processor: orocrm_mailchimp.importexport.processor.members_sync
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.members_sync
                     parameters:
                         batch_size: 1000
                 export:
