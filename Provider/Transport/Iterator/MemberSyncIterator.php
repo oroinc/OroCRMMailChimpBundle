@@ -12,6 +12,7 @@ use Oro\Bundle\LocaleBundle\DQL\DQLNameFormatter;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberSyncDataConverter;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 
@@ -73,11 +74,6 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
     protected function createSubordinateIterator($staticSegment)
     {
         $qb = $this->getIteratorQueryBuilder($staticSegment);
-        $this->addNameFields($staticSegment->getMarketingList()->getEntity(), $qb);
-        $this->matchMembersByEmail($staticSegment, $qb);
-
-        // Select only members that are not in list yet
-        $qb->andWhere($qb->expr()->isNull(self::MEMBER_ALIAS));
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
@@ -93,6 +89,22 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
                 return true;
             }
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
+    {
+        $qb = parent::getIteratorQueryBuilder($staticSegment);
+
+        $this->addNameFields($staticSegment->getMarketingList()->getEntity(), $qb);
+        $this->matchMembersByEmail($staticSegment, $qb);
+
+        // Select only members that are not in list yet
+        $qb->andWhere($qb->expr()->isNull(self::MEMBER_ALIAS));
+
+        return $qb;
     }
 
     /**
@@ -118,13 +130,10 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
      * @param StaticSegment $staticSegment
      * @param QueryBuilder $qb
      */
-    protected function matchMembersByEmail($staticSegment, $qb)
+    protected function matchMembersByEmail(StaticSegment $staticSegment, QueryBuilder $qb)
     {
         $marketingList = $staticSegment->getMarketingList();
-        $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
-            $marketingList,
-            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
-        );
+        $contactInformationFields = $this->getContactInformationFields($marketingList);
 
         $expr = $qb->expr()->orX();
         foreach ($contactInformationFields as $contactInformationField) {
@@ -151,5 +160,19 @@ class MemberSyncIterator extends AbstractStaticSegmentIterator
                 )
             )
             ->setParameter('subscribersList', $staticSegment->getSubscribersList()->getId());
+    }
+
+    /**
+     * @param MarketingList $marketingList
+     * @return array
+     */
+    protected function getContactInformationFields(MarketingList $marketingList)
+    {
+        $contactInformationFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
+            $marketingList,
+            ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
+        );
+
+        return $contactInformationFields;
     }
 }
