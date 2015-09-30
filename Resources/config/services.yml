@@ -136,6 +136,7 @@ parameters:
     orocrm_mailchimp.iterator.mmbr_extd_merge_var.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MmbrExtdMergeVarIterator
     orocrm_mailchimp.iterator.marketing_list_email.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MarketingListEmailIterator
     orocrm_mailchimp.iterator.static_segment_member_to_remove.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberToRemoveIterator
+    orocrm_mailchimp.iterator.static_segment_members.abstract.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\AbstractStaticSegmentMembersIterator
 
     # Placeholder filter
     orocrm_mailchimp.placeholder.filter.marketing_list.class: OroCRM\Bundle\MailChimpBundle\Placeholder\MarketingListPlaceholderFilter
@@ -961,15 +962,6 @@ services:
             - %orocrm_mailchimp.entity.member.class%
             - %orocrm_mailchimp.entity.member_extended_merge_var.class%
 
-    orocrm_mailchimp.static_segment.marketing_list_querybuilder_adapter:
-        class: %orocrm_mailchimp.static_segment.marketing_list_querybuilder_adapter.class%
-        arguments:
-            - @orocrm_marketing_list.provider.marketing_list
-            - @orocrm_marketing_list.provider.contact_information_fields
-            - @orocrm_mailchimp.model.field_helper
-            - @oro_security.owner.ownership_metadata_provider
-            - %orocrm_mailchimp.entity.member.class%
-
     # Iterators
     orocrm_mailchimp.iterator.static_segment:
         class: %orocrm_mailchimp.iterator.static_segment.class%
@@ -982,6 +974,15 @@ services:
         calls:
             - [setSegmentMemberClassName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
 
+    orocrm_mailchimp.iterator.static_segment_members.abstract:
+        class: %orocrm_mailchimp.iterator.static_segment_members.abstract.class%
+        parent: orocrm_mailchimp.iterator.static_segment
+        abstract: true
+        calls:
+            - [setContactInformationFieldsProvider, [@orocrm_marketing_list.provider.contact_information_fields]]
+            - [setFieldHelper, [@orocrm_mailchimp.model.field_helper]]
+            - [setMemberClassName, [%orocrm_mailchimp.entity.member.class%]]
+
     orocrm_mailchimp.iterator.marketing_list_email:
         class: %orocrm_mailchimp.iterator.marketing_list_email.class%
         parent: orocrm_mailchimp.iterator.static_segment
@@ -991,11 +992,9 @@ services:
 
     orocrm_mailchimp.iterator.member_sync:
         class: %orocrm_mailchimp.iterator.member_sync.class%
-        parent: orocrm_mailchimp.iterator.static_segment
+        parent: orocrm_mailchimp.iterator.static_segment_members.abstract
         calls:
             - [setFormatter, [@oro_locale.dql.formatter.name]]
-            - [setContactInformationFieldsProvider, [@orocrm_marketing_list.provider.contact_information_fields]]
-            - [setFieldHelper, [@orocrm_mailchimp.model.field_helper]]
 
     orocrm_mailchimp.iterator.static_segment_member_add_state:
         class: %orocrm_mailchimp.iterator.static_segment_member_add_state.class%
@@ -1019,11 +1018,11 @@ services:
 
     orocrm_mailchimp.iterator.static_segment_member_unsubscribe_state:
         class: %orocrm_mailchimp.iterator.static_segment_member_unsubscribe_state.class%
-        parent: orocrm_mailchimp.iterator.static_segment
+        parent: orocrm_mailchimp.iterator.static_segment_members.abstract
 
     orocrm_mailchimp.iterator.static_segment_member_unsubscribe_delete_state:
         class: %orocrm_mailchimp.iterator.static_segment_member_unsubscribe_delete_state.class%
-        parent: orocrm_mailchimp.iterator.static_segment
+        parent: orocrm_mailchimp.iterator.static_segment_members.abstract
 
     orocrm_mailchimp.iterator.extended_merge_var_add:
         class: %orocrm_mailchimp.iterator.extended_merge_var_add.class%
@@ -1039,10 +1038,9 @@ services:
 
     orocrm_mailchimp.iterator.mmbr_extd_merge_var:
         class: %orocrm_mailchimp.iterator.mmbr_extd_merge_var.class%
-        parent: orocrm_mailchimp.iterator.static_segment
+        parent: orocrm_mailchimp.iterator.static_segment_members.abstract
         calls:
             - [setDoctrineHelper, [@oro_entity.doctrine_helper]]
-            - [setFieldHelper, [@orocrm_mailchimp.model.field_helper]]
 
     # Placeholder
     orocrm_mailchimp.placeholder.filter.sync_status:

@@ -8,7 +8,7 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
-class StaticSegmentMemberUnsubscribeDeleteStateIterator extends AbstractStaticSegmentIterator
+class StaticSegmentMemberUnsubscribeDeleteStateIterator extends AbstractStaticSegmentMembersIterator
 {
     /**
      * @param StaticSegment $staticSegment

@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Psr\Log\LoggerInterface;
+
 use Doctrine\ORM\EntityRepository;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
@@ -158,7 +160,21 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             ]
         );
 
-        $this->handleResponse($staticSegment, $response);
+        $this->handleResponse(
+            $response,
+            function ($response, LoggerInterface $logger) use ($staticSegment) {
+                $logger->info(
+                    sprintf(
+                        'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',
+                        $staticSegment->getId(),
+                        $staticSegment->getOriginId(),
+                        $response['success_count'],
+                        $response['error_count']
+                    )
+                );
+            }
+        );
+
         $emailsToUpdate = array_diff($emailsToProcess, $this->getEmailsWithErrors($response));
 
         if (!$emailsToUpdate) {
@@ -233,7 +249,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
      * @param StaticSegment $staticSegment
      * @param mixed $response
      */
-    protected function handleResponse(StaticSegment $staticSegment, $response)
+    protected function handleResponseDD(StaticSegment $staticSegment, $response)
     {
         if (!is_array($response)) {
             return;

@@ -8,12 +8,11 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 
 /**
  * @todo Check that all data are present in QB after refactoring og AbstractStaticSegmentIterator
  */
-class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
+class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
 {
     const STATIC_SEGMENT_MEMBER_ALIAS = 'ssm';
 
@@ -21,11 +20,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
      * @var DoctrineHelper
      */
     protected $doctrineHelper;
-
-    /**
-     * @var FieldHelper
-     */
-    protected $fieldHelper;
 
     /**
      * @var array
@@ -38,14 +32,6 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     public function setDoctrineHelper(DoctrineHelper $doctrineHelper)
     {
         $this->doctrineHelper = $doctrineHelper;
-    }
-
-    /**
-     * @param FieldHelper $fieldHelper
-     */
-    public function setFieldHelper(FieldHelper $fieldHelper)
-    {
-        $this->fieldHelper = $fieldHelper;
     }
 
     /**
@@ -143,6 +129,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         }
 
         $qb = clone $this->marketingListProvider->getMarketingListQueryBuilder($marketingList, $mixin);
+        $this->matchMembersByEmail($staticSegment, $qb);
         $this->applyOrganizationRestrictions($staticSegment, $qb);
 
         return $qb;

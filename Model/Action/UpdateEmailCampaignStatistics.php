@@ -26,7 +26,7 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
     /**
      * @param EmailCampaignStatisticsConnector $campaignStatisticsConnector
      */
-    public function setCampaignStatisticsConnector($campaignStatisticsConnector)
+    public function setCampaignStatisticsConnector(EmailCampaignStatisticsConnector $campaignStatisticsConnector)
     {
         $this->campaignStatisticsConnector = $campaignStatisticsConnector;
     }

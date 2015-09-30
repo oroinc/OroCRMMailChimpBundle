@@ -113,7 +113,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractSubordinateIterator
             )
             ->where(
                 $qb->expr()->andX(
-                    $qb->expr()->isNull('segmentMembers'),
+                    $qb->expr()->isNull('segmentMembers.id'),
                     $qb->expr()->isNotNull('mmb.originId'),
                     $qb->expr()->eq('mmb.subscribersList', ':subscribersList'),
                     $qb->expr()->eq('mlEmail.marketingList', ':marketingList')
