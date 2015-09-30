@@ -9,8 +9,10 @@ use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
-use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
+/**
+ * @todo Check that all data are present in QB after refactoring og AbstractStaticSegmentIterator
+ */
 class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
 {
     const STATIC_SEGMENT_MEMBER_ALIAS = 'ssm';
@@ -33,7 +35,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     /**
      * @param DoctrineHelper $doctrineHelper
      */
-    public function setDoctrineHelper($doctrineHelper)
+    public function setDoctrineHelper(DoctrineHelper $doctrineHelper)
     {
         $this->doctrineHelper = $doctrineHelper;
     }
@@ -41,7 +43,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     /**
      * @param FieldHelper $fieldHelper
      */
-    public function setFieldHelper($fieldHelper)
+    public function setFieldHelper(FieldHelper $fieldHelper)
     {
         $this->fieldHelper = $fieldHelper;
     }
@@ -71,7 +73,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         $qb = $this->getIteratorQueryBuilder($staticSegment);
 
         $marketingList = $staticSegment->getMarketingList();
-        $memberIdentifier = MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id';
+        $memberIdentifier = self::MEMBER_ALIAS . '.id';
         $fieldExpr = $this->fieldHelper
             ->getFieldExpr(
                 $marketingList->getEntity(),
@@ -141,8 +143,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         }
 
         $qb = clone $this->marketingListProvider->getMarketingListQueryBuilder($marketingList, $mixin);
-
-        $this->marketingListQueryBuilderAdapter->prepareMarketingListEntities($staticSegment, $qb);
+        $this->applyOrganizationRestrictions($staticSegment, $qb);
 
         return $qb;
     }

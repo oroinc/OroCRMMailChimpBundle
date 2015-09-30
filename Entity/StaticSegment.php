@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -105,7 +104,7 @@ class StaticSegment implements OriginAwareInterface
     protected $subscribersList;
 
     /**
-     * @var Collection|Member[]
+    * @var Collection|StaticSegmentMember[]
      *
      * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="staticSegment")
      */
@@ -517,7 +516,7 @@ class StaticSegment implements OriginAwareInterface
     /**
      * Get segmentMembers
      *
-     * @return Collection
+     * @return Collection|StaticSegmentMember[]
      */
     public function getSegmentMembers()
     {

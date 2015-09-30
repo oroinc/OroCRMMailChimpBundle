@@ -2,18 +2,17 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
-use Oro\Bundle\LocaleBundle\DQL\DQLNameFormatter;
+use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProvider;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberSyncDataConverter;
-use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
 abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 {
+    const MEMBER_ALIAS = 'mmb';
+    const MEMBER_EMAIL_FIELD = 'email';
     const BUFFER_SIZE = 1000;
 
     /**
@@ -22,14 +21,9 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     protected $marketingListProvider;
 
     /**
-     * @var DQLNameFormatter
+     * @var OwnershipMetadataProvider
      */
-    protected $formatter;
-
-    /**
-     * @var MarketingListQueryBuilderAdapter
-     */
-    protected $marketingListQueryBuilderAdapter;
+    protected $ownershipMetadataProvider;
 
     /**
      * @var string
@@ -48,21 +42,19 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 
     /**
      * @param MarketingListProvider $marketingListProvider
-     * @param DQLNameFormatter $formatter
-     * @param MarketingListQueryBuilderAdapter $marketingListQueryBuilderAdapter
+     * @param OwnershipMetadataProvider $ownershipMetadataProvider
      * @param string $removedItemClassName
      * @param string $unsubscribedItemClassName
+     * @internal param MarketingListQueryBuilderAdapter $marketingListQueryBuilderAdapter
      */
     public function __construct(
         MarketingListProvider $marketingListProvider,
-        DQLNameFormatter $formatter,
-        MarketingListQueryBuilderAdapter $marketingListQueryBuilderAdapter,
+        OwnershipMetadataProvider $ownershipMetadataProvider,
         $removedItemClassName,
         $unsubscribedItemClassName
     ) {
         $this->marketingListProvider            = $marketingListProvider;
-        $this->formatter                        = $formatter;
-        $this->marketingListQueryBuilderAdapter = $marketingListQueryBuilderAdapter;
+        $this->ownershipMetadataProvider        = $ownershipMetadataProvider;
         $this->removedItemClassName             = $removedItemClassName;
         $this->unsubscribedItemClassName        = $unsubscribedItemClassName;
     }
@@ -98,21 +90,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
         );
 
         $this->prepareIteratorPart($qb);
-
-        /** @var From[] $from */
-        $from = $qb->getDQLPart('from');
-        $entityAlias = $from[0]->getAlias();
-        $parts = $this->formatter->extractNamePartsPaths($marketingList->getEntity(), $entityAlias);
-
-        $qb->resetDQLPart('select');
-        if (isset($parts['first_name'])) {
-            $qb->addSelect(sprintf('%s AS %s', $parts['first_name'], MemberSyncDataConverter::FIRST_NAME_KEY));
-        }
-        if (isset($parts['last_name'])) {
-            $qb->addSelect(sprintf('%s AS %s', $parts['last_name'], MemberSyncDataConverter::LAST_NAME_KEY));
-        }
-
-        $this->marketingListQueryBuilderAdapter->prepareMarketingListEntities($staticSegment, $qb);
+        $this->applyOrganizationRestrictions($staticSegment, $qb);
 
         return $qb;
     }
@@ -146,5 +124,28 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                 "mlu.entityId = $entityAlias.id"
             )
             ->andWhere($qb->expr()->isNull('mlu.id'));
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     * @param QueryBuilder $qb
+     */
+    protected function applyOrganizationRestrictions(StaticSegment $staticSegment, QueryBuilder $qb)
+    {
+        $organization = $staticSegment->getChannel()->getOrganization();
+        $metadata = $this->ownershipMetadataProvider
+            ->getMetadata($staticSegment->getMarketingList()->getEntity());
+
+        if ($organization && $fieldName = $metadata->getOrganizationFieldName()) {
+            $aliases = $qb->getRootAliases();
+            $qb->andWhere(
+                $qb->expr()->eq(
+                    sprintf('%s.%s', reset($aliases), $fieldName),
+                    ':organization'
+                )
+            );
+
+            $qb->setParameter('organization', $organization);
+        }
     }
 }

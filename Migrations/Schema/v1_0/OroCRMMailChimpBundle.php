@@ -211,7 +211,6 @@ class OroCRMMailChimpBundle implements Migration
         $table->addColumn('created_at', 'datetime', ['comment' => '(DC2Type:datetime)']);
         $table->addColumn('updated_at', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
         $table->addIndex(['subscribers_list_id'], 'idx_d057c915eed197e', []);
-        $table->addIndex(['email', 'subscribers_list_id'], 'mc_mmbr_email_list_idx');
         $table->setPrimaryKey(['id']);
         $table->addIndex(['owner_id'], 'idx_d057c917e3c61f9', []);
         $table->addIndex(['channel_id'], 'idx_d057c9172f5a1aa', []);
