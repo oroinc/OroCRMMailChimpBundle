@@ -152,7 +152,7 @@ connector:
             title: orocrm.mailchimp.job.member.export.label
             type:  export
             steps:
-                add_extended_merge_vars:
+                add_extended_merge_vars: # TODO: check data processed by this three steps
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
@@ -179,7 +179,7 @@ connector:
                         writer: orocrm_mailchimp.importexport.writer.extended_merge_var
                     parameters:
                         batch_size: 10
-                process_data:
+                process_data: #Slow, replace with INSERT FROM SELECT ...? Seems that merge vars are always static for member and IceDesign customization may be used at this point as is
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
@@ -188,7 +188,7 @@ connector:
                         writer:    orocrm_mailchimp.importexport.writer.members_sync
                     parameters:
                         batch_size: 1000
-                export:
+                export: # Fill additional merge vars on export?
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
@@ -197,7 +197,7 @@ connector:
                         writer:    orocrm_mailchimp.importexport.writer.member
                     parameters:
                         batch_size: 2000
-                mmbr_extd_merge_var_add:
+                mmbr_extd_merge_var_add: # This is additional data for member merge vars. Seems that this and next step may be "turned off if there are no data providers for them
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
@@ -206,7 +206,7 @@ connector:
                         writer: oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 10
-                mmbr_extd_merge_var_export:
+                mmbr_extd_merge_var_export: # Avoid double export and double iteration, merge logic to 1 export
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
@@ -256,7 +256,7 @@ connector:
                         writer:    orocrm_mailchimp.importexport.writer.static_segment_member_remove
                     parameters:
                         batch_size: 1
-                handle_unsubscribe_state:
+                handle_unsubscribe_state: # TODO Replace with INSERT (UPDATE) FROM SELECT
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
@@ -265,7 +265,7 @@ connector:
                         writer:    oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 25
-                handle_delete_state:
+                handle_delete_state: # TODO Replace with INSERT (UPDATE) FROM SELECT
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
