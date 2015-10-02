@@ -115,7 +115,8 @@ class MarketingListStateItemVoter extends AbstractEntityVoter
             ->createQueryBuilder();
 
         $qb
-            ->select('COUNT(mmb.id)')
+            ->setMaxResults(1)
+            ->select('mmb.id')
             ->from($this->subscriberListClassName, 'subscribersList')
             ->join(
                 $this->memberClassName,
@@ -136,8 +137,7 @@ class MarketingListStateItemVoter extends AbstractEntityVoter
                     $qb->expr()->in('mmb.status', ':statuses')
                 )
             )
-            ->setParameter('statuses', [Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED])
-            ->groupBy('mmb');
+            ->setParameter('statuses', [Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED]);
 
         return $qb;
     }
