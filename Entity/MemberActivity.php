@@ -13,7 +13,10 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  *
  * @ORM\Entity
  * @ORM\Table(
- *      name="orocrm_mc_mmbr_activity"
+ *      name="orocrm_mc_mmbr_activity",
+ *      indexes={
+ *          @ORM\Index(name="mc_mmbr_activity_action_idx", columns={"action"})
+ *      },
  * )
  * @Config(
  *  defaultValues={

@@ -106,9 +106,10 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             );
         }
 
+        /** @var Channel $channel */
         $channel = $this->databaseHelper->getEntityReference($entity->getChannel());
         /** @var Campaign $campaign */
-        $campaign = $this->findExistingEntity($entity->getCampaign());
+        $campaign = $this->databaseHelper->getEntityReference($entity->getCampaign());
         $member = $this->findExistingMember($entity->getMember(), $channel, $campaign);
 
         $entity

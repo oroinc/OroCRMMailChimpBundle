@@ -23,7 +23,8 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  * @ORM\Table(
  *      name="orocrm_mailchimp_member",
  *      indexes={
- *          @ORM\Index(name="mc_mmbr_email_list_idx", columns={"email", "subscribers_list_id"})
+ *          @ORM\Index(name="mc_mmbr_email_list_idx", columns={"email", "subscribers_list_id"}),
+ *          @ORM\Index(name="mc_mmbr_origin_list_idx", columns={"origin_id"}),
  *      },
  * )
  * @ORM\HasLifecycleCallbacks()
