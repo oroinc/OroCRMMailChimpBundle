@@ -9,6 +9,7 @@ use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 
 use Doctrine\Common\Util\ClassUtils;
 
+use Doctrine\ORM\AbstractQuery;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -204,7 +205,12 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
                 'member' => $entity->getMember()
             ];
 
-            return (bool)$this->findEntity(ClassUtils::getClass($entity), $searchCondition, ['id']);
+            return (bool)$this->findEntity(
+                ClassUtils::getClass($entity),
+                $searchCondition,
+                ['id'],
+                AbstractQuery::HYDRATE_SINGLE_SCALAR
+            );
         }
 
         return false;
@@ -227,13 +233,14 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      * @param string $entityName
      * @param array $identityValues
      * @param array $partialFields
+     * @param null|int $hydration
      * @return null|object
      */
-    protected function findEntity($entityName, array $identityValues, array $partialFields)
+    protected function findEntity($entityName, array $identityValues, array $partialFields, $hydration = null)
     {
         foreach ($identityValues as $value) {
             if (null !== $value && '' !== $value) {
-                return $this->findOneBy($entityName, $identityValues, $partialFields);
+                return $this->findOneBy($entityName, $identityValues, $partialFields, $hydration);
             }
         }
 
@@ -244,10 +251,15 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      * @param string $entityName
      * @param array $criteria
      * @param array|null $partialFields
+     * @param int|null $hydration
      * @return null|object
      */
-    public function findOneBy($entityName, array $criteria, array $partialFields = null)
-    {
+    public function findOneBy(
+        $entityName,
+        array $criteria,
+        array $partialFields = null,
+        $hydration = null
+    ) {
         $em = $this->strategyHelper->getEntityManager($entityName);
 
         $queryBuilder = $em->createQueryBuilder()->from($entityName, 'e');
@@ -266,6 +278,6 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             ->setParameters($criteria)
             ->setMaxResults(1);
 
-        return $queryBuilder->getQuery()->getOneOrNullResult();
+        return $queryBuilder->getQuery()->getOneOrNullResult($hydration);
     }
 }
