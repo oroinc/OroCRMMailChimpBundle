@@ -188,7 +188,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             $searchCondition['email'] = $member->getEmail();
         }
 
-        return $this->findEntityByIdentityValues(ClassUtils::getClass($member), $searchCondition);
+        return $this->findEntity(ClassUtils::getClass($member), $searchCondition, ['id']);
     }
 
     /**
@@ -204,7 +204,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
                 'member' => $entity->getMember()
             ];
 
-            return (bool)$this->findEntityByIdentityValues(ClassUtils::getClass($entity), $searchCondition);
+            return (bool)$this->findEntity(ClassUtils::getClass($entity), $searchCondition, ['id']);
         }
 
         return false;
@@ -219,5 +219,53 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
         $jobExecution = $this->stepExecution->getJobExecution();
 
         return $jobExecution->getExecutionContext();
+    }
+
+    /**
+     * Try to find entity by identity fields if at least one is specified
+     *
+     * @param string $entityName
+     * @param array $identityValues
+     * @param array $partialFields
+     * @return null|object
+     */
+    protected function findEntity($entityName, array $identityValues, array $partialFields)
+    {
+        foreach ($identityValues as $value) {
+            if (null !== $value && '' !== $value) {
+                return $this->findOneBy($entityName, $identityValues, $partialFields);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $entityName
+     * @param array $criteria
+     * @param array|null $partialFields
+     * @return null|object
+     */
+    public function findOneBy($entityName, array $criteria, array $partialFields = null)
+    {
+        $em = $this->strategyHelper->getEntityManager($entityName);
+
+        $queryBuilder = $em->createQueryBuilder()->from($entityName, 'e');
+        if ($partialFields) {
+            $queryBuilder->select(sprintf('partial e.{%s}', implode(',', $partialFields)));
+        } else {
+            $queryBuilder->select('e');
+        }
+
+        $where = $queryBuilder->expr()->andX();
+        foreach ($criteria as $field => $value) {
+            $where->add(sprintf('e.%s = :%s', $field, $field));
+        }
+
+        $queryBuilder->where($where)
+            ->setParameters($criteria)
+            ->setMaxResults(1);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 }

@@ -9,7 +9,6 @@ use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use OroCRM\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
 {
@@ -138,7 +137,6 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
      */
     protected function getEntitiesQueryBuilder(MarketingList $marketingList)
     {
-        return $this->marketingListProvider
-            ->getMarketingListEntitiesQueryBuilder($marketingList, MarketingListProvider::FULL_ENTITIES_MIXIN);
+        return $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
     }
 }
