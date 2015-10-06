@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
+use Doctrine\Common\Util\ClassUtils;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
@@ -24,7 +26,7 @@ class MemberImportStrategy extends AbstractImportStrategy
         /** @var Member $entity */
         $entity = $this->beforeProcessEntity($entity);
         /** @var Member $existingEntity */
-        $existingEntity = $this->findExistingEntity($entity);
+        $existingEntity = $this->findExistingMember($entity);
         if ($existingEntity) {
             if ($this->logger) {
                 $this->logger->info('Syncing Existing MailChimp Member [origin_id=' . $entity->getOriginId() . ']');
@@ -86,11 +88,11 @@ class MemberImportStrategy extends AbstractImportStrategy
      */
     protected function afterProcessEntity($entity)
     {
-        $this->assignMergeVarValues($entity);
-
         if ($this->isEntityProcessed($entity)) {
             return null;
         }
+
+        $this->assignMergeVarValues($entity);
 
         return parent::afterProcessEntity($entity);
     }
@@ -144,5 +146,40 @@ class MemberImportStrategy extends AbstractImportStrategy
     public function setMergeVarProvider(MergeVarProviderInterface $mergeVarProvider)
     {
         $this->mergeVarProvider = $mergeVarProvider;
+    }
+
+    /**
+     * @param Member $member
+     * @return null|Member
+     */
+    public function findExistingMember(Member $member)
+    {
+        $entityName = ClassUtils::getClass($member);
+        $em = $this->strategyHelper->getEntityManager($entityName);
+        $identityValues = $this->fieldHelper->getIdentityValues($member);
+        $fields = [
+            'id',
+            'originId',
+            'subscribersList',
+            'email',
+            'mergeVarValues',
+            'firstName',
+            'lastName',
+            'phone'
+        ];
+
+        $queryBuilder = $em->createQueryBuilder()->from($entityName, 'e');
+        $queryBuilder->select(sprintf('partial e.{%s}', implode(',', $fields)));
+
+        $where = $queryBuilder->expr()->andX();
+        foreach ($identityValues as $field => $value) {
+            $where->add(sprintf('e.%s = :%s', $field, $field));
+        }
+
+        $queryBuilder->where($where)
+            ->setParameters($identityValues)
+            ->setMaxResults(1);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 }

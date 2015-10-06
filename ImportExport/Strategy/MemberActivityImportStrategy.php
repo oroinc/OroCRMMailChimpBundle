@@ -9,6 +9,7 @@ use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 
 use Doctrine\Common\Util\ClassUtils;
 
+use Doctrine\ORM\AbstractQuery;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -106,9 +107,10 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             );
         }
 
+        /** @var Channel $channel */
         $channel = $this->databaseHelper->getEntityReference($entity->getChannel());
         /** @var Campaign $campaign */
-        $campaign = $this->findExistingEntity($entity->getCampaign());
+        $campaign = $this->databaseHelper->getEntityReference($entity->getCampaign());
         $member = $this->findExistingMember($entity->getMember(), $channel, $campaign);
 
         $entity
@@ -187,7 +189,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             $searchCondition['email'] = $member->getEmail();
         }
 
-        return $this->findEntityByIdentityValues(ClassUtils::getClass($member), $searchCondition);
+        return $this->findEntity(ClassUtils::getClass($member), $searchCondition, ['id']);
     }
 
     /**
@@ -203,7 +205,12 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
                 'member' => $entity->getMember()
             ];
 
-            return (bool)$this->findEntityByIdentityValues(ClassUtils::getClass($entity), $searchCondition);
+            return (bool)$this->findEntity(
+                ClassUtils::getClass($entity),
+                $searchCondition,
+                ['id'],
+                AbstractQuery::HYDRATE_SINGLE_SCALAR
+            );
         }
 
         return false;
@@ -218,5 +225,59 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
         $jobExecution = $this->stepExecution->getJobExecution();
 
         return $jobExecution->getExecutionContext();
+    }
+
+    /**
+     * Try to find entity by identity fields if at least one is specified
+     *
+     * @param string $entityName
+     * @param array $identityValues
+     * @param array $partialFields
+     * @param null|int $hydration
+     * @return null|object
+     */
+    protected function findEntity($entityName, array $identityValues, array $partialFields, $hydration = null)
+    {
+        foreach ($identityValues as $value) {
+            if (null !== $value && '' !== $value) {
+                return $this->findOneBy($entityName, $identityValues, $partialFields, $hydration);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $entityName
+     * @param array $criteria
+     * @param array|null $partialFields
+     * @param int|null $hydration
+     * @return null|object
+     */
+    public function findOneBy(
+        $entityName,
+        array $criteria,
+        array $partialFields = null,
+        $hydration = null
+    ) {
+        $em = $this->strategyHelper->getEntityManager($entityName);
+
+        $queryBuilder = $em->createQueryBuilder()->from($entityName, 'e');
+        if ($partialFields) {
+            $queryBuilder->select(sprintf('partial e.{%s}', implode(',', $partialFields)));
+        } else {
+            $queryBuilder->select('e');
+        }
+
+        $where = $queryBuilder->expr()->andX();
+        foreach ($criteria as $field => $value) {
+            $where->add(sprintf('e.%s = :%s', $field, $field));
+        }
+
+        $queryBuilder->where($where)
+            ->setParameters($criteria)
+            ->setMaxResults(1);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult($hydration);
     }
 }
