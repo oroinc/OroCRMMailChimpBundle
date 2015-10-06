@@ -71,7 +71,6 @@ parameters:
     orocrm_mailchimp.importexport.strategy.member.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberImportStrategy
     orocrm_mailchimp.importexport.strategy.member_activity.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberActivityImportStrategy
     orocrm_mailchimp.importexport.strategy.static_segment.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\StaticSegmentImportStrategy
-    orocrm_mailchimp.importexport.strategy.member_sync.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberSyncStrategy
     orocrm_mailchimp.importexport.strategy.memeber_extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberExtendedMergeVarStrategy
     orocrm_mailchimp.importexport.strategy.export_member.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\MemberExportStrategy
 
@@ -90,14 +89,12 @@ parameters:
     orocrm_mailchimp.importexport.data_converter.template.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\TemplateDataConverter
     orocrm_mailchimp.importexport.data_converter.list.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\ListDataConverter
     orocrm_mailchimp.importexport.data_converter.member.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberDataConverter
-    orocrm_mailchimp.importexport.data_converter.member_sync.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberSyncDataConverter
     orocrm_mailchimp.importexport.data_converter.member_activity.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberActivityDataConverter
     orocrm_mailchimp.importexport.data_converter.member_activity_send.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberSendActivityDataConverter
     orocrm_mailchimp.importexport.data_converter.member_activity_abuse.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberAbuseActivityDataConverter
     orocrm_mailchimp.importexport.data_converter.member_activity_unsubscribe.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberUnsubscribeActivityDataConverter
     orocrm_mailchimp.importexport.data_converter.campaign.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\CampaignDataConverter
     orocrm_mailchimp.importexport.data_converter.static_segment.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\StaticSegmentDataConverter
-    orocrm_mailchimp.importexport.data_converter.static_segment_member.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\StaticSegmentMemberDataConverter
     orocrm_mailchimp.importexport.data_converter.extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\ExtendedMergeVarDataConverter
     orocrm_mailchimp.importexport.data_converter.member_extended_merge_var.class: OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberExtendedMergeVarDataConverter
 
@@ -588,16 +585,8 @@ services:
     orocrm_mailchimp.importexport.data_converter.member_activity_unsubscribe:
         class: %orocrm_mailchimp.importexport.data_converter.member_activity_unsubscribe.class%
 
-    orocrm_mailchimp.importexport.data_converter.member_sync:
-        class: %orocrm_mailchimp.importexport.data_converter.member_sync.class%
-        arguments:
-            - @orocrm_marketing_list.provider.contact_information_fields
-
     orocrm_mailchimp.importexport.data_converter.static_segment:
         class: %orocrm_mailchimp.importexport.data_converter.static_segment.class%
-
-    orocrm_mailchimp.importexport.data_converter.static_segment_member:
-        class: %orocrm_mailchimp.importexport.data_converter.static_segment_member.class%
 
     orocrm_mailchimp.importexport.data_converter.extended_merge_var:
         class: %orocrm_mailchimp.importexport.data_converter.extended_merge_var.class%
@@ -628,16 +617,6 @@ services:
         calls:
             - [setMergeVarProvider, [@orocrm_mailchimp.merge_var.provider]]
 
-    orocrm_mailchimp.importexport.strategy.member_sync:
-        class: %orocrm_mailchimp.importexport.strategy.member_sync.class%
-        arguments:
-            - @event_dispatcher
-            - @oro_importexport.strategy.import.helper
-            - @oro_importexport.field.field_helper
-            - @oro_importexport.field.database_helper
-        calls:
-            - [setMergeVarProvider, [@orocrm_mailchimp.merge_var.provider]]
-
     orocrm_mailchimp.importexport.strategy.member_activity:
         class: %orocrm_mailchimp.importexport.strategy.member_activity.class%
         parent: oro_importexport.strategy.configurable_add_or_replace
@@ -651,26 +630,6 @@ services:
     orocrm_mailchimp.importexport.strategy.static_segment:
         class: %orocrm_mailchimp.importexport.strategy.static_segment.class%
         parent: orocrm_mailchimp.importexport.strategy.abstract.add_or_replace
-
-    orocrm_mailchimp.importexport.strategy.static_segment_member_add_state:
-        parent: oro_importexport.strategy.configurable_add_or_replace
-        calls:
-            - [setEntityName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
-
-    orocrm_mailchimp.importexport.strategy.static_segment_member_remove_state:
-        parent: oro_importexport.strategy.configurable_add_or_replace
-        calls:
-            - [setEntityName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
-
-    orocrm_mailchimp.importexport.strategy.static_segment_member_unsubscribe_state:
-        parent: oro_importexport.strategy.configurable_add_or_replace
-        calls:
-            - [setEntityName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
-
-    orocrm_mailchimp.importexport.strategy.static_segment_member_unsubscribe_delete_state:
-        parent: oro_importexport.strategy.configurable_add_or_replace
-        calls:
-            - [setEntityName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
 
     orocrm_mailchimp.importexport.strategy.export_member:
         class: %orocrm_mailchimp.importexport.strategy.export_member.class%
@@ -809,40 +768,8 @@ services:
             - [setSearchField, ['originId']]
             - [setCampaignType, ['regular']]
 
-    orocrm_mailchimp.importexport.processor.members_sync:
-        class: %orocrm_mailchimp.importexport.processor.import.class%
-        parent: orocrm_mailchimp.importexport.processor.import_abstract
-        calls:
-            - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.member_sync]]
-            - [setStrategy, [@orocrm_mailchimp.importexport.strategy.member_sync]]
-            - [setEntityName, [%orocrm_mailchimp.entity.member.class%]]
-
     orocrm_mailchimp.importexport.processor.dummy:
         class: %orocrm_mailchimp.importexport.processor.dummy.class%
-
-    orocrm_mailchimp.importexport.processor.static_segment_member_add_state:
-        class: %orocrm_mailchimp.importexport.processor.import.class%
-        parent: orocrm_mailchimp.importexport.processor.import_abstract
-        calls:
-            - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.static_segment_member]]
-            - [setStrategy, [@orocrm_mailchimp.importexport.strategy.static_segment_member_add_state]]
-            - [setEntityName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
-
-    orocrm_mailchimp.importexport.processor.static_segment_member_remove_state:
-        class: %orocrm_mailchimp.importexport.processor.import.class%
-        parent: orocrm_mailchimp.importexport.processor.import_abstract
-        calls:
-            - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.static_segment_member]]
-            - [setStrategy, [@orocrm_mailchimp.importexport.strategy.static_segment_member_remove_state]]
-            - [setEntityName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
-
-    orocrm_mailchimp.importexport.processor.static_segment_member_unsubscribe_delete_state:
-        class: %orocrm_mailchimp.importexport.processor.import.class%
-        parent: orocrm_mailchimp.importexport.processor.import_abstract
-        calls:
-            - [setDataConverter, [@orocrm_mailchimp.importexport.data_converter.static_segment_member]]
-            - [setStrategy, [@orocrm_mailchimp.importexport.strategy.static_segment_member_unsubscribe_delete_state]]
-            - [setEntityName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
 
     orocrm_mailchimp.importexport.processor.extended_merge_var:
         class: %orocrm_mailchimp.importexport.processor.import.class%

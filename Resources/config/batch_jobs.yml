@@ -179,7 +179,7 @@ connector:
                         writer: orocrm_mailchimp.importexport.writer.extended_merge_var
                     parameters:
                         batch_size: 10
-                process_data: #Slow, replace with INSERT FROM SELECT ...? Seems that merge vars are always static for member and IceDesign customization may be used at this point as is
+                process_data:
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
