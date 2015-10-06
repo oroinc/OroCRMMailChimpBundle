@@ -146,6 +146,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         $itemState,
         $deleteMember = false
     ) {
+        /* TODO: Uncomment me!
         $response = $this->transport->$method(
             [
                 'id' => $staticSegment->getSubscribersList()->getOriginId(),
@@ -176,6 +177,8 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         );
 
         $emailsToUpdate = array_diff($emailsToProcess, $this->getEmailsWithErrors($response));
+        */
+        $emailsToUpdate = $emailsToProcess;
 
         if (!$emailsToUpdate) {
             return;
@@ -243,39 +246,6 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         }
 
         return $this->registry->getRepository($this->staticSegmentMemberClassName);
-    }
-
-    /**
-     * @param StaticSegment $staticSegment
-     * @param mixed $response
-     */
-    protected function handleResponseDD(StaticSegment $staticSegment, $response)
-    {
-        if (!is_array($response)) {
-            return;
-        }
-
-        if (!$this->logger) {
-            return;
-        }
-
-        $this->logger->info(
-            sprintf(
-                'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',
-                $staticSegment->getId(),
-                $staticSegment->getOriginId(),
-                $response['success_count'],
-                $response['error_count']
-            )
-        );
-
-        if ($response['errors']) {
-            foreach ($response['errors'] as $error) {
-                $this->logger->warning(
-                    sprintf('[Error #%s] %s', $error['code'], $error['error'])
-                );
-            }
-        }
     }
 
     /**

@@ -2,7 +2,12 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
+
+use OroCRM\Bundle\MailChimpBundle\Entity\MarketingListEmail;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractNativeQueryWriter;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
@@ -61,8 +66,18 @@ class MarketingListEmailIterator extends AbstractStaticSegmentIterator
 
         $qb
             ->select([
-                $marketingList->getId() . ' AS marketingListId',
-                $contactInformationFieldExpr . ' AS email'
+                $marketingList->getId() . ' as marketingListId',
+                $contactInformationFieldExpr . ' as email',
+                'CASE WHEN'
+                    . ' MAX(mlr.id) IS NOT NULL THEN '
+                        . $qb->expr()->literal(StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE)
+                    . ' ELSE '
+                    . ' CASE WHEN'
+                        . ' MAX(mlu.id) IS NOT NULL THEN '
+                            . $qb->expr()->literal(StaticSegmentMember::STATE_UNSUBSCRIBE)
+                        . ' ELSE ' . $qb->expr()->literal(MarketingListEmail::STATE_IN_LIST)
+                    . ' END'
+                . ' END as state'
             ])
             ->resetDQLPart('orderBy')
             ->groupBy($contactInformationFieldExpr);
@@ -75,5 +90,34 @@ class MarketingListEmailIterator extends AbstractStaticSegmentIterator
                 ]
             ]
         );
+    }
+
+    /**
+     * Method to change $qb for certain Iterator purposes
+     *
+     * @param QueryBuilder $qb
+     */
+    protected function prepareIteratorPart(QueryBuilder $qb)
+    {
+        if (!$this->removedItemClassName || !$this->unsubscribedItemClassName) {
+            throw new \InvalidArgumentException('Removed and Unsubscribed Items Class names must be provided');
+        }
+
+        $rootAliases = $qb->getRootAliases();
+        $entityAlias = reset($rootAliases);
+
+        $qb
+            ->leftJoin(
+                $this->removedItemClassName,
+                'mlr',
+                Join::WITH,
+                "mlr.entityId = $entityAlias.id"
+            )
+            ->leftJoin(
+                $this->unsubscribedItemClassName,
+                'mlu',
+                Join::WITH,
+                "mlu.entityId = $entityAlias.id"
+            );
     }
 }

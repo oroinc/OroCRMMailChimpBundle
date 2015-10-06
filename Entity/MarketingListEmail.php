@@ -11,12 +11,15 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
  * @ORM\Table(
  *      name="orocrm_mailchimp_ml_email",
  *      indexes={
- *          @ORM\Index(name="mc_ml_email_idx", columns={"email"})
+ *          @ORM\Index(name="mc_ml_email_idx", columns={"email"}),
+ *          @ORM\Index(name="mc_ml_email_state_idx", columns={"state"})
  *      },
  * )
  */
 class MarketingListEmail
 {
+    const STATE_IN_LIST = 'in_list';
+
     /**
      * @var MarketingList
      *
@@ -33,6 +36,31 @@ class MarketingListEmail
      * @ORM\Column(name="email", type="string", length=255, nullable=false)
      */
     protected $email;
+
+    /**
+     * @var string
+     * @ORM\Column(name="state", type="string", length=25, nullable=false)
+     */
+    protected $state = self::STATE_IN_LIST;
+
+    /**
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string $state
+     * @return MarketingListEmail
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
 
     /**
      * @return string

@@ -116,6 +116,11 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
     protected function getIteratorQueryBuilder(StaticSegment $staticSegment)
     {
         $qb = parent::getIteratorQueryBuilder($staticSegment);
+
+        // TODO: check this!
+        $qb->resetDQLPart('select');
+        // TODO: END
+
         $this->matchMembersByEmail($staticSegment, $qb);
 
         return $qb;

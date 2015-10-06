@@ -9,7 +9,7 @@ class MarketingListEmailWriter extends AbstractInsertFromSelectWriter implements
      */
     protected function getInsert()
     {
-        return 'INSERT INTO orocrm_mailchimp_ml_email(marketing_list_id, email)';
+        return 'INSERT INTO orocrm_mailchimp_ml_email(marketing_list_id, email, state)';
     }
 
     /**

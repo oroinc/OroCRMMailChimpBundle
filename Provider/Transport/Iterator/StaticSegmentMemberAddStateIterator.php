@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\Join;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use OroCRM\Bundle\MailChimpBundle\Entity\MarketingListEmail;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractNativeQueryWriter;
@@ -82,7 +82,7 @@ class StaticSegmentMemberAddStateIterator extends AbstractSubordinateIterator
     /**
      * @param StaticSegment $staticSegment
      *
-     * @return \Iterator|BufferedQueryResultIterator
+     * @return \Iterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
@@ -113,18 +113,23 @@ class StaticSegmentMemberAddStateIterator extends AbstractSubordinateIterator
             )
             ->where(
                 $qb->expr()->andX(
+                    $qb->expr()->eq('mlEmail.state', ':state'),
                     $qb->expr()->isNull('segmentMembers.id'),
                     $qb->expr()->isNotNull('mmb.originId'),
                     $qb->expr()->eq('mmb.subscribersList', ':subscribersList'),
                     $qb->expr()->eq('mlEmail.marketingList', ':marketingList')
                 )
             )
+            ->setParameter('state', MarketingListEmail::STATE_IN_LIST)
             ->setParameter('marketingList', $staticSegment->getMarketingList())
             ->setParameter('subscribersList', $staticSegment->getSubscribersList());
 
         return new \ArrayIterator(
             [
-                [AbstractNativeQueryWriter::QUERY_BUILDER => $qb]
+                [
+                    AbstractNativeQueryWriter::QUERY_BUILDER => $qb,
+                    'static_segment_id' => $staticSegment->getId()
+                ]
             ]
         );
     }

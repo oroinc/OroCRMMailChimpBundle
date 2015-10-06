@@ -9,7 +9,7 @@ class StaticSegmentMemberToRemoveWriter extends AbstractInsertFromSelectWriter i
      */
     protected function getInsert()
     {
-        return 'INSERT INTO orocrm_mc_tmp_mmbr_to_remove(member_id, static_segment_id)';
+        return 'INSERT INTO orocrm_mc_tmp_mmbr_to_remove(member_id, static_segment_id, state)';
     }
 
     /**

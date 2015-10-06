@@ -2,10 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberToRemoveIterator;
 
-class StaticSegmentMemberRemoveStateWriter extends AbstractNativeQueryWriter
+class StaticSegmentMemberStateWriter extends AbstractNativeQueryWriter
 {
     /**
      * {@inheritdoc}
@@ -16,6 +15,7 @@ class StaticSegmentMemberRemoveStateWriter extends AbstractNativeQueryWriter
             $qb = $this->getQueryBuilder($item);
             $selectQuery = $qb->getQuery();
             $staticSegmentId = $item[StaticSegmentMemberToRemoveIterator::STATIC_SEGMENT_ID];
+            $state = $item[StaticSegmentMemberToRemoveIterator::STATE];
 
             $updateQuery = sprintf(
                 "UPDATE orocrm_mc_static_segment_mmbr
@@ -23,7 +23,7 @@ class StaticSegmentMemberRemoveStateWriter extends AbstractNativeQueryWriter
                     WHERE
                       member_id IN (%s)
                       AND static_segment_id = %d",
-                StaticSegmentMember::STATE_REMOVE,
+                $state,
                 $selectQuery->getSQL(),
                 $staticSegmentId
             );

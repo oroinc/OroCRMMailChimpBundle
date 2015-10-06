@@ -4,6 +4,9 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
 use Oro\Bundle\ImportExportBundle\Converter\AbstractTableDataConverter;
 
+/**
+ * @todo REMOVE ME!
+ */
 class StaticSegmentMemberDataConverter extends AbstractTableDataConverter
 {
     /**

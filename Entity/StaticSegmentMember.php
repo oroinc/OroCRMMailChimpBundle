@@ -57,7 +57,7 @@ class StaticSegmentMember
 
     /**
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Member", inversedBy="segmentMembers")
-     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
