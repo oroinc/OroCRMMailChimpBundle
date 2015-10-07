@@ -2,11 +2,13 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\LocaleBundle\DQL\DQLNameFormatter;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractNativeQueryWriter;
@@ -55,6 +57,11 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
     protected $formatter;
 
     /**
+     * @var string
+     */
+    protected $extendMergeVarsClass;
+
+    /**
      * @param MergeVarProviderInterface $mergeVarsProvider
      * @return MemberSyncIterator
      */
@@ -72,6 +79,17 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
     public function setFormatter(DQLNameFormatter $formatter)
     {
         $this->formatter = $formatter;
+
+        return $this;
+    }
+
+    /**
+     * @param string $extendMergeVarsClass
+     * @return MemberSyncIterator
+     */
+    public function setExtendMergeVarsClass($extendMergeVarsClass)
+    {
+        $this->extendMergeVarsClass = $extendMergeVarsClass;
 
         return $this;
     }
@@ -120,7 +138,7 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
         $qb->addSelect(sprintf("'%s' as status", Member::STATUS_EXPORT));
         $qb->addSelect('CURRENT_TIMESTAMP() as created_at');
 
-        //$this->addMergeVars($qb, $staticSegment);
+        $this->addMergeVars($qb, $staticSegment);
 
         // Select only members that are not in list yet
         $qb->andWhere($qb->expr()->isNull(sprintf('%s.id', self::MEMBER_ALIAS)));
@@ -163,6 +181,8 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
     }
 
     /**
+     * Add merge prepared for insertion merge vars column.
+     *
      * @param QueryBuilder $qb
      * @param StaticSegment $staticSegment
      */
@@ -171,17 +191,41 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
         $mergeVarFields = $this->mergeVarsProvider->getMergeVarFields($staticSegment->getSubscribersList());
         $mergeVarsTemplate = [];
 
+        // Prepare merge vars template
         $mergeVarsTemplate[$mergeVarFields->getEmail()->getTag()] = self::EMAIL_SEPARATOR;
         $mergeVarsTemplate[$mergeVarFields->getFirstName()->getTag()] = self::FIRST_NAME_SEPARATOR;
         $mergeVarsTemplate[$mergeVarFields->getLastName()->getTag()] = self::LAST_NAME_SEPARATOR;
 
+        $columnInformation = $this->marketingListProvider->getColumnInformation($staticSegment->getMarketingList());
+        $extendMergeVars = $this->getExtendMergeVars($qb->getEntityManager());
+
+        /** @var ExtendedMergeVar[] $extendMergeVars */
+        $extendMergeVars = array_filter(
+            $extendMergeVars,
+            function (ExtendedMergeVar $mergeVar) use ($columnInformation) {
+                return array_key_exists($mergeVar->getName(), $columnInformation);
+            }
+        );
+        foreach ($extendMergeVars as $mergeVar) {
+            $mergeVarsTemplate[$mergeVar->getTag()] = '__' . $mergeVar->getTag() . '__';
+        }
+
         $emailFieldExpr = $this->getEmailFieldExpression($qb, $staticSegment);
         $mergeVars = json_encode($mergeVarsTemplate);
 
+        // Prepare template to be SQL used in SQL CONCAT expression.
         $mergeVars = $this->replaceSeparator($mergeVars, self::EMAIL_SEPARATOR, $emailFieldExpr);
         $mergeVars = $this->replaceSeparator($mergeVars, self::FIRST_NAME_SEPARATOR, $this->firstNameField);
         $mergeVars = $this->replaceSeparator($mergeVars, self::LAST_NAME_SEPARATOR, $this->lastNameField);
+        foreach ($extendMergeVars as $mergeVar) {
+            $mergeVars = $this->replaceSeparator(
+                $mergeVars,
+                '__' . $mergeVar->getTag() . '__',
+                $columnInformation[$mergeVar->getName()]
+            );
+        }
 
+        // If there is at leas one concat argument - CONCAT, if no - return as string
         if (strpos($mergeVars, ', ') !== false) {
             $qb->addSelect(sprintf("CONCAT('%s') as merge_vars", $mergeVars));
         } else {
@@ -204,6 +248,8 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
     }
 
     /**
+     * Replace separator in template with concat field expression.
+     *
      * @param string $mergeVars
      * @param string $separator
      * @param string $value
@@ -212,6 +258,8 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
     protected function replaceSeparator($mergeVars, $separator, $value)
     {
         if ($value) {
+            // CONCAT returns NULL if one of arguments is NULL - return empty string instead NULL.
+            $value = "COALESCE(CAST(" . $value . " as text), '')";
             $mergeVars = str_replace($separator, sprintf("', %s ,'", $value), $mergeVars);
         } else {
             $mergeVars = str_replace(json_encode($separator), 'null', $mergeVars);
@@ -219,5 +267,15 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
         }
 
         return $mergeVars;
+    }
+
+    /**
+     * @param EntityManager $entityManager
+     * @return ExtendedMergeVar[]
+     */
+    protected function getExtendMergeVars(EntityManager $entityManager)
+    {
+        return $entityManager->getRepository($this->extendMergeVarsClass)
+            ->findAll();
     }
 }

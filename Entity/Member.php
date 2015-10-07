@@ -262,7 +262,8 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**
      * @var array
      *
-     * @ORM\Column(name="merge_var_values", type="json_array", nullable=true)
+     * @todo revert this back after debug
+     * @ORM\Column(name="merge_var_values", type="text", nullable=true)
      */
     protected $mergeVarValues;
 

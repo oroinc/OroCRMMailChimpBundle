@@ -47,7 +47,7 @@ class MemberSyncWriter extends AbstractInsertFromSelectWriter implements CleanUp
                 'channel_id',
                 'status',
                 'created_at',
-//                'merge_var_values',
+                'merge_var_values',
             ]
         );
 

@@ -917,6 +917,7 @@ services:
         calls:
             - [setFormatter, [@oro_locale.dql.formatter.name]]
             - [setMergeVarsProvider, [@orocrm_mailchimp.merge_var.provider]]
+            - [setExtendMergeVarsClass, [%orocrm_mailchimp.entity.extended_merge_var.class%]]
 
     orocrm_mailchimp.iterator.static_segment_member_add_state:
         class: %orocrm_mailchimp.iterator.static_segment_member_add_state.class%
@@ -996,8 +997,6 @@ services:
 
     orocrm_mailchimp.extended_merge_var.composite_provider:
         class: %orocrm_mailchimp.extended_merge_var.composite_provider.class%
-        arguments:
-            - @orocrm_mailchimp.segment.column_definition.factory
 
     orocrm_mailchimp.marketinglist.datagrid_provider:
         class: %orocrm_mailchimp.marketinglist.datagrid_provider.class%
