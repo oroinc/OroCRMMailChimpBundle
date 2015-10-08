@@ -640,6 +640,7 @@ services:
             - @oro_importexport.field.database_helper
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.member.class%]]
+            - [setLogger, [@oro_integration.logger.strategy]]
 
     orocrm_mailchimp.importexport.strategy.export_static_segment:
         parent: oro_importexport.strategy.configurable_add_or_replace
@@ -972,6 +973,7 @@ services:
         parent: orocrm_mailchimp.iterator.static_segment_members.abstract
         calls:
             - [setDoctrineHelper, [@oro_entity.doctrine_helper]]
+            - [setExtendMergeVarsProvider, [@orocrm_mailchimp.extended_merge_var.composite_provider]]
 
     # Placeholder
     orocrm_mailchimp.placeholder.filter.sync_status:

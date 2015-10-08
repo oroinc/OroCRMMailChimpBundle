@@ -226,10 +226,20 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
         }
 
         // If there is at leas one concat argument - CONCAT, if no - return as string
+        $mergeVarsExpr = null;
         if (strpos($mergeVars, ', ') !== false) {
-            $qb->addSelect(sprintf("CONCAT('%s') as merge_vars", $mergeVars));
+            $mergeVarsExpr = sprintf("CONCAT('%s')", $mergeVars);
         } else {
-            $qb->addSelect(sprintf("'%s' as merge_vars", $mergeVars));
+            $mergeVarsExpr = sprintf("'%s'", $mergeVars);
+        }
+
+        // On supported platform cast concat result as json to able to insert into compatible column
+        if ($qb->getEntityManager()->getConnection()->getDatabasePlatform()->hasNativeJsonType()) {
+            $mergeVarsExpr = 'CAST(' . $mergeVarsExpr . ' as json)';
+        }
+
+        if ($mergeVarsExpr) {
+            $qb->addSelect($mergeVarsExpr . ' as merge_vars');
         }
     }
 

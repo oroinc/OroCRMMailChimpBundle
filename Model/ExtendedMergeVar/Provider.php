@@ -25,6 +25,20 @@ class Provider implements CompositeProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function isApplicable(MarketingList $marketingList)
+    {
+        foreach ($this->providers as $provider) {
+            if ($provider->isApplicable($marketingList)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function provideExtendedMergeVars(MarketingList $marketingList)
     {
         $vars = [];

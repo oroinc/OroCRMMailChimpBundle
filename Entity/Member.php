@@ -24,7 +24,8 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  *      name="orocrm_mailchimp_member",
  *      indexes={
  *          @ORM\Index(name="mc_mmbr_email_list_idx", columns={"email", "subscribers_list_id"}),
- *          @ORM\Index(name="mc_mmbr_origin_list_idx", columns={"origin_id"}),
+ *          @ORM\Index(name="mc_mmbr_origin_idx", columns={"origin_id"}),
+ *          @ORM\Index(name="mc_mmbr_status_idx", columns={"status"}),
  *      },
  * )
  * @ORM\HasLifecycleCallbacks()
@@ -262,8 +263,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**
      * @var array
      *
-     * @todo revert this back after debug
-     * @ORM\Column(name="merge_var_values", type="text", nullable=true)
+     * @ORM\Column(name="merge_var_values", type="json_array", nullable=true)
      */
     protected $mergeVarValues;
 

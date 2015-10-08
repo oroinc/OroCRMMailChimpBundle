@@ -216,7 +216,8 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addColumn('created_at', 'datetime', ['comment' => '(DC2Type:datetime)']);
         $table->addColumn('updated_at', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
         $table->addIndex(['email', 'subscribers_list_id'], 'mc_mmbr_email_list_idx');
-        $table->addIndex(['origin_id'], 'mc_mmbr_origin_list_idx', []);
+        $table->addIndex(['origin_id'], 'mc_mmbr_origin_idx', []);
+        $table->addIndex(['status'], 'mc_mmbr_status_idx', []);
         $table->setPrimaryKey(['id']);
     }
 
