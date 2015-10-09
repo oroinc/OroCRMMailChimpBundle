@@ -164,6 +164,9 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addIndex(['channel_id'], 'idx_d057c9172f5a1aa', []);
         $table->setPrimaryKey(['id']);
         $table->addIndex(['owner_id'], 'idx_d057c917e3c61f9', []);
+        $table->addIndex(['email', 'subscribers_list_id'], 'mc_mmbr_email_list_idx');
+        $table->addIndex(['origin_id'], 'mc_mmbr_origin_idx', []);
+        $table->addIndex(['status'], 'mc_mmbr_status_idx', []);
     }
 
     /**
@@ -189,6 +192,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table->addIndex(['member_id'], 'idx_4a03a2e17597d3fe', []);
         $table->addIndex(['campaign_id'], 'idx_4a03a2e1f639f774', []);
         $table->addIndex(['owner_id'], 'idx_4a03a2e17e3c61f9', []);
+        $table->addIndex(['action'], 'mc_mmbr_activity_action_idx', []);
     }
 
     /**

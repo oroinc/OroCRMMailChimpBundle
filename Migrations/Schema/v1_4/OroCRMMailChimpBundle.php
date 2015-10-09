@@ -14,6 +14,9 @@ class OroCRMMailChimpBundle implements Migration
      */
     public function up(Schema $schema, QueryBag $queries)
     {
+        $this->updateMemberTable($schema);
+        $this->updateMemberActivityTable($schema);
+
         $this->createOrocrmMcTmpMmbrToRemoveTable($schema);
         $this->addOrocrmMcTmpMmbrToRemoveForeignKeys($schema);
     }
@@ -51,5 +54,24 @@ class OroCRMMailChimpBundle implements Migration
             ['id'],
             ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
+    }
+
+    /**
+     * @param Schema $schema
+     */
+    protected function updateMemberTable(Schema $schema)
+    {
+        $table = $schema->getTable('orocrm_mailchimp_member');
+        $table->addIndex(['origin_id'], 'mc_mmbr_origin_idx', []);
+        $table->addIndex(['status'], 'mc_mmbr_status_idx', []);
+    }
+
+    /**
+     * @param Schema $schema
+     */
+    protected function updateMemberActivityTable(Schema $schema)
+    {
+        $table = $schema->getTable('orocrm_mc_mmbr_activity');
+        $table->addIndex(['action'], 'mc_mmbr_activity_action_idx', []);
     }
 }
