@@ -21,7 +21,6 @@ class MemberWriter extends AbstractExportWriter
         $itemsToWrite = [];
 
         /** @var Member $item */
-        /*
         $item = reset($items);
         $this->transport->init($item->getChannel()->getTransport());
 
@@ -30,13 +29,6 @@ class MemberWriter extends AbstractExportWriter
         $itemsToSave = $this->batchSubscribe($subscribersList, $items);
         if ($itemsToSave) {
             $itemsToWrite = array_merge($itemsToWrite, $itemsToSave);
-        }
-        */
-
-        //TODO Uncomment above and remove this
-        foreach ($items as $item) {
-            $item->setOriginId($item->getId());
-            $item->setStatus(Member::STATUS_SUBSCRIBED);
         }
 
         parent::write($itemsToWrite);

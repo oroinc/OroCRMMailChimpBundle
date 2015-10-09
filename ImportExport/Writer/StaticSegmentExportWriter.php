@@ -146,7 +146,6 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         $itemState,
         $deleteMember = false
     ) {
-        /* TODO: Uncomment me!
         $response = $this->transport->$method(
             [
                 'id' => $staticSegment->getSubscribersList()->getOriginId(),
@@ -175,17 +174,13 @@ class StaticSegmentExportWriter extends AbstractExportWriter
                 );
             }
         );
-
         $emailsToUpdate = array_diff($emailsToProcess, $this->getEmailsWithErrors($response));
-        */
-        $emailsToUpdate = $emailsToProcess;
 
         if (!$emailsToUpdate) {
             return;
         }
 
         $qb = $this->getRepository()->createQueryBuilder('staticSegmentMember');
-
         $qb
             ->update()
             ->set('staticSegmentMember.state', ':state')
