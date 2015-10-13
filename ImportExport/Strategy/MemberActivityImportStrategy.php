@@ -2,14 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
-use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-use Akeneo\Bundle\BatchBundle\Item\ExecutionContext;
-use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
-
 use Doctrine\Common\Util\ClassUtils;
-
 use Doctrine\ORM\AbstractQuery;
+
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -21,15 +16,8 @@ use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
 
-class MemberActivityImportStrategy extends BasicImportStrategy implements
-    LoggerAwareInterface,
-    StepExecutionAwareInterface
+class MemberActivityImportStrategy extends BasicImportStrategy implements LoggerAwareInterface
 {
-    /**
-     * @var StepExecution
-     */
-    protected $stepExecution;
-
     /**
      * @var LoggerInterface
      */
@@ -48,14 +36,6 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
         MemberActivity::ACTIVITY_UNSUB,
         MemberActivity::ACTIVITY_BOUNCE
     ];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setStepExecution(StepExecution $stepExecution)
-    {
-        $this->stepExecution = $stepExecution;
-    }
 
     /**
      * {@inheritdoc}
@@ -159,14 +139,6 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             return null;
         }
 
-        $jobContext = $this->getJobContext();
-        $processedCampaigns = (array)$jobContext->get('processed_campaigns');
-        $campaignId = $entity->getCampaign()->getId();
-        if (!in_array($campaignId, $processedCampaigns)) {
-            $processedCampaigns[] = $campaignId;
-        }
-        $jobContext->put('processed_campaigns', $processedCampaigns);
-
         return parent::afterProcessEntity($entity);
     }
 
@@ -198,7 +170,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      */
     protected function isSkipped(MemberActivity $entity)
     {
-        if (in_array($entity->getAction(), $this->singleInstanceActivities)) {
+        if (in_array($entity->getAction(), $this->singleInstanceActivities, true)) {
             $searchCondition = [
                 'campaign' => $entity->getCampaign(),
                 'action' => $entity->getAction(),
@@ -209,22 +181,11 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
                 ClassUtils::getClass($entity),
                 $searchCondition,
                 ['id'],
-                AbstractQuery::HYDRATE_SINGLE_SCALAR
+                AbstractQuery::HYDRATE_SCALAR
             );
         }
 
         return false;
-    }
-
-    /**
-     * @return ExecutionContext
-     */
-    protected function getJobContext()
-    {
-        /** @var JobExecution $jobExecution */
-        $jobExecution = $this->stepExecution->getJobExecution();
-
-        return $jobExecution->getExecutionContext();
     }
 
     /**
