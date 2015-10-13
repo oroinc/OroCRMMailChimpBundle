@@ -6,7 +6,7 @@ use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
-class MemberSyncDataConverter extends MemberDataConverter
+class MemberSyncDataConverter extends AbstractMemberDataConverter
 {
     const EMAIL_KEY           = 'email';
     const FIRST_NAME_KEY      = 'firstName';

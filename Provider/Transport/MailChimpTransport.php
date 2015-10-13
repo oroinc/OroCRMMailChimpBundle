@@ -142,6 +142,7 @@ class MailChimpTransport implements TransportInterface
      */
     public function getMembersToSync(Channel $channel, \DateTime $since = null)
     {
+        $since = new \DateTime('2015-10-12 12:00:00');
         $subscribersLists = $this->managerRegistry
             ->getRepository('OroCRMMailChimpBundle:SubscribersList')
             ->getUsedSubscribersListIterator($channel);

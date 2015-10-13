@@ -54,6 +54,7 @@ parameters:
 
     # Serializers
     orocrm_mailchimp.importexport.serializer.datetime.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer\DateTimeSerializer
+    orocrm_mailchimp.importexport.serializer.member_import.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer\MemberImportSerializer
 
     # Strategies
     orocrm_mailchimp.importexport.strategy.abstract.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy\AbstractImportStrategy
@@ -298,6 +299,15 @@ services:
     #Serializers
     orocrm_mailchimp.importexport.serializer.datetime:
         class: %orocrm_mailchimp.importexport.serializer.datetime.class%
+        tags:
+            - { name: oro_importexport.normalizer }
+
+    orocrm_mailchimp.importexport.serializer.member_import:
+        class: %orocrm_mailchimp.importexport.serializer.member_import.class%
+        calls:
+            - [setChannelEntity, [%oro_integration.entity.class%]]
+            - [setDoctrineHelper, [@oro_entity.doctrine_helper]]
+            - [setDateTimeSerializer, [@orocrm_mailchimp.importexport.serializer.datetime]]
         tags:
             - { name: oro_importexport.normalizer }
 

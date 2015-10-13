@@ -89,6 +89,7 @@ class MemberImportStrategy extends AbstractImportStrategy
         $existingEntity->setLatitude($entity->getLatitude());
         $existingEntity->setLongitude($entity->getLongitude());
         $existingEntity->setDstOffset($entity->getDstOffset());
+        $existingEntity->setGmtOffset($entity->getGmtOffset());
         $existingEntity->setTimezone($entity->getTimezone());
         $existingEntity->setCc($entity->getCc());
         $existingEntity->setRegion($entity->getRegion());
