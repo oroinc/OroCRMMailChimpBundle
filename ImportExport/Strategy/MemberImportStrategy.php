@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\EntityManager;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
@@ -11,9 +12,29 @@ use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
 class MemberImportStrategy extends AbstractImportStrategy
 {
     /**
+     * @var array
+     */
+    protected static $processedEmails = [];
+
+    /**
      * @var MergeVarProviderInterface
      */
     protected $mergeVarProvider;
+
+    /**
+     * @var string
+     */
+    protected $memberClassName;
+
+    /**
+     * @var EntityManager
+     */
+    protected $memberEntityManager;
+
+    /**
+     * @var array
+     */
+    protected $memberIdentityFields;
 
     /**
      * @param Member $entity
@@ -58,24 +79,35 @@ class MemberImportStrategy extends AbstractImportStrategy
      */
     protected function importExistingMember(Member $entity, Member $existingEntity)
     {
-        $itemData = $this->context->getValue('itemData');
-
-        // Update MailChimp List
-        $this->importExistingEntity(
-            $entity,
-            $existingEntity,
-            $itemData,
-            ['channel', 'subscribersList']
-        );
+        $existingEntity->setOriginId($entity->getOriginId());
+        $existingEntity->setStatus($entity->getStatus());
+        $existingEntity->setMemberRating($entity->getMemberRating());
+        $existingEntity->setOptedInAt($entity->getOptedInAt());
+        $existingEntity->setOptedInIpAddress($entity->getOptedInIpAddress());
+        $existingEntity->setConfirmedAt($entity->getConfirmedAt());
+        $existingEntity->setConfirmedIpAddress($entity->getConfirmedIpAddress());
+        $existingEntity->setLatitude($entity->getLatitude());
+        $existingEntity->setLongitude($entity->getLongitude());
+        $existingEntity->setDstOffset($entity->getDstOffset());
+        $existingEntity->setGmtOffset($entity->getGmtOffset());
+        $existingEntity->setTimezone($entity->getTimezone());
+        $existingEntity->setCc($entity->getCc());
+        $existingEntity->setRegion($entity->getRegion());
+        $existingEntity->setLastChangedAt($entity->getLastChangedAt());
+        $existingEntity->setEuid($entity->getEuid());
+        $existingEntity->setMergeVarValues($entity->getMergeVarValues());
 
         // Replace subscribers list if required
         /** @var SubscribersList $subscribersList */
-        $subscribersList = $this->updateRelatedEntity(
-            $existingEntity->getSubscribersList(),
-            $entity->getSubscribersList(),
-            $itemData['subscribersList']
-        );
-        $existingEntity->setSubscribersList($subscribersList);
+        if (!$existingEntity->getSubscribersList()) {
+            $itemData = $this->context->getValue('itemData');
+            $subscribersList = $this->updateRelatedEntity(
+                $existingEntity->getSubscribersList(),
+                $entity->getSubscribersList(),
+                $itemData['subscribersList']
+            );
+            $existingEntity->setSubscribersList($subscribersList);
+        }
 
         return $existingEntity;
     }
@@ -102,10 +134,7 @@ class MemberImportStrategy extends AbstractImportStrategy
      */
     protected function collectEntities($entity)
     {
-        $jobContext = $this->getJobContext();
-        $processedMembers = (array)$jobContext->get('processed_members');
-        $processedMembers[$entity->getSubscribersList()->getId()][$entity->getEmail()] = true;
-        $jobContext->put('processed_members', $processedMembers);
+        self::$processedEmails[$entity->getSubscribersList()->getId()][$entity->getEmail()] = true;
     }
 
     /**
@@ -115,10 +144,7 @@ class MemberImportStrategy extends AbstractImportStrategy
      */
     protected function isEntityProcessed($entity)
     {
-        $jobContext = $this->getJobContext();
-        $processedMembers = (array)$jobContext->get('processed_members');
-
-        return !empty($processedMembers[$entity->getSubscribersList()->getId()][$entity->getEmail()]);
+        return !empty(self::$processedEmails[$entity->getSubscribersList()->getId()][$entity->getEmail()]);
     }
 
     /**
@@ -154,9 +180,9 @@ class MemberImportStrategy extends AbstractImportStrategy
      */
     public function findExistingMember(Member $member)
     {
-        $entityName = ClassUtils::getClass($member);
-        $em = $this->strategyHelper->getEntityManager($entityName);
-        $identityValues = $this->fieldHelper->getIdentityValues($member);
+        $entityName = $this->getMemberClassName($member);
+        $em = $this->getMemberEntityManager($entityName);
+        $identityValues = $this->getMemberIdentityValues($member);
         $fields = [
             'id',
             'originId',
@@ -181,5 +207,69 @@ class MemberImportStrategy extends AbstractImportStrategy
             ->setMaxResults(1);
 
         return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param Member $member
+     * @return string
+     */
+    protected function getMemberClassName(Member $member)
+    {
+        if (!$this->memberClassName) {
+            $this->memberClassName = ClassUtils::getClass($member);
+        }
+
+        return $this->memberClassName;
+    }
+
+    /**
+     * @param string $entityName
+     * @return EntityManager
+     */
+    protected function getMemberEntityManager($entityName)
+    {
+        if (!$this->memberEntityManager) {
+            $this->memberEntityManager = $this->strategyHelper->getEntityManager($entityName);
+        }
+
+        return $this->memberEntityManager;
+    }
+
+    /**
+     * @param string $entityName
+     * @return array
+     */
+    protected function getMemberIdentityFields($entityName)
+    {
+        if (!$this->memberIdentityFields) {
+            $fields = $this->fieldHelper->getFields($entityName, true);
+
+            foreach ($fields as $field) {
+                $fieldName = $field['name'];
+                if (!$this->fieldHelper->getConfigValue($entityName, $fieldName, 'excluded', false)
+                    && $this->fieldHelper->getConfigValue($entityName, $fieldName, 'identity', false)
+                ) {
+                    $this->memberIdentityFields[] = $fieldName;
+                }
+            }
+        }
+
+        return $this->memberIdentityFields;
+    }
+
+    /**
+     * @param Member $member
+     * @return array
+     */
+    protected function getMemberIdentityValues(Member $member)
+    {
+        $identityFields = $this->getMemberIdentityFields($this->getMemberClassName($member));
+
+        $identityValues = [];
+        foreach ($identityFields as $fieldName) {
+            $identityValues[$fieldName] = $this->fieldHelper->getObjectValue($member, $fieldName);
+        }
+
+        return $identityValues;
     }
 }
