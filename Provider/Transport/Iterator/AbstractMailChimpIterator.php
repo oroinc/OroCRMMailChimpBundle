@@ -6,7 +6,7 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 abstract class AbstractMailChimpIterator implements \Iterator
 {
-    const BATCH_SIZE = 20;
+    const BATCH_SIZE = 100;
 
     /**
      * @var MailChimpClient
