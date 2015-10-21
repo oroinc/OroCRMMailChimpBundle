@@ -44,6 +44,9 @@ use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
  */
 class Campaign implements OriginAwareInterface
 {
+    const ACTIVITY_ENABLED = 'enabled';
+    const ACTIVITY_DISABLED = 'disabled';
+    const ACTIVITY_EXPIRED = 'expired';
     /**#@+
      * @const string Status of Campaign
      */
@@ -1074,6 +1077,39 @@ class Campaign implements OriginAwareInterface
     {
         $this->webId = $webId;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivityUpdateState()
+    {
+        if ($this->getEmailCampaign()
+            && !$this->getEmailCampaign()->getTransportSettings()->getSettingsBag()->get('receiveActivities')
+        ) {
+            return self::ACTIVITY_DISABLED;
+        }
+
+        $updatesExpireDate = null;
+        if ($this->getSendTime() instanceof \DateTime) {
+            $updateInterval = $this->getChannel()
+                ->getTransport()
+                ->getSettingsBag()
+                ->get('activityUpdateInterval');
+
+            if ($updateInterval) {
+                $updatesExpireDate = clone($this->getSendTime());
+                $updatesExpireDate->add(new \DateInterval('P' . $updateInterval . 'D'));
+            }
+        }
+
+         if ((bool)$updatesExpireDate
+            && $updatesExpireDate < new \DateTime('now', new \DateTimeZone('UTC'))
+        ) {
+            return self::ACTIVITY_EXPIRED;
+        }
+
+        return self::ACTIVITY_ENABLED;
     }
 
     /**

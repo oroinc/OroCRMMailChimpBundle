@@ -1,0 +1,24 @@
+{% if campaign.activityUpdateState != 'expired' %}
+    {% import 'OroUIBundle::macros.html.twig' as UI %}
+    {% if campaign.activityUpdateState == 'enabled' %}
+        {{ UI.clientButton({
+            'dataUrl': path('orocrm_mailchimp_email_campaign_activity_update_toggle', { 'id': emailCampaign.id }) ,
+            'aCss':   'no-hash btn',
+            'label' : 'orocrm.mailchimp.emailcampaign.stop_receiving_activities.label'|trans,
+            'iCss':   'icon-off',
+            'dataAttributes': {
+                'page-component-module': 'orocrmmailchimp/js/app/components/activities-toggle-btn-component'
+            }
+        }) }}
+    {% else %}
+        {{ UI.clientButton({
+            'dataUrl': path('orocrm_mailchimp_email_campaign_activity_update_toggle', { 'id': emailCampaign.id }) ,
+            'aCss':   'no-hash btn',
+            'label' : 'orocrm.mailchimp.emailcampaign.start_receive_activities.label'|trans,
+            'iCss':   'icon-ok',
+            'dataAttributes': {
+                'page-component-module': 'orocrmmailchimp/js/app/components/activities-toggle-btn-component'
+            }
+        }) }}
+    {% endif %}
+{% endif %}

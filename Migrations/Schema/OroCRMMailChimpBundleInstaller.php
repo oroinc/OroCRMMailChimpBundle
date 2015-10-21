@@ -65,6 +65,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
     {
         $table = $schema->getTable('oro_integration_transport');
         $table->addColumn('orocrm_mailchimp_apikey', 'string', ['notnull' => false, 'length' => 255]);
+        $table->addColumn('orocrm_mailchimp_act_up_int', 'integer', ['notnull' => false]);
     }
 
     /**
@@ -77,6 +78,7 @@ class OroCRMMailChimpBundleInstaller implements Installation
         $table = $schema->getTable('orocrm_cmpgn_transport_stngs');
         $table->addColumn('mailchimp_template_id', 'integer', ['notnull' => false]);
         $table->addColumn('mailchimp_channel_id', 'integer', ['notnull' => false]);
+        $table->addColumn('mailchimp_receive_activities', 'boolean', ['notnull' => false]);
     }
 
     /**
