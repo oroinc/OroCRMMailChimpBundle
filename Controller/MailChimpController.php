@@ -2,18 +2,24 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Controller;
 
+use Doctrine\Common\Util\ClassUtils;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Oro\Bundle\FormBundle\Form\Handler\ApiFormHandler;
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
+
+use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
+use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 
 /**
  * @Route("/mailchimp")
@@ -72,11 +78,6 @@ class MailChimpController extends Controller
     }
 
     /**
-     * @Route(
-     *      "/marketing-list/buttons/{entity}",
-     *      name="orocrm_mailchimp_marketing_list_buttons",
-     *      requirements={"entity"="\d+"}
-     * )
      * @ParamConverter(
      *      "marketingList",
      *      class="OroCRMMarketingListBundle:MarketingList",
@@ -117,6 +118,76 @@ class MailChimpController extends Controller
     }
 
     /**
+     * @Route("/email-campaign-status-positive/{entity}",
+     *      name="orocrm_mailchimp_email_campaign_status",
+     *      requirements={"entity"="\d+"})
+     * @ParamConverter("emailCampaign",
+     *      class="OroCRMCampaignBundle:EmailCampaign",
+     *      options={"id" = "entity"})
+     * @AclAncestor("orocrm_mailchimp")
+     *
+     * @Template
+     *
+     * @param EmailCampaign $emailCampaign
+     * @return array
+     */
+    public function emailCampaignStatsAction(EmailCampaign $emailCampaign)
+    {
+        $campaign = $this->getCampaignByEmailCampaign($emailCampaign);
+
+        return ['campaignStats' => $campaign];
+    }
+
+    /**
+     * @ParamConverter(
+     *      "emailCampaign",
+     *      class="OroCRMCampaignBundle:EmailCampaign",
+     *      options={"id" = "entity"}
+     * )
+     * @AclAncestor("orocrm_mailchimp")
+     *
+     * @Template
+     *
+     * @param EmailCampaign $emailCampaign
+     * @return array
+     */
+    public function emailCampaignActivityUpdateButtonsAction(EmailCampaign $emailCampaign)
+    {
+        return [
+            'emailCampaign' => $emailCampaign,
+            'campaign' => $this->getCampaignByEmailCampaign($emailCampaign)
+        ];
+    }
+
+    /**
+     * @Route("/email-campaign/{id}/activity-updates/toggle",
+     *      name="orocrm_mailchimp_email_campaign_activity_update_toggle",
+     *      requirements={"id"="\d+"})
+     * @AclAncestor("orocrm_mailchimp")
+     *
+     * @param EmailCampaign $emailCampaign
+     * @return JsonResponse
+     */
+    public function toggleUpdateStateAction(EmailCampaign $emailCampaign)
+    {
+        /** @var MailChimpTransportSettings $settings */
+        $settings = $emailCampaign->getTransportSettings();
+        $settings->setReceiveActivities(!$settings->isReceiveActivities());
+
+        $em = $this->getDoctrine()->getManagerForClass(ClassUtils::getClass($settings));
+        $em->persist($settings);
+        $em->flush();
+
+        if ($settings->isReceiveActivities()) {
+            $message = 'orocrm.mailchimp.controller.email_campaign.receive_activities.enabled.message';
+        } else {
+            $message = 'orocrm.mailchimp.controller.email_campaign.receive_activities.disabled.message';
+        }
+
+        return new JsonResponse(['message' => $this->get('translator')->trans($message)]);
+    }
+
+    /**
      * @param MarketingList $marketingList
      * @return StaticSegment
      */
@@ -146,24 +217,15 @@ class MailChimpController extends Controller
     }
 
     /**
-     * @Route("/email-campaign-status-positive/{entity}",
-     *      name="orocrm_mailchimp_email_campaign_status",
-     *      requirements={"entity"="\d+"})
-     * @ParamConverter("emailCampaign",
-     *      class="OroCRMCampaignBundle:EmailCampaign",
-     *      options={"id" = "entity"})
-     * @AclAncestor("orocrm_mailchimp")
-     *
-     * @Template
-     *
      * @param EmailCampaign $emailCampaign
-     * @return array
+     * @return Campaign
      */
-    public function emailCampaignStatsAction(EmailCampaign $emailCampaign)
+    protected function getCampaignByEmailCampaign(EmailCampaign $emailCampaign)
     {
         $campaign = $this->getDoctrine()
             ->getRepository('OroCRMMailChimpBundle:Campaign')
             ->findOneBy(['emailCampaign' => $emailCampaign]);
-        return ['campaignStats' => $campaign];
+
+        return $campaign;
     }
 }

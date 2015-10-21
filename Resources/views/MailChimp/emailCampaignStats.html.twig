@@ -1,9 +1,16 @@
 {% import 'OroCRMMailChimpBundle::macros.html.twig' as ui %}
+{% import 'OroUIBundle::macros.html.twig' as platform %}
 
 <div class="row-fluid">
     <h5 class="user-fieldset">
         <span>{{ 'orocrm.mailchimp.emailcampaign.statistics.label'|trans }}</span>
     </h5>
+
+    {{ platform.renderProperty('orocrm.mailchimp.campaign.entity_label'|trans, campaignStats.subject) }}
+    {{ platform.renderHtmlProperty(
+        'orocrm.mailchimp.emailcampaign.activity_update_state.label'|trans,
+        ('orocrm.mailchimp.emailcampaign.activity_update_state.' ~ campaignStats.activityUpdateState) | trans
+    ) }}
 </div>
 
 <div class="row-fluid row-fluid-divider form-horizontal">

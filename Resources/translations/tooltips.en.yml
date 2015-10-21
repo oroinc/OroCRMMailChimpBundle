@@ -3,6 +3,8 @@ orocrm:
         form:
             api_key:
                 tooltip: MailChimp API Key. <br/><a href="http://kb.mailchimp.com/accounts/management/about-api-keys" target="_blank" class="no-hash">About API Keys</a>
+            activity_update_interval:
+                tooltip: How long email capaign activities should be received.
         emailcampaign:
             sendTime.tooltip: Number of email addresses campaign was sent to.
             emailsSent.tooltip: Emails Sent

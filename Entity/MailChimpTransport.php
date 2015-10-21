@@ -13,12 +13,23 @@ use Oro\Bundle\IntegrationBundle\Entity\Transport;
  */
 class MailChimpTransport extends Transport
 {
+    const DEFAULT_ACTIVITY_UPDATE_INTERVAL = 90;
+
     /**
      * @var string
      *
      * @ORM\Column(name="orocrm_mailchimp_apikey", type="string", length=255, nullable=false)
      */
     protected $apiKey;
+
+    /**
+     * Activity update interval after send date. Days.
+     *
+     * @var int
+     *
+     * @ORM\Column(name="orocrm_mailchimp_act_up_int", type="integer", nullable=true)
+     */
+    protected $activityUpdateInterval = self::DEFAULT_ACTIVITY_UPDATE_INTERVAL;
 
     /**
      * @var ParameterBag
@@ -33,7 +44,8 @@ class MailChimpTransport extends Transport
         if (null === $this->settingsBag) {
             $this->settingsBag = new ParameterBag(
                 [
-                    'apiKey' => $this->getApiKey()
+                    'apiKey' => $this->getApiKey(),
+                    'activityUpdateInterval' => $this->getActivityUpdateInterval()
                 ]
             );
         }
@@ -62,5 +74,24 @@ class MailChimpTransport extends Transport
     public function getApiKey()
     {
         return $this->apiKey;
+    }
+
+    /**
+     * @return int
+     */
+    public function getActivityUpdateInterval()
+    {
+        return $this->activityUpdateInterval;
+    }
+
+    /**
+     * @param int $activityUpdateInterval
+     * @return MailChimpTransport
+     */
+    public function setActivityUpdateInterval($activityUpdateInterval)
+    {
+        $this->activityUpdateInterval = $activityUpdateInterval;
+
+        return $this;
     }
 }

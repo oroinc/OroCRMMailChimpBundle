@@ -9,6 +9,15 @@ orocrm:
             api_key:
                 check.label: Check Connection
                 label: API Key
+            activity_update_interval:
+                label: 'Activity Update Interval'
+                choice:
+                    forever: Forever
+                    1week: 1 week
+                    2week: 2 weeks
+                    1month: 1 month
+                    2month: 2 months
+                    3month: 3 months
 
         connector:
             template:
@@ -211,6 +220,14 @@ orocrm:
             forwards.label: Forwards
             opens.label: Opens
             clicks.label: Clicks
+            activity_update_state:
+                label: Activities Update
+                enabled: Enabled
+                disabled: Disabled
+                expired: Expired
+            stop_receiving_activities.label: Disable Activities Update
+            start_receive_activities.label: Enable Activities Update
+
 
         staticsegment:
             entity_label: MailChimp Static Segment
@@ -286,3 +303,8 @@ orocrm:
             in_progress: In Progress
             scheduled: Scheduled for Sync
             list_is_connected.lebel: This list is linked to "%segment%" segment of "%list%" Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.
+
+        controller:
+            email_campaign.receive_activities:
+                enabled.message: 'Reciving of connected MailChimp campaign activities enabled'
+                disabled.message: 'Reciving of connected MailChimp campaign activities disabled'
