@@ -39,7 +39,7 @@ class MemberExportStrategy extends BaseStrategy implements LoggerAwareInterface
         $entity = $this->afterProcessEntity($entity);
 
         if ($this->logger) {
-            $this->logger->info(sprintf('Exporting MailChimp Member [id=%s]', $entity->getId()));
+            $this->logger->notice(sprintf('Exporting MailChimp Member [id=%s]', $entity->getId()));
         }
 
         return $entity;

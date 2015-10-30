@@ -58,6 +58,7 @@ parameters:
     orocrm_mailchimp.importexport.writer.marketing_list_email.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\MarketingListEmailWriter
     orocrm_mailchimp.importexport.writer.prepare_static_segment_member_to_remove.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\StaticSegmentMemberToRemoveWriter
     orocrm_mailchimp.importexport.writer.members_sync.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\MemberSyncWriter
+    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\LoggablePersistentBatchWriter
 
     # Serializers
     orocrm_mailchimp.importexport.serializer.datetime.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer\DateTimeSerializer
@@ -180,6 +181,7 @@ services:
         class: %orocrm_mailchimp.placeholder.filter.buttons_filder.class%
         arguments:
             - @orocrm_marketing_list.provider.contact_information_fields
+            - @doctrine
 
     orocrm_mailchimp.static_segment.manager.api:
         parent: oro_soap.manager.entity_manager.abstract
@@ -367,6 +369,10 @@ services:
         parent: orocrm_mailchimp.importexport.writer.insert_from_select.abstract
         calls:
             - [setEntityName, [%orocrm_mailchimp.entity.member.class%]]
+
+    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer:
+        class: %orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer.class%
+        parent: oro_integration.writer.persistent_batch_writer
 
     #Serializers
     orocrm_mailchimp.importexport.serializer.datetime:

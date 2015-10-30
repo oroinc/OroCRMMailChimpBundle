@@ -74,7 +74,7 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member
                         processor: orocrm_mailchimp.importexport.processor.member
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
                         batch_size: 2000
 
@@ -88,7 +88,7 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity_send
                         processor: orocrm_mailchimp.importexport.processor.member_activity_send
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
                         batch_size: 100
 
@@ -102,7 +102,7 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity_abuse
                         processor: orocrm_mailchimp.importexport.processor.member_activity_abuse
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
                         batch_size: 100
 
@@ -116,7 +116,7 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity_unsubscribe
                         processor: orocrm_mailchimp.importexport.processor.member_activity_unsubscribe
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
                         batch_size: 100
 
@@ -130,7 +130,7 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity
                         processor: orocrm_mailchimp.importexport.processor.member_activity
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
                         batch_size: 2000
 
@@ -188,7 +188,7 @@ connector:
                         writer:    orocrm_mailchimp.importexport.writer.members_sync
                     parameters:
                         batch_size: 1
-                export: # Fill additional merge vars on export?
+                export:
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:

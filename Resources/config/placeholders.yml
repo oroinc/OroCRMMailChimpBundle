@@ -1,10 +1,10 @@
 placeholders:
     marketing_list_nav_buttons:
         items:
-            orocrm_mailchimp_marketing_list_buttons: ~
+            orocrm_marketing_list_mailchimp_buttons: ~
     view_navButtons_before:
-        items:
-            orocrm_mailchimp_email_campaign_buttons: ~
+            items:
+                orocrm_mailchimp_email_campaign_buttons: ~
     view_content_data_email_campaign_status:
         items:
             orocrm_mailchimp_emailcampaign_stats: ~
