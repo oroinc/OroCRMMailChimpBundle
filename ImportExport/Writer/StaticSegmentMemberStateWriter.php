@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Doctrine\ORM\Query\ResultSetMapping;
+
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberToRemoveIterator;
 
 class StaticSegmentMemberStateWriter extends AbstractNativeQueryWriter
@@ -28,9 +30,9 @@ class StaticSegmentMemberStateWriter extends AbstractNativeQueryWriter
                 $staticSegmentId
             );
 
-            $this->getEntityManager()
-                ->getConnection()
-                ->executeQuery($updateQuery, $this->getQuerySqlParameters($selectQuery));
+            $rsm = new ResultSetMapping();
+            $query = $this->getEntityManager()->createNativeQuery($updateQuery, $rsm);
+            $query->execute($this->getQuerySqlParameters($selectQuery));
         }
     }
 }

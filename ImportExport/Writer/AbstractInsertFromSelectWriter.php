@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 abstract class AbstractInsertFromSelectWriter extends AbstractNativeQueryWriter
 {
@@ -28,10 +29,9 @@ abstract class AbstractInsertFromSelectWriter extends AbstractNativeQueryWriter
      */
     protected function executeInsertFromSelect($insert, Query $selectQuery)
     {
-        $this->getEntityManager()->getConnection()->executeQuery(
-            sprintf('%s %s', $insert, $selectQuery->getSQL()),
-            $this->getQuerySqlParameters($selectQuery)
-        );
+        $rsm = new ResultSetMapping();
+        $query = $this->getEntityManager()->createNativeQuery($insert . ' ' . $selectQuery->getSQL(), $rsm);
+        $query->execute($this->getQuerySqlParameters($selectQuery));
     }
 
     /**
