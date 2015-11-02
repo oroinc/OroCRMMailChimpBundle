@@ -27,6 +27,7 @@ class StaticSegmentMemberToRemove
     /**
      * @var StaticSegment
      *
+     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment")
      * @ORM\JoinColumn(name="static_segment_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */

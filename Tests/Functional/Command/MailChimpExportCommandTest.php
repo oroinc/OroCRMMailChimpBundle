@@ -113,7 +113,7 @@ class MailChimpExportCommandTest extends WebTestCase
         // 1 existing subscribed member
         $this->assertStaticSegmentMembers(2);
 
-        $result = $this->runCommand(MailChimpExportCommand::NAME, ['--verbose' => true]);
+        $result = $this->runCommand(MailChimpExportCommand::NAME, ['-vv']);
         $this->assertNotEmpty($result);
 
         // unknown email should be ignored

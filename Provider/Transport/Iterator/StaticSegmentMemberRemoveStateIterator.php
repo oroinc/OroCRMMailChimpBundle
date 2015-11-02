@@ -102,7 +102,10 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
                 [
                     'mmb.id member_id',
                     $staticSegment->getId() . ' static_segment_id',
-                    'COALESCE(mlEmail.state, ' . $qb->expr()->literal(StaticSegmentMember::STATE_REMOVE) . ') state'
+                    sprintf(
+                        'COALESCE(MAX(mlEmail.state), %s) state',
+                        $qb->expr()->literal(StaticSegmentMember::STATE_REMOVE)
+                    )
                 ]
             )
             ->from($this->memberEntity, 'mmb')
@@ -131,6 +134,7 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
                     )
                 )
             )
+            ->groupBy('mmb.id')
             ->setParameter('state', MarketingListEmail::STATE_IN_LIST)
             ->setParameter('marketingList', $staticSegment->getMarketingList())
             ->setParameter('subscribersList', $staticSegment->getSubscribersList());

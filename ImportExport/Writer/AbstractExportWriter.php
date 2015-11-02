@@ -90,7 +90,7 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Ite
 
         if (!empty($response['errors']) && is_array($response['errors'])) {
             foreach ($response['errors'] as $error) {
-                $this->logger->warning(
+                $this->logger->alert(
                     sprintf('[Error #%s] %s', $error['code'], $error['error'])
                 );
             }

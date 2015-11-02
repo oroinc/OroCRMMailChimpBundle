@@ -37,7 +37,7 @@ class OroCRMMailChimpBundle implements Migration
         $table->addColumn('static_segment_id', 'integer', []);
         $table->addColumn('state', 'string', ['length' => 25]);
         $table->addIndex(['state'], 'mc_smbr_rm_state_idx', []);
-        $table->setPrimaryKey(['member_id']);
+        $table->setPrimaryKey(['member_id', 'static_segment_id']);
     }
 
     /**

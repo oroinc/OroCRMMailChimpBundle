@@ -105,7 +105,7 @@ class MemberWriter extends AbstractExportWriter
 
                 $this->logger->debug(sprintf('Member with data "%s" successfully processed', json_encode($emailData)));
             } else {
-                $this->logger->warning(sprintf('A member with "%s" email was not found', $emailData['email']));
+                $this->logger->alert(sprintf('A member with "%s" email was not found', $emailData['email']));
             }
         }
 
