@@ -273,7 +273,8 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
 
         $qb
             ->expects($this->any())
-            ->method('groupBy')
+            ->method('setMaxResults')
+            ->with(1)
             ->will($this->returnSelf());
 
         $qb
