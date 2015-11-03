@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+
 class StaticSegmentImportStrategy extends AbstractImportStrategy
 {
     /**
@@ -32,12 +34,18 @@ class StaticSegmentImportStrategy extends AbstractImportStrategy
     /**
      * Sync only existing StaticSegments, do not create them from MailChimp
      *
+     * @param StaticSegment $entity
+     *
      * {@inheritdoc}
      */
     protected function afterProcessEntity($entity)
     {
         if (!$entity) {
             return null;
+        }
+
+        if (!$entity->getSyncStatus()) {
+            $entity->setSyncStatus(StaticSegment::STATUS_IMPORTED);
         }
 
         return parent::afterProcessEntity($entity);
