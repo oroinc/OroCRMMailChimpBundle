@@ -34,6 +34,7 @@ parameters:
     orocrm_mailchimp.transport.integration_transport.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport
     orocrm_mailchimp.provider.channel_type.class: OroCRM\Bundle\MailChimpBundle\Provider\ChannelType
     orocrm_mailchimp.client.factory.class: OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory
+    orocrm_mailchimp.provider.blocked_jobs.class: OroCRM\Bundle\MailChimpBundle\Provider\BlockingJobsProvider
 
     # Readers
     orocrm_mailchimp.importexport.reader.processed_entities.class: OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\ProcessedEntities
@@ -427,6 +428,11 @@ services:
             - @doctrine
         tags:
             - { name: oro_integration.transport, type: mailchimp_api, channel_type: mailchimp }
+
+    orocrm_mailchimp.provider.blocked_jobs:
+        class: %orocrm_mailchimp.provider.blocked_jobs.class%
+        tags:
+            - { name: oro_integration.blocking_job, type: mailchimp }
 
     # Connectors
     orocrm_mailchimp.connector.abstract:
