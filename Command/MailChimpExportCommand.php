@@ -107,7 +107,8 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
             } else {
                 $logMessage = 'This job can not export data for channel with type = %s and id = %s because '.
                     'blocking job %s is working';
-                $logger->warning(sprintf($logMessage,
+                $logger->warning(sprintf(
+                    $logMessage,
                     $channel->getType(),
                     $channel->getId(),
                     SyncCommand::COMMAND_NAME
