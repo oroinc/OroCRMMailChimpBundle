@@ -133,8 +133,8 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
      *
      * @return bool
      */
-    protected function isBlockingJobRunning(Channel $channel) {
-
+    protected function isBlockingJobRunning(Channel $channel)
+    {
         $managerRegistry = $this->getService('doctrine');
 
         /** @var ManagerRegistry $managerRegistry */
