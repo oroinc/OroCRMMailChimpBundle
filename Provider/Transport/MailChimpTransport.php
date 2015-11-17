@@ -10,6 +10,7 @@ use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
@@ -103,9 +104,9 @@ class MailChimpTransport implements TransportInterface
         }
 
         // Synchronize only campaigns that are connected to subscriber lists that are used within OroCRM.
-        $staticSegments = $this->managerRegistry
-            ->getRepository('OroCRMMailChimpBundle:StaticSegment')
-            ->getStaticSegmentsToSync([], $channel);
+        /** @var StaticSegmentRepository $repository */
+        $repository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:StaticSegment');
+        $staticSegments = $repository->getStaticSegments($channel);
 
         $listsToSynchronize = [];
         foreach ($staticSegments as $staticSegment) {

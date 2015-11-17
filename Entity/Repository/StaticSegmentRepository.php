@@ -18,15 +18,9 @@ class StaticSegmentRepository extends EntityRepository
      */
     public function getStaticSegmentsToSync(array $segments = null, Channel $channel = null)
     {
-        $qb = $this->createQueryBuilder('staticSegment');
+        $qb = $this->getStaticSegmentsQueryBuilder($segments, $channel);
 
-        $qb->select('staticSegment');
-
-        if ($segments) {
-            $qb
-                ->andWhere('staticSegment.id IN(:segments)')
-                ->setParameter('segments', $segments);
-        } else {
+        if (!$segments) {
             $qb
                 ->leftJoin('staticSegment.marketingList', 'ml')
                 ->where(
@@ -39,12 +33,42 @@ class StaticSegmentRepository extends EntityRepository
                 ->setParameter('status', StaticSegment::STATUS_IN_PROGRESS);
         }
 
+        return new BufferedQueryResultIterator($qb);
+    }
+
+    /**
+     * @param array|null $segments
+     * @param Channel|null $channel
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getStaticSegmentsQueryBuilder(array $segments = null, Channel $channel = null)
+    {
+        $qb = $this->createQueryBuilder('staticSegment');
+
+        $qb->select('staticSegment');
+
+        if ($segments) {
+            $qb
+                ->andWhere('staticSegment.id IN(:segments)')
+                ->setParameter('segments', $segments);
+        }
+
         if ($channel) {
             $qb
                 ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
                 ->setParameter('channel', $channel);
         }
 
-        return new BufferedQueryResultIterator($qb);
+        return $qb;
+    }
+
+    /**
+     * @param Channel|null $channel
+     * @param array|null $segments
+     * @return BufferedQueryResultIterator
+     */
+    public function getStaticSegments(Channel $channel = null, array $segments = null)
+    {
+        return new BufferedQueryResultIterator($this->getStaticSegmentsQueryBuilder($segments, $channel));
     }
 }
