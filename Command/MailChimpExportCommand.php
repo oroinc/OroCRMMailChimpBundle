@@ -2,8 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Command;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,7 +11,6 @@ use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\IntegrationBundle\Command\AbstractSyncCronCommand;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
-use Oro\Bundle\IntegrationBundle\Command\SyncCommand;
 use Oro\Component\Log\OutputLogger;
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -116,22 +113,6 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
             $this->getStaticSegmentStateManager()->handleMembers($staticSegment);
             $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED, true);
         }
-    }
-
-    /**
-     * @param Channel $channel
-     *
-     * @return bool
-     */
-    protected function isBlockingJobRunning(Channel $channel)
-    {
-        $managerRegistry = $this->getService('doctrine');
-
-        /** @var ManagerRegistry $managerRegistry */
-        $running = $managerRegistry->getRepository('OroIntegrationBundle:Channel')
-            ->getRunningSyncJobsCount(SyncCommand::COMMAND_NAME, $channel->getId());
-
-        return $running > 0;
     }
 
     /**
