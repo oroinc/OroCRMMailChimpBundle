@@ -97,9 +97,9 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         foreach ($iterator as $staticSegment) {
             $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_IN_PROGRESS);
             $channel                                 = $staticSegment->getChannel();
-            $channelToSync[$channel->getId()] = $channel;
+            $channelToSync[$channel->getId()]        = $channel;
             $staticSegments[$staticSegment->getId()] = $staticSegment;
-            $channelSegments[$channel->getId()][] = $staticSegment->getId();
+            $channelSegments[$channel->getId()][]    = $staticSegment->getId();
         }
 
         foreach ($channelToSync as $id => $channel) {
