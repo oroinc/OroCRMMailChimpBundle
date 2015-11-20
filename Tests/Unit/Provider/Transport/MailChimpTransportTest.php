@@ -120,7 +120,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 
         $staticSegmentRepository
             ->expects($this->once())
-            ->method('getStaticSegmentsToSync')
+            ->method('getStaticSegments')
             ->will($this->returnValue([$this->getStaticSegmentMock()]));
 
         $channel = $this->getMockBuilder('Oro\Bundle\IntegrationBundle\Entity\Channel')
