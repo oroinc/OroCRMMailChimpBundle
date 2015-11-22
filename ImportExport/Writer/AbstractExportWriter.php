@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
 
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
 
 use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
@@ -13,15 +13,12 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 abstract class AbstractExportWriter extends PersistentBatchWriter implements ItemWriterInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var TransportInterface|MailChimpTransport
      */
     protected $transport;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * @param TransportInterface $transport
@@ -29,14 +26,6 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Ite
     public function setTransport(TransportInterface $transport)
     {
         $this->transport = $transport;
-    }
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function setLogger($logger)
-    {
-        $this->logger = $logger;
     }
 
     /**
@@ -75,7 +64,7 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Ite
      * @param mixed $response
      * @param callable $func
      */
-    protected function handleResponse($response, \Closure $func = null)
+    protected function handleResponse($response, callable $func = null)
     {
         if (!is_array($response)) {
             return;
