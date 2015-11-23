@@ -24,10 +24,12 @@ class MemberWriter extends AbstractExportWriter
 
         $this->batchSubscribe($subscribersList, $items);
 
-        $items = array_filter(
+        array_walk(
             $items,
             function (Member $member) {
-                return $member->getStatus() === Member::STATUS_SUBSCRIBED;
+                if ($member->getStatus() === Member::STATUS_EXPORT) {
+                    $member->setStatus(Member::STATUS_EXPORT_FAILED);
+                }
             }
         );
 
