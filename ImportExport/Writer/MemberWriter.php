@@ -24,6 +24,13 @@ class MemberWriter extends AbstractExportWriter
 
         $this->batchSubscribe($subscribersList, $items);
 
+        $items = array_filter(
+            $items,
+            function (Member $member) {
+                return $member->getStatus() === Member::STATUS_SUBSCRIBED;
+            }
+        );
+
         parent::write($items);
 
         $this->logger->info(sprintf('%d items written', count($items)));
