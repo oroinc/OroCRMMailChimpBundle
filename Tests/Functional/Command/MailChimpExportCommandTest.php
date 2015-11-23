@@ -186,7 +186,7 @@ class MailChimpExportCommandTest extends WebTestCase
                 'batchSubscribe' => [
                     'adds' => [
                         [
-                            'email' => 'daniel.case@example.com',
+                            'email' => 'member1@example.com',
                             'euid' => time(),
                             'leid' => time(),
                         ]
