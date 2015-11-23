@@ -15,7 +15,7 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
     public function write(array $items)
     {
         /** @var ExtendedMergeVar $item */
-        $item = reset($items);
+        $item = $items[0];
         $staticSegment = $item->getStaticSegment();
         $channel = $staticSegment->getChannel();
         $this->transport->init($channel->getTransport());

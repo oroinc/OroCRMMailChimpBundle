@@ -18,11 +18,6 @@ class StepExecutor extends BaseStepExecutor
     protected $reader;
 
     /**
-     * @var string[]
-     */
-    protected $processed = [];
-
-    /**
      * {@inheritdoc}
      */
     public function execute(StepExecutionWarningHandlerInterface $warningHandler = null)

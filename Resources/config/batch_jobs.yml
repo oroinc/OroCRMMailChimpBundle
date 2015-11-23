@@ -196,7 +196,7 @@ connector:
                         processor: orocrm_mailchimp.importexport.processor.export_member
                         writer:    orocrm_mailchimp.importexport.writer.member
                     parameters:
-                        batch_size: 2000
+                        batch_size: 1000
                 mmbr_extd_merge_var_add: # This is additional data for member merge vars. Seems that this and next step may be "turned off if there are no data providers for them
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
@@ -282,4 +282,4 @@ connector:
                         processor: orocrm_mailchimp.importexport.processor.dummy
                         writer:    orocrm_mailchimp.importexport.writer.static_segment
                     parameters:
-                        batch_size: 2000
+                        batch_size: 1000

@@ -33,7 +33,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
     public function write(array $items)
     {
         /** @var StaticSegment $staticSegment */
-        $staticSegment = reset($items);
+        $staticSegment = $items[0];
         $channel = $staticSegment->getChannel();
 
         $this->transport->init($channel->getTransport());

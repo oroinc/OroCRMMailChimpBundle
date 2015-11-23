@@ -45,6 +45,11 @@ class MailChimpTransport implements TransportInterface
     protected $client;
 
     /**
+     * @var MailChimpClient[]
+     */
+    protected $clients = [];
+
+    /**
      * @var MailChimpClientFactory
      */
     protected $mailChimpClientFactory;
@@ -73,7 +78,15 @@ class MailChimpTransport implements TransportInterface
         if (!$apiKey) {
             throw new RequiredOptionException('apiKey');
         }
-        $this->client = $this->mailChimpClientFactory->create($apiKey);
+
+        if (array_key_exists($apiKey, $this->clients)) {
+            $this->client = $this->clients[$apiKey];
+
+            return;
+        }
+
+        $this->clients[$apiKey] = $this->mailChimpClientFactory->create($apiKey);
+        $this->client = $this->clients[$apiKey];
     }
 
     /**
