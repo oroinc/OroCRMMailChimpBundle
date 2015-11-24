@@ -1103,7 +1103,7 @@ class Campaign implements OriginAwareInterface
             }
         }
 
-         if ((bool)$updatesExpireDate
+        if ((bool)$updatesExpireDate
             && $updatesExpireDate < new \DateTime('now', new \DateTimeZone('UTC'))
         ) {
             return self::ACTIVITY_EXPIRED;

@@ -236,40 +236,13 @@ class MemberImportStrategy extends AbstractImportStrategy
     }
 
     /**
-     * @param string $entityName
-     * @return array
-     */
-    protected function getMemberIdentityFields($entityName)
-    {
-        if (!$this->memberIdentityFields) {
-            $fields = $this->fieldHelper->getFields($entityName, true);
-
-            foreach ($fields as $field) {
-                $fieldName = $field['name'];
-                if (!$this->fieldHelper->getConfigValue($entityName, $fieldName, 'excluded', false)
-                    && $this->fieldHelper->getConfigValue($entityName, $fieldName, 'identity', false)
-                ) {
-                    $this->memberIdentityFields[] = $fieldName;
-                }
-            }
-        }
-
-        return $this->memberIdentityFields;
-    }
-
-    /**
      * @param Member $member
      * @return array
      */
     protected function getMemberIdentityValues(Member $member)
     {
-        $identityFields = $this->getMemberIdentityFields($this->getMemberClassName($member));
+        $identityFields = $this->fieldHelper->getIdentityFieldNames($this->getMemberClassName($member));
 
-        $identityValues = [];
-        foreach ($identityFields as $fieldName) {
-            $identityValues[$fieldName] = $this->fieldHelper->getObjectValue($member, $fieldName);
-        }
-
-        return $identityValues;
+        return $this->fieldHelper->getFieldsValues($member, $identityFields);
     }
 }
