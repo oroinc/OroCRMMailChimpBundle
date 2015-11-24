@@ -2,8 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Command;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -99,21 +97,10 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
 
         foreach ($iterator as $staticSegment) {
             $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_IN_PROGRESS);
-            $channel                                 = $staticSegment->getChannel();
-            if (!$this->isBlockingJobRunning($channel)) {
-                $channelToSync[$channel->getId()]        = $channel;
-                $staticSegments[$staticSegment->getId()] = $staticSegment;
-                $channelSegments[$channel->getId()][]    = $staticSegment->getId();
-            } else {
-                $logMessage = 'This job can not export data for channel with type = %s and id = %s because '.
-                    'blocking job %s is working';
-                $logger->warning(sprintf(
-                    $logMessage,
-                    $channel->getType(),
-                    $channel->getId(),
-                    SyncCommand::COMMAND_NAME
-                ));
-            }
+            $channel = $staticSegment->getChannel();
+            $channelToSync[$channel->getId()] = $channel;
+            $staticSegments[$staticSegment->getId()] = $staticSegment;
+            $channelSegments[$channel->getId()][] = $staticSegment->getId();
         }
 
         foreach ($channelToSync as $id => $channel) {
@@ -127,22 +114,6 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
             $this->getStaticSegmentStateManager()->handleMembers($staticSegment);
             $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED, true);
         }
-    }
-
-    /**
-     * @param Channel $channel
-     *
-     * @return bool
-     */
-    protected function isBlockingJobRunning(Channel $channel)
-    {
-        $managerRegistry = $this->getService('doctrine');
-
-        /** @var ManagerRegistry $managerRegistry */
-        $running = $managerRegistry->getRepository('OroIntegrationBundle:Channel')
-            ->getRunningSyncJobsCount(SyncCommand::COMMAND_NAME, $channel->getId());
-
-        return $running > 0;
     }
 
     /**
