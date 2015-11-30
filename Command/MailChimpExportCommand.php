@@ -2,6 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Command;
 
+use JMS\JobQueueBundle\Entity\Job;
+
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,6 +15,7 @@ use Oro\Bundle\IntegrationBundle\Command\AbstractSyncCronCommand;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Component\Log\OutputLogger;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
@@ -74,7 +78,8 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         $logger = new OutputLogger($output);
         $this->getContainer()->get('oro_integration.logger.strategy')->setLogger($logger);
 
-        if ($this->isJobRunning(null)) {
+        $segments = $input->getOption('segments');
+        if (!$this->canExecuteJob($segments)) {
             $logger->warning('Job already running. Terminating....');
 
             return;
@@ -116,6 +121,46 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
             $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED, true);
         }
     }
+
+    /**
+     * @param int $segments
+     *
+     * @return bool
+     */
+    protected function canExecuteJob($segments)
+    {
+        $segmentId = null;
+        if ($segments) {
+            $segmentId = $segments[0];
+        }
+        if ($this->countJobs($segmentId, [Job::STATE_RUNNING]) > 1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * @param $segmentId
+     * @param [] $status
+     *
+     * @return int
+     */
+    protected function countJobs($segmentId, $status)
+    {
+        $args = '[]';
+        if ($segmentId) {
+            $args = sprintf('--segments=%s', $segmentId);
+        }
+
+        /** @var ManagerRegistry $managerRegistry */
+        $managerRegistry = $this->getService('doctrine');
+        $countJobs = $managerRegistry->getRepository('OroIntegrationBundle:Channel')
+            ->getSyncJobsCount($this->getName(), $status, $args);
+
+        return $countJobs;
+    }
+
 
     /**
      * @param StaticSegment $staticSegment
