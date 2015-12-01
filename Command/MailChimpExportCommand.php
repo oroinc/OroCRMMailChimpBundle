@@ -128,12 +128,10 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
     {
         $args = '[]';
         if (count($segments) > 0) {
-            $arguments = [];
-
+            $args = [];
             foreach($segments as $segmentId) {
-                $arguments[] = sprintf('"--segments=%s"', $segmentId);
+                $args[] = sprintf('--segments=%s', $segmentId);
             }
-            $args = implode(',', $arguments);
         }
 
         /** @var ManagerRegistry $managerRegistry */
