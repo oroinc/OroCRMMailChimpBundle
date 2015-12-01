@@ -85,7 +85,6 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
             return;
         }
 
-        $segments = $input->getOption('segments');
         /** @var StaticSegment[] $iterator */
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsToSync($segments);
 
@@ -121,44 +120,29 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
     }
 
     /**
-     * @param int $segments
+     * @param array $segments
      *
      * @return bool
      */
-    protected function canExecuteJob($segments)
-    {
-        $segmentId = null;
-        if ($segments) {
-            $segmentId = $segments[0];
-        }
-        if ($this->countJobs($segmentId, [Job::STATE_RUNNING]) > 1) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * @param $segmentId
-     * @param [] $status
-     *
-     * @return int
-     */
-    protected function countJobs($segmentId, $status)
+    protected function canExecuteJob(array $segments)
     {
         $args = '[]';
-        if ($segmentId) {
-            $args = sprintf('--segments=%s', $segmentId);
+        if (count($segments) > 0) {
+            $arguments = [];
+
+            foreach($segments as $segmentId) {
+                $arguments[] = sprintf('"--segments=%s"', $segmentId);
+            }
+            $args = implode(',', $arguments);
         }
 
         /** @var ManagerRegistry $managerRegistry */
         $managerRegistry = $this->getService('doctrine');
         $countJobs = $managerRegistry->getRepository('OroIntegrationBundle:Channel')
-            ->getSyncJobsCount($this->getName(), $status, $args);
+            ->getSyncJobsCount($this->getName(), [Job::STATE_RUNNING], $args);
 
-        return $countJobs;
+        return $countJobs > 1 ? false : true;
     }
-
 
     /**
      * @param StaticSegment $staticSegment
