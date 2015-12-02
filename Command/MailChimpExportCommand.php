@@ -72,7 +72,11 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = new OutputLogger($output);
-        $this->getContainer()->get('oro_integration.logger.strategy')->setLogger($logger);
+        $loggerStrategy = $this->getContainer()->get('oro_integration.logger.strategy');
+        $loggerStrategy->setLogger($logger);
+        if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
+            $loggerStrategy->setDebug(true);
+        }
         $this->getContainer()->get('doctrine')->getManager()->getConnection()->getConfiguration()->setSQLLogger(null);
 
         if ($this->isJobRunning(null)) {
