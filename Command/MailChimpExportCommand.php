@@ -126,10 +126,10 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
      */
     protected function canExecuteJob(array $segments)
     {
-        $args = '[]';
+        $args = '';
         if (count($segments) > 0) {
             $args = [];
-            foreach($segments as $segmentId) {
+            foreach ($segments as $segmentId) {
                 $args[] = sprintf('--segments=%s', $segmentId);
             }
 
