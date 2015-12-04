@@ -2,16 +2,37 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
+
+use Oro\Bundle\ImportExportBundle\Writer\CleanUpInterface;
+use Oro\Bundle\ImportExportBundle\Writer\InsertFromSelectWriter;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
-class StaticSegmentMemberAddStateWriter extends AbstractInsertFromSelectWriter implements CleanUpInterface
+class StaticSegmentMemberAddStateWriter extends InsertFromSelectWriter implements CleanUpInterface
 {
     /**
-     * {@inheritdoc}
+     * @var ManagerRegistry
      */
-    protected function getInsert()
+    protected $registry;
+
+    /**
+     * @param ManagerRegistry $registry
+     * @return StaticSegmentMemberToRemoveWriter
+     */
+    public function setRegistry(ManagerRegistry $registry)
     {
-        return 'INSERT INTO orocrm_mc_static_segment_mmbr(member_id, static_segment_id, state)';
+        $this->registry = $registry;
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager|EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->registry->getManager();
     }
 
     /**

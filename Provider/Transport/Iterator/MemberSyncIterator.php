@@ -6,12 +6,12 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\QueryBuilder;
 
+use Oro\Bundle\ImportExportBundle\Writer\AbstractNativeQueryWriter;
 use Oro\Bundle\LocaleBundle\DQL\DQLNameFormatter;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractNativeQueryWriter;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 

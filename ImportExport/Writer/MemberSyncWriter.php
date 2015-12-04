@@ -2,9 +2,14 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
+
+use Oro\Bundle\ImportExportBundle\Writer\CleanUpInterface;
+use Oro\Bundle\ImportExportBundle\Writer\InsertFromSelectWriter;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 
-class MemberSyncWriter extends AbstractInsertFromSelectWriter implements CleanUpInterface
+class MemberSyncWriter extends InsertFromSelectWriter implements CleanUpInterface
 {
     /**
      * @var bool
@@ -17,41 +22,43 @@ class MemberSyncWriter extends AbstractInsertFromSelectWriter implements CleanUp
     protected $hasLastName = false;
 
     /**
-     * {@inheritdoc}
+     * @var ManagerRegistry
      */
-    protected function getQueryBuilder($item)
-    {
-        $this->hasFirstName = !empty($item['has_first_name']);
-        $this->hasLastName = !empty($item['has_last_name']);
+    protected $registry;
 
-        return parent::getQueryBuilder($item);
+    /**
+     * @param ManagerRegistry $registry
+     * @return StaticSegmentMemberToRemoveWriter
+     */
+    public function setRegistry(ManagerRegistry $registry)
+    {
+        $this->registry = $registry;
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager|EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->registry->getManager();
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function getInsert()
+    public function getFields()
     {
-        $fields = ['email'];
+        $contactInformationFields = ['email'];
         if ($this->hasFirstName) {
-            $fields[] = 'first_name';
+            $contactInformationFields[] = 'firstName';
         }
         if ($this->hasLastName) {
-            $fields[] = 'last_name';
+            $contactInformationFields[] = 'lastName';
         }
-        $fields = array_merge(
-            $fields,
-            [
-                'owner_id',
-                'subscribers_list_id',
-                'channel_id',
-                'status',
-                'created_at',
-                'merge_var_values',
-            ]
-        );
 
-        return 'INSERT INTO orocrm_mailchimp_member(' . implode(',', $fields) . ')';
+        return array_merge($contactInformationFields, $this->fields);
     }
 
     /**
@@ -59,6 +66,9 @@ class MemberSyncWriter extends AbstractInsertFromSelectWriter implements CleanUp
      */
     public function cleanUp(array $item)
     {
+        $this->hasFirstName = !empty($item['has_first_name']);
+        $this->hasLastName = !empty($item['has_last_name']);
+
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->delete($this->entityName, 'e')
             ->where($qb->expr()->eq('IDENTITY(e.subscribersList)', ':subscribersList'))

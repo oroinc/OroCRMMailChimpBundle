@@ -2,7 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\AbstractQuery;
 
 use Psr\Log\LoggerAwareInterface;
@@ -91,7 +90,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
         $channel = $this->databaseHelper->getEntityReference($entity->getChannel());
         /** @var Campaign $campaign */
         $campaign = $this->databaseHelper->getEntityReference($entity->getCampaign());
-        $member = $this->findExistingMember($entity->getMember(), $channel, $campaign);
+        $member = $this->findExistingMember($entity, $channel, $campaign);
 
         $entity
             ->setChannel($channel)
@@ -143,25 +142,29 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
     }
 
     /**
-     * @param Member $member
+     * @param MemberActivity $memberActivity
      * @param Channel $channel
      * @param Campaign $campaign
-     * @return Member
+     * @return Member|null
      */
-    protected function findExistingMember(Member $member, Channel $channel, Campaign $campaign)
+    protected function findExistingMember(MemberActivity $memberActivity, Channel $channel, Campaign $campaign)
     {
         $searchCondition = [
             'channel' => $channel,
             'subscribersList' => $campaign->getSubscribersList(),
         ];
 
-        if ($originId = $member->getOriginId()) {
+        $member = $memberActivity->getMember();
+        $email = $member ? $member->getEmail() : $memberActivity->getEmail();
+        if ($member && $originId = $member->getOriginId()) {
             $searchCondition['originId'] = $originId;
+        } elseif ($email) {
+            $searchCondition['email'] = $email;
         } else {
-            $searchCondition['email'] = $member->getEmail();
+            return null;
         }
 
-        return $this->findEntity(ClassUtils::getClass($member), $searchCondition, ['id']);
+        return $this->findEntity('OroCRM\Bundle\MailChimpBundle\Entity\Member', $searchCondition, ['id']);
     }
 
     /**
@@ -178,7 +181,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
             ];
 
             return (bool)$this->findEntity(
-                ClassUtils::getClass($entity),
+                'OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity',
                 $searchCondition,
                 ['id'],
                 AbstractQuery::HYDRATE_SCALAR

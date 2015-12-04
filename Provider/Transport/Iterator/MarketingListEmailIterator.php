@@ -5,10 +5,10 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
+use Oro\Bundle\ImportExportBundle\Writer\AbstractNativeQueryWriter;
 use OroCRM\Bundle\MailChimpBundle\Entity\MarketingListEmail;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractNativeQueryWriter;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
