@@ -7,8 +7,6 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Akeneo\Bundle\BatchBundle\Item\ExecutionContext;
 use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
 
-use Doctrine\Common\Util\ClassUtils;
-
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -109,7 +107,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
         $channel = $this->databaseHelper->getEntityReference($entity->getChannel());
         /** @var Campaign $campaign */
         $campaign = $this->findExistingEntity($entity->getCampaign());
-        $member = $this->findExistingMember($entity->getMember(), $channel, $campaign);
+        $member = $this->findExistingMember($entity, $channel, $campaign);
 
         $entity
             ->setChannel($channel)
@@ -169,25 +167,32 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     }
 
     /**
-     * @param Member $member
+     * @param MemberActivity $memberActivity
      * @param Channel $channel
      * @param Campaign $campaign
-     * @return Member
+     * @return Member|null
      */
-    protected function findExistingMember(Member $member, Channel $channel, Campaign $campaign)
+    protected function findExistingMember(MemberActivity $memberActivity, Channel $channel, Campaign $campaign)
     {
         $searchCondition = [
             'channel' => $channel,
             'subscribersList' => $campaign->getSubscribersList(),
         ];
 
-        if ($originId = $member->getOriginId()) {
+        $member = $memberActivity->getMember();
+        $email = $member ? $member->getEmail() : $memberActivity->getEmail();
+        if ($member && $originId = $member->getOriginId()) {
             $searchCondition['originId'] = $originId;
+        } elseif ($email) {
+            $searchCondition['email'] = $email;
         } else {
-            $searchCondition['email'] = $member->getEmail();
+            return null;
         }
 
-        return $this->findEntityByIdentityValues(ClassUtils::getClass($member), $searchCondition);
+        return $this->findEntityByIdentityValues(
+            'OroCRM\Bundle\MailChimpBundle\Entity\Member',
+            $searchCondition
+        );
     }
 
     /**
@@ -203,7 +208,10 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
                 'member' => $entity->getMember()
             ];
 
-            return (bool)$this->findEntityByIdentityValues(ClassUtils::getClass($entity), $searchCondition);
+            return (bool)$this->findEntityByIdentityValues(
+                'OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity',
+                $searchCondition
+            );
         }
 
         return false;
