@@ -3,6 +3,8 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
+use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\MemberActivityRepository;
 
 class MemberActivityConnector extends AbstractMailChimpConnector implements ConnectorInterface
 {
@@ -46,6 +48,15 @@ class MemberActivityConnector extends AbstractMailChimpConnector implements Conn
      */
     protected function getConnectorSource()
     {
-        return $this->transport->getMemberActivitiesToSync($this->getChannel(), $this->getLastSyncDate());
+        /** @var MemberActivityRepository $repository */
+        $repository = $this->managerRegistry->getManagerForClass($this->entityName)
+            ->getRepository($this->entityName);
+
+        $latestActivityTimeMap = $repository->getLastSyncedActivitiesByCampaign(
+            $this->getChannel(),
+            [MemberActivity::ACTIVITY_CLICK, MemberActivity::ACTIVITY_OPEN]
+        );
+
+        return $this->transport->getMemberActivitiesToSync($this->getChannel(), $latestActivityTimeMap);
     }
 }

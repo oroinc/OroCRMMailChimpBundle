@@ -10,6 +10,9 @@ use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository;
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Entity\Template;
 use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
@@ -25,6 +28,8 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentListI
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
 
 /**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ *
  * @link http://apidocs.mailchimp.com/api/2.0/
  * @link https://bitbucket.org/mailchimp/mailchimp-api-php/
  */
@@ -116,9 +121,9 @@ class MailChimpTransport implements TransportInterface
         }
 
         // Synchronize only campaigns that are connected to subscriber lists that are used within OroCRM.
-        $staticSegments = $this->managerRegistry
-            ->getRepository('OroCRMMailChimpBundle:StaticSegment')
-            ->getStaticSegmentsToSync([], $channel);
+        /** @var StaticSegmentRepository $staticSegmentsRepository */
+        $staticSegmentsRepository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:StaticSegment');
+        $staticSegments = $staticSegmentsRepository->getStaticSegmentsToSync([], $channel);
 
         $listsToSynchronize = [];
         foreach ($staticSegments as $staticSegment) {
@@ -156,9 +161,9 @@ class MailChimpTransport implements TransportInterface
      */
     public function getMembersToSync(Channel $channel, \DateTime $since = null)
     {
-        $subscribersLists = $this->managerRegistry
-            ->getRepository('OroCRMMailChimpBundle:SubscribersList')
-            ->getUsedSubscribersListIterator($channel);
+        /** @var SubscribersListRepository $subscribersListRepository */
+        $subscribersListRepository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:SubscribersList');
+        $subscribersLists = $subscribersListRepository->getUsedSubscribersListIterator($channel);
 
         $parameters = ['status' => [Member::STATUS_SUBSCRIBED, Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED]];
 
@@ -181,12 +186,13 @@ class MailChimpTransport implements TransportInterface
             'types' => [
                 Template::TYPE_USER => true,
                 Template::TYPE_GALLERY => true,
-                Template::TYPE_BASE => true
+                Template::TYPE_BASE => true,
             ],
             'filters' => [
-                'include_drag_and_drop' => true
-            ]
+                'include_drag_and_drop' => true,
+            ],
         ];
+
         return new TemplateIterator($this->client, $parameters);
     }
 
@@ -197,9 +203,9 @@ class MailChimpTransport implements TransportInterface
      */
     public function getSegmentsToSync(Channel $channel)
     {
-        $subscribersLists = $this->managerRegistry
-            ->getRepository('OroCRMMailChimpBundle:SubscribersList')
-            ->getUsedSubscribersListIterator($channel);
+        /** @var SubscribersListRepository $subscribersListRepository */
+        $subscribersListRepository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:SubscribersList');
+        $subscribersLists = $subscribersListRepository->getUsedSubscribersListIterator($channel);
 
         $iterator = new StaticSegmentListIterator($subscribersLists, $this->client);
 
@@ -221,17 +227,24 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @param Channel $channel
-     * @param \DateTime $since
+     * @param \DateTime[] $sinceMap
      * @return MemberActivityIterator
      */
-    public function getMemberActivitiesToSync(Channel $channel, \DateTime $since = null)
+    public function getMemberActivitiesToSync(Channel $channel, array $sinceMap = null)
     {
         $parameters = ['include_empty' => false];
-        if ($since) {
-            $parameters['since'] = $this->getSinceForApi($since);
+        if ($sinceMap) {
+            foreach ($sinceMap as &$since) {
+                $since = $since->format(self::DATETIME_FORMAT);
+            }
         }
 
-        return new MemberActivityIterator($this->getSentCampaignsIterator($channel), $this->client, $parameters);
+        return new MemberActivityIterator(
+            $this->getSentCampaignsIterator($channel),
+            $this->client,
+            $parameters,
+            $sinceMap
+        );
     }
 
     /**
@@ -413,7 +426,8 @@ class MailChimpTransport implements TransportInterface
      */
     protected function getSentCampaignsIterator(Channel $channel)
     {
-        return $this->managerRegistry->getRepository('OroCRMMailChimpBundle:Campaign')
-            ->getSentCampaigns($channel);
+        /** @var CampaignRepository $repository */
+        $repository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:Campaign');
+        return $repository->getSentCampaigns($channel);
     }
 }
