@@ -2,9 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use Doctrine\Common\Util\ClassUtils;
-use Doctrine\ORM\EntityManager;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
@@ -12,29 +9,9 @@ use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
 class MemberImportStrategy extends AbstractImportStrategy
 {
     /**
-     * @var array
-     */
-    protected static $processedEmails = [];
-
-    /**
      * @var MergeVarProviderInterface
      */
     protected $mergeVarProvider;
-
-    /**
-     * @var string
-     */
-    protected $memberClassName;
-
-    /**
-     * @var EntityManager
-     */
-    protected $memberEntityManager;
-
-    /**
-     * @var array
-     */
-    protected $memberIdentityFields;
 
     /**
      * @param Member $entity
@@ -46,8 +23,13 @@ class MemberImportStrategy extends AbstractImportStrategy
 
         /** @var Member $entity */
         $entity = $this->beforeProcessEntity($entity);
+        $subscribersList = $this->getSubscribersList($entity);
+        if (!$subscribersList) {
+            return null;
+        }
+        $entity->setSubscribersList($subscribersList);
         /** @var Member $existingEntity */
-        $existingEntity = $this->findExistingMember($entity);
+        $existingEntity = $this->findExistingEntity($entity);
         if ($existingEntity) {
             if ($this->logger) {
                 $this->logger->notice('Syncing Existing MailChimp Member [origin_id=' . $entity->getOriginId() . ']');
@@ -68,6 +50,28 @@ class MemberImportStrategy extends AbstractImportStrategy
         }
 
         return $entity;
+    }
+
+    /**
+     * @param Member $member
+     * @return null|SubscribersList
+     */
+    protected function getSubscribersList(Member $member)
+    {
+        $subscribersList = $member->getSubscribersList();
+        if (!$subscribersList) {
+            return null;
+        }
+        if ($subscribersList->getId()) {
+            $subscribersList = $this->databaseHelper->getEntityReference($subscribersList);
+        } else {
+            $subscribersList = $this->findExistingEntity($subscribersList);
+        }
+        if (!$subscribersList) {
+            return null;
+        }
+
+        return $subscribersList;
     }
 
     /**
@@ -97,18 +101,6 @@ class MemberImportStrategy extends AbstractImportStrategy
         $existingEntity->setEuid($entity->getEuid());
         $existingEntity->setMergeVarValues($entity->getMergeVarValues());
 
-        // Replace subscribers list if required
-        /** @var SubscribersList $subscribersList */
-        if (!$existingEntity->getSubscribersList()) {
-            $itemData = $this->context->getValue('itemData');
-            $subscribersList = $this->updateRelatedEntity(
-                $existingEntity->getSubscribersList(),
-                $entity->getSubscribersList(),
-                $itemData['subscribersList']
-            );
-            $existingEntity->setSubscribersList($subscribersList);
-        }
-
         return $existingEntity;
     }
 
@@ -120,10 +112,6 @@ class MemberImportStrategy extends AbstractImportStrategy
      */
     protected function afterProcessEntity($entity)
     {
-        if ($this->isEntityProcessed($entity)) {
-            return null;
-        }
-
         $this->assignMergeVarValues($entity);
 
         return parent::afterProcessEntity($entity);
@@ -131,20 +119,11 @@ class MemberImportStrategy extends AbstractImportStrategy
 
     /**
      * @param Member $entity
+     * @return bool
      */
     protected function collectEntities($entity)
     {
-        self::$processedEmails[$entity->getSubscribersList()->getId()][$entity->getEmail()] = true;
-    }
-
-    /**
-     * @param Member $entity
-     *
-     * @return bool
-     */
-    protected function isEntityProcessed($entity)
-    {
-        return !empty(self::$processedEmails[$entity->getSubscribersList()->getId()][$entity->getEmail()]);
+        return false;
     }
 
     /**
@@ -172,77 +151,5 @@ class MemberImportStrategy extends AbstractImportStrategy
     public function setMergeVarProvider(MergeVarProviderInterface $mergeVarProvider)
     {
         $this->mergeVarProvider = $mergeVarProvider;
-    }
-
-    /**
-     * @param Member $member
-     * @return null|Member
-     */
-    public function findExistingMember(Member $member)
-    {
-        $entityName = $this->getMemberClassName($member);
-        $em = $this->getMemberEntityManager($entityName);
-        $identityValues = $this->getMemberIdentityValues($member);
-        $fields = [
-            'id',
-            'originId',
-            'subscribersList',
-            'email',
-            'mergeVarValues',
-            'firstName',
-            'lastName',
-            'phone'
-        ];
-
-        $queryBuilder = $em->createQueryBuilder()->from($entityName, 'e');
-        $queryBuilder->select(sprintf('partial e.{%s}', implode(',', $fields)));
-
-        $where = $queryBuilder->expr()->andX();
-        foreach ($identityValues as $field => $value) {
-            $where->add(sprintf('e.%s = :%s', $field, $field));
-        }
-
-        $queryBuilder->where($where)
-            ->setParameters($identityValues)
-            ->setMaxResults(1);
-
-        return $queryBuilder->getQuery()->getOneOrNullResult();
-    }
-
-    /**
-     * @param Member $member
-     * @return string
-     */
-    protected function getMemberClassName(Member $member)
-    {
-        if (!$this->memberClassName) {
-            $this->memberClassName = ClassUtils::getClass($member);
-        }
-
-        return $this->memberClassName;
-    }
-
-    /**
-     * @param string $entityName
-     * @return EntityManager
-     */
-    protected function getMemberEntityManager($entityName)
-    {
-        if (!$this->memberEntityManager) {
-            $this->memberEntityManager = $this->strategyHelper->getEntityManager($entityName);
-        }
-
-        return $this->memberEntityManager;
-    }
-
-    /**
-     * @param Member $member
-     * @return array
-     */
-    protected function getMemberIdentityValues(Member $member)
-    {
-        $identityFields = $this->fieldHelper->getIdentityFieldNames($this->getMemberClassName($member));
-
-        return $this->fieldHelper->getFieldsValues($member, $identityFields);
     }
 }
