@@ -121,9 +121,9 @@ class MailChimpTransport implements TransportInterface
         }
 
         // Synchronize only campaigns that are connected to subscriber lists that are used within OroCRM.
-        /** @var StaticSegmentRepository $staticSegmentsRepository */
-        $staticSegmentsRepository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:StaticSegment');
-        $staticSegments = $staticSegmentsRepository->getStaticSegmentsToSync([], $channel);
+        /** @var StaticSegmentRepository $repository */
+        $repository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:StaticSegment');
+        $staticSegments = $repository->getStaticSegments($channel);
 
         $listsToSynchronize = [];
         foreach ($staticSegments as $staticSegment) {
@@ -207,9 +207,7 @@ class MailChimpTransport implements TransportInterface
         $subscribersListRepository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:SubscribersList');
         $subscribersLists = $subscribersListRepository->getUsedSubscribersListIterator($channel);
 
-        $iterator = new StaticSegmentListIterator($subscribersLists, $this->client);
-
-        return $iterator;
+        return new StaticSegmentListIterator($subscribersLists, $this->client);
     }
 
     /**
