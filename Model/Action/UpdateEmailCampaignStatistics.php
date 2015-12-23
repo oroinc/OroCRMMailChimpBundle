@@ -3,8 +3,12 @@
 namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\UnitOfWork;
 
 use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
+
+use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use OroCRM\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
@@ -78,10 +82,7 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
         $relatedEntities = $this->getMarketingListEntitiesByEmail($marketingList, $memberActivity->getEmail());
         $em = $this->registry->getManager();
         foreach ($relatedEntities as $relatedEntity) {
-            $emailCampaignStatistics = $this->campaignStatisticsConnector->getStatisticsRecord(
-                $emailCampaign,
-                $relatedEntity
-            );
+            $emailCampaignStatistics = $this->getStatisticsRecord($emailCampaign, $relatedEntity);
 
             $this->incrementStatistics($memberActivity, $emailCampaignStatistics);
             $em->persist($emailCampaignStatistics);
@@ -138,5 +139,31 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
     protected function getEntitiesQueryBuilder(MarketingList $marketingList)
     {
         return $this->marketingListProvider->getMarketingListEntitiesQueryBuilder($marketingList);
+    }
+
+    /**
+     * @param EmailCampaign $emailCampaign
+     * @param object $relatedEntity
+     * @return EmailCampaignStatistics
+     */
+    protected function getStatisticsRecord(EmailCampaign $emailCampaign, $relatedEntity)
+    {
+        $emailCampaignStatistics = $this->campaignStatisticsConnector->getStatisticsRecord(
+            $emailCampaign,
+            $relatedEntity
+        );
+
+        /** @var EntityManager $em */
+        $em = $this->registry->getManager();
+        $uow = $em->getUnitOfWork();
+
+        if ($uow->getEntityState($emailCampaignStatistics) === UnitOfWork::STATE_DETACHED) {
+            return $em->find(
+                'OroCRMCampaignBundle:EmailCampaignStatistics',
+                $emailCampaignStatistics->getId()
+            );
+        }
+
+        return $emailCampaignStatistics;
     }
 }
