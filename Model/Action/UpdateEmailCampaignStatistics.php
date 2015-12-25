@@ -80,9 +80,10 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
         $marketingList = $mailChimpCampaign->getStaticSegment()->getMarketingList();
 
         $relatedEntities = $this->getMarketingListEntitiesByEmail($marketingList, $memberActivity->getEmail());
+        /** @var EntityManager $em */
         $em = $this->registry->getManager();
         foreach ($relatedEntities as $relatedEntity) {
-            $emailCampaignStatistics = $this->getStatisticsRecord($emailCampaign, $relatedEntity);
+            $emailCampaignStatistics = $this->getStatisticsRecord($emailCampaign, $relatedEntity, $em);
 
             $this->incrementStatistics($memberActivity, $emailCampaignStatistics);
             $em->persist($emailCampaignStatistics);
@@ -144,24 +145,18 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
     /**
      * @param EmailCampaign $emailCampaign
      * @param object $relatedEntity
+     * @param EntityManager $em
      * @return EmailCampaignStatistics
      */
-    protected function getStatisticsRecord(EmailCampaign $emailCampaign, $relatedEntity)
+    protected function getStatisticsRecord(EmailCampaign $emailCampaign, $relatedEntity, EntityManager $em)
     {
         $emailCampaignStatistics = $this->campaignStatisticsConnector->getStatisticsRecord(
             $emailCampaign,
             $relatedEntity
         );
 
-        /** @var EntityManager $em */
-        $em = $this->registry->getManager();
-        $uow = $em->getUnitOfWork();
-
-        if ($uow->getEntityState($emailCampaignStatistics) === UnitOfWork::STATE_DETACHED) {
-            return $em->find(
-                'OroCRMCampaignBundle:EmailCampaignStatistics',
-                $emailCampaignStatistics->getId()
-            );
+        if ($em->getUnitOfWork()->getEntityState($emailCampaignStatistics) === UnitOfWork::STATE_DETACHED) {
+            return $em->merge($emailCampaignStatistics);
         }
 
         return $emailCampaignStatistics;
