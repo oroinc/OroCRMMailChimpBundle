@@ -3,19 +3,12 @@
 namespace OroCRM\Bundle\MailChimpBundle\Form\Handler;
 
 use Oro\Bundle\FormBundle\Form\Handler\ApiFormHandler;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 class ConnectionFormHandler extends ApiFormHandler
 {
-    /**
-     * @var SubscribersList
-     */
-    protected $oldSubscribersList;
-
-    /**
-     * @var StaticSegment
-     */
+    /** @var StaticSegment */
     protected $oldSegment;
 
     /**
@@ -24,7 +17,6 @@ class ConnectionFormHandler extends ApiFormHandler
      */
     public function process($entity)
     {
-        $this->oldSubscribersList = $entity->getSubscribersList();
         if ($entity->getId()) {
             $this->oldSegment = $entity;
             $entity = $entity->createNewCopy();
