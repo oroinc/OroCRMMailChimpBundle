@@ -574,4 +574,21 @@ class StaticSegment implements OriginAwareInterface
     {
         return $this->getExtendedMergeVars([ExtendedMergeVar::STATE_SYNCED]);
     }
+
+    /**
+     * @return $this
+     */
+    public function createNewCopy()
+    {
+        $copy = clone $this;
+        $copy->id = null;
+        $copy->syncStatus = static::STATUS_NOT_SYNCED;
+        $copy->segmentMembers = new ArrayCollection();
+        $copy->extendedMergeVars = new ArrayCollection();
+        $copy->lastSynced = null;
+        $copy->originId = null;
+        $copy->memberCount = null;
+
+        return $copy;
+    }
 }

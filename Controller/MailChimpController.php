@@ -62,10 +62,13 @@ class MailChimpController extends Controller
         /** @var ApiFormHandler $handler */
         $handler = $this->get('orocrm_mailchimp.form.handler.connection_form');
 
-        $result = ['entity' => $staticSegment];
+        $result = [];
         if ($handler->process($staticSegment)) {
+            $staticSegment = $form->getData();
             $result['savedId'] = $staticSegment->getId();
         }
+
+        $result['entity'] = $staticSegment;
         $result['form'] = $form->createView();
 
         return $result;
