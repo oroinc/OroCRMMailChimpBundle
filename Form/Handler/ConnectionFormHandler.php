@@ -14,12 +14,21 @@ class ConnectionFormHandler extends ApiFormHandler
     protected $oldSubscribersList;
 
     /**
+     * @var StaticSegment
+     */
+    protected $oldSegment;
+
+    /**
      * @param StaticSegment $entity
      * @return bool
      */
     public function process($entity)
     {
         $this->oldSubscribersList = $entity->getSubscribersList();
+        if ($entity->getId()) {
+            $this->oldSegment = $entity;
+            $entity = $entity->createNewCopy();
+        }
 
         return parent::process($entity);
     }
@@ -29,11 +38,8 @@ class ConnectionFormHandler extends ApiFormHandler
      */
     protected function onSuccess($entity)
     {
-        // Reset originId of static segment if subscribers list was changed to force list creation
-        if ($this->oldSubscribersList
-            && $this->oldSubscribersList->getId() != $entity->getSubscribersList()->getId()
-        ) {
-            $entity->setOriginId(null);
+        if ($this->oldSegment) {
+            $this->manager->remove($this->oldSegment);
         }
 
         parent::onSuccess($entity);
