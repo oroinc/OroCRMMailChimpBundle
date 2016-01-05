@@ -49,59 +49,27 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
         $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
-        $staticSegment->expects($this->once())
-            ->method('getSubscribersList');
+        $staticSegment->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(null));
         $staticSegment->expects($this->never())
-            ->method('setOriginId');
+            ->method('createNewCopy');
 
         $this->assertParentCalls($staticSegment);
         $this->assertTrue($this->handler->process($staticSegment));
     }
 
-    public function testProcessUnchangedEntity()
+    public function testProcessExistingEntity()
     {
-        $subscribersList = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $subscribersList->expects($this->exactly(2))
-            ->method('getId')
-            ->will($this->returnValue(1));
-
         $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
-        $staticSegment->expects($this->exactly(2))
-            ->method('getSubscribersList')
-            ->will($this->returnValue($subscribersList));
-        $staticSegment->expects($this->never())
-            ->method('setOriginId');
-
-        $this->assertParentCalls($staticSegment);
-        $this->assertTrue($this->handler->process($staticSegment));
-    }
-
-    public function testProcessChangedEntity()
-    {
-        $subscribersList = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $subscribersList->expects($this->at(0))
+        $staticSegment->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(1));
-        $subscribersList->expects($this->at(1))
-            ->method('getId')
-            ->will($this->returnValue(2));
-
-        $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $staticSegment->expects($this->exactly(2))
-            ->method('getSubscribersList')
-            ->will($this->returnValue($subscribersList));
         $staticSegment->expects($this->once())
-            ->method('setOriginId')
-            ->with(null);
+            ->method('createNewCopy')
+            ->will($this->returnValue($staticSegment));
 
         $this->assertParentCalls($staticSegment);
         $this->assertTrue($this->handler->process($staticSegment));
