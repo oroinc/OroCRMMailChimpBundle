@@ -53,13 +53,13 @@ datagrid:
             id: ~
     orocrm_mailchimp_templates_grid:
         extended_entity_name: %orocrm_mailchimp.entity.template.class%
+        acl_resource: orocrm_email_campaign_view
         channel_limitation:
             channel_relation_path: .channel
         options:
             entityHint: MailChimp templates
         source:
             type: orm
-            acl_resource: orocrm_email_campaign_view
             query:
                 select:
                     - t.id
