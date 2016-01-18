@@ -2,9 +2,10 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Oro\Component\PhpUtils\ArrayUtil;
+
 use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
-use Oro\Bundle\UIBundle\Tools\ArrayUtils;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 abstract class AbstractExportWriter extends PersistentBatchWriter
@@ -45,7 +46,7 @@ abstract class AbstractExportWriter extends PersistentBatchWriter
     {
         if (!empty($response[$container])) {
             if ($key) {
-                return ArrayUtils::arrayColumn($response[$container], $key);
+                return ArrayUtil::arrayColumn($response[$container], $key);
             }
 
             return $response[$container];
