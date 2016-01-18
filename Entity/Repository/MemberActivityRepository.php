@@ -20,12 +20,12 @@ class MemberActivityRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQueryBuilder();
 
-        $qb->select('c.originId as campaign_origin_id, MAX(a.activityTime) as activity_time')
+        $qb->select('c.originId as campaign_origin_id, a.action, MAX(a.activityTime) as activity_time')
             ->from($this->_entityName, 'a')
             ->join('a.campaign', 'c')
             ->where($qb->expr()->eq('a.channel', ':channel'))
             ->setParameter('channel', $channel)
-            ->groupBy('c.originId');
+            ->groupBy('c.originId, a.action');
 
         if ($actions) {
             $qb->andWhere(
@@ -37,7 +37,7 @@ class MemberActivityRepository extends EntityRepository
         $result = $qb->getQuery()->getArrayResult();
         $map = [];
         foreach ($result as $row) {
-            $map[$row['campaign_origin_id']] = new \DateTime($row['activity_time'], new \DateTimeZone('UTC'));
+            $map[$row['campaign_origin_id']][$row['action']] = new \DateTime($row['activity_time'], new \DateTimeZone('UTC'));
         }
 
         return $map;

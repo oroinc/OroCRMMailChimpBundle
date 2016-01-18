@@ -232,8 +232,8 @@ class MailChimpTransport implements TransportInterface
     {
         $parameters = ['include_empty' => false];
         if ($sinceMap) {
-            foreach ($sinceMap as &$since) {
-                $since = $since->format(self::DATETIME_FORMAT);
+            foreach ($sinceMap as $campaign => $since) {
+                $sinceMap[$campaign] = $this->getSinceForApi($since);
             }
         }
 

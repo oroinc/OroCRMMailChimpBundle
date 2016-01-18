@@ -129,6 +129,7 @@ class MailChimpClient extends BaseClient
      */
     public function export($methodName, array $parameters)
     {
+        unset($parameters['since']);
         $url = $this->getExportAPIMethodUrl($methodName);
         $parameters = array_merge(['apikey' => $this->apiKey], $parameters);
         $query = json_encode($parameters);
