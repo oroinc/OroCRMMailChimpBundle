@@ -62,10 +62,19 @@ class MailChimpClientTest extends \PHPUnit_Framework_TestCase
             ->method('getContentType')
             ->will($this->returnValue('text/html'));
 
+        $response->expects($this->once())
+            ->method('isSuccessful')
+            ->will($this->returnValue(true));
+
         $this->assertEquals($response, $this->client->export($methodName, $parameters));
     }
 
-    public function testExportFailsWithInvalidResponse()
+    /**
+     * @dataProvider invalidResponseDataProvider
+     * @param bool $successful
+     * @param string $expectedError
+     */
+    public function testExportFailsWithInvalidResponse($successful, $expectedError)
     {
         $methodName = 'list';
         $parameters = ['id' => 123456];
@@ -95,8 +104,12 @@ class MailChimpClientTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($expectedUrl));
 
         $response->expects($this->once())
+            ->method('isSuccessful')
+            ->will($this->returnValue($successful));
+
+        $response->expects($this->once())
             ->method('getStatusCode')
-            ->will($this->returnValue(200));
+            ->will($this->returnValue(500));
 
         $response->expects($this->once())
             ->method('getReasonPhrase')
@@ -113,8 +126,8 @@ class MailChimpClientTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException(
             'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Exception\\BadResponseException',
-            'Invalid response, expected content type is text/html' . PHP_EOL .
-            '[status code] 200' . PHP_EOL .
+            $expectedError . PHP_EOL .
+            '[status code] 500' . PHP_EOL .
             '[reason phrase] OK' . PHP_EOL .
             '[url] https://us9.api.mailchimp.com/export/1.0/list/' . PHP_EOL .
             '[content type] application/json' . PHP_EOL .
@@ -122,5 +135,13 @@ class MailChimpClientTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals($response, $this->client->export($methodName, $parameters));
+    }
+
+    public function invalidResponseDataProvider()
+    {
+        return [
+            [true, 'Invalid response, expected content type is text/html'],
+            [false, 'Request to MailChimp Export API wasn\'t successfully completed.']
+        ];
     }
 }

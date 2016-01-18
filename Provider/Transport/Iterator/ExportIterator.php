@@ -2,8 +2,6 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use RuntimeException;
-
 use Guzzle\Http\EntityBodyInterface;
 
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
@@ -127,13 +125,6 @@ class ExportIterator implements \Iterator
         if (!$this->body) {
             $response = $this->client->export($this->methodName, $this->parameters);
             $this->body = $response->getBody();
-            if (!$response->isSuccessful()) {
-                throw new RuntimeException(sprintf(
-                    'Milchimp list wasn\'t successfully retrieved. Status code: "%s", body: "%s"',
-                    $response->getStatusCode(),
-                    $response->getBody(true)
-                ));
-            }
             $this->body->seek(0);
 
             if ($this->useFirstLineAsHeader) {
@@ -172,7 +163,7 @@ class ExportIterator implements \Iterator
 
         if ($this->useFirstLineAsHeader) {
             if (count($this->header) !== count($line)) {
-                throw new RuntimeException(sprintf(
+                throw new \RuntimeException(sprintf(
                     'Number of elements for header and line have to be the same. ' .
                     'Header count: "%s", line count: "%s", ' .
                     'header: "%s", line: "%s"',
