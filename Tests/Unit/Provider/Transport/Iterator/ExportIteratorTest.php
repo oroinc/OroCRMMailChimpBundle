@@ -49,9 +49,12 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
 
         $body = $this->getMock('Guzzle\\Http\\EntityBodyInterface');
 
-        $response->expects($this->once())
+        $response->expects($this->any())
             ->method('getBody')
             ->will($this->returnValue($body));
+        $response->expects($this->any())
+            ->method('isSuccessful')
+            ->will($this->returnValue(true));
 
         call_user_func_array(
             [
@@ -89,9 +92,12 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
 
         $body = $this->getMock('Guzzle\\Http\\EntityBodyInterface');
 
-        $response->expects($this->once())
+        $response->expects($this->any())
             ->method('getBody')
             ->will($this->returnValue($body));
+        $response->expects($this->any())
+            ->method('isSuccessful')
+            ->will($this->returnValue(true));
 
         call_user_func_array(
             [
@@ -118,9 +124,12 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
 
         $body = $this->getMock('Guzzle\\Http\\EntityBodyInterface');
 
-        $response->expects($this->once())
+        $response->expects($this->any())
             ->method('getBody')
             ->will($this->returnValue($body));
+        $response->expects($this->any())
+            ->method('isSuccessful')
+            ->will($this->returnValue(true));
 
         call_user_func_array(
             [

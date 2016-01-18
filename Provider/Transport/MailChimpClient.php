@@ -141,6 +141,14 @@ class MailChimpClient extends BaseClient
 
         $response = $request->send();
 
+        if (!$response->isSuccessful()) {
+            throw BadResponseException::factory(
+                $request,
+                $response,
+                'Request to MailChimp Export API wasn\'t successfully completed.'
+            );
+        }
+
         if (0 !== strpos($response->getContentType(), 'text/html')) {
             throw BadResponseException::factory(
                 $request,
