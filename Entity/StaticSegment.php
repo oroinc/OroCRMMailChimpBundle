@@ -525,6 +525,16 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
+     * @param Collection $segmentMembers
+     */
+    public function setSegmentMembers(Collection $segmentMembers)
+    {
+        $this->segmentMembers = $segmentMembers;
+
+        return $this;
+    }
+
+    /**
      * @param ExtendedMergeVar $extendedMergeVar
      * @return ExtendedMergeVar
      */
@@ -576,19 +586,12 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
-     * @return $this
+     * @param Collection $collection
      */
-    public function createNewCopy()
+    public function setSyncedExtendedMergeVars(Collection $collection)
     {
-        $copy = clone $this;
-        $copy->id = null;
-        $copy->syncStatus = static::STATUS_NOT_SYNCED;
-        $copy->segmentMembers = new ArrayCollection();
-        $copy->extendedMergeVars = new ArrayCollection();
-        $copy->lastSynced = null;
-        $copy->originId = null;
-        $copy->memberCount = null;
+        $this->extendedMergeVars = $collection;
 
-        return $copy;
+        return $this;
     }
 }
