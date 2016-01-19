@@ -32,11 +32,22 @@ class ConnectionFormHandler extends ApiFormHandler
      */
     protected function onSuccess($entity)
     {
-        if ($this->oldSegment) {
+        if ($this->oldSegment && !$this->campaignExistsForSegment($this->oldSegment)) {
             $this->manager->remove($this->oldSegment);
         }
 
         parent::onSuccess($entity);
+    }
+
+    /**
+     * @param StaticSegment $segment
+     *
+     * @return bool
+     */
+    protected function campaignExistsForSegment(StaticSegment $segment)
+    {
+        return (bool) $this->manager->getRepository('OroCRMMailChimpBundle:Campaign')
+            ->findOneByStaticSegment($segment);
     }
 
     /**
