@@ -32,8 +32,14 @@ class ConnectionFormHandler extends ApiFormHandler
      */
     protected function onSuccess($entity)
     {
-        if ($this->oldSegment && !$this->campaignExistsForSegment($this->oldSegment)) {
-            $this->manager->remove($this->oldSegment);
+        if ($this->oldSegment) {
+            if ($this->oldSegment->getSubscribersList() !== $entity->getSubscribersList() &&
+                !$this->campaignExistsForSegment($this->oldSegment)
+            ) {
+                $this->manager->remove($this->oldSegment);
+            } else {
+                $this->oldSegment->setMarketingList(null);
+            }
         }
 
         parent::onSuccess($entity);
