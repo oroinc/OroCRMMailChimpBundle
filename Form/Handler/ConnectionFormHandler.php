@@ -65,7 +65,6 @@ class ConnectionFormHandler extends ApiFormHandler
     {
         return (new StaticSegment())
             ->setChannel($segment->getChannel())
-            ->setCreatedAt($segment->getCreatedAt())
             ->setLastReset($segment->getLastReset())
             ->setMarketingList($segment->getMarketingList())
             ->setName($segment->getName())
@@ -74,7 +73,6 @@ class ConnectionFormHandler extends ApiFormHandler
             ->setSegmentMembers(new ArrayCollection())
             ->setSubscribersList($segment->getSubscribersList())
             ->setSyncStatus(StaticSegment::STATUS_NOT_SYNCED)
-            ->setSyncedExtendedMergeVars(new ArrayCollection())
-            ->setUpdatedAt($segment->getUpdatedAt());
+            ->setSyncedExtendedMergeVars(new ArrayCollection());
     }
 }

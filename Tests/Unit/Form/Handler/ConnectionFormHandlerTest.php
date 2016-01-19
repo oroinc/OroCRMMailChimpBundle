@@ -52,10 +52,8 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
         $staticSegment->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(null));
-        $staticSegment->expects($this->never())
-            ->method('createNewCopy');
 
-        $this->assertParentCalls($staticSegment);
+        $this->assertParentCalls($staticSegment, true);
         $this->assertTrue($this->handler->process($staticSegment));
     }
 
@@ -67,22 +65,25 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
         $staticSegment->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(1));
-        $staticSegment->expects($this->once())
-            ->method('createNewCopy')
-            ->will($this->returnValue($staticSegment));
 
-        $this->assertParentCalls($staticSegment);
+        $this->assertParentCalls($staticSegment, false);
         $this->assertTrue($this->handler->process($staticSegment));
     }
 
     /**
      * @param object $entity
+     * @param bool $present
      */
-    public function assertParentCalls($entity)
+    public function assertParentCalls($entity, $present)
     {
+        $entityConstraint = $this->identicalTo($entity);
+        if (!$present) {
+            $entityConstraint = $this->logicalNot($entityConstraint);
+        }
+
         $this->form->expects($this->once())
             ->method('setData')
-            ->with($entity);
+            ->with($entityConstraint);
         $this->request->expects($this->once())
             ->method('getMethod')
             ->will($this->returnValue('POST'));
@@ -94,7 +95,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
         $this->manager->expects($this->once())
             ->method('persist')
-            ->with($entity);
+            ->with($entityConstraint);
         $this->manager->expects($this->once())
             ->method('flush');
     }
