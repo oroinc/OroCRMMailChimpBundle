@@ -3,46 +3,85 @@
 namespace OroCRM\Bundle\MailChimpBundle\Form\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
-use Oro\Bundle\FormBundle\Form\Handler\ApiFormHandler;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
-class ConnectionFormHandler extends ApiFormHandler
+class ConnectionFormHandler
 {
-    /** @var StaticSegment */
-    protected $oldSegment;
+    /**
+     * @var FormInterface
+     */
+    protected $form;
 
     /**
-     * @param StaticSegment $entity
-     * @return bool
+     * @var Request
      */
-    public function process($entity)
-    {
-        if ($entity->getId()) {
-            $this->oldSegment = $entity;
-            $entity = $this->createSegmentCopy($entity);
-        }
+    protected $request;
 
-        return parent::process($entity);
+    /**
+     * @var ManagerRegistry
+     */
+    protected $registry;
+
+    /**
+     * @param Request $request
+     * @param ManagerRegistry $registry
+     * @param FormInterface $form
+     */
+    public function __construct(Request $request, ManagerRegistry $registry, FormInterface $form)
+    {
+        $this->request = $request;
+        $this->registry = $registry;
+        $this->form = $form;
     }
 
     /**
      * @param StaticSegment $entity
+     * @return StaticSegment|null
      */
-    protected function onSuccess($entity)
+    public function process($entity)
     {
-        if ($this->oldSegment) {
-            if ($this->oldSegment->getSubscribersList() !== $entity->getSubscribersList() &&
-                !$this->campaignExistsForSegment($this->oldSegment)
-            ) {
-                $this->manager->remove($this->oldSegment);
-            } else {
-                $this->oldSegment->setMarketingList(null);
+        $manager = $this->registry->getManagerForClass('OroCRMMailChimpBundle:StaticSegment');
+
+        $oldSubscribersListId = null;
+        $oldStaticSegment = $entity;
+        if ($oldStaticSegment->getSubscribersList()) {
+            $oldSubscribersListId = $entity->getSubscribersList()->getId();
+        }
+
+        if ($this->request->isMethod(Request::METHOD_POST)) {
+            $this->form->submit($this->request);
+
+            if ($this->form->isValid()) {
+                if ($entity->getId()) {
+                    if ($entity->getSubscribersList()
+                        && $entity->getSubscribersList()->getId() !== $oldSubscribersListId
+                    ) {
+                        if (!$this->campaignExistsForSegment($oldStaticSegment)) {
+                            $manager->remove($oldStaticSegment);
+                        } else {
+                            $oldStaticSegment->setMarketingList(null);
+                        }
+
+                        $entity = $this->createSegmentCopy($oldStaticSegment);
+                    } else {
+                        $entity->setSyncStatus(StaticSegment::STATUS_SCHEDULED);
+                    }
+                }
+
+                $manager->persist($entity);
+                $manager->flush();
+
+                return $entity;
             }
         }
 
-        parent::onSuccess($entity);
+        return null;
     }
 
     /**
@@ -52,8 +91,12 @@ class ConnectionFormHandler extends ApiFormHandler
      */
     protected function campaignExistsForSegment(StaticSegment $segment)
     {
-        return (bool) $this->manager->getRepository('OroCRMMailChimpBundle:Campaign')
-            ->findOneByStaticSegment($segment);
+        /** @var CampaignRepository $campaignRepository */
+        $campaignRepository = $this->registry
+            ->getManagerForClass('OroCRMMailChimpBundle:Campaign')
+            ->getRepository('OroCRMMailChimpBundle:Campaign');
+
+        return (bool)$campaignRepository->findOneBy(['staticSegment' => $segment]);
     }
 
     /**
