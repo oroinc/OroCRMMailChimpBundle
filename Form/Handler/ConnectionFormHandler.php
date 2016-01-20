@@ -2,40 +2,120 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Form\Handler;
 
-use Oro\Bundle\FormBundle\Form\Handler\ApiFormHandler;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
-class ConnectionFormHandler extends ApiFormHandler
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
+
+use OroCRM\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+
+class ConnectionFormHandler
 {
     /**
-     * @var SubscribersList
+     * @var FormInterface
      */
-    protected $oldSubscribersList;
+    protected $form;
 
     /**
-     * @param StaticSegment $entity
-     * @return bool
+     * @var Request
      */
-    public function process($entity)
-    {
-        $this->oldSubscribersList = $entity->getSubscribersList();
+    protected $request;
 
-        return parent::process($entity);
+    /**
+     * @var ManagerRegistry
+     */
+    protected $registry;
+
+    /**
+     * @param Request $request
+     * @param ManagerRegistry $registry
+     * @param FormInterface $form
+     */
+    public function __construct(Request $request, ManagerRegistry $registry, FormInterface $form)
+    {
+        $this->request = $request;
+        $this->registry = $registry;
+        $this->form = $form;
     }
 
     /**
      * @param StaticSegment $entity
+     * @return StaticSegment|null
      */
-    protected function onSuccess($entity)
+    public function process($entity)
     {
-        // Reset originId of static segment if subscribers list was changed to force list creation
-        if ($this->oldSubscribersList
-            && $this->oldSubscribersList->getId() != $entity->getSubscribersList()->getId()
-        ) {
-            $entity->setOriginId(null);
+        $manager = $this->registry->getManagerForClass('OroCRMMailChimpBundle:StaticSegment');
+
+        $oldSubscribersListId = null;
+        $oldStaticSegment = $entity;
+        if ($oldStaticSegment->getSubscribersList()) {
+            $oldSubscribersListId = $entity->getSubscribersList()->getId();
         }
 
-        parent::onSuccess($entity);
+        if ($this->request->isMethod(Request::METHOD_POST)) {
+            $this->form->submit($this->request);
+
+            if ($this->form->isValid()) {
+                if ($entity->getId()) {
+                    if ($entity->getSubscribersList()
+                        && $entity->getSubscribersList()->getId() !== $oldSubscribersListId
+                    ) {
+                        if (!$this->campaignExistsForSegment($oldStaticSegment)) {
+                            $manager->remove($oldStaticSegment);
+                        } else {
+                            $oldStaticSegment->setMarketingList(null);
+                        }
+
+                        $entity = $this->createSegmentCopy($oldStaticSegment);
+                    } else {
+                        $entity->setSyncStatus(StaticSegment::STATUS_SCHEDULED);
+                    }
+                }
+
+                $manager->persist($entity);
+                $manager->flush();
+
+                return $entity;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param StaticSegment $segment
+     *
+     * @return bool
+     */
+    protected function campaignExistsForSegment(StaticSegment $segment)
+    {
+        /** @var CampaignRepository $campaignRepository */
+        $campaignRepository = $this->registry
+            ->getManagerForClass('OroCRMMailChimpBundle:Campaign')
+            ->getRepository('OroCRMMailChimpBundle:Campaign');
+
+        return (bool)$campaignRepository->findOneBy(['staticSegment' => $segment]);
+    }
+
+    /**
+     * @param StaticSegment $segment
+     *
+     * @return StaticSegment
+     */
+    protected function createSegmentCopy(StaticSegment $segment)
+    {
+        return (new StaticSegment())
+            ->setChannel($segment->getChannel())
+            ->setLastReset($segment->getLastReset())
+            ->setMarketingList($segment->getMarketingList())
+            ->setName($segment->getName())
+            ->setOwner($segment->getOwner())
+            ->setRemoteRemove($segment->getRemoteRemove())
+            ->setSegmentMembers(new ArrayCollection())
+            ->setSubscribersList($segment->getSubscribersList())
+            ->setSyncStatus(StaticSegment::STATUS_NOT_SYNCED)
+            ->setSyncedExtendedMergeVars(new ArrayCollection());
     }
 }

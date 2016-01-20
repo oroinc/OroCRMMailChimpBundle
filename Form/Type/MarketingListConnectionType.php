@@ -4,10 +4,12 @@ namespace OroCRM\Bundle\MailChimpBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MarketingListConnectionType extends AbstractType
 {
+    const NAME = 'orocrm_mailchimp_marketing_list_connection';
+
     /**
      * {@inheritdoc}
      */
@@ -44,7 +46,7 @@ class MarketingListConnectionType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             [
@@ -58,6 +60,6 @@ class MarketingListConnectionType extends AbstractType
      */
     public function getName()
     {
-        return 'orocrm_mailchimp_marketing_list_connection';
+        return self::NAME;
     }
 }
