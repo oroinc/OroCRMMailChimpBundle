@@ -37,7 +37,10 @@ class MemberActivityRepository extends EntityRepository
         $result = $qb->getQuery()->getArrayResult();
         $map = [];
         foreach ($result as $row) {
-            $map[$row['campaign_origin_id']][$row['action']] = new \DateTime($row['activity_time'], new \DateTimeZone('UTC'));
+            $map[$row['campaign_origin_id']][$row['action']] = new \DateTime(
+                $row['activity_time'],
+                new \DateTimeZone('UTC')
+            );
         }
 
         return $map;
