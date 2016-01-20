@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Guzzle\Http\EntityBodyInterface;
+
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class ExportIterator implements \Iterator
@@ -161,6 +162,17 @@ class ExportIterator implements \Iterator
         }
 
         if ($this->useFirstLineAsHeader) {
+            if (count($this->header) !== count($line)) {
+                throw new \RuntimeException(sprintf(
+                    'Number of elements for header and line have to be the same. ' .
+                    'Header count: "%s", line count: "%s", ' .
+                    'header: "%s", line: "%s"',
+                    count($this->header),
+                    count($line),
+                    json_encode($this->header),
+                    json_encode($line)
+                ));
+            }
             $line = array_combine($this->header, $line);
         }
 
