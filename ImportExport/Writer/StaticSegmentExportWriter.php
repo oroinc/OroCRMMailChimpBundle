@@ -56,6 +56,12 @@ class StaticSegmentExportWriter extends AbstractExportWriter
 
         $this->handleMembersUpdate(
             $staticSegment,
+            [StaticSegmentMember::STATE_UNSUBSCRIBE, StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE],
+            'deleteStaticSegmentMembers'
+        );
+
+        $this->handleMembersUpdate(
+            $staticSegment,
             StaticSegmentMember::STATE_UNSUBSCRIBE,
             'batchUnsubscribe',
             StaticSegmentMember::STATE_DROP
@@ -95,16 +101,16 @@ class StaticSegmentExportWriter extends AbstractExportWriter
 
     /**
      * @param StaticSegment $staticSegment
-     * @param string $segmentStateFilter
+     * @param string|array $segmentStateFilter
      * @param string $method
-     * @param string $itemState
+     * @param string|null $itemState
      * @param bool $deleteMember
      */
     public function handleMembersUpdate(
         StaticSegment $staticSegment,
         $segmentStateFilter,
         $method,
-        $itemState,
+        $itemState = null,
         $deleteMember = false
     ) {
         $emailsIterator = $this->getSegmentMembersEmailsIterator($staticSegment, $segmentStateFilter);
@@ -128,7 +134,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         }
 
         if (count($emailsToProcess)) {
-            $this->handleEmailsBatch($staticSegment, $method, $emailsToProcess, $itemState);
+            $this->handleEmailsBatch($staticSegment, $method, $emailsToProcess, $itemState, $deleteMember);
         }
     }
 
@@ -136,29 +142,35 @@ class StaticSegmentExportWriter extends AbstractExportWriter
      * @param StaticSegment $staticSegment
      * @param string $method
      * @param array $emailsToProcess
-     * @param string $itemState
+     * @param string|null $itemState
      * @param bool $deleteMember
      */
     protected function handleEmailsBatch(
         StaticSegment $staticSegment,
         $method,
         array $emailsToProcess,
-        $itemState,
+        $itemState = null,
         $deleteMember = false
     ) {
-        $response = $this->transport->$method(
-            [
-                'id' => $staticSegment->getSubscribersList()->getOriginId(),
-                'seg_id' => (integer)$staticSegment->getOriginId(),
-                'batch' => array_map(
-                    function ($email) {
-                        return ['email' => $email];
-                    },
-                    $emailsToProcess
-                ),
-                'delete_member' => $deleteMember
-            ]
-        );
+        $batchParameters = [
+            'id' => $staticSegment->getSubscribersList()->getOriginId(),
+            'batch' => array_map(
+                function ($email) {
+                    return ['email' => $email];
+                },
+                $emailsToProcess
+            ),
+
+        ];
+
+        if ($method === 'addStaticSegmentMembers' || $method === 'deleteStaticSegmentMembers') {
+            $batchParameters['seg_id'] = (integer)$staticSegment->getOriginId();
+        }
+        if ($deleteMember) {
+            $batchParameters['delete_member'] = true;
+        }
+
+        $response = $this->transport->$method($batchParameters);
 
         $this->handleResponse(
             $response,
@@ -180,31 +192,12 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             return;
         }
 
-        $qb = $this->getRepository()->createQueryBuilder('staticSegmentMember');
-        $qb
-            ->update()
-            ->set('staticSegmentMember.state', ':state')
-            ->setParameter('state', $itemState)
-            ->where($qb->expr()->in('staticSegmentMember.id', ':ids'))
-            ->setParameter('ids', array_keys($emailsToUpdate))
-            ->getQuery()
-            ->execute();
-
-        foreach ($emailsToUpdate as $id => $email) {
-            $this->logger->debug(
-                sprintf(
-                    'Member with id "%s" and email "%s" got "%s" state',
-                    $id,
-                    $email,
-                    $itemState
-                )
-            );
-        }
+        $this->updateStaticSegmentMembersState($emailsToUpdate, $itemState);
     }
 
     /**
      * @param StaticSegment $staticSegment
-     * @param string $state
+     * @param string|array $state
      *
      * @return BufferedQueryResultIterator
      */
@@ -212,13 +205,18 @@ class StaticSegmentExportWriter extends AbstractExportWriter
     {
         $qb = $this->getRepository()->createQueryBuilder('staticSegmentMember');
 
+        if (is_array($state)) {
+            $stateExpr = $qb->expr()->in('staticSegmentMember.state', ':state');
+        } else {
+            $stateExpr = $qb->expr()->eq('staticSegmentMember.state', ':state');
+        }
         $qb
             ->select('staticSegmentMember.id as staticSegmentMemberId, mmbr.email as memberEmail')
             ->leftJoin('staticSegmentMember.member', 'mmbr')
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('staticSegmentMember.staticSegment', ':staticSegment'),
-                    $qb->expr()->eq('staticSegmentMember.state', ':state')
+                    $stateExpr
                 )
             )
             ->setParameter('staticSegment', $staticSegment)
@@ -255,5 +253,35 @@ class StaticSegmentExportWriter extends AbstractExportWriter
             },
             $this->getArrayData($response, 'errors', 'email')
         );
+    }
+
+    /**
+     * @param array $emailsToUpdate
+     * @param string|null $itemState
+     */
+    protected function updateStaticSegmentMembersState($emailsToUpdate, $itemState)
+    {
+        if ($itemState) {
+            $qb = $this->getRepository()->createQueryBuilder('staticSegmentMember');
+            $qb
+                ->update()
+                ->set('staticSegmentMember.state', ':state')
+                ->setParameter('state', $itemState)
+                ->where($qb->expr()->in('staticSegmentMember.id', ':ids'))
+                ->setParameter('ids', array_keys($emailsToUpdate))
+                ->getQuery()
+                ->execute();
+
+            foreach ($emailsToUpdate as $id => $email) {
+                $this->logger->debug(
+                    sprintf(
+                        'Member with id "%s" and email "%s" got "%s" state',
+                        $id,
+                        $email,
+                        $itemState
+                    )
+                );
+            }
+        }
     }
 }
