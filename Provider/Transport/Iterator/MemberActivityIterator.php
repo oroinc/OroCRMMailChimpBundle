@@ -42,8 +42,8 @@ class MemberActivityIterator extends AbstractMemberActivityIterator
     {
         $parameters = $this->parameters;
         $parameters['id'] = $campaign->getOriginId();
-        if (array_key_exists($campaign->getOriginId(), $this->sinceMap)) {
-            $parameters['since'] = $this->sinceMap[$campaign->getOriginId()];
+        if (!empty($this->sinceMap[$campaign->getOriginId()]['since'])) {
+            $parameters['since'] = $this->sinceMap[$campaign->getOriginId()]['since'];
         }
 
         return $this->createExportIterator(MailChimpClient::EXPORT_CAMPAIGN_SUBSCRIBER_ACTIVITY, $parameters);

@@ -14,6 +14,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
+use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
 
 class MemberActivityImportStrategy extends BasicImportStrategy implements LoggerAwareInterface
 {
@@ -173,13 +174,32 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
      */
     protected function isSkipped(MemberActivity $entity)
     {
+        $searchCondition = null;
         if (in_array($entity->getAction(), $this->singleInstanceActivities, true)) {
             $searchCondition = [
                 'campaign' => $entity->getCampaign(),
                 'action' => $entity->getAction(),
                 'member' => $entity->getMember()
             ];
+        } else {
+            $sinceMap = $this->context->getValue(MemberActivityConnector::SINCE_MAP_KEY);
+            $campaignOriginId = $entity->getCampaign()->getOriginId();
+            if ($sinceMap && array_key_exists($campaignOriginId, $sinceMap)) {
+                $activitySince = $sinceMap[$campaignOriginId];
+                if (array_key_exists($entity->getAction(), $activitySince)
+                    && $entity->getActivityTime() <= $activitySince[$entity->getAction()]
+                ) {
+                    $searchCondition = [
+                        'campaign' => $entity->getCampaign(),
+                        'action' => $entity->getAction(),
+                        'member' => $entity->getMember(),
+                        'activityTime' => $entity->getActivityTime()
+                    ];
+                }
+            }
+        }
 
+        if ($searchCondition) {
             return (bool)$this->findEntity(
                 'OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity',
                 $searchCondition,

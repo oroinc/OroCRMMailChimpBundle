@@ -129,7 +129,6 @@ class MailChimpClient extends BaseClient
      */
     public function export($methodName, array $parameters)
     {
-        unset($parameters['since']);
         $url = $this->getExportAPIMethodUrl($methodName);
         $parameters = array_merge(['apikey' => $this->apiKey], $parameters);
         $query = json_encode($parameters);
@@ -162,7 +161,8 @@ class MailChimpClient extends BaseClient
 
         if (!$response->isSuccessful()) {
             throw BadResponseException::factory(
-                $request,
+                $url,
+                (string)$query,
                 $response,
                 'Request to MailChimp Export API wasn\'t successfully completed.'
             );

@@ -225,7 +225,7 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @param Channel $channel
-     * @param \DateTime[] $sinceMap
+     * @param array[] $sinceMap
      * @return MemberActivityIterator
      */
     public function getMemberActivitiesToSync(Channel $channel, array $sinceMap = null)
@@ -233,7 +233,15 @@ class MailChimpTransport implements TransportInterface
         $parameters = ['include_empty' => false];
         if ($sinceMap) {
             foreach ($sinceMap as $campaign => $since) {
-                $sinceMap[$campaign] = $this->getSinceForApi($since);
+                // Seems that MailChimp has delay on activities collecting
+                // and activities list may be extended in past
+                $sinceDate = min($since);
+                if (!$sinceDate) {
+                    $sinceDate = max($since);
+                }
+                if ($sinceDate) {
+                    $sinceMap[$campaign]['since'] = $this->getSinceForApi($sinceDate, 'PT10M');
+                }
             }
         }
 
@@ -407,13 +415,16 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @param \DateTime $since
+     * @param string $interval
      * @return string
      */
-    protected function getSinceForApi(\DateTime $since)
+    protected function getSinceForApi(\DateTime $since, $interval = 'PT1S')
     {
-        $since = clone $since;
-        $since->sub(new \DateInterval('PT1S'));
-        $since->setTimezone(new \DateTimeZone('UTC'));
+        if ($interval) {
+            $since = clone $since;
+            $since->setTimezone(new \DateTimeZone('UTC'));
+            $since->sub(new \DateInterval($interval));
+        }
 
         return $since->format(self::DATETIME_FORMAT);
     }
