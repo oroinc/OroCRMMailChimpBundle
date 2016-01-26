@@ -235,7 +235,13 @@ class MailChimpTransport implements TransportInterface
             foreach ($sinceMap as $campaign => $since) {
                 // Seems that MailChimp has delay on activities collecting
                 // and activities list may be extended in past
-                $sinceMap[$campaign]['since'] = $this->getSinceForApi(min($since), 'PT10M');
+                $sinceDate = min($since);
+                if (!$sinceDate) {
+                    $sinceDate = max($since);
+                }
+                if ($sinceDate) {
+                    $sinceMap[$campaign]['since'] = $this->getSinceForApi($sinceDate, 'PT10M');
+                }
             }
         }
 
