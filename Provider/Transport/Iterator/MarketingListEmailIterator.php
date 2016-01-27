@@ -111,13 +111,19 @@ class MarketingListEmailIterator extends AbstractStaticSegmentIterator
                 $this->removedItemClassName,
                 'mlr',
                 Join::WITH,
-                "mlr.entityId = $entityAlias.id"
+                $qb->expr()->andX(
+                    $qb->expr()->eq('mlr.entityId', $entityAlias . '.id'),
+                    $qb->expr()->eq('mlr.marketingList', 'mli.marketingList')
+                )
             )
             ->leftJoin(
                 $this->unsubscribedItemClassName,
                 'mlu',
                 Join::WITH,
-                "mlu.entityId = $entityAlias.id"
+                $qb->expr()->andX(
+                    $qb->expr()->eq('mlu.entityId', $entityAlias . '.id'),
+                    $qb->expr()->eq('mlu.marketingList', 'mli.marketingList')
+                )
             );
     }
 }
