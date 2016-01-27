@@ -27,7 +27,6 @@ parameters:
     orocrm_mailchimp.form.type.marketing_list_connecion.class: OroCRM\Bundle\MailChimpBundle\Form\Type\MarketingListConnectionType
     orocrm_mailchimp.form.autocomplete.template.search_handler.class: OroCRM\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler
     orocrm_mailchimp.form.autocomplete.list.search_handler.class: OroCRM\Bundle\MailChimpBundle\Autocomplete\ListSearchHandler
-    orocrm_mailchimp.form.handler.connection_form.class: OroCRM\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler
     orocrm_mailchimp.static_segment.manager.api.class: Oro\Bundle\SoapBundle\Entity\Manager\ApiEntityManager
 
     # Integration related services
@@ -379,12 +378,6 @@ services:
         tags:
             - { name: form.type, alias: "orocrm_mailchimp_marketing_list_connection" }
 
-    orocrm_mailchimp.form.marketing_list_connecion:
-        class: Symfony\Component\Form\Form
-        factory_method: createNamed
-        factory_service: form.factory
-        arguments: ["orocrm_mailchimp_marketing_list_connection_form", "orocrm_mailchimp_marketing_list_connection", null]
-
     orocrm_mailchimp.form.autocomplete.template.search_handler:
         class: %orocrm_mailchimp.form.autocomplete.template.search_handler.class%
         arguments:
@@ -406,13 +399,6 @@ services:
             - [setAclHelper,["@oro_security.acl_helper"]]
         tags:
             - { name: oro_form.autocomplete.search_handler, alias: "mailchimp_lists", acl_resource: "orocrm_email_campaign_view" }
-
-    orocrm_mailchimp.form.handler.connection_form:
-        parent: oro_form.form_handler.api
-        class: %orocrm_mailchimp.form.handler.connection_form.class%
-        scope: request
-        calls:
-            - [setForm, [@orocrm_mailchimp.form.marketing_list_connecion]]
 
     # Integration related services
     orocrm_mailchimp.provider.channel_type:
