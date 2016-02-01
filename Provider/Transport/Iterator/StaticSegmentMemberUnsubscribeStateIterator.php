@@ -66,7 +66,10 @@ class StaticSegmentMemberUnsubscribeStateIterator extends AbstractStaticSegmentI
                 $this->unsubscribedItemClassName,
                 'mlu',
                 Join::WITH,
-                "mlu.entityId = $entityAlias.id"
+                $qb->expr()->andX(
+                    $qb->expr()->eq('mlu.entityId', $entityAlias . '.id'),
+                    $qb->expr()->eq('mlu.marketingList', 'mli.marketingList')
+                )
             )
             ->andWhere($qb->expr()->isNotNull('mlu.id'));
     }
