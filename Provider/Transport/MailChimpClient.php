@@ -133,31 +133,7 @@ class MailChimpClient extends BaseClient
         $parameters = array_merge(['apikey' => $this->apiKey], $parameters);
         $query = json_encode($parameters);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, 1);
-        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
-
-        $message = curl_exec($ch);
-        $info = curl_getinfo($ch);
-        curl_close($ch);
-
-        $code = null;
-        if ($info && array_key_exists('http_code', $info)) {
-            $code = $info['http_code'];
-        }
-        if ($code !== 200 || !$message) {
-            throw new \RuntimeException(
-                sprintf('Server returned unexpected response. Response code %s', $code)
-            );
-        }
-
-        $response = Response::fromMessage($message);
+        $response = $this->callExportApi($url, $query);
 
         if (!$response->isSuccessful()) {
             throw BadResponseException::factory(
@@ -204,5 +180,39 @@ class MailChimpClient extends BaseClient
         $parts = array_pad(explode('-', $this->apiKey), 2, '');
 
         return end($parts);
+    }
+
+    /**
+     * @param string $url
+     * @param string $query
+     * @return Response
+     */
+    protected function callExportApi($url, $query)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+
+        $message = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+
+        $code = null;
+        if ($info && array_key_exists('http_code', $info)) {
+            $code = $info['http_code'];
+        }
+        if ($code !== 200 || !$message) {
+            throw new \RuntimeException(
+                sprintf('Server returned unexpected response. Response code %s', $code)
+            );
+        }
+
+        return Response::fromMessage($message);
     }
 }
