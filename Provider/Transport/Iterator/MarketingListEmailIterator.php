@@ -113,7 +113,7 @@ class MarketingListEmailIterator extends AbstractStaticSegmentIterator
                 Join::WITH,
                 $qb->expr()->andX(
                     $qb->expr()->eq('mlr.entityId', $entityAlias . '.id'),
-                    $qb->expr()->eq('mlr.marketingList', 'mli.marketingList')
+                    $qb->expr()->eq('mlr.marketingList', ':marketingListEntity')
                 )
             )
             ->leftJoin(
@@ -122,7 +122,7 @@ class MarketingListEmailIterator extends AbstractStaticSegmentIterator
                 Join::WITH,
                 $qb->expr()->andX(
                     $qb->expr()->eq('mlu.entityId', $entityAlias . '.id'),
-                    $qb->expr()->eq('mlu.marketingList', 'mli.marketingList')
+                    $qb->expr()->eq('mlu.marketingList', ':marketingListEntity')
                 )
             );
     }

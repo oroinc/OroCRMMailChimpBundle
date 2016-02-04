@@ -88,6 +88,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
             $marketingList,
             MarketingListProvider::FULL_ENTITIES_MIXIN
         );
+        $qb->setParameter('marketingListEntity', $marketingList);
 
         $this->prepareIteratorPart($qb);
         $this->applyOrganizationRestrictions($staticSegment, $qb);
@@ -116,7 +117,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                 Join::WITH,
                 $qb->expr()->andX(
                     $qb->expr()->eq('mlr.entityId', $entityAlias . '.id'),
-                    $qb->expr()->eq('mlr.marketingList', 'mli.marketingList')
+                    $qb->expr()->eq('mlr.marketingList', ':marketingListEntity')
                 )
             )
             ->andWhere($qb->expr()->isNull('mlr.id'))
@@ -126,7 +127,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
                 Join::WITH,
                 $qb->expr()->andX(
                     $qb->expr()->eq('mlu.entityId', $entityAlias . '.id'),
-                    $qb->expr()->eq('mlu.marketingList', 'mli.marketingList')
+                    $qb->expr()->eq('mlu.marketingList', ':marketingListEntity')
                 )
             )
             ->andWhere($qb->expr()->isNull('mlu.id'));
