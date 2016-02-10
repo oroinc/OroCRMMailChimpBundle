@@ -5,7 +5,6 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 use Psr\Log\LoggerInterface;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 class MemberWriter extends AbstractExportWriter
 {
@@ -20,9 +19,14 @@ class MemberWriter extends AbstractExportWriter
         $item = $items[0];
         $this->transport->init($item->getChannel()->getTransport());
 
-        $subscribersList = $item->getSubscribersList();
+        $membersBySubscriberList = [];
+        foreach ($items as $member) {
+            $membersBySubscriberList[$member->getSubscribersList()->getOriginId()][] = $member;
+        }
 
-        $this->batchSubscribe($subscribersList, $items);
+        foreach ($membersBySubscriberList as $subscribersListOriginId => $members) {
+            $this->batchSubscribe($subscribersListOriginId, $members);
+        }
 
         array_walk(
             $items,
@@ -35,14 +39,14 @@ class MemberWriter extends AbstractExportWriter
 
         parent::write($items);
 
-        $this->logger->info(sprintf('%d items written', count($items)));
+        $this->logger->info(sprintf('%d members processed', count($items)));
     }
 
     /**
-     * @param SubscribersList $subscribersList
+     * @param string $subscribersListOriginId
      * @param Member[] $items
      */
-    protected function batchSubscribe(SubscribersList $subscribersList, array $items)
+    protected function batchSubscribe($subscribersListOriginId, array $items)
     {
         $emails = [];
 
@@ -63,7 +67,7 @@ class MemberWriter extends AbstractExportWriter
 
         $response = $this->transport->batchSubscribe(
             [
-                'id' => $subscribersList->getOriginId(),
+                'id' => $subscribersListOriginId,
                 'batch' => $batch,
                 'double_optin' => false,
                 'update_existing' => true,
@@ -73,12 +77,11 @@ class MemberWriter extends AbstractExportWriter
         $this
             ->handleResponse(
                 $response,
-                function ($response, LoggerInterface $logger) use ($subscribersList) {
+                function ($response, LoggerInterface $logger) use ($subscribersListOriginId) {
                     $logger->info(
                         sprintf(
-                            'List #%s [origin_id=%s]: [%s] add, [%s] update, [%s] error',
-                            $subscribersList->getId(),
-                            $subscribersList->getOriginId(),
+                            'List [origin_id=%s]: [%s] add, [%s] update, [%s] error',
+                            $subscribersListOriginId,
                             $response['add_count'],
                             $response['update_count'],
                             $response['error_count']

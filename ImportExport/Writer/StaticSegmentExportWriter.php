@@ -56,55 +56,55 @@ class StaticSegmentExportWriter extends AbstractExportWriter
     }
 
     /**
+     * @param StaticSegment[] $items
+     *
      * {@inheritdoc}
      */
     public function write(array $items)
     {
-        /** @var StaticSegment $staticSegment */
-        $staticSegment = $items[0];
-        $channel = $staticSegment->getChannel();
+        $this->transport->init($items[0]->getChannel()->getTransport());
 
-        $this->transport->init($channel->getTransport());
+        foreach ($items as $staticSegment) {
+            $this->addStaticListSegment($staticSegment);
 
-        $this->addStaticListSegment($staticSegment);
+            $this->handleMembersUpdate(
+                $staticSegment,
+                StaticSegmentMember::STATE_ADD,
+                'addStaticSegmentMembers',
+                StaticSegmentMember::STATE_SYNCED
+            );
 
-        $this->handleMembersUpdate(
-            $staticSegment,
-            StaticSegmentMember::STATE_ADD,
-            'addStaticSegmentMembers',
-            StaticSegmentMember::STATE_SYNCED
-        );
+            $this->handleMembersUpdate(
+                $staticSegment,
+                StaticSegmentMember::STATE_REMOVE,
+                'deleteStaticSegmentMembers',
+                StaticSegmentMember::STATE_DROP
+            );
 
-        $this->handleMembersUpdate(
-            $staticSegment,
-            StaticSegmentMember::STATE_REMOVE,
-            'deleteStaticSegmentMembers',
-            StaticSegmentMember::STATE_DROP
-        );
+            $this->handleMembersUpdate(
+                $staticSegment,
+                [StaticSegmentMember::STATE_UNSUBSCRIBE, StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE],
+                'deleteStaticSegmentMembers'
+            );
 
-        $this->handleMembersUpdate(
-            $staticSegment,
-            [StaticSegmentMember::STATE_UNSUBSCRIBE, StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE],
-            'deleteStaticSegmentMembers'
-        );
+            // Set unsubscribe to member
+            $this->handleMembersUpdate(
+                $staticSegment,
+                StaticSegmentMember::STATE_UNSUBSCRIBE,
+                'batchUnsubscribe',
+                StaticSegmentMember::STATE_DROP,
+                false,
+                Member::STATUS_UNSUBSCRIBED
+            );
 
-        // Set unsubscribe to member
-        $this->handleMembersUpdate(
-            $staticSegment,
-            StaticSegmentMember::STATE_UNSUBSCRIBE,
-            'batchUnsubscribe',
-            StaticSegmentMember::STATE_DROP,
-            false,
-            Member::STATUS_UNSUBSCRIBED
-        );
-
-        $this->handleMembersUpdate(
-            $staticSegment,
-            StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE,
-            'batchUnsubscribe',
-            null,
-            true
-        );
+            $this->handleMembersUpdate(
+                $staticSegment,
+                StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE,
+                'batchUnsubscribe',
+                null,
+                true
+            );
+        }
     }
 
     /**
