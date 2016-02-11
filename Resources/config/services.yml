@@ -539,14 +539,6 @@ services:
         tags:
             - { name: oro_integration.connector, type: member, channel_type: mailchimp }
 
-    orocrm_mailchimp.connector.member_activity:
-        class: %orocrm_mailchimp.connector.member_activity.class%
-        parent: orocrm_mailchimp.connector.abstract
-        calls:
-            - [setEntityName, [%orocrm_mailchimp.entity.member_activity.class%]]
-        tags:
-            - { name: oro_integration.connector, type: member_activity, channel_type: mailchimp }
-
     orocrm_mailchimp.connector.member_activity_send:
         class: %orocrm_mailchimp.connector.member_activity_send.class%
         parent: orocrm_mailchimp.connector.abstract
@@ -554,6 +546,14 @@ services:
             - [setEntityName, [%orocrm_mailchimp.entity.member_activity.class%]]
         tags:
             - { name: oro_integration.connector, type: member_activity_send, channel_type: mailchimp }
+
+    orocrm_mailchimp.connector.member_activity:
+        class: %orocrm_mailchimp.connector.member_activity.class%
+        parent: orocrm_mailchimp.connector.abstract
+        calls:
+            - [setEntityName, [%orocrm_mailchimp.entity.member_activity.class%]]
+        tags:
+            - { name: oro_integration.connector, type: member_activity, channel_type: mailchimp }
 
     orocrm_mailchimp.connector.member_activity_abuse:
         class: %orocrm_mailchimp.connector.member_activity_abuse.class%

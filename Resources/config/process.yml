@@ -100,7 +100,7 @@ triggers:
     synchronize_marketing_list_item_for_mailchimp_member_activity:
         -
             event:    create
-            queued:   true
+            # queued:   true # Disabled for now, as queued processing cause statistics lost
 
     create_email_campaign_for_mailchimp_campaign:
         -
