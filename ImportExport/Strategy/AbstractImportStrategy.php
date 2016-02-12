@@ -53,7 +53,7 @@ abstract class AbstractImportStrategy extends ConfigurableAddOrReplaceStrategy i
     /**
      * @param DefaultOwnerHelper $ownerHelper
      */
-    public function setOwnerHelper($ownerHelper)
+    public function setOwnerHelper(DefaultOwnerHelper $ownerHelper)
     {
         $this->ownerHelper = $ownerHelper;
     }

@@ -30,7 +30,6 @@ class StaticSegmentDataConverter extends IntegrationAwareDataConverter
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        $importedRecord['sync_status'] = StaticSegment::STATUS_NOT_SYNCED;
         $importedRecord['subscribers_list_channel_id'] = $this->context->getOption('channel');
 
         return parent::convertToImportFormat($importedRecord, $skipNullValues);

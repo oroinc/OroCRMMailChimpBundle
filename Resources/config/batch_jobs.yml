@@ -74,9 +74,9 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member
                         processor: orocrm_mailchimp.importexport.processor.member
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
-                        batch_size: 25
+                        batch_size: 2000
 
         mailchimp_member_activity_import_send:
             title: orocrm.mailchimp.connector.member_activity_send.job
@@ -88,9 +88,9 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity_send
                         processor: orocrm_mailchimp.importexport.processor.member_activity_send
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
-                        batch_size: 25
+                        batch_size: 100
 
         mailchimp_member_activity_import_abuse:
             title: orocrm.mailchimp.connector.member_activity_abuse.job
@@ -102,9 +102,9 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity_abuse
                         processor: orocrm_mailchimp.importexport.processor.member_activity_abuse
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
-                        batch_size: 25
+                        batch_size: 100
 
         mailchimp_member_activity_import_unsubscribe:
             title: orocrm.mailchimp.connector.member_activity_unsubscribe.job
@@ -116,9 +116,9 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity_unsubscribe
                         processor: orocrm_mailchimp.importexport.processor.member_activity_unsubscribe
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
-                        batch_size: 25
+                        batch_size: 100
 
         mailchimp_member_activity_import:
             title: orocrm.mailchimp.connector.member_activity.job
@@ -130,9 +130,9 @@ connector:
                     services:
                         reader:    orocrm_mailchimp.connector.member_activity
                         processor: orocrm_mailchimp.importexport.processor.member_activity
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        writer:    orocrm_mailchimp.importexport.writer.loggable_persistent_batch_writer
                     parameters:
-                        batch_size: 25
+                        batch_size: 2000
 
         mailchimp_static_segment_import:
             title: orocrm.mailchimp.connector.static_segment.job
@@ -184,10 +184,10 @@ connector:
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.members_sync
-                        processor: orocrm_mailchimp.importexport.processor.members_sync
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        processor: orocrm_mailchimp.importexport.processor.dummy
+                        writer:    orocrm_mailchimp.importexport.writer.members_sync
                     parameters:
-                        batch_size: 1000
+                        batch_size: 1
                 export:
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
@@ -196,8 +196,8 @@ connector:
                         processor: orocrm_mailchimp.importexport.processor.export_member
                         writer:    orocrm_mailchimp.importexport.writer.member
                     parameters:
-                        batch_size: 2000
-                mmbr_extd_merge_var_add:
+                        batch_size: 1000
+                mmbr_extd_merge_var_add: # This is additional data for member merge vars. This and next step are "turned off if there are no data providers for them
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
@@ -206,7 +206,7 @@ connector:
                         writer: oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 10
-                mmbr_extd_merge_var_export:
+                mmbr_extd_merge_var_export: # Avoid double export and double iteration, merge logic to 1 export
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
@@ -220,48 +220,75 @@ connector:
             title: orocrm.mailchimp.job.member.static_segment
             type:  export
             steps:
+                # Write all marketing list email with state to temporary table
+                fill_marketing_list_emails:
+                    title: export
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.marketing_list_email
+                        processor: orocrm_mailchimp.importexport.processor.dummy
+                        writer:    orocrm_mailchimp.importexport.writer.marketing_list_email
+                    parameters:
+                        batch_size: 1
+                # Extend static segment members with "add" state based on marketing list email table
+                # Before run removes all static segment members that are not in synced state
                 handle_add_state:
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.static_segment_member_add_state
-                        processor: orocrm_mailchimp.importexport.processor.static_segment_member_add_state
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        processor: orocrm_mailchimp.importexport.processor.dummy
+                        writer:    orocrm_mailchimp.importexport.writer.static_segment_member_add
                     parameters:
-                        batch_size: 25
-                handle_remove_state:
+                        batch_size: 1
+                # Fill temporary table StaticSegmentMemberToRemove with all members that are in one of remove states
+                # or not in list anymore
+                prepare_members_to_remove:
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.static_segment_member_remove_state
-                        processor: orocrm_mailchimp.importexport.processor.static_segment_member_remove_state
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        processor: orocrm_mailchimp.importexport.processor.dummy
+                        writer:    orocrm_mailchimp.importexport.writer.prepare_static_segment_member_to_remove
                     parameters:
-                        batch_size: 25
+                        batch_size: 1
+                # Update static segment member state based on calcualted StaticSegmentMemberToRemove for remove
+                handle_out_of_list_state:
+                    title: export
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    orocrm_mailchimp.importexport.reader.static_segment_member_out_of_list
+                        processor: orocrm_mailchimp.importexport.processor.dummy
+                        writer:    orocrm_mailchimp.importexport.writer.static_segment_member_state
+                    parameters:
+                        batch_size: 1
+                # Update static segment member state based on calcualted StaticSegmentMemberToRemove for unsubscribe
                 handle_unsubscribe_state:
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.static_segment_member_unsubscribe_state
-                        processor: orocrm_mailchimp.importexport.processor.static_segment_member_unsubscribe_state
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        processor: orocrm_mailchimp.importexport.processor.dummy
+                        writer:    orocrm_mailchimp.importexport.writer.static_segment_member_state
                     parameters:
-                        batch_size: 25
+                        batch_size: 1
+                # Update static segment member state based on calcualted StaticSegmentMemberToRemove for unsubscribe_delete
                 handle_delete_state:
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.static_segment_member_unsubscribe_delete_state
-                        processor: orocrm_mailchimp.importexport.processor.static_segment_member_unsubscribe_delete_state
-                        writer:    oro_integration.writer.persistent_batch_writer
+                        processor: orocrm_mailchimp.importexport.processor.dummy
+                        writer:    orocrm_mailchimp.importexport.writer.static_segment_member_state
                     parameters:
-                        batch_size: 25
+                        batch_size: 1
+                # Perform export of static segment members to MailChimp with API
                 export:
                     title: export
                     class: OroCRM\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
                     services:
                         reader:    orocrm_mailchimp.importexport.reader.static_segment_export
-                        processor: orocrm_mailchimp.importexport.processor.export_static_segment
+                        processor: orocrm_mailchimp.importexport.processor.dummy
                         writer:    orocrm_mailchimp.importexport.writer.static_segment
                     parameters:
-                        batch_size: 2000
+                        batch_size: 1000

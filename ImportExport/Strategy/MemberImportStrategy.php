@@ -23,17 +23,22 @@ class MemberImportStrategy extends AbstractImportStrategy
 
         /** @var Member $entity */
         $entity = $this->beforeProcessEntity($entity);
+        $subscribersList = $this->getSubscribersList($entity);
+        if (!$subscribersList) {
+            return null;
+        }
+        $entity->setSubscribersList($subscribersList);
         /** @var Member $existingEntity */
         $existingEntity = $this->findExistingEntity($entity);
         if ($existingEntity) {
             if ($this->logger) {
-                $this->logger->info('Syncing Existing MailChimp Member [origin_id=' . $entity->getOriginId() . ']');
+                $this->logger->notice('Syncing Existing MailChimp Member [origin_id=' . $entity->getOriginId() . ']');
             }
 
             $entity = $this->importExistingMember($entity, $existingEntity);
         } else {
             if ($this->logger) {
-                $this->logger->info('Adding new MailChimp Member [origin_id=' . $entity->getOriginId() . ']');
+                $this->logger->notice('Adding new MailChimp Member [origin_id=' . $entity->getOriginId() . ']');
             }
 
             $entity = $this->processEntity($entity, true, true, $this->context->getValue('itemData'));
@@ -48,6 +53,28 @@ class MemberImportStrategy extends AbstractImportStrategy
     }
 
     /**
+     * @param Member $member
+     * @return null|SubscribersList
+     */
+    protected function getSubscribersList(Member $member)
+    {
+        $subscribersList = $member->getSubscribersList();
+        if (!$subscribersList) {
+            return null;
+        }
+        if ($subscribersList->getId()) {
+            $subscribersList = $this->databaseHelper->getEntityReference($subscribersList);
+        } else {
+            $subscribersList = $this->findExistingEntity($subscribersList);
+        }
+        if (!$subscribersList) {
+            return null;
+        }
+
+        return $subscribersList;
+    }
+
+    /**
      * Update existing MailChimp Email List.
      *
      * @param Member $entity
@@ -56,24 +83,23 @@ class MemberImportStrategy extends AbstractImportStrategy
      */
     protected function importExistingMember(Member $entity, Member $existingEntity)
     {
-        $itemData = $this->context->getValue('itemData');
-
-        // Update MailChimp List
-        $this->importExistingEntity(
-            $entity,
-            $existingEntity,
-            $itemData,
-            ['channel', 'subscribersList']
-        );
-
-        // Replace subscribers list if required
-        /** @var SubscribersList $subscribersList */
-        $subscribersList = $this->updateRelatedEntity(
-            $existingEntity->getSubscribersList(),
-            $entity->getSubscribersList(),
-            $itemData['subscribersList']
-        );
-        $existingEntity->setSubscribersList($subscribersList);
+        $existingEntity->setOriginId($entity->getOriginId());
+        $existingEntity->setStatus($entity->getStatus());
+        $existingEntity->setMemberRating($entity->getMemberRating());
+        $existingEntity->setOptedInAt($entity->getOptedInAt());
+        $existingEntity->setOptedInIpAddress($entity->getOptedInIpAddress());
+        $existingEntity->setConfirmedAt($entity->getConfirmedAt());
+        $existingEntity->setConfirmedIpAddress($entity->getConfirmedIpAddress());
+        $existingEntity->setLatitude($entity->getLatitude());
+        $existingEntity->setLongitude($entity->getLongitude());
+        $existingEntity->setDstOffset($entity->getDstOffset());
+        $existingEntity->setGmtOffset($entity->getGmtOffset());
+        $existingEntity->setTimezone($entity->getTimezone());
+        $existingEntity->setCc($entity->getCc());
+        $existingEntity->setRegion($entity->getRegion());
+        $existingEntity->setLastChangedAt($entity->getLastChangedAt());
+        $existingEntity->setEuid($entity->getEuid());
+        $existingEntity->setMergeVarValues($entity->getMergeVarValues());
 
         return $existingEntity;
     }
@@ -88,35 +114,16 @@ class MemberImportStrategy extends AbstractImportStrategy
     {
         $this->assignMergeVarValues($entity);
 
-        if ($this->isEntityProcessed($entity)) {
-            return null;
-        }
-
         return parent::afterProcessEntity($entity);
     }
 
     /**
      * @param Member $entity
+     * @return bool
      */
     protected function collectEntities($entity)
     {
-        $jobContext = $this->getJobContext();
-        $processedMembers = (array)$jobContext->get('processed_members');
-        $processedMembers[$entity->getSubscribersList()->getId()][$entity->getEmail()] = true;
-        $jobContext->put('processed_members', $processedMembers);
-    }
-
-    /**
-     * @param Member $entity
-     *
-     * @return bool
-     */
-    protected function isEntityProcessed($entity)
-    {
-        $jobContext = $this->getJobContext();
-        $processedMembers = (array)$jobContext->get('processed_members');
-
-        return !empty($processedMembers[$entity->getSubscribersList()->getId()][$entity->getEmail()]);
+        return false;
     }
 
     /**

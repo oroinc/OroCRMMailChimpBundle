@@ -67,6 +67,11 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
                 null,
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                 'MailChimp static StaticSegments to sync'
+            )->addOption(
+                'force',
+                'f',
+                InputOption::VALUE_NONE,
+                'Run sync in force mode'
             );
     }
 
@@ -76,9 +81,15 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = new OutputLogger($output);
-        $this->getContainer()->get('oro_integration.logger.strategy')->setLogger($logger);
+        $loggerStrategy = $this->getContainer()->get('oro_integration.logger.strategy');
+        $loggerStrategy->setLogger($logger);
+        if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
+            $loggerStrategy->setDebug(true);
+        }
+        $this->getContainer()->get('doctrine')->getManager()->getConnection()->getConfiguration()->setSQLLogger(null);
 
         $segments = $input->getOption('segments');
+        $force = (bool)$input->getOption('force');
         if (!$this->canExecuteJob($segments)) {
             $logger->warning('Job already running. Terminating....');
 
@@ -86,7 +97,7 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         }
 
         /** @var StaticSegment[] $iterator */
-        $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsToSync($segments);
+        $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsToSync($segments, null, $force);
 
         $exportJobs = [
             MemberConnector::TYPE => MemberConnector::JOB_EXPORT,
@@ -107,8 +118,9 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         }
 
         foreach ($channelToSync as $id => $channel) {
+            $logger->info(sprintf('Processing "%s" channel', $channel->getName()));
+            $parameters = ['segments' => $channelSegments[$id]];
             foreach ($exportJobs as $type => $jobName) {
-                $parameters = ['segments' => $channelSegments[$id]];
                 $this->getReverseSyncProcessor()->process($channel, $type, $parameters);
             }
         }

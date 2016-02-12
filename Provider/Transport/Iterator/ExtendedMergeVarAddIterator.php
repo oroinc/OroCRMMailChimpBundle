@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 
 class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
@@ -29,10 +30,16 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
     }
 
     /**
+     * @param StaticSegment $staticSegment
+     *
      * {@inheritdoc}
      */
     protected function createSubordinateIterator($staticSegment)
     {
+        if (!$this->provider->isApplicable($staticSegment->getMarketingList())) {
+            return new \EmptyIterator();
+        }
+
         $vars = $this->provider->provideExtendedMergeVars($staticSegment->getMarketingList());
 
         $existingVars = $staticSegment

@@ -46,7 +46,8 @@ class MemberActivityImportTest extends WebTestCase
             [
                 ProcessorRegistry::TYPE_IMPORT => [
                     'channel' => $this->getReference('mailchimp:channel_1')->getId(),
-                    'channelType' => $this->getReference('mailchimp:channel_1')->getType()
+                    'channelType' => $this->getReference('mailchimp:channel_1')->getType(),
+                    'processorAlias' => 'test'
                 ]
             ]
         );

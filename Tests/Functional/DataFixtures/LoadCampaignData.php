@@ -5,7 +5,11 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
+use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
+use OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport;
 
 class LoadCampaignData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {
@@ -85,10 +89,27 @@ class LoadCampaignData extends AbstractMailChimpFixture implements DependentFixt
             ->getFirst();
 
         foreach ($this->data as $data) {
+            /** @var Channel $channel */
+            $channel = $this->getReference($data['channel']);
+
+            $transportSettings = new MailChimpTransportSettings();
+            $transportSettings->setChannel($channel);
+            $transportSettings->setReceiveActivities(true);
+            $manager->persist($transportSettings);
+
+            $emailCampaign = new EmailCampaign();
+            $emailCampaign->setSchedule(EmailCampaign::SCHEDULE_MANUAL);
+            $emailCampaign->setName($data['subject']);
+            $emailCampaign->setTransport(MailChimpTransport::NAME);
+            $emailCampaign->setTransportSettings($transportSettings);
+            $manager->persist($emailCampaign);
+
             $entity = new Campaign();
             $entity->setOwner($organization);
+            $entity->setEmailCampaign($emailCampaign);
+            $entity->setSendTime(new \DateTime('now', new \DateTimeZone('UTC')));
             $data['subscribersList'] = $this->getReference($data['subscribersList']);
-            $data['channel'] = $this->getReference($data['channel']);
+            $data['channel'] = $channel;
             $this->setEntityPropertyValues($entity, $data, ['reference']);
             $this->setReference($data['reference'], $entity);
             $manager->persist($entity);

@@ -46,6 +46,13 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    public function testReceiveActivities()
+    {
+        $this->assertTrue($this->target->isReceiveActivities());
+        $this->target->setReceiveActivities(false);
+        $this->assertFalse($this->target->isReceiveActivities());
+    }
+
     public function testSettingsBag()
     {
         /** @var Channel|\PHPUnit_Framework_MockObject_MockObject $channel */
@@ -53,11 +60,13 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
         $template = new Template();
         $this->target->setChannel($channel);
         $this->target->setTemplate($template);
+        $this->target->setReceiveActivities(true);
         $this->assertNotNull($this->target->getChannel());
         $this->assertNotNull($this->target->getTemplate());
 
         $expectedSettings = [
             'channel' => $channel,
+            'receiveActivities' => true
             // 'template' => $template
         ];
         $this->assertEquals(

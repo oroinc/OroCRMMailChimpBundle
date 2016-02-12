@@ -64,20 +64,19 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
 
         $qb
             ->select('mmb')
-            ->join('mmb.subscribersList', 'subscribersList')
             ->where(
                 $qb->expr()->andX(
                     $qb->expr()->eq('mmb.status', ':status'),
-                    $qb->expr()->eq('subscribersList.originId', ':originId')
+                    $qb->expr()->eq('mmb.subscribersList', ':subscribersList')
                 )
             )
             ->setParameters(
                 [
                     'status' => Member::STATUS_EXPORT,
-                    'originId' => $subscribersList->getOriginId()
+                    'subscribersList' => $subscribersList
                 ]
             )
-            ->addOrderBy('subscribersList.id');
+            ->addOrderBy('mmb.id');
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setReverse(true);

@@ -30,6 +30,12 @@ class MailChimpTransportSettings extends TransportSettings
     protected $template;
 
     /**
+     * @var bool
+     * @ORM\Column(name="mailchimp_receive_activities", type="boolean")
+     */
+    protected $receiveActivities = true;
+
+    /**
      * @return Channel
      */
     public function getChannel()
@@ -73,6 +79,25 @@ class MailChimpTransportSettings extends TransportSettings
     }
 
     /**
+     * @return boolean
+     */
+    public function isReceiveActivities()
+    {
+        return $this->receiveActivities;
+    }
+
+    /**
+     * @param boolean $receiveActivities
+     * @return MailChimpTransportSettings
+     */
+    public function setReceiveActivities($receiveActivities)
+    {
+        $this->receiveActivities = $receiveActivities;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getSettingsBag()
@@ -81,6 +106,7 @@ class MailChimpTransportSettings extends TransportSettings
             $this->settings = new ParameterBag(
                 [
                     'channel' => $this->getChannel(),
+                    'receiveActivities' => $this->isReceiveActivities(),
                     // 'template' => $this->getTemplate()
                 ]
             );

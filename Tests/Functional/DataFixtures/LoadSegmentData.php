@@ -29,18 +29,30 @@ class LoadSegmentData extends AbstractMailChimpFixture
                 ],
                 'filters' => [
                     [
-                        'columnName' => 'lastName',
-                        'criterion' =>
-                            [
+                        [
+                            'columnName' => 'lastName',
+                            'criterion' => [
                                 'filter' => 'string',
-                                'data' =>
-                                    [
-                                        'value' => 'Case',
-                                        'type' => '1',
-                                    ],
-                            ],
-                    ],
-                ],
+                                'data' => [
+                                    'value' => 'Case',
+                                    'type' => '1'
+                                ]
+                            ]
+                        ],
+                        'AND',
+                        [
+                            'columnName' => 'createdAt',
+                            'criterion' => [
+                                'filter' => 'datetime',
+                                'data' => [
+                                    'type' => '3',
+                                    'part' => 'value',
+                                    'value' => ['start' => '1935-01-01 00:00', 'end' => '']
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
             ],
             'reference' => 'mailchimp:ml_one:segment',
         ],

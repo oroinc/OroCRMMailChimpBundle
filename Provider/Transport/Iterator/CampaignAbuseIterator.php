@@ -34,6 +34,6 @@ class CampaignAbuseIterator extends AbstractCampaignAwareIterator
             $arguments['opts']['since'] = $this->since;
         }
 
-        return $this->client->getCampaignAbuseReport($this->getArguments());
+        return $this->client->getCampaignAbuseReport($arguments);
     }
 }

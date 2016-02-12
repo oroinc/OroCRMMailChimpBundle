@@ -10,7 +10,7 @@ abstract class AbstractMemberActivityDataConverter extends IntegrationAwareDataC
     protected function getHeaderConversionRules()
     {
         return [
-            'campaign_id' => 'campaign:id'
+            'campaign' => 'campaign'
         ];
     }
 

@@ -13,7 +13,10 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
  *      name="orocrm_mc_static_segment_mmbr",
  *      uniqueConstraints={
  *          @ORM\UniqueConstraint(name="mc_segment_sid_mid_unq", columns={"static_segment_id", "member_id"})
- *     }
+ *      },
+ *      indexes={
+ *          @ORM\Index(name="mc_segment_mmbr_sid_st", columns={"static_segment_id", "state"})
+ *      },
  * )
  * @Config()
  */
@@ -54,7 +57,7 @@ class StaticSegmentMember
 
     /**
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Member", inversedBy="segmentMembers")
-     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
