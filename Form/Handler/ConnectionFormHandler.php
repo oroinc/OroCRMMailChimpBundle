@@ -62,13 +62,13 @@ class ConnectionFormHandler
                     if ($entity->getSubscribersList()
                         && $entity->getSubscribersList()->getId() !== $oldSubscribersListId
                     ) {
+                        $entity = $this->createSegmentCopy($oldStaticSegment);
+
                         if (!$this->campaignExistsForSegment($oldStaticSegment)) {
                             $manager->remove($oldStaticSegment);
                         } else {
                             $oldStaticSegment->setMarketingList(null);
                         }
-
-                        $entity = $this->createSegmentCopy($oldStaticSegment);
                     } else {
                         $entity->setSyncStatus(StaticSegment::STATUS_SCHEDULED);
                     }
