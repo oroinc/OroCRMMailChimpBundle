@@ -3,8 +3,12 @@
 namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\UnitOfWork;
 
 use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
+
+use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use OroCRM\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
@@ -77,12 +81,10 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
         $marketingList = $mailChimpCampaign->getStaticSegment()->getMarketingList();
 
         $relatedEntities = $this->getMarketingListEntitiesByEmail($marketingList, $memberActivity->getEmail());
+        /** @var EntityManager $em */
         $em = $this->registry->getManager();
         foreach ($relatedEntities as $relatedEntity) {
-            $emailCampaignStatistics = $this->campaignStatisticsConnector->getStatisticsRecord(
-                $emailCampaign,
-                $relatedEntity
-            );
+            $emailCampaignStatistics = $this->getStatisticsRecord($emailCampaign, $relatedEntity, $em);
 
             $this->incrementStatistics($memberActivity, $emailCampaignStatistics);
             $em->persist($emailCampaignStatistics);
@@ -140,5 +142,25 @@ class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
     {
         return $this->marketingListProvider
             ->getMarketingListEntitiesQueryBuilder($marketingList, MarketingListProvider::FULL_ENTITIES_MIXIN);
+    }
+
+    /**
+     * @param EmailCampaign $emailCampaign
+     * @param object $relatedEntity
+     * @param EntityManager $em
+     * @return EmailCampaignStatistics
+     */
+    protected function getStatisticsRecord(EmailCampaign $emailCampaign, $relatedEntity, EntityManager $em)
+    {
+        $emailCampaignStatistics = $this->campaignStatisticsConnector->getStatisticsRecord(
+            $emailCampaign,
+            $relatedEntity
+        );
+
+        if ($em->getUnitOfWork()->getEntityState($emailCampaignStatistics) === UnitOfWork::STATE_DETACHED) {
+            return $em->merge($emailCampaignStatistics);
+        }
+
+        return $emailCampaignStatistics;
     }
 }

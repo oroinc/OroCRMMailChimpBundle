@@ -66,6 +66,9 @@ class SyncMemberActivityTest extends WebTestCase
             ->method('export')
             ->will($this->returnValue($this->response));
         $this->response->expects($this->any())
+            ->method('isSuccessful')
+            ->will($this->returnValue(true));
+        $this->response->expects($this->any())
             ->method('getBody')
             ->will($this->returnValue($this->entityBody));
 

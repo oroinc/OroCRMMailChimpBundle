@@ -131,19 +131,23 @@ class MailChimpClient extends BaseClient
     {
         $url = $this->getExportAPIMethodUrl($methodName);
         $parameters = array_merge(['apikey' => $this->apiKey], $parameters);
+        $query = json_encode($parameters);
 
-        $request = $this->createRequest(
-            'POST',
-            $url,
-            ['Content-Type' => 'application/json'],
-            json_encode($parameters)
-        );
+        $response = $this->callExportApi($url, $query);
 
-        $response = $request->send();
+        if (!$response->isSuccessful()) {
+            throw BadResponseException::factory(
+                $url,
+                (string)$query,
+                $response,
+                'Request to MailChimp Export API wasn\'t successfully completed.'
+            );
+        }
 
         if (0 !== strpos($response->getContentType(), 'text/html')) {
             throw BadResponseException::factory(
-                $request,
+                $url,
+                (string)$query,
                 $response,
                 'Invalid response, expected content type is text/html'
             );
@@ -160,14 +164,55 @@ class MailChimpClient extends BaseClient
      */
     protected function getExportAPIMethodUrl($methodName)
     {
-        // The URL depends on the API key
-        $parts = array_pad(explode('-', $this->apiKey), 2, '');
-
         return sprintf(
             'https://%s.api.mailchimp.com/export/%s/%s/',
-            end($parts),
+            $this->getApiServerNode(),
             self::EXPORT_API_VERSION,
             $methodName
         );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getApiServerNode()
+    {
+        $parts = array_pad(explode('-', $this->apiKey), 2, '');
+
+        return end($parts);
+    }
+
+    /**
+     * @param string $url
+     * @param string $query
+     * @return Response
+     */
+    protected function callExportApi($url, $query)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+
+        $message = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+
+        $code = null;
+        if ($info && array_key_exists('http_code', $info)) {
+            $code = $info['http_code'];
+        }
+        if ($code !== 200 || !$message) {
+            throw new \RuntimeException(
+                sprintf('Server returned unexpected response. Response code %s', $code)
+            );
+        }
+
+        return Response::fromMessage($message);
     }
 }

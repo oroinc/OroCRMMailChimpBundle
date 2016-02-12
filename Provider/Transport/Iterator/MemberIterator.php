@@ -78,6 +78,7 @@ class MemberIterator extends AbstractSubordinateIterator
             $this->createExportIterator(MailChimpClient::EXPORT_LIST, $parameters),
             function (&$current) use ($subscribersList, $parameters) {
                 if (is_array($current)) {
+                    $current['subscribersList_id'] = $subscribersList->getId();
                     $current['list_id'] = $subscribersList->getOriginId();
                     $current['status'] = $parameters['status'];
                 }

@@ -2,12 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
-use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
-use Akeneo\Bundle\BatchBundle\Item\ExecutionContext;
-use Akeneo\Bundle\BatchBundle\Step\StepExecutionAwareInterface;
-
-use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\AbstractQuery;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -19,16 +14,10 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
+use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
 
-class MemberActivityImportStrategy extends BasicImportStrategy implements
-    LoggerAwareInterface,
-    StepExecutionAwareInterface
+class MemberActivityImportStrategy extends BasicImportStrategy implements LoggerAwareInterface
 {
-    /**
-     * @var StepExecution
-     */
-    protected $stepExecution;
-
     /**
      * @var LoggerInterface
      */
@@ -47,14 +36,6 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
         MemberActivity::ACTIVITY_UNSUB,
         MemberActivity::ACTIVITY_BOUNCE
     ];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setStepExecution(StepExecution $stepExecution)
-    {
-        $this->stepExecution = $stepExecution;
-    }
 
     /**
      * {@inheritdoc}
@@ -97,7 +78,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
     protected function processEntity($entity)
     {
         if ($this->logger) {
-            $this->logger->info(
+            $this->logger->notice(
                 sprintf(
                     'Processing MailChimp Member Activity [email=%s, action=%s]',
                     $entity->getEmail(),
@@ -106,10 +87,11 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             );
         }
 
+        /** @var Channel $channel */
         $channel = $this->databaseHelper->getEntityReference($entity->getChannel());
         /** @var Campaign $campaign */
-        $campaign = $this->findExistingEntity($entity->getCampaign());
-        $member = $this->findExistingMember($entity->getMember(), $channel, $campaign);
+        $campaign = $this->databaseHelper->getEntityReference($entity->getCampaign());
+        $member = $this->findExistingMember($entity, $channel, $campaign);
 
         $entity
             ->setChannel($channel)
@@ -123,7 +105,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             $this->context->incrementAddCount();
 
             if ($this->logger) {
-                $this->logger->info(
+                $this->logger->notice(
                     sprintf(
                         '    Activity added for MailChimp Member [id=%d]',
                         $member->getId()
@@ -133,7 +115,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
 
             return $entity;
         } elseif ($this->logger) {
-            $this->logger->info('    Activity skipped');
+            $this->logger->notice('    Activity skipped');
         }
 
         return null;
@@ -157,37 +139,33 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
             return null;
         }
 
-        $jobContext = $this->getJobContext();
-        $processedCampaigns = (array)$jobContext->get('processed_campaigns');
-        $campaignId = $entity->getCampaign()->getId();
-        if (!in_array($campaignId, $processedCampaigns)) {
-            $processedCampaigns[] = $campaignId;
-        }
-        $jobContext->put('processed_campaigns', $processedCampaigns);
-
         return parent::afterProcessEntity($entity);
     }
 
     /**
-     * @param Member $member
+     * @param MemberActivity $memberActivity
      * @param Channel $channel
      * @param Campaign $campaign
-     * @return Member
+     * @return Member|null
      */
-    protected function findExistingMember(Member $member, Channel $channel, Campaign $campaign)
+    protected function findExistingMember(MemberActivity $memberActivity, Channel $channel, Campaign $campaign)
     {
         $searchCondition = [
             'channel' => $channel,
             'subscribersList' => $campaign->getSubscribersList(),
         ];
 
-        if ($originId = $member->getOriginId()) {
+        $member = $memberActivity->getMember();
+        $email = $member ? $member->getEmail() : $memberActivity->getEmail();
+        if ($member && $originId = $member->getOriginId()) {
             $searchCondition['originId'] = $originId;
+        } elseif ($email) {
+            $searchCondition['email'] = $email;
         } else {
-            $searchCondition['email'] = $member->getEmail();
+            return null;
         }
 
-        return $this->findEntityByIdentityValues(ClassUtils::getClass($member), $searchCondition);
+        return $this->findEntity('OroCRM\Bundle\MailChimpBundle\Entity\Member', $searchCondition, ['id']);
     }
 
     /**
@@ -196,27 +174,94 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements
      */
     protected function isSkipped(MemberActivity $entity)
     {
-        if (in_array($entity->getAction(), $this->singleInstanceActivities)) {
+        $searchCondition = null;
+        if (in_array($entity->getAction(), $this->singleInstanceActivities, true)) {
             $searchCondition = [
                 'campaign' => $entity->getCampaign(),
                 'action' => $entity->getAction(),
                 'member' => $entity->getMember()
             ];
+        } else {
+            $sinceMap = $this->context->getValue(MemberActivityConnector::SINCE_MAP_KEY);
+            $campaignOriginId = $entity->getCampaign()->getOriginId();
+            if ($sinceMap && array_key_exists($campaignOriginId, $sinceMap)) {
+                $activitySince = $sinceMap[$campaignOriginId];
+                if (array_key_exists($entity->getAction(), $activitySince)
+                    && $entity->getActivityTime() <= $activitySince[$entity->getAction()]
+                ) {
+                    $searchCondition = [
+                        'campaign' => $entity->getCampaign(),
+                        'action' => $entity->getAction(),
+                        'member' => $entity->getMember(),
+                        'activityTime' => $entity->getActivityTime()
+                    ];
+                }
+            }
+        }
 
-            return (bool)$this->findEntityByIdentityValues(ClassUtils::getClass($entity), $searchCondition);
+        if ($searchCondition) {
+            return (bool)$this->findEntity(
+                'OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity',
+                $searchCondition,
+                ['id'],
+                AbstractQuery::HYDRATE_SCALAR
+            );
         }
 
         return false;
     }
 
     /**
-     * @return ExecutionContext
+     * Try to find entity by identity fields if at least one is specified
+     *
+     * @param string $entityName
+     * @param array $identityValues
+     * @param array $partialFields
+     * @param null|int $hydration
+     * @return null|object
      */
-    protected function getJobContext()
+    protected function findEntity($entityName, array $identityValues, array $partialFields, $hydration = null)
     {
-        /** @var JobExecution $jobExecution */
-        $jobExecution = $this->stepExecution->getJobExecution();
+        foreach ($identityValues as $value) {
+            if (null !== $value && '' !== $value) {
+                return $this->findOneBy($entityName, $identityValues, $partialFields, $hydration);
+            }
+        }
 
-        return $jobExecution->getExecutionContext();
+        return null;
+    }
+
+    /**
+     * @param string $entityName
+     * @param array $criteria
+     * @param array|null $partialFields
+     * @param int|null $hydration
+     * @return null|object
+     */
+    public function findOneBy(
+        $entityName,
+        array $criteria,
+        array $partialFields = null,
+        $hydration = null
+    ) {
+        $em = $this->strategyHelper->getEntityManager($entityName);
+
+        $queryBuilder = $em->createQueryBuilder()->from($entityName, 'e');
+        if ($partialFields) {
+            $queryBuilder->select(sprintf('partial e.{%s}', implode(',', $partialFields)));
+        } else {
+            $queryBuilder->select('e');
+        }
+
+        $where = $queryBuilder->expr()->andX();
+        foreach ($criteria as $field => $value) {
+            $where->add(sprintf('e.%s = :%s', $field, $field));
+        }
+
+        $queryBuilder->where($where)
+            ->setParameters($criteria)
+            ->setMaxResults(1);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult($hydration);
     }
 }

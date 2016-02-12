@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityRepository;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Status;
@@ -51,7 +52,12 @@ abstract class AbstractMailChimpConnector extends AbstractConnector
      */
     public function getLastSyncDate()
     {
+        if ((bool)$this->getContext()->getOption('force')) {
+            return null;
+        }
+
         $channel = $this->getChannel();
+        /** @var EntityRepository $repository */
         $repository = $this->managerRegistry->getRepository('OroIntegrationBundle:Status');
 
         /**

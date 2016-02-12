@@ -2,7 +2,11 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
+use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
+use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 
 class CampaignTest extends \PHPUnit_Framework_TestCase
 {
@@ -128,5 +132,101 @@ class CampaignTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->target->getUpdatedAt());
         $this->target->preUpdate();
         $this->assertInstanceOf('\DateTime', $this->target->getUpdatedAt());
+    }
+
+    /**
+     * @dataProvider activityUpdateStateDataProvider
+     * @param EmailCampaign|null $emailCampaign
+     * @param \DateTime|null $sendTime
+     * @param int $activityUpdateInterval
+     * @param string $expected
+     */
+    public function testGetActivityUpdateState(
+        $emailCampaign,
+        $sendTime,
+        $activityUpdateInterval,
+        $expected
+    ) {
+        $this->target->setEmailCampaign($emailCampaign);
+        $this->target->setSendTime($sendTime);
+
+        $transport = new MailChimpTransport();
+        $transport->setActivityUpdateInterval($activityUpdateInterval);
+        $channel = new Channel();
+        $channel->setTransport($transport);
+        $this->target->setChannel($channel);
+
+        $this->assertEquals($expected, $this->target->getActivityUpdateState());
+    }
+
+    /**
+     * @return array
+     */
+    public function activityUpdateStateDataProvider()
+    {
+        $now = new \DateTime('now', new \DateTimeZone('UTC'));
+        $threeMonthAgo = clone($now);
+        $threeMonthAgo->sub(new \DateInterval('P3M'));
+
+        $emailCampaignEnabled = new EmailCampaign();
+        $transportSettings = new MailChimpTransportSettings();
+        $transportSettings->setReceiveActivities(true);
+        $emailCampaignEnabled->setTransportSettings($transportSettings);
+
+        $emailCampaignDisabled = new EmailCampaign();
+        $transportSettings = new MailChimpTransportSettings();
+        $transportSettings->setReceiveActivities(false);
+        $emailCampaignDisabled->setTransportSettings($transportSettings);
+
+        return [
+            [
+                null,
+                null,
+                null,
+                Campaign::ACTIVITY_ENABLED
+            ],
+            [
+                null,
+                $now,
+                null,
+                Campaign::ACTIVITY_ENABLED
+            ],
+            [
+                null,
+                $threeMonthAgo,
+                10,
+                Campaign::ACTIVITY_EXPIRED
+            ],
+            [
+                null,
+                $threeMonthAgo,
+                null,
+                Campaign::ACTIVITY_ENABLED
+            ],
+            [
+                $emailCampaignEnabled,
+                $now,
+                10,
+                Campaign::ACTIVITY_ENABLED
+            ],
+            [
+                $emailCampaignEnabled,
+                $threeMonthAgo,
+                10,
+                Campaign::ACTIVITY_EXPIRED
+            ],
+            [
+                $emailCampaignDisabled,
+                $now,
+                10,
+                Campaign::ACTIVITY_DISABLED
+            ],
+            [
+                $emailCampaignDisabled,
+                $threeMonthAgo,
+                10,
+                Campaign::ACTIVITY_DISABLED
+            ],
+        ];
     }
 }

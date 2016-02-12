@@ -2,14 +2,36 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
-class MarketingListEmailWriter extends AbstractInsertFromSelectWriter implements CleanUpInterface
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
+
+use Oro\Bundle\ImportExportBundle\Writer\CleanUpInterface;
+use Oro\Bundle\ImportExportBundle\Writer\InsertFromSelectWriter;
+
+class MarketingListEmailWriter extends InsertFromSelectWriter implements CleanUpInterface
 {
     /**
-     * {@inheritdoc}
+     * @var ManagerRegistry
      */
-    protected function getInsert()
+    protected $registry;
+
+    /**
+     * @param ManagerRegistry $registry
+     * @return StaticSegmentMemberToRemoveWriter
+     */
+    public function setRegistry(ManagerRegistry $registry)
     {
-        return 'INSERT INTO orocrm_mailchimp_ml_email(marketing_list_id, email)';
+        $this->registry = $registry;
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager|EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->registry->getManager();
     }
 
     /**

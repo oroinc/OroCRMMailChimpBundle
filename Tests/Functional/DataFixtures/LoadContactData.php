@@ -17,12 +17,12 @@ class LoadContactData extends AbstractFixture
         [
             'firstName' => 'Daniel',
             'lastName'  => 'Case',
-            'email'     => 'daniel.case@example.com',
+            'email'     => 'member1@example.com',
         ],
         [
             'firstName' => 'John',
             'lastName'  => 'Case',
-            'email'     => 'john.case@example.com',
+            'email'     => 'member2@example.com',
         ]
     ];
 
@@ -46,6 +46,7 @@ class LoadContactData extends AbstractFixture
             $contact->addEmail($email);
 
             $manager->persist($contact);
+            $this->setReference('contact:' . $contactData['email'], $contact);
         }
 
         $manager->flush();

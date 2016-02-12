@@ -11,6 +11,7 @@ class StaticSegmentMemberToRemoveIterator extends AbstractSubordinateIterator
 {
     const QUERY_BUILDER = 'query_builder';
     const STATIC_SEGMENT_ID = 'static_segment_id';
+    const STATE = 'state';
 
     /**
      * @var ManagerRegistry
@@ -21,6 +22,11 @@ class StaticSegmentMemberToRemoveIterator extends AbstractSubordinateIterator
      * @var string
      */
     protected $memberToRemoveEntity;
+
+    /**
+     * @var string
+     */
+    protected $state;
 
     /**
      * @param \Iterator|null $mainIterator
@@ -63,6 +69,17 @@ class StaticSegmentMemberToRemoveIterator extends AbstractSubordinateIterator
     }
 
     /**
+     * @param string $state
+     * @return StaticSegmentMemberToRemoveIterator
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
      * @param StaticSegment $staticSegment
      * @return \Iterator
      */
@@ -75,13 +92,16 @@ class StaticSegmentMemberToRemoveIterator extends AbstractSubordinateIterator
         $qb->select(['IDENTITY(mmb.member) member_id'])
             ->from($this->memberToRemoveEntity, 'mmb')
             ->where($qb->expr()->eq('mmb.staticSegment', ':staticSegment'))
+            ->andWhere($qb->expr()->eq('mmb.state', ':state'))
+            ->setParameter('state', $this->state)
             ->setParameter('staticSegment', $staticSegment);
 
         return new \ArrayIterator(
             [
                 [
                     self::QUERY_BUILDER => $qb,
-                    self::STATIC_SEGMENT_ID => $staticSegment->getId()
+                    self::STATIC_SEGMENT_ID => $staticSegment->getId(),
+                    self::STATE => $this->state
                 ]
             ]
         );

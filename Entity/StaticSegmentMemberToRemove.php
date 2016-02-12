@@ -7,7 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *      name="orocrm_mc_tmp_mmbr_to_remove"
+ *      name="orocrm_mc_tmp_mmbr_to_remove",
+ *      indexes={
+ *          @ORM\Index(name="mc_smbr_rm_state_idx", columns={"state"})
+ *      }
  * )
  */
 class StaticSegmentMemberToRemove
@@ -24,10 +27,17 @@ class StaticSegmentMemberToRemove
     /**
      * @var StaticSegment
      *
+     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment")
      * @ORM\JoinColumn(name="static_segment_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */
     protected $staticSegment;
+
+    /**
+     * @var string
+     * @ORM\Column(name="state", type="string", length=25, nullable=false)
+     */
+    protected $state = StaticSegmentMember::STATE_REMOVE;
 
     /**
      * @return Member

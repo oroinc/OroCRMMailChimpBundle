@@ -113,7 +113,7 @@ class MailChimpExportCommandTest extends WebTestCase
         // 1 existing subscribed member
         $this->assertStaticSegmentMembers(2);
 
-        $result = $this->runCommand(MailChimpExportCommand::NAME, ['--verbose' => true]);
+        $result = $this->runCommand(MailChimpExportCommand::NAME, ['-vv']);
         $this->assertNotEmpty($result);
 
         // unknown email should be ignored
@@ -123,8 +123,9 @@ class MailChimpExportCommandTest extends WebTestCase
         $this->assertEmpty($this->getJobs(MemberConnector::JOB_EXPORT, BatchStatus::FAILED));
         $this->assertEmpty($this->getJobs(StaticSegmentConnector::JOB_EXPORT, BatchStatus::FAILED));
 
-        // 2 members from data fixtures + 1 from marketing list - 1 unsubscribed and deleted from segment
-        $this->assertMembers(2);
+        // 2 members from data fixtures + 1 from marketing list.
+        // If member is out of list it should be removed from static segment but exists in members.
+        $this->assertMembers(3);
 
         // 1 subscribed segment
         $this->assertStaticSegment(1, 'assertNotEmpty');
@@ -140,7 +141,7 @@ class MailChimpExportCommandTest extends WebTestCase
     protected function assertMembers($count)
     {
         $members = $this->getMembers();
-        $this->assertCount($count, $members);
+        $this->assertCount($count, $members, 'Members count does not match');
         foreach ($members as $member) {
             $this->assertNotEmpty($member->getOriginId());
         }
@@ -166,7 +167,7 @@ class MailChimpExportCommandTest extends WebTestCase
     protected function assertStaticSegmentMembers($count, $excludedEmail = null)
     {
         $staticSegmentMembers = $this->getStaticSegmentMember();
-        $this->assertCount($count, $staticSegmentMembers);
+        $this->assertCount($count, $staticSegmentMembers, 'Static segment members count does not match');
         foreach ($staticSegmentMembers as $staticSegmentMember) {
             if ($excludedEmail) {
                 $this->assertNotEquals($staticSegmentMember->getMember()->getEmail(), $excludedEmail);
@@ -185,7 +186,7 @@ class MailChimpExportCommandTest extends WebTestCase
                 'batchSubscribe' => [
                     'adds' => [
                         [
-                            'email' => 'daniel.case@example.com',
+                            'email' => 'member1@example.com',
                             'euid' => time(),
                             'leid' => time(),
                         ]

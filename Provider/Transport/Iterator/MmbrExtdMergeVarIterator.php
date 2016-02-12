@@ -6,12 +6,10 @@ use Doctrine\ORM\AbstractQuery;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
-/**
- * @todo Check that all data are present in QB after refactoring og AbstractStaticSegmentIterator
- */
 class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
 {
     const STATIC_SEGMENT_MEMBER_ALIAS = 'ssm';
@@ -25,6 +23,11 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
      * @var array
      */
     protected $uniqueMembers = [];
+
+    /**
+     * @var ProviderInterface
+     */
+    protected $extendMergeVarsProvider;
 
     /**
      * @param DoctrineHelper $doctrineHelper
@@ -44,6 +47,17 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
     }
 
     /**
+     * @param ProviderInterface $extendMergeVarsProvider
+     * @return MmbrExtdMergeVarIterator
+     */
+    public function setExtendMergeVarsProvider(ProviderInterface $extendMergeVarsProvider)
+    {
+        $this->extendMergeVarsProvider = $extendMergeVarsProvider;
+
+        return $this;
+    }
+
+    /**
      * @param StaticSegment $staticSegment
      *
      * {@inheritdoc}
@@ -51,6 +65,10 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
     protected function createSubordinateIterator($staticSegment)
     {
         $this->assertRequiredDependencies();
+
+        if (!$this->extendMergeVarsProvider->isApplicable($staticSegment->getMarketingList())) {
+            return new \EmptyIterator();
+        }
 
         if (!$staticSegment->getExtendedMergeVars()) {
             return new \EmptyIterator();
@@ -112,6 +130,10 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
 
         if (!$this->segmentMemberClassName) {
             throw new \InvalidArgumentException('StaticSegmentMember class name must be provided.');
+        }
+
+        if (!$this->extendMergeVarsProvider) {
+            throw new \InvalidArgumentException('ExtendMergeVarsProvider must be provided.');
         }
     }
 

@@ -6,8 +6,10 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\Join;
 
+use Oro\Bundle\ImportExportBundle\Writer\AbstractNativeQueryWriter;
+use OroCRM\Bundle\MailChimpBundle\Entity\MarketingListEmail;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Writer\AbstractNativeQueryWriter;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
 class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
 {
@@ -84,6 +86,13 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
+        if (!$this->memberEntity) {
+            throw new \InvalidArgumentException('Member entity class name must be provided');
+        }
+        if (!$this->marketingListEmailEntity) {
+            throw new \InvalidArgumentException('Marketing List Email entity class name must be provided');
+        }
+
         /** @var EntityManager $repository */
         $repository = $this->registry->getManager();
         $qb = $repository->createQueryBuilder();
@@ -92,7 +101,11 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
             ->select(
                 [
                     'mmb.id member_id',
-                    'IDENTITY(segmentMembers.staticSegment) static_segment_id'
+                    $staticSegment->getId() . ' static_segment_id',
+                    sprintf(
+                        'COALESCE(MAX(mlEmail.state), %s) state',
+                        $qb->expr()->literal(StaticSegmentMember::STATE_REMOVE)
+                    )
                 ]
             )
             ->from($this->memberEntity, 'mmb')
@@ -112,12 +125,17 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractSubordinateIterator
                 )
             )
             ->where(
-                $qb->expr()->andX(
-                    $qb->expr()->isNull('IDENTITY(mlEmail.marketingList)'),
-                    $qb->expr()->isNotNull('mmb.originId'),
-                    $qb->expr()->eq('mmb.subscribersList', ':subscribersList')
+                $qb->expr()->orX(
+                    $qb->expr()->neq('mlEmail.state', ':state'),
+                    $qb->expr()->andX(
+                        $qb->expr()->isNull('IDENTITY(mlEmail.marketingList)'),
+                        $qb->expr()->isNotNull('mmb.originId'),
+                        $qb->expr()->eq('mmb.subscribersList', ':subscribersList')
+                    )
                 )
             )
+            ->groupBy('mmb.id')
+            ->setParameter('state', MarketingListEmail::STATE_IN_LIST)
             ->setParameter('marketingList', $staticSegment->getMarketingList())
             ->setParameter('subscribersList', $staticSegment->getSubscribersList());
 

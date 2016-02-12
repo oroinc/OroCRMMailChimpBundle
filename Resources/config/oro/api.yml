@@ -1,0 +1,12 @@
+oro_api:
+    entities:
+        OroCRM\Bundle\MailChimpBundle\Entity\Campaign: ~
+        OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar: ~
+        OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport: ~
+        OroCRM\Bundle\MailChimpBundle\Entity\Member: ~
+        OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity: ~
+        OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar: ~
+        OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment: ~
+        OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember: ~
+        OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList: ~
+        OroCRM\Bundle\MailChimpBundle\Entity\Template: ~

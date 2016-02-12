@@ -11,7 +11,7 @@ class MemberActivityDataConverter extends IntegrationAwareDataConverter
     {
         return [
             'timestamp' => 'activityTime',
-            'campaign_id' => 'campaign:id',
+            'campaign' => 'campaign',
         ];
     }
 

@@ -42,6 +42,7 @@ class StaticSegment implements OriginAwareInterface
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_SYNCED = 'synced';
     const STATUS_SCHEDULED = 'scheduled';
+    const STATUS_IMPORTED = 'imported';
     /**#@-*/
 
     /**
@@ -525,6 +526,16 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
+     * @param Collection $segmentMembers
+     */
+    public function setSegmentMembers(Collection $segmentMembers)
+    {
+        $this->segmentMembers = $segmentMembers;
+
+        return $this;
+    }
+
+    /**
      * @param ExtendedMergeVar $extendedMergeVar
      * @return ExtendedMergeVar
      */
@@ -573,5 +584,15 @@ class StaticSegment implements OriginAwareInterface
     public function getSyncedExtendedMergeVars()
     {
         return $this->getExtendedMergeVars([ExtendedMergeVar::STATE_SYNCED]);
+    }
+
+    /**
+     * @param Collection $collection
+     */
+    public function setSyncedExtendedMergeVars(Collection $collection)
+    {
+        $this->extendedMergeVars = $collection;
+
+        return $this;
     }
 }
