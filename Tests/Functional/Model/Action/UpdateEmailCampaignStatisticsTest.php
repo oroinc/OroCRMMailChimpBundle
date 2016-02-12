@@ -17,6 +17,11 @@ use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 class UpdateEmailCampaignStatisticsTest extends WebTestCase
 {
     /**
+     * @var bool
+     */
+    protected $sceduled = false;
+
+    /**
      * @var UpdateEmailCampaignStatistics
      */
     protected $action;
@@ -49,22 +54,9 @@ class UpdateEmailCampaignStatisticsTest extends WebTestCase
 
     public function testExecute()
     {
-        $activities = [
-            'mailchimp:member_one:activity:open',
-            'mailchimp:member_one:activity:click:1',
-            'mailchimp:member_one:activity:click:2',
-            'mailchimp:member_two:activity:open',
-            'mailchimp:member_two:activity:open:cmp2'
-        ];
-
-        // Process activities
-        foreach ($activities as $activityReference) {
-            $activity = $this->getReference($activityReference);
-            $context = new ProcessData();
-            $context->set('data', $activity);
-            $this->action->execute($context);
+        if ($this->sceduled) {
+            $this->executeAction();
         }
-        $this->registry->getManager()->flush();
 
         // Check that all marketing list items are created
         /** @var MarketingListItem[] $items */
@@ -114,5 +106,25 @@ class UpdateEmailCampaignStatisticsTest extends WebTestCase
             ['opens' => 1, 'clicks' => null],
             $statisticsData[$secondCampaign->getId()][$secondAssignedEntity->getId()]
         );
+    }
+
+    protected function executeAction()
+    {
+        $activities = [
+            'mailchimp:member_one:activity:open',
+            'mailchimp:member_one:activity:click:1',
+            'mailchimp:member_one:activity:click:2',
+            'mailchimp:member_two:activity:open',
+            'mailchimp:member_two:activity:open:cmp2'
+        ];
+
+        // Process activities
+        foreach ($activities as $activityReference) {
+            $activity = $this->getReference($activityReference);
+            $context = new ProcessData();
+            $context->set('data', $activity);
+            $this->action->execute($context);
+        }
+        $this->registry->getManager()->flush();
     }
 }
