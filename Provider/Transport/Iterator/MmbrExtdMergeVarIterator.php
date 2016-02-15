@@ -6,12 +6,11 @@ use Doctrine\ORM\AbstractQuery;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
-use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\MarketingListQueryBuilderAdapter;
 
-class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
+class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
 {
     const STATIC_SEGMENT_MEMBER_ALIAS = 'ssm';
 
@@ -21,29 +20,21 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     protected $doctrineHelper;
 
     /**
-     * @var FieldHelper
-     */
-    protected $fieldHelper;
-
-    /**
      * @var array
      */
     protected $uniqueMembers = [];
 
     /**
-     * @param DoctrineHelper $doctrineHelper
+     * @var ProviderInterface
      */
-    public function setDoctrineHelper($doctrineHelper)
-    {
-        $this->doctrineHelper = $doctrineHelper;
-    }
+    protected $extendMergeVarsProvider;
 
     /**
-     * @param FieldHelper $fieldHelper
+     * @param DoctrineHelper $doctrineHelper
      */
-    public function setFieldHelper($fieldHelper)
+    public function setDoctrineHelper(DoctrineHelper $doctrineHelper)
     {
-        $this->fieldHelper = $fieldHelper;
+        $this->doctrineHelper = $doctrineHelper;
     }
 
     /**
@@ -56,6 +47,17 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     }
 
     /**
+     * @param ProviderInterface $extendMergeVarsProvider
+     * @return MmbrExtdMergeVarIterator
+     */
+    public function setExtendMergeVarsProvider(ProviderInterface $extendMergeVarsProvider)
+    {
+        $this->extendMergeVarsProvider = $extendMergeVarsProvider;
+
+        return $this;
+    }
+
+    /**
      * @param StaticSegment $staticSegment
      *
      * {@inheritdoc}
@@ -64,6 +66,10 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
     {
         $this->assertRequiredDependencies();
 
+        if (!$this->extendMergeVarsProvider->isApplicable($staticSegment->getMarketingList())) {
+            return new \EmptyIterator();
+        }
+
         if (!$staticSegment->getExtendedMergeVars()) {
             return new \EmptyIterator();
         }
@@ -71,7 +77,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         $qb = $this->getIteratorQueryBuilder($staticSegment);
 
         $marketingList = $staticSegment->getMarketingList();
-        $memberIdentifier = MarketingListQueryBuilderAdapter::MEMBER_ALIAS . '.id';
+        $memberIdentifier = self::MEMBER_ALIAS . '.id';
         $fieldExpr = $this->fieldHelper
             ->getFieldExpr(
                 $marketingList->getEntity(),
@@ -125,6 +131,10 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         if (!$this->segmentMemberClassName) {
             throw new \InvalidArgumentException('StaticSegmentMember class name must be provided.');
         }
+
+        if (!$this->extendMergeVarsProvider) {
+            throw new \InvalidArgumentException('ExtendMergeVarsProvider must be provided.');
+        }
     }
 
     /**
@@ -141,8 +151,8 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentIterator
         }
 
         $qb = clone $this->marketingListProvider->getMarketingListQueryBuilder($marketingList, $mixin);
-
-        $this->marketingListQueryBuilderAdapter->prepareMarketingListEntities($staticSegment, $qb);
+        $this->matchMembersByEmail($staticSegment, $qb);
+        $this->applyOrganizationRestrictions($staticSegment, $qb);
 
         return $qb;
     }

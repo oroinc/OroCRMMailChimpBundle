@@ -23,7 +23,9 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  * @ORM\Table(
  *      name="orocrm_mailchimp_member",
  *      indexes={
- *          @ORM\Index(name="mc_mmbr_email_list_idx", columns={"email", "subscribers_list_id"})
+ *          @ORM\Index(name="mc_mmbr_email_list_idx", columns={"email", "subscribers_list_id"}),
+ *          @ORM\Index(name="mc_mmbr_origin_idx", columns={"origin_id"}),
+ *          @ORM\Index(name="mc_mmbr_status_idx", columns={"status"}),
  *      },
  * )
  * @ORM\HasLifecycleCallbacks()
@@ -52,10 +54,11 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**#@+
      * @const string Status of member
      */
-    const STATUS_SUBSCRIBED   = 'subscribed';
+    const STATUS_SUBSCRIBED = 'subscribed';
     const STATUS_UNSUBSCRIBED = 'unsubscribed';
-    const STATUS_CLEANED      = 'cleaned';
-    const STATUS_EXPORT       = 'export';
+    const STATUS_CLEANED = 'cleaned';
+    const STATUS_EXPORT = 'export';
+    const STATUS_EXPORT_FAILED = 'export_failed';
     /**#@-*/
 
     /**
@@ -270,6 +273,13 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      *
      * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
      * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ConfigField(
+     *      defaultValues={
+     *          "importexport"={
+     *              "identity"=true
+     *          }
+     *      }
+     * )
      */
     protected $subscribersList;
 

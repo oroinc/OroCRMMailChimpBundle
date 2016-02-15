@@ -9,6 +9,15 @@ orocrm:
             api_key:
                 check.label: Check Connection
                 label: API Key
+            activity_update_interval:
+                label: 'Activity Update Interval'
+                choice:
+                    forever: Forever
+                    1week: 1 week
+                    2week: 2 weeks
+                    1month: 1 month
+                    2month: 2 months
+                    3month: 3 months
 
         connector:
             template:
@@ -220,6 +229,14 @@ orocrm:
             opens.tooltip: Number of times the campaign was opened.
             clicks.label: Clicks
             clicks.tooltip: Number of times a link in the campaign was clicked.
+            activity_update_state:
+                label: Activities Update
+                enabled: Enabled
+                disabled: Disabled
+                expired: Expired
+            stop_receiving_activities.label: Disable Activities Update
+            start_receive_activities.label: Enable Activities Update
+
 
         staticsegment:
             entity_label: MailChimp Static Segment
@@ -320,3 +337,10 @@ orocrm:
         form:
             api_key:
                 tooltip: MailChimp API Key. <br/><a href="http://kb.mailchimp.com/accounts/management/about-api-keys" target="_blank" class="no-hash">About API Keys</a>
+            activity_update_interval:
+                tooltip: How long email capaign activities should be received.
+
+        controller:
+            email_campaign.receive_activities:
+                enabled.message: 'Reciving of connected MailChimp campaign activities enabled'
+                disabled.message: 'Reciving of connected MailChimp campaign activities disabled'

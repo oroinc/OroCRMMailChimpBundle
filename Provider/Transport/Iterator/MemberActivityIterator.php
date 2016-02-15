@@ -18,12 +18,18 @@ class MemberActivityIterator extends AbstractMemberActivityIterator
      * @param \Iterator $campaigns
      * @param MailChimpClient $client
      * @param array $parameters
+     * @param array $sinceMap
      */
-    public function __construct(\Iterator $campaigns, MailChimpClient $client, array $parameters = [])
-    {
+    public function __construct(
+        \Iterator $campaigns,
+        MailChimpClient $client,
+        array $parameters = [],
+        array $sinceMap = []
+    ) {
         parent::__construct($campaigns, $client);
 
         $this->parameters = $parameters;
+        $this->sinceMap = $sinceMap;
     }
 
     /**
@@ -36,6 +42,9 @@ class MemberActivityIterator extends AbstractMemberActivityIterator
     {
         $parameters = $this->parameters;
         $parameters['id'] = $campaign->getOriginId();
+        if (!empty($this->sinceMap[$campaign->getOriginId()]['since'])) {
+            $parameters['since'] = $this->sinceMap[$campaign->getOriginId()]['since'];
+        }
 
         return $this->createExportIterator(MailChimpClient::EXPORT_CAMPAIGN_SUBSCRIBER_ACTIVITY, $parameters);
     }

@@ -13,13 +13,19 @@ definitions:
         order:   10
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\Campaign
         exclude_definitions: [create_email_campaign_for_mailchimp_campaign]
+        # If OroCRM EmailCampaign not exists and
+        # MailChimp Campaign relates to OroCRM MarketingList and
+        # MailChimp Campaign has "sent" status
+        pre_conditions:
+            @and:
+                - @empty: $emailCampaign
+                - @not_empty: $staticSegment
+                - @not_empty: $staticSegment.marketingList
+                - @equal: [$status, 'sent']
         actions_configuration:
             - @tree:
                 actions:
                     # Prepare constants values
-                    - @assign_constant_value:
-                        attribute: $.statusSent
-                        value: OroCRM\Bundle\MailChimpBundle\Entity\Campaign::STATUS_SENT
                     - @assign_constant_value:
                         attribute: $.scheduleManual
                         value: OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign::SCHEDULE_MANUAL
@@ -28,15 +34,6 @@ definitions:
                         value: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport::NAME
                     # Create OroCRM EmailCampaign
                     - @tree:
-                        # If OroCRM EmailCampaign not exists and
-                        # MailChimp Campaign relates to OroCRM MarketingList and
-                        # MailChimp Campaign has "sent" status
-                        conditions:
-                            @and:
-                                - @empty: $emailCampaign
-                                - @not_empty: $staticSegment
-                                - @not_empty: $staticSegment.marketingList
-                                - @equal: [$status, 'sent']
                         actions:
                             - @create_entity: # Create OroCRM EmailCampaign
                                 class:     OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign
@@ -56,6 +53,7 @@ definitions:
                                 class:     OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings
                                 attribute: $emailCampaign.transportSettings
                                 data:
+                                    receiveActivities: true
                                     channel: $channel
 #                                    template: $template
 
@@ -63,39 +61,27 @@ definitions:
         label:   Create MarketingListUnsubscribedItem for MailChimp unsubscribed Member
         enabled: true
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\Member
+        pre_conditions:
+            @or:
+                - @equal: [$status, 'unsubscribed']
+                - @equal: [$status, 'cleaned']
         actions_configuration:
             - @tree:
                 actions:
-                    # Prepare constants values
-                    - @assign_constant_value:
-                        attribute: $.statusUnsubscribed
-                        value: OroCRM\Bundle\MailChimpBundle\Entity\Member::STATUS_UNSUBSCRIBED
-                    - @assign_constant_value:
-                        attribute: $.statusCleaned
-                        value: OroCRM\Bundle\MailChimpBundle\Entity\Member::STATUS_CLEANED
                     # Create OroCRM MarketingListUnsubscribedItem
-                    - @create_marketing_list_unsubscribed_item:
-                        conditions:
-                            @or:
-                                - @equal: [$status, $.statusUnsubscribed]
-                                - @equal: [$status, $.statusCleaned]
+                    - @create_marketing_list_unsubscribed_item: ~
+
 
     schedule_mailchimp_segment_synchronization:
         label:   Schedule MailChimp Static Segment synchronization
         enabled: true
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
+        pre_conditions:
+            @or:
+                - @equal: [$syncStatus, 'not_synced']
+                - @equal: [$syncStatus, 'scheduled']
         actions_configuration:
-            - @assign_constant_value:
-                attribute: $.statusNotSynced
-                value: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_NOT_SYNCED
-            - @assign_constant_value:
-                attribute: $.statusScheduled
-                value: OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_SCHEDULED
             - @tree:
-                conditions:
-                    @or:
-                        - @equal: [$syncStatus, $.statusNotSynced]
-                        - @equal: [$syncStatus, $.statusScheduled]
                 actions:
                     - @format_string:
                         attribute: $.segmentArguments
@@ -114,6 +100,7 @@ triggers:
     synchronize_marketing_list_item_for_mailchimp_member_activity:
         -
             event:    create
+            # queued:   true # Disabled for now, as queued processing cause statistics lost
 
     create_email_campaign_for_mailchimp_campaign:
         -
@@ -123,6 +110,7 @@ triggers:
         -
             event:    update
             field:    status
+            queued:   true
 
     schedule_mailchimp_segment_synchronization:
         -

@@ -42,6 +42,7 @@ class StaticSegment implements OriginAwareInterface
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_SYNCED = 'synced';
     const STATUS_SCHEDULED = 'scheduled';
+    const STATUS_IMPORTED = 'imported';
     /**#@-*/
 
     /**
@@ -105,7 +106,7 @@ class StaticSegment implements OriginAwareInterface
     protected $subscribersList;
 
     /**
-     * @var Collection|Member[]
+    * @var Collection|StaticSegmentMember[]
      *
      * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="staticSegment")
      */
@@ -517,11 +518,21 @@ class StaticSegment implements OriginAwareInterface
     /**
      * Get segmentMembers
      *
-     * @return Collection
+     * @return Collection|StaticSegmentMember[]
      */
     public function getSegmentMembers()
     {
         return $this->segmentMembers;
+    }
+
+    /**
+     * @param Collection $segmentMembers
+     */
+    public function setSegmentMembers(Collection $segmentMembers)
+    {
+        $this->segmentMembers = $segmentMembers;
+
+        return $this;
     }
 
     /**
@@ -573,5 +584,15 @@ class StaticSegment implements OriginAwareInterface
     public function getSyncedExtendedMergeVars()
     {
         return $this->getExtendedMergeVars([ExtendedMergeVar::STATE_SYNCED]);
+    }
+
+    /**
+     * @param Collection $collection
+     */
+    public function setSyncedExtendedMergeVars(Collection $collection)
+    {
+        $this->extendedMergeVars = $collection;
+
+        return $this;
     }
 }

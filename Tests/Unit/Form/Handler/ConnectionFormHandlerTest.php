@@ -2,24 +2,31 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Form\Handler;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
+
+use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
+use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler;
 
 class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|FormInterface
      */
     protected $form;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|Request
      */
     protected $request;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|ManagerRegistry
      */
-    protected $manager;
+    protected $registry;
 
     /**
      * @var ConnectionFormHandler
@@ -28,106 +35,219 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->form = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->form = $this->getMock('Symfony\Component\Form\FormInterface');
 
         $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->manager = $this->getMockBuilder('Doctrine\Common\Persistence\ObjectManager')
+        $this->registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+
+        $this->handler = new ConnectionFormHandler($this->request, $this->registry, $this->form);
+    }
+
+    public function testProcessGet()
+    {
+        /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
+        $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
+        $staticSegment->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(null));
 
-        $this->handler = new ConnectionFormHandler($this->request, $this->manager);
-        $this->handler->setForm($this->form);
+        $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
+        $this->registry->expects($this->once())
+            ->method('getManagerForClass')
+            ->with('OroCRMMailChimpBundle:StaticSegment');
+
+        $staticSegmentManager->expects($this->never())
+            ->method($this->anything());
+        $this->request->expects($this->once())
+            ->method('isMethod')
+            ->with('POST')
+            ->will($this->returnValue(false));
+
+        $this->assertNull($this->handler->process($staticSegment));
     }
 
     public function testProcessNewEntity()
     {
+        /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
         $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
-        $staticSegment->expects($this->once())
-            ->method('getSubscribersList');
-        $staticSegment->expects($this->never())
-            ->method('setOriginId');
+        $staticSegment->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(null));
 
-        $this->assertParentCalls($staticSegment);
-        $this->assertTrue($this->handler->process($staticSegment));
+        $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
+        $this->registry->expects($this->once())
+            ->method('getManagerForClass')
+            ->with('OroCRMMailChimpBundle:StaticSegment')
+            ->will($this->returnValue($staticSegmentManager));
+
+        $this->assertSubmit();
+        $this->assertSave($staticSegmentManager, $staticSegment);
+
+        $this->assertSame($staticSegment, $this->handler->process($staticSegment));
     }
 
-    public function testProcessUnchangedEntity()
+    public function testProcessExistingEntitySameList()
     {
         $subscribersList = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
             ->disableOriginalConstructor()
             ->getMock();
-        $subscribersList->expects($this->exactly(2))
-            ->method('getId')
-            ->will($this->returnValue(1));
-
-        $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $staticSegment->expects($this->exactly(2))
-            ->method('getSubscribersList')
-            ->will($this->returnValue($subscribersList));
-        $staticSegment->expects($this->never())
-            ->method('setOriginId');
-
-        $this->assertParentCalls($staticSegment);
-        $this->assertTrue($this->handler->process($staticSegment));
-    }
-
-    public function testProcessChangedEntity()
-    {
-        $subscribersList = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $subscribersList->expects($this->at(0))
-            ->method('getId')
-            ->will($this->returnValue(1));
-        $subscribersList->expects($this->at(1))
+        $subscribersList->expects($this->any())
             ->method('getId')
             ->will($this->returnValue(2));
 
+        /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
         $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
-        $staticSegment->expects($this->exactly(2))
+        $staticSegment->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(1));
+        $staticSegment->expects($this->any())
             ->method('getSubscribersList')
             ->will($this->returnValue($subscribersList));
         $staticSegment->expects($this->once())
-            ->method('setOriginId')
-            ->with(null);
+            ->method('setSyncStatus')
+            ->with(StaticSegment::STATUS_SCHEDULED);
 
-        $this->assertParentCalls($staticSegment);
-        $this->assertTrue($this->handler->process($staticSegment));
+        $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
+        $this->registry->expects($this->once())
+            ->method('getManagerForClass')
+            ->with('OroCRMMailChimpBundle:StaticSegment')
+            ->will($this->returnValue($staticSegmentManager));
+
+        $this->assertSubmit();
+        $this->assertSave($staticSegmentManager, $staticSegment);
+
+        $this->assertSame($staticSegment, $this->handler->process($staticSegment));
     }
 
     /**
-     * @param object $entity
+     * @dataProvider campaignDataProvider
+     * @param Campaign|null $campaign
      */
-    public function assertParentCalls($entity)
+    public function testProcessExistingEntityListChange($campaign)
     {
-        $this->form->expects($this->once())
-            ->method('setData')
-            ->with($entity);
+        $subscribersList = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $subscribersList->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(2));
+
+        /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
+        $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
+            ->disableOriginalConstructor()
+            ->setMethods(['getId'])
+            ->getMock();
+        $staticSegment->expects($this->any())
+            ->method('getId')
+            ->will($this->returnValue(1));
+        $staticSegment->setSubscribersList($subscribersList);
+
+        $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
+        $staticSegmentManager->expects(!$campaign ? $this->once() : $this->never())
+            ->method('remove');
+
+        $campaignManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
+        $campaignRepository = $this->getMock('\Doctrine\Common\Persistence\ObjectRepository');
+        $campaignRepository->expects($this->any())
+            ->method('findOneBy')
+            ->will($this->returnValue($campaign));
+        $campaignManager->expects($this->any())
+            ->method('getRepository')
+            ->with('OroCRMMailChimpBundle:Campaign')
+            ->will($this->returnValue($campaignRepository));
+
+        $this->registry->expects($this->any())
+            ->method('getManagerForClass')
+            ->will(
+                $this->returnValueMap(
+                    [
+                        ['OroCRMMailChimpBundle:StaticSegment', $staticSegmentManager],
+                        ['OroCRMMailChimpBundle:Campaign', $campaignManager]
+                    ]
+                )
+            );
+
         $this->request->expects($this->once())
-            ->method('getMethod')
-            ->will($this->returnValue('POST'));
+            ->method('isMethod')
+            ->with(Request::METHOD_POST)
+            ->will($this->returnValue(true));
+
+        $this->form->expects($this->once())
+            ->method('submit')
+            ->with($this->request)
+            ->will(
+                $this->returnCallback(
+                    function () use ($staticSegment) {
+                        $subscribersList = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
+                            ->disableOriginalConstructor()
+                            ->setMethods(['getId'])
+                            ->getMock();
+                        $subscribersList->expects($this->any())
+                            ->method('getId')
+                            ->will($this->returnValue(1));
+                        $staticSegment->setSubscribersList($subscribersList);
+                    }
+                )
+            );
+        $this->form->expects($this->once())
+            ->method('isValid')
+            ->will($this->returnValue(true));
+
+        $staticSegmentManager->expects($this->once())
+            ->method('persist');
+        $staticSegmentManager->expects($this->once())
+            ->method('flush');
+
+        $actualSegment = $this->handler->process($staticSegment);
+        $this->assertInstanceOf('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment', $actualSegment);
+        $this->assertNull($actualSegment->getId());
+        $this->assertEquals(StaticSegment::STATUS_NOT_SYNCED, $actualSegment->getSyncStatus());
+    }
+
+    /**
+     * @return array
+     */
+    public function campaignDataProvider()
+    {
+        return [
+            [new Campaign()],
+            [null]
+        ];
+    }
+
+    protected function assertSubmit()
+    {
+        $this->request->expects($this->once())
+            ->method('isMethod')
+            ->with(Request::METHOD_POST)
+            ->will($this->returnValue(true));
         $this->form->expects($this->once())
             ->method('submit')
             ->with($this->request);
         $this->form->expects($this->once())
             ->method('isValid')
             ->will($this->returnValue(true));
-        $this->manager->expects($this->once())
+    }
+
+    /**
+     * @param \PHPUnit_Framework_MockObject_MockObject $staticSegmentManager
+     * @param StaticSegment $staticSegment
+     */
+    protected function assertSave($staticSegmentManager, $staticSegment)
+    {
+        $staticSegmentManager->expects($this->once())
             ->method('persist')
-            ->with($entity);
-        $this->manager->expects($this->once())
+            ->with($staticSegment);
+        $staticSegmentManager->expects($this->once())
             ->method('flush');
     }
 }

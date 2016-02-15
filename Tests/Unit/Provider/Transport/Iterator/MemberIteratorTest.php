@@ -7,7 +7,8 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class MemberIteratorTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_LIST_ID = 100;
+    const TEST_LIST_ID = 42;
+    const TEST_LIST_ORIGIN_ID = 100;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -46,6 +47,9 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
         $list = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
         $list->expects($this->atLeastOnce())
             ->method('getOriginId')
+            ->will($this->returnValue(self::TEST_LIST_ORIGIN_ID));
+        $list->expects($this->atLeastOnce())
+            ->method('getId')
             ->will($this->returnValue(self::TEST_LIST_ID));
 
         $subscriberLists = new \ArrayIterator([$list]);
@@ -79,7 +83,11 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
                 'expectedValueMap' => [
                     [
                         MailChimpClient::EXPORT_LIST,
-                        ['include_empty' => true, 'status' => Member::STATUS_SUBSCRIBED, 'id' => self::TEST_LIST_ID],
+                        [
+                            'include_empty' => true,
+                            'status' => Member::STATUS_SUBSCRIBED,
+                            'id' => self::TEST_LIST_ORIGIN_ID
+                        ],
                         new \ArrayIterator([$memberFoo, $memberBar, $memberBaz])
                     ]
                 ],
@@ -94,7 +102,7 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
                 'expectedValueMap' => [
                     [
                         MailChimpClient::EXPORT_LIST,
-                        ['status' => Member::STATUS_UNSUBSCRIBED, 'id' => self::TEST_LIST_ID],
+                        ['status' => Member::STATUS_UNSUBSCRIBED, 'id' => self::TEST_LIST_ORIGIN_ID],
                         new \ArrayIterator([$memberFoo, $memberBar, $memberBaz])
                     ]
                 ],
@@ -109,12 +117,12 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
                 'expectedValueMap' => [
                     [
                         MailChimpClient::EXPORT_LIST,
-                        ['status' => Member::STATUS_SUBSCRIBED, 'id' => self::TEST_LIST_ID],
+                        ['status' => Member::STATUS_SUBSCRIBED, 'id' => self::TEST_LIST_ORIGIN_ID],
                         new \ArrayIterator([$memberFoo, $memberBar])
                     ],
                     [
                         MailChimpClient::EXPORT_LIST,
-                        ['status' => Member::STATUS_UNSUBSCRIBED, 'id' => self::TEST_LIST_ID],
+                        ['status' => Member::STATUS_UNSUBSCRIBED, 'id' => self::TEST_LIST_ORIGIN_ID],
                         new \ArrayIterator([$memberBaz])
                     ],
                 ],
@@ -134,7 +142,8 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
      */
     protected function passMember(array $member, $status)
     {
-        $member['list_id'] = self::TEST_LIST_ID;
+        $member['list_id'] = self::TEST_LIST_ORIGIN_ID;
+        $member['subscribersList_id'] = self::TEST_LIST_ID;
         $member['status'] = $status;
         return $member;
     }
