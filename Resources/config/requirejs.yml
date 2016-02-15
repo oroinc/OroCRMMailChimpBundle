@@ -3,3 +3,4 @@ config:
         'orocrmmailchimp/js/app/components/api-key-component': 'bundles/orocrmmailchimp/js/app/components/api-key-component.js'
         'orocrmmailchimp/js/app/components/connect-btn-component': 'bundles/orocrmmailchimp/js/app/components/connect-btn-component.js'
         'orocrmmailchimp/js/app/components/synchronize-btn-component': 'bundles/orocrmmailchimp/js/app/components/synchronize-btn-component.js'
+        'orocrmmailchimp/js/app/components/activities-toggle-btn-component': 'bundles/orocrmmailchimp/js/app/components/activities-toggle-btn-component.js'

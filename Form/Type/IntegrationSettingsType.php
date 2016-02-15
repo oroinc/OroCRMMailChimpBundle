@@ -24,6 +24,22 @@ class IntegrationSettingsType extends AbstractType
                     'tooltip' => 'orocrm.mailchimp.form.api_key.tooltip',
                     'required' => true
                 ]
+            )
+            ->add(
+                'activityUpdateInterval',
+                'choice',
+                [
+                    'label' => 'orocrm.mailchimp.integration_transport.activity_update_interval.label',
+                    'tooltip' => 'orocrm.mailchimp.form.activity_update_interval.tooltip',
+                    'choices' => [
+                        '0' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.forever',
+                        '7' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.1week',
+                        '14' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.2week',
+                        '30' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.1month',
+                        '60' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.2month',
+                        '90' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.3month'
+                    ]
+                ]
             );
     }
 

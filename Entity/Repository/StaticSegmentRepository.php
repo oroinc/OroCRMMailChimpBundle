@@ -14,13 +14,14 @@ class StaticSegmentRepository extends EntityRepository
     /**
      * @param array|null $segments
      * @param Channel|null $channel
+     * @param bool $getAll
      * @return \Iterator
      */
-    public function getStaticSegmentsToSync(array $segments = null, Channel $channel = null)
+    public function getStaticSegmentsToSync(array $segments = null, Channel $channel = null, $getAll = false)
     {
         $qb = $this->getStaticSegmentsQueryBuilder($segments, $channel);
 
-        if (!$segments) {
+        if (!$segments && !$getAll) {
             $qb
                 ->leftJoin('staticSegment.marketingList', 'ml')
                 ->where(

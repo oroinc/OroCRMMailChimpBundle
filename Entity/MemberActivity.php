@@ -11,9 +11,12 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/lists/member-activity.php
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\MemberActivityRepository")
  * @ORM\Table(
- *      name="orocrm_mc_mmbr_activity"
+ *      name="orocrm_mc_mmbr_activity",
+ *      indexes={
+ *          @ORM\Index(name="mc_mmbr_activity_action_idx", columns={"action"})
+ *      },
  * )
  * @Config(
  *  defaultValues={

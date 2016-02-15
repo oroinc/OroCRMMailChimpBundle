@@ -12,7 +12,7 @@ class LoadMemberExportData extends LoadMemberData
     protected $data = [
         [
             'originId' => 210000002,
-            'email' => 'john.case@example.com',
+            'email' => 'member2@example.com',
             'status' => Member::STATUS_SUBSCRIBED,
             'subscribersList' => 'mailchimp:subscribers_list_one',
             'channel' => 'mailchimp:channel_1',

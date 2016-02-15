@@ -7,7 +7,7 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 abstract class AbstractMemberActivityIterator extends AbstractSubordinateIterator
 {
-    const CAMPAIGN_KEY = 'campaign_id';
+    const CAMPAIGN_KEY = 'campaign';
 
     /**
      * @var MailChimpClient
@@ -36,7 +36,7 @@ abstract class AbstractMemberActivityIterator extends AbstractSubordinateIterato
                     return false;
                 }
 
-                $current[self::CAMPAIGN_KEY] = $campaign->getId();
+                $current[self::CAMPAIGN_KEY] = $campaign;
                 return true;
             }
         );

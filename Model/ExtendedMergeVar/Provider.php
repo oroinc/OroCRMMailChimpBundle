@@ -3,28 +3,13 @@
 namespace OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar;
 
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 
 class Provider implements CompositeProviderInterface
 {
     /**
      * @var array|ProviderInterface[]
      */
-    protected $providers;
-
-    /**
-     * @var ColumnDefinitionListFactory
-     */
-    protected $columnDefinitionListFactory;
-
-    /**
-     * @param ColumnDefinitionListFactory $columnDefinitionListFactory
-     */
-    public function __construct(ColumnDefinitionListFactory $columnDefinitionListFactory)
-    {
-        $this->providers = [];
-        $this->columnDefinitionListFactory = $columnDefinitionListFactory;
-    }
+    protected $providers = [];
 
     /**
      * {@inheritdoc}
@@ -40,13 +25,23 @@ class Provider implements CompositeProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function isApplicable(MarketingList $marketingList)
+    {
+        foreach ($this->providers as $provider) {
+            if ($provider->isApplicable($marketingList)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function provideExtendedMergeVars(MarketingList $marketingList)
     {
-        $vars = $this
-            ->columnDefinitionListFactory
-            ->create($marketingList)
-            ->getColumns();
-
+        $vars = [];
         foreach ($this->providers as $provider) {
             $currentProviderVars = $provider->provideExtendedMergeVars($marketingList);
             if (!empty($currentProviderVars)) {

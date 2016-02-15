@@ -53,19 +53,21 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
             throw new InvalidConfigurationException('StaticSegment class name must be provided');
         }
 
-        if ($iterator = $this->getSourceIterator()) {
-            $sourceIterator = clone $iterator;
+        /** @var Channel $channel */
+        $channel = $this->doctrineHelper->getEntityReference(
+            $this->channelClassName,
+            $context->getOption('channel')
+        );
 
-            /** @var Channel $channel */
-            $channel = $this->doctrineHelper->getEntityReference(
-                $this->channelClassName,
-                $context->getOption('channel')
-            );
-            /** @var MemberSyncIterator $sourceIterator */
-            $sourceIterator->setMainIterator(
+        $iterator = $this->getSourceIterator();
+        if ($iterator) {
+            /** @var MemberSyncIterator $iterator */
+            $iterator->setMainIterator(
                 $this->getStaticSegmentIterator($channel, $context->getOption('segments'))
             );
-            $this->setSourceIterator($sourceIterator);
+            $this->setSourceIterator($iterator);
+        } else {
+            $this->setSourceIterator($this->getStaticSegmentIterator($channel, $context->getOption('segments')));
         }
     }
 
@@ -86,14 +88,14 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
             ->join($this->marketingListClassName, 'ml', Join::WITH, 'staticSegment.marketingList = ml.id')
             ->join('staticSegment.subscribersList', 'subscribersList');
 
+        $qb
+            ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
+            ->setParameter('channel', $channel);
+
         if ($segments) {
             $qb
-                ->andWhere('staticSegment.id IN(:segments)')
+                ->andWhere($qb->expr()->in('staticSegment.id', ':segments'))
                 ->setParameter('segments', $segments);
-        } else {
-            $qb
-                ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
-                ->setParameter('channel', $channel);
         }
 
         return new BufferedQueryResultIterator($qb);
