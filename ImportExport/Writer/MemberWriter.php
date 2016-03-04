@@ -4,57 +4,67 @@ namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Psr\Log\LoggerInterface;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 class MemberWriter extends AbstractExportWriter
 {
     /**
+     * @param Member[] $items
+     *
      * {@inheritdoc}
      */
     public function write(array $items)
     {
-        $itemsToWrite = [];
-
         /** @var Member $item */
-        $item = reset($items);
+        $item = $items[0];
         $this->transport->init($item->getChannel()->getTransport());
 
         $subscribersList = $item->getSubscribersList();
 
-        $itemsToSave = $this->batchSubscribe($subscribersList, $items);
-        if ($itemsToSave) {
-            $itemsToWrite = array_merge($itemsToWrite, $itemsToSave);
-        }
+        $this->batchSubscribe($subscribersList, $items);
 
-        parent::write($itemsToWrite);
+        array_walk(
+            $items,
+            function (Member $member) {
+                if ($member->getStatus() === Member::STATUS_EXPORT) {
+                    $member->setStatus(Member::STATUS_EXPORT_FAILED);
+                }
+            }
+        );
+
+        parent::write($items);
+
+        $this->logger->info(sprintf('%d items written', count($items)));
     }
 
     /**
      * @param SubscribersList $subscribersList
-     * @param array|ArrayCollection $items
-     * @return array
+     * @param Member[] $items
      */
     protected function batchSubscribe(SubscribersList $subscribersList, array $items)
     {
-        $itemsToWrite = [];
+        $emails = [];
 
-        $emails = array_map(
-            function (Member $member) {
+        $batch = array_map(
+            function (Member $member) use (&$emails) {
+                $email = $member->getEmail();
+                $emails[] = $email;
+
                 return [
-                    'email' => ['email' => $member->getEmail()],
-                    'merge_vars' => $member->getMergeVarValues()
+                    'email' => ['email' => $email],
+                    'merge_vars' => $member->getMergeVarValues(),
                 ];
             },
             $items
         );
 
+        $items = array_combine($emails, $items);
+
         $response = $this->transport->batchSubscribe(
             [
                 'id' => $subscribersList->getOriginId(),
-                'batch' => $emails,
+                'batch' => $batch,
                 'double_optin' => false,
                 'update_existing' => true,
             ]
@@ -80,31 +90,22 @@ class MemberWriter extends AbstractExportWriter
         $emailsAdded = $this->getArrayData($response, 'adds');
         $emailsUpdated = $this->getArrayData($response, 'updates');
 
-        $items = new ArrayCollection($items);
         foreach (array_merge($emailsAdded, $emailsUpdated) as $emailData) {
-            /** @var Member $member */
-            $member = $items
-                ->filter(
-                    function (Member $member) use ($emailData) {
-                        return $member->getEmail() === $emailData['email'];
-                    }
-                )
-                ->first();
+            if (!array_key_exists($emailData['email'], $items)) {
+                $this->logger->alert(sprintf('A member with "%s" email was not found', $emailData['email']));
 
-            if ($member) {
-                $member
-                    ->setEuid($emailData['euid'])
-                    ->setLeid($emailData['leid'])
-                    ->setStatus(Member::STATUS_SUBSCRIBED);
-
-                $itemsToWrite[] = $member;
-
-                $this->logger->debug(sprintf('Member with data "%s" successfully processed', json_encode($emailData)));
-            } else {
-                $this->logger->warning(sprintf('A member with "%s" email was not found', $emailData['email']));
+                continue;
             }
-        }
 
-        return $itemsToWrite;
+            /** @var Member $member */
+            $member = $items[$emailData['email']];
+
+            $member
+                ->setEuid($emailData['euid'])
+                ->setLeid($emailData['leid'])
+                ->setStatus(Member::STATUS_SUBSCRIBED);
+
+            $this->logger->debug(sprintf('Member with data "%s" successfully processed', json_encode($emailData)));
+        }
     }
 }

@@ -74,7 +74,10 @@ class StaticSegmentMemberRemoveStateIterator extends AbstractStaticSegmentIterat
                 $this->removedItemClassName,
                 'mlr',
                 Join::WITH,
-                "mlr.entityId = $entityAlias.id"
+                $qb->expr()->andX(
+                    $qb->expr()->eq('mlr.entityId', $entityAlias . '.id'),
+                    $qb->expr()->eq('mlr.marketingList', 'mli.marketingList')
+                )
             )
             ->andWhere($qb->expr()->isNotNull('mlr.id'));
     }
