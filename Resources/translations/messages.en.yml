@@ -342,5 +342,5 @@ orocrm:
 
         controller:
             email_campaign.receive_activities:
-                enabled.message: 'Reciving of connected MailChimp campaign activities enabled'
-                disabled.message: 'Reciving of connected MailChimp campaign activities disabled'
+                enabled.message: 'Receiving of connected MailChimp campaign activities enabled'
+                disabled.message: 'Receiving of connected MailChimp campaign activities disabled'
