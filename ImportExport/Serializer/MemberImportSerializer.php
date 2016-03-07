@@ -65,6 +65,9 @@ class MemberImportSerializer implements DenormalizerInterface
     }
 
     /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     *
      * {@inheritdoc}
      */
     public function denormalize($data, $class, $format = null, array $context = [])
