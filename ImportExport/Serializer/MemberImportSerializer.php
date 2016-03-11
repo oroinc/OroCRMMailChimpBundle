@@ -139,9 +139,9 @@ class MemberImportSerializer implements DenormalizerInterface
             $subscribersList->setChannel($channel);
             $subscribersList->setOriginId($data['subscribersList']['originId']);
         } elseif (!empty($data['subscribersList']['id'])) {
-            $this->doctrineHelper->getEntityReference(
+            $subscribersList = $this->doctrineHelper->getEntityReference(
                 'OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList',
-                $context['channel']
+                $data['subscribersList']['id']
             );
         }
 
