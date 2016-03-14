@@ -83,9 +83,6 @@ class MemberImportSerializer implements DenormalizerInterface
         if (array_key_exists('memberRating', $data)) {
             $result->setMemberRating($data['memberRating']);
         }
-        if (array_key_exists('optedInAt', $data)) {
-            $result->setOptedInAt($data['optedInAt']);
-        }
         if (array_key_exists('optedInIpAddress', $data)) {
             $result->setOptedInIpAddress($data['optedInIpAddress']);
         }
@@ -121,6 +118,9 @@ class MemberImportSerializer implements DenormalizerInterface
         }
 
         // DateTime fields
+        if (array_key_exists('optedInAt', $data)) {
+            $result->setOptedInAt($this->getDateTime($data['optedInAt'], $context));
+        }
         if (!empty($data['confirmedAt'])) {
             $result->setConfirmedAt($this->getDateTime($data['confirmedAt'], $context));
         }
@@ -139,9 +139,9 @@ class MemberImportSerializer implements DenormalizerInterface
             $subscribersList->setChannel($channel);
             $subscribersList->setOriginId($data['subscribersList']['originId']);
         } elseif (!empty($data['subscribersList']['id'])) {
-            $this->doctrineHelper->getEntityReference(
+            $subscribersList = $this->doctrineHelper->getEntityReference(
                 'OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList',
-                $context['channel']
+                $data['subscribersList']['id']
             );
         }
 
