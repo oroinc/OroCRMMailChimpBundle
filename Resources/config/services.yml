@@ -406,6 +406,8 @@ services:
             - @oro_locale.formatter.number
             - @oro_locale.formatter.date_time
             - %orocrm_mailchimp.entity.member_extended_merge_var.class%
+        calls:
+            - [setDispatcher, [@event_dispatcher]]
         tags:
             - { name: oro_importexport.normalizer }
 
