@@ -15,13 +15,13 @@ placeholders:
 items:
     orocrm_marketing_list_mailchimp_buttons:
         action: OroCRMMailChimpBundle:MailChimp:connectionButtons
-        applicable: @orocrm_mailchimp.placeholder.filter.buttons_filder->isApplicable($entity$)
+        applicable: "@orocrm_mailchimp.placeholder.filter.buttons_filder->isApplicable($entity$)"
     orocrm_mailchimp_email_campaign_buttons:
         action: OroCRMMailChimpBundle:MailChimp:emailCampaignActivityUpdateButtons
-        applicable: @orocrm_mailchimp.placeholder.filter.email_campaign->isApplicableOnEmailCampaign($entity$)
+        applicable: "@orocrm_mailchimp.placeholder.filter.email_campaign->isApplicableOnEmailCampaign($entity$)"
     orocrm_mailchimp_emailcampaign_stats:
         action: OroCRMMailChimpBundle:MailChimp:emailCampaignStats
-        applicable: @orocrm_mailchimp.placeholder.filter.email_campaign->isApplicableOnEmailCampaign($entity$)
+        applicable: "@orocrm_mailchimp.placeholder.filter.email_campaign->isApplicableOnEmailCampaign($entity$)"
     orocrm_mailchimp_marketing_list_sync_data:
         action: OroCRMMailChimpBundle:MailChimp:marketingListSyncStatus
-        applicable: @orocrm_mailchimp.placeholder.filter.sync_status->isApplicableOnMarketingList($marketingList$)
+        applicable: "@orocrm_mailchimp.placeholder.filter.sync_status->isApplicableOnMarketingList($marketingList$)"

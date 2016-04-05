@@ -5,7 +5,7 @@ definitions:
         order:   20
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity
         actions_configuration:
-            - @update_email_campaign_statistics: ~
+            - '@update_email_campaign_statistics': ~
 
     create_email_campaign_for_mailchimp_campaign:
         label:   Create Email Campaign for MailChimp Campaign
@@ -17,25 +17,25 @@ definitions:
         # MailChimp Campaign relates to OroCRM MarketingList and
         # MailChimp Campaign has "sent" status
         pre_conditions:
-            @and:
-                - @empty: $emailCampaign
-                - @not_empty: $staticSegment
-                - @not_empty: $staticSegment.marketingList
-                - @equal: [$status, 'sent']
+            '@and':
+                - '@empty': $emailCampaign
+                - '@not_empty': $staticSegment
+                - '@not_empty': $staticSegment.marketingList
+                - '@equal': [$status, 'sent']
         actions_configuration:
-            - @tree:
+            - '@tree':
                 actions:
                     # Prepare constants values
-                    - @assign_constant_value:
+                    - '@assign_constant_value':
                         attribute: $.scheduleManual
                         value: OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign::SCHEDULE_MANUAL
-                    - @assign_constant_value:
+                    - '@assign_constant_value':
                         attribute: $.mailchimpTransport
                         value: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport::NAME
                     # Create OroCRM EmailCampaign
-                    - @tree:
+                    - '@tree':
                         actions:
-                            - @create_entity: # Create OroCRM EmailCampaign
+                            - '@create_entity': # Create OroCRM EmailCampaign
                                 class:     OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign
                                 attribute: $emailCampaign
                                 data:
@@ -49,7 +49,7 @@ definitions:
                                     owner: $channel.defaultUserOwner
                                     organization: $channel.defaultUserOwner.organization
                                     marketingLIst: $staticSegment.marketingList
-                            - @create_entity: # Create MailChimpTransportSettings
+                            - '@create_entity': # Create MailChimpTransportSettings
                                 class:     OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings
                                 attribute: $emailCampaign.transportSettings
                                 data:
@@ -62,14 +62,14 @@ definitions:
         enabled: true
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\Member
         pre_conditions:
-            @or:
-                - @equal: [$status, 'unsubscribed']
-                - @equal: [$status, 'cleaned']
+            '@or':
+                - '@equal': [$status, 'unsubscribed']
+                - '@equal': [$status, 'cleaned']
         actions_configuration:
-            - @tree:
+            - '@tree':
                 actions:
                     # Create OroCRM MarketingListUnsubscribedItem
-                    - @create_marketing_list_unsubscribed_item: ~
+                    - '@create_marketing_list_unsubscribed_item': ~
 
 
     schedule_mailchimp_segment_synchronization:
@@ -77,18 +77,18 @@ definitions:
         enabled: true
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
         pre_conditions:
-            @or:
-                - @equal: [$syncStatus, 'not_synced']
-                - @equal: [$syncStatus, 'scheduled']
+            '@or':
+                - '@equal': [$syncStatus, 'not_synced']
+                - '@equal': [$syncStatus, 'scheduled']
         actions_configuration:
-            - @tree:
+            - '@tree':
                 actions:
-                    - @format_string:
+                    - '@format_string':
                         attribute: $.segmentArguments
                         string: '--segments=%segment_id%'
                         arguments:
                             segment_id: $id
-                    - @create_entity:
+                    - '@create_entity':
                         class: JMS\JobQueueBundle\Entity\Job
                         attribute: $.syncJob
                         flush: true
