@@ -77,7 +77,7 @@ class MemberActivityImportTest extends WebTestCase
         $addCount = 0;
         $fullCount = 0;
         foreach ($fixtures as $file) {
-            $data = Yaml::parse($file->getPathName());
+            $data = Yaml::parse(file_get_contents($file->getPathName()));
             $addCount += $data['addCount'];
             $fullCount += $data['fullCount'];
 
