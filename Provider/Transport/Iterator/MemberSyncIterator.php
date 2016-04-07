@@ -158,11 +158,16 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
         $entityAlias = $from[0]->getAlias();
         $parts = $this->formatter->extractNamePartsPaths($entityName, $entityAlias);
 
+        $this->hasFirstName = false;
+        $this->firstNameField = null;
         if (isset($parts['first_name'])) {
             $this->hasFirstName = true;
             $this->firstNameField = $parts['first_name'];
             $qb->addSelect($this->firstNameField . ' as first_name');
         }
+
+        $this->hasLastName = false;
+        $this->lastNameField = null;
         if (isset($parts['last_name'])) {
             $this->hasLastName = true;
             $this->lastNameField = $parts['last_name'];
