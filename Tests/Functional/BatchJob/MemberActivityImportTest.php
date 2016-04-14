@@ -22,6 +22,10 @@ class MemberActivityImportTest extends WebTestCase
 
     public function setUp()
     {
+        if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
+            $this->markTestSkipped('Due to BAP-10174');
+        }
+
         $this->initClient();
 
         $this->jobExecutor = $this->getContainer()->get('oro_importexport.job_executor');
