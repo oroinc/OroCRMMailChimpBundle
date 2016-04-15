@@ -333,10 +333,10 @@ orocrm:
             not_synced: Not Synced
             in_progress: In Progress
             scheduled: Scheduled for Sync
-            list_is_connected.lebel: This list is linked to "%segment%" segment of "%list%" Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.
+            list_is_connected.lebel: 'This list is linked to "%segment%" segment of "%list%" Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.'
         form:
             api_key:
-                tooltip: MailChimp API Key. <br/><a href="http://kb.mailchimp.com/accounts/management/about-api-keys" target="_blank" class="no-hash">About API Keys</a>
+                tooltip: 'MailChimp API Key. <br/><a href="http://kb.mailchimp.com/accounts/management/about-api-keys" target="_blank" class="no-hash">About API Keys</a>'
             activity_update_interval:
                 tooltip: How long email capaign activities should be received.
 
