@@ -14,9 +14,10 @@ class StaticSegmentImportStrategy extends AbstractImportStrategy
         $isFullData = false,
         $isPersistNew = false,
         $itemData = null,
-        array $searchContext = []
+        array $searchContext = [],
+        $entityIsRelation = false
     ) {
-        return parent::processEntity($entity, $isFullData, false, $itemData, $searchContext);
+        return parent::processEntity($entity, $isFullData, false, $itemData, $searchContext, $entityIsRelation);
     }
 
     /**
