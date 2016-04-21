@@ -34,10 +34,6 @@ class SyncMemberActivityTest extends WebTestCase
 
     protected function setUp()
     {
-        if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
-            $this->markTestSkipped('Due to BAP-10174');
-        }
-
         $this->initClient();
         $this->clientFactory = $this->getMockBuilder(
             'OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory'

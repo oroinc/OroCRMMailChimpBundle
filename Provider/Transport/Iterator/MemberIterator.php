@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use OroCRM\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
 
 class MemberIterator extends AbstractSubordinateIterator
 {
@@ -74,7 +75,7 @@ class MemberIterator extends AbstractSubordinateIterator
      */
     protected function createExportMemberIterator(SubscribersList $subscribersList, $parameters)
     {
-        return new \CallbackFilterIterator(
+        return new CallbackFilterIteratorCompatible(
             $this->createExportIterator(MailChimpClient::EXPORT_LIST, $parameters),
             function (&$current) use ($subscribersList, $parameters) {
                 if (is_array($current)) {

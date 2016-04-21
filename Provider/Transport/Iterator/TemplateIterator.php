@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use OroCRM\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
 
 class TemplateIterator implements \Iterator
 {
@@ -81,7 +82,7 @@ class TemplateIterator implements \Iterator
     {
         $templatesList = (array)$this->client->getTemplates($this->parameters);
 
-        $this->iterator = new \CallbackFilterIterator(
+        $this->iterator = new CallbackFilterIteratorCompatible(
             new FlattenIterator($templatesList, 'type', false),
             function (&$current) {
                 if (is_array($current)) {
