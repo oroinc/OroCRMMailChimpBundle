@@ -17,7 +17,7 @@
     "target-dir": "src/OroCRM/Bundle/MailChimpBundle",
     "require": {
         "php": ">=5.4.9",
-        "oro/crm": "1.x-dev",
+        "oro/crm": "self.version",
         "zfr/zfr-mailchimp": "~2.0"
     },
     "minimum-stability": "dev",
