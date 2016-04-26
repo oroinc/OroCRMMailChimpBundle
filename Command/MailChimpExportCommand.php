@@ -2,6 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Command;
 
+use JMS\JobQueueBundle\Entity\Job;
+
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,6 +15,7 @@ use Oro\Bundle\IntegrationBundle\Command\AbstractSyncCronCommand;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Component\Log\OutputLogger;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
@@ -74,13 +78,13 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
         $logger = new OutputLogger($output);
         $this->getContainer()->get('oro_integration.logger.strategy')->setLogger($logger);
 
-        if ($this->isJobRunning(null)) {
+        $segments = $input->getOption('segments');
+        if (!$this->canExecuteJob($segments)) {
             $logger->warning('Job already running. Terminating....');
 
             return;
         }
 
-        $segments = $input->getOption('segments');
         /** @var StaticSegment[] $iterator */
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsToSync($segments);
 
@@ -115,6 +119,33 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
             $this->getStaticSegmentStateManager()->handleMembers($staticSegment);
             $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED, true);
         }
+    }
+
+    /**
+     * @param array $segments
+     *
+     * @return bool
+     */
+    protected function canExecuteJob(array $segments)
+    {
+        $args = '';
+        if (count($segments) > 0) {
+            $args = [];
+            foreach ($segments as $segmentId) {
+                $args[] = sprintf('--segments=%s', $segmentId);
+            }
+
+            if (count($args) === 1) {
+                $args = current($args);
+            }
+        }
+
+        /** @var ManagerRegistry $managerRegistry */
+        $managerRegistry = $this->getService('doctrine');
+        $countJobs = $managerRegistry->getRepository('OroIntegrationBundle:Channel')
+            ->getSyncJobsCount($this->getName(), [Job::STATE_RUNNING], $args);
+
+        return $countJobs > 1 ? false : true;
     }
 
     /**
