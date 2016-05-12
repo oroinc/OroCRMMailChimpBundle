@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Stub;
 
 use Guzzle\Http\Message\Response;
 
-use Oro\Bundle\PlatformBundle\Yaml\Yaml;
+use Symfony\Component\Yaml\Yaml;
 
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 

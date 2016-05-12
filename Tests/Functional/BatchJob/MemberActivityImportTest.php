@@ -2,9 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\BatchJob;
 
-use Oro\Bundle\ImportExportBundle\Job\JobResult;
-use Oro\Bundle\PlatformBundle\Yaml\Yaml;
+use Symfony\Component\Yaml\Yaml;
 
+use Oro\Bundle\ImportExportBundle\Job\JobResult;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
