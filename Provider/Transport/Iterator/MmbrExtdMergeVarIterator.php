@@ -9,6 +9,7 @@ use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use OroCRM\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
 
 class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
 {
@@ -98,7 +99,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
 
         $uniqueMembers = &$this->uniqueMembers;
 
-        return new \CallbackFilterIterator(
+        return new CallbackFilterIteratorCompatible(
             $bufferedIterator,
             function (&$current) use ($staticSegment, &$uniqueMembers) {
                 if (is_array($current)) {

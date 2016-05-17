@@ -5,6 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
+use OroCRM\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
 
 class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
 {
@@ -56,7 +57,7 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
             }
         );
 
-        return new \CallbackFilterIterator(
+        return new CallbackFilterIteratorCompatible(
             new \ArrayIterator($vars),
             function (&$current) use ($staticSegment) {
                 if (is_array($current)) {

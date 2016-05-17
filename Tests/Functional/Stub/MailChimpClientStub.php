@@ -20,7 +20,7 @@ class MailChimpClientStub extends MailChimpClient
         $fileName = $parameters['id'] . '.yml';
         $filePath = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . $fileName;
 
-        $response = Yaml::parse($filePath);
+        $response = Yaml::parse(file_get_contents($filePath));
 
         if (!is_array($response)) {
             throw new \InvalidArgumentException(

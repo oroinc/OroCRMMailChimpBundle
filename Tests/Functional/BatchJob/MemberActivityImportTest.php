@@ -2,9 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\BatchJob;
 
-use Oro\Bundle\ImportExportBundle\Job\JobResult;
 use Symfony\Component\Yaml\Yaml;
 
+use Oro\Bundle\ImportExportBundle\Job\JobResult;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
@@ -77,7 +77,7 @@ class MemberActivityImportTest extends WebTestCase
         $addCount = 0;
         $fullCount = 0;
         foreach ($fixtures as $file) {
-            $data = Yaml::parse($file->getPathName());
+            $data = Yaml::parse(file_get_contents($file->getPathName()));
             $addCount += $data['addCount'];
             $fullCount += $data['fullCount'];
 

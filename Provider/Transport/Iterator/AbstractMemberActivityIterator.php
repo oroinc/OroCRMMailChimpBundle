@@ -4,6 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use OroCRM\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
 
 abstract class AbstractMemberActivityIterator extends AbstractSubordinateIterator
 {
@@ -29,7 +30,7 @@ abstract class AbstractMemberActivityIterator extends AbstractSubordinateIterato
      */
     protected function createSubordinateIterator($campaign)
     {
-        return new \CallbackFilterIterator(
+        return new CallbackFilterIteratorCompatible(
             $this->createResultIterator($campaign),
             function (&$current) use ($campaign) {
                 if ($current === null) {
