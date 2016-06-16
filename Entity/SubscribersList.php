@@ -32,7 +32,8 @@ use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFieldsInterface;
  *          "group_name"=""
  *      },
  *      "entity"={
- *          "icon"="icon-group"
+ *          "icon"="icon-group",
+ *          "category"="Mailchimp"
  *      }
  *  }
  * )

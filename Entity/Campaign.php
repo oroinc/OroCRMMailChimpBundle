@@ -37,7 +37,8 @@ use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
  *          "group_name"=""
  *      },
  *      "entity"={
- *          "icon"="icon-envelope"
+ *          "icon"="icon-envelope",
+ *          "category"="Mailchimp"
  *      }
  *  }
  * )
