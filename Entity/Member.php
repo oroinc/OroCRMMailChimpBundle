@@ -33,7 +33,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  *  defaultValues={
  *      "entity"={
  *          "icon"="icon-user",
- *          "category"="Mailchimp"
+ *          "category"="mailchimp"
  *      },
  *      "ownership"={
  *          "owner_type"="ORGANIZATION",

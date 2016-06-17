@@ -35,7 +35,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  *      },
  *      "entity"={
  *          "icon"="icon-file-alt",
- *          "category"="Mailchimp"
+ *          "category"="mailchimp"
  *      }
  *  }
  * )
