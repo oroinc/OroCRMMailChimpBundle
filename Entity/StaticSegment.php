@@ -20,7 +20,7 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
  *  defaultValues={
  *      "entity"={
  *          "icon"="icon-user",
- *          "category"="mailchimp"
+ *          "category"="marketing"
  *      },
  *      "ownership"={
  *          "owner_type"="ORGANIZATION",

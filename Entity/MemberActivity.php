@@ -22,7 +22,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  *  defaultValues={
  *      "entity"={
  *          "icon"="icon-bar-chart",
- *          "category"="mailchimp"
+ *          "category"="marketing"
  *      },
  *      "ownership"={
  *          "owner_type"="ORGANIZATION",

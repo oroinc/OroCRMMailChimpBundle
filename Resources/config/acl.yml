@@ -3,4 +3,4 @@ orocrm_mailchimp:
     type:       action
     group_name: ""
     bindings:   ~
-    category: "mailchimp"
+    category: "application"
