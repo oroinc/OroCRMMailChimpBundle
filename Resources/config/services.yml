@@ -1008,3 +1008,15 @@ services:
     orocrm_mailchimp.marketinglist.datagrid_provider:
         class: %orocrm_mailchimp.marketinglist.datagrid_provider.class%
         parent: orocrm_marketing_list.provider.marketing_list
+
+    orocrm_mailchimp.async.export_mail_chimp_processor:
+        class: 'OroCRM\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor'
+        arguments:
+            - '@oro_entity.doctrine_helper'
+            - '@oro_integration.reverse_sync.processor'
+            - '@orocrm_mailchimp.static_segment_manager.state_manager'
+        tags:
+            - { name: 'oro_message_queue.client.message_processor' }
+
+    orocrm_mailchimp.service.schedule_export_segment:
+        class: 'ScheduleExportMailChimpSegmentService'

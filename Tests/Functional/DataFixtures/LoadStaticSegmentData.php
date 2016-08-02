@@ -4,7 +4,6 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
 class LoadStaticSegmentData extends AbstractMailChimpFixture implements DependentFixtureInterface
@@ -50,9 +49,6 @@ class LoadStaticSegmentData extends AbstractMailChimpFixture implements Dependen
      */
     public function getDependencies()
     {
-        return [
-            __NAMESPACE__ . '\LoadMarketingListData',
-            __NAMESPACE__ . '\LoadSubscribersListData'
-        ];
+        return [LoadMarketingListData::class, LoadSubscribersListData::class];
     }
 }
