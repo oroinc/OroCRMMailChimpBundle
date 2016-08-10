@@ -20,7 +20,7 @@ class OroCRMMailChimpBundle extends Bundle
 
         $addTopicMetaPass = AddTopicMetaPass::create();
         $addTopicMetaPass
-            ->add(Topics::EXPORT_MAIL_CHIMP_SEGMENTS, '')
+            ->add(Topics::EXPORT_MAIL_CHIMP_SEGMENTS)
         ;
 
         $container->addCompilerPass($addTopicMetaPass);
