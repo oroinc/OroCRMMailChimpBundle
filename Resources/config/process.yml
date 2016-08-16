@@ -16,7 +16,7 @@ definitions:
         # If OroCRM EmailCampaign not exists and
         # MailChimp Campaign relates to OroCRM MarketingList and
         # MailChimp Campaign has "sent" status
-        pre_conditions:
+        preconditions:
             '@and':
                 - '@empty': $emailCampaign
                 - '@not_empty': $staticSegment
@@ -61,7 +61,7 @@ definitions:
         label:   Create MarketingListUnsubscribedItem for MailChimp unsubscribed Member
         enabled: true
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\Member
-        pre_conditions:
+        preconditions:
             '@or':
                 - '@equal': [$status, 'unsubscribed']
                 - '@equal': [$status, 'cleaned']
@@ -76,7 +76,7 @@ definitions:
         label:   Schedule MailChimp Static Segment synchronization
         enabled: true
         entity:  OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
-        pre_conditions:
+        preconditions:
             '@or':
                 - '@equal': [$syncStatus, 'not_synced']
                 - '@equal': [$syncStatus, 'scheduled']
