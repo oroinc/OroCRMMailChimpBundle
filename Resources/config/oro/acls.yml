@@ -1,0 +1,7 @@
+acls:
+    orocrm_mailchimp:
+        label:      orocrm.mailchimp.acl.action.general
+        type:       action
+        group_name: ""
+        bindings:   ~
+        category: "application"
