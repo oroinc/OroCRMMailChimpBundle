@@ -6,6 +6,7 @@ use Oro\Bundle\CronBundle\Command\CronCommandInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
 use Oro\Component\MessageQueue\Client\MessageProducerInterface;
 use OroCRM\Bundle\MailChimpBundle\Async\Topics;
@@ -95,18 +96,20 @@ class MailChimpExportCommand extends Command implements CronCommandInterface, Co
 
         $output->writeln('Send export mail chimp message for channel:');
         foreach ($channelToSync as $channel) {
-            $message = [
+            $message = new Message();
+            $message->setPriority(MessagePriority::VERY_LOW);
+            $message->setBody([
                 'integrationId' => $channel->getId(),
                 'segmentsIds' => $channelSegments[$channel->getId()]
-            ];
+            ]);
 
             $output->writeln(sprintf(
                 'Channel "%s" and segments "%s"',
-                $message['integrationId'],
-                implode('", "', $message['segmentsIds'])
+                $message->getBody()['integrationId'],
+                implode('", "', $message->getBody()['segmentsIds'])
             ));
 
-            $this->getMessageProducer()->send(Topics::EXPORT_MAIL_CHIMP_SEGMENTS, $message, MessagePriority::VERY_LOW);
+            $this->getMessageProducer()->send(Topics::EXPORT_MAIL_CHIMP_SEGMENTS, $message);
         }
 
         $output->writeln('Completed');

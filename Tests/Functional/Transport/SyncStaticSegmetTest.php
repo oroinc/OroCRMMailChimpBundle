@@ -10,7 +10,7 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
  * @outputBuffering enabled
  * @dbIsolation
  */
-class SyncStaticSegmentTest extends WebTestCase
+class SyncStaticSegmetTest extends WebTestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
@@ -83,9 +83,9 @@ class SyncStaticSegmentTest extends WebTestCase
             ->method($mockMethod)
             ->will($this->returnValue($data));
 
-        if (isset($params['--integration-id'])) {
-            $params['--integration-id'] = (string)$this->getReference(
-                'mailchimp:channel_' . $params['--integration-id']
+        if (isset($params['--integration'])) {
+            $params['--integration'] = (string)$this->getReference(
+                'mailchimp:channel_' . $params['--integration']
             )->getId();
         }
         $result = $this->runCommand($commandName, $params);
@@ -107,7 +107,7 @@ class SyncStaticSegmentTest extends WebTestCase
         return [
             'StaticSegmentSyncCommand' => [
                 'commandName' => 'oro:cron:integration:sync',
-                'params' => ['--integration-id' => '1', '--connector' => 'static_segment'],
+                'params' => ['--integration' => '1', '--connector' => 'static_segment'],
                 'mockMethod' => 'getListStaticSegments',
                 'entity' => 'StaticSegment',
                 'data' => [
@@ -132,13 +132,6 @@ class SyncStaticSegmentTest extends WebTestCase
                 'assertCount' => '1',
                 'expectedContent' => [
                     'Run sync for "mailchimp1" integration.',
-                    'Start processing "static_segment" connector',
-                    'invalid entities: [0]',
-                    'processed [0]',
-                    'deleted [0]',
-                    'updated [0]',
-                    'read [2]',
-                    'added [0]',
                 ]
             ],
         ];

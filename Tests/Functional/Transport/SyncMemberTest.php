@@ -106,9 +106,9 @@ class SyncMemberTest extends WebTestCase
             ->method('readLine')
             ->will($this->returnValue($data['line2_data']));
 
-        if (isset($params['--integration-id'])) {
-            $params['--integration-id'] = (string)$this->getReference(
-                'mailchimp:channel_' . $params['--integration-id']
+        if (isset($params['--integration'])) {
+            $params['--integration'] = (string)$this->getReference(
+                'mailchimp:channel_' . $params['--integration']
             )->getId();
         }
         $result = $this->runCommand($commandName, $params);
@@ -130,7 +130,7 @@ class SyncMemberTest extends WebTestCase
         return [
             'StaticMemberCommand' => [
                 'commandName'     => 'oro:cron:integration:sync',
-                'params'          => ['--integration-id' => '1', '--connector' => 'member'],
+                'params'          => ['--integration' => '1', '--connector' => 'member'],
                 'entity'          => 'Member',
                 'data'            => [
                     'line1' => '["Email Address","First Name","Last Name","MEMBER_RATING","OPTIN_TIME","OPTIN_IP",
@@ -147,13 +147,6 @@ class SyncMemberTest extends WebTestCase
                 'assertCount'     => '2',
                 'expectedContent' => [
                     'Run sync for "mailchimp1" integration.',
-                    'Start processing "member" connector',
-                    'invalid entities: [0]',
-                    'processed [2]',
-                    'deleted [0]',
-                    'updated [0]',
-                    'read [2]',
-                    'added [2]',
                 ]
             ],
         ];

@@ -2,6 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Transport;
 
+use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
@@ -12,6 +13,8 @@ use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
  */
 class SyncMemberActivityTest extends WebTestCase
 {
+    use MessageQueueExtension;
+
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
@@ -103,9 +106,9 @@ class SyncMemberActivityTest extends WebTestCase
             ->method('readLine')
             ->will($this->returnValue($data['line2_data']));
 
-        if (isset($params['--integration-id'])) {
-            $params['--integration-id'] = (string)$this->getReference(
-                'mailchimp:channel_' . $params['--integration-id']
+        if (isset($params['--integration'])) {
+            $params['--integration'] = (string)$this->getReference(
+                'mailchimp:channel_' . $params['--integration']
             )->getId();
         }
         $result = $this->runCommand($commandName, $params);
@@ -128,7 +131,7 @@ class SyncMemberActivityTest extends WebTestCase
         return [
             'SubscribersMemberActivitySyncCommand' => [
                 'commandName' => 'oro:cron:integration:sync',
-                'params' => ['--integration-id' => '1', '--connector' => 'member_activity'],
+                'params' => ['--integration' => '1', '--connector' => 'member_activity'],
                 'entity' => 'MemberActivity',
                 'data' => [
                     'line1_data' => '{"member1@example.com":[{"action":"open","timestamp":"2014-11-12 11:00:02",
@@ -142,13 +145,6 @@ class SyncMemberActivityTest extends WebTestCase
                 'assertCount' => '3',
                 'expectedContent' => [
                     'Run sync for "mailchimp1" integration.',
-                    'Start processing "member_activity" connector',
-                    'invalid entities: [0]',
-                    'processed [3]',
-                    'deleted [0]',
-                    'updated [0]',
-                    'read [3]',
-                    'added [3]',
                 ]
             ],
 

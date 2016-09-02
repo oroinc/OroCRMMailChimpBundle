@@ -70,9 +70,9 @@ class SyncCampaignTest extends WebTestCase
             ->method('getCampaigns')
             ->will($this->returnValue($data));
 
-        if (isset($params['--integration-id'])) {
-            $params['--integration-id'] = (string)$this->getReference(
-                'mailchimp:channel_' . $params['--integration-id']
+        if (isset($params['--integration'])) {
+            $params['--integration'] = (string)$this->getReference(
+                'mailchimp:channel_' . $params['--integration']
             )->getId();
         }
         $result = $this->runCommand($commandName, $params);
@@ -99,14 +99,13 @@ class SyncCampaignTest extends WebTestCase
         foreach ($apiData as $test => $data) {
             $results[$test] = [
                 'commandName' => 'oro:cron:integration:sync',
-                'params' => ['--integration-id' => '1', '--connector' => 'campaign'],
+                'params' => ['--integration' => '1', '--connector' => 'campaign'],
                 'entity' => 'Campaign',
                 'data' => $data['response'],
                 'assertMethod' => 'assertEquals',
                 'assertCount' => count($data['response']['data']),
                 'expectedContent' => [
                     'Run sync for "mailchimp1" integration.',
-                    'Start processing "campaign" connector',
                     'invalid entities: [0]',
                     'processed [' . count($data['response']['data']) . ']',
                     'deleted [0]',

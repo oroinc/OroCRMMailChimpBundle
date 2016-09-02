@@ -1,6 +1,7 @@
 <?php
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Command;
 
+use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Component\MessageQueue\Client\MessagePriority;
 use Oro\Component\MessageQueue\Client\TraceableMessageProducer;
@@ -13,6 +14,8 @@ use OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmen
  */
 class MailChimpExportCommandTest extends WebTestCase
 {
+    use MessageQueueExtension;
+
     protected function setUp()
     {
         parent::setUp();
@@ -43,15 +46,15 @@ class MailChimpExportCommandTest extends WebTestCase
 
         $this->assertContains('Completed', $result);
 
-        $traces = $this->getMessageProducer()->getTopicTraces(Topics::EXPORT_MAIL_CHIMP_SEGMENTS);
+        $traces = $this->getMessageProducer()->getTopicSentMessages(Topics::EXPORT_MAIL_CHIMP_SEGMENTS);
 
         $this->assertCount(1, $traces);
 
         $this->assertEquals([
             'integrationId' => $segment->getChannel()->getId(),
             'segmentsIds' => [$segment->getId()],
-        ], $traces[0]['message']);
-        $this->assertEquals(MessagePriority::VERY_LOW, $traces[0]['priority']);
+        ], $traces[0]['message']->getBody());
+        $this->assertEquals(MessagePriority::VERY_LOW, $traces[0]['message']->getPriority());
     }
 
     /**

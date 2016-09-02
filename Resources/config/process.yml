@@ -82,16 +82,12 @@ definitions:
                     - '@assign_constant_value':
                         attribute: '$.topic'
                         value: 'OroCRM\Bundle\MailChimpBundle\Async\Topics::EXPORT_MAIL_CHIMP_SEGMENTS'
-                    - '@assign_constant_value':
-                        attribute: '$.priority'
-                        value: 'Oro\Component\MessageQueue\Client\MessagePriority::VERY_LOW'
                     - '@call_service_method':
                         service: 'oro_message_queue.message_producer'
                         method: 'send'
                         method_parameters:
                             - '$.topic'
                             - { integrationId: '$channel.id', segmentsIds: ['$id'] }
-                            - '$.priority'
 
 triggers:
     synchronize_marketing_list_item_for_mailchimp_member_activity:

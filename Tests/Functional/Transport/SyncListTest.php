@@ -72,9 +72,9 @@ class SyncListTest extends WebTestCase
             ->method($mockMethod)
             ->will($this->returnValue($data));
 
-        if (isset($params['--integration-id'])) {
-            $params['--integration-id'] = (string)$this->getReference(
-                'mailchimp:channel_' . $params['--integration-id']
+        if (isset($params['--integration'])) {
+            $params['--integration'] = (string)$this->getReference(
+                'mailchimp:channel_' . $params['--integration']
             )->getId();
         }
         $result = $this->runCommand($commandName, $params);
@@ -100,21 +100,14 @@ class SyncListTest extends WebTestCase
         foreach ($apiData as $test => $data) {
             $results[$test] = [
                 'commandName' => 'oro:cron:integration:sync',
-                'params' => ['--integration-id' => '1', '--connector' => 'list'],
+                'params' => ['--integration' => '1', '--connector' => 'list'],
                 'mockMethod' => 'getLists',
                 'entity' => 'SubscribersList',
                 'data' => $data['response'],
                 'assertMethod' => 'assertEquals',
                 'assertCount' => count($data['response']['data']),
                 'expectedContent' => [
-                    'Run sync for "mailchimp1" integration.',
-                    'Start processing "list" connector',
-                    'invalid entities: [0]',
-                    'processed [' . (count($data['response']['data']) + (int)$data['response']['deleted']) . ']',
-                    'deleted [' . $data['response']['deleted'] . ']',
-                    'updated [0]',
-                    'read [' . count($data['response']['data']) . ']',
-                    'added [' . count($data['response']['data']) . ']'
+                    'Run sync for "mailchimp1" integration.'
                 ]
             ];
         }
