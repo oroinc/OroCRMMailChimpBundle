@@ -1,4 +1,4 @@
-datagrid:
+datagrids:
     orocrm-mailchimp-member-grid:
         extended_entity_name: OroCRM\Bundle\MailChimpBundle\Entity\Member
         source:
