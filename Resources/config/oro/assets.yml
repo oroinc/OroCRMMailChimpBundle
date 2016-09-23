@@ -1,0 +1,4 @@
+assets:
+    css:
+      'orocrmmailchimp':
+          - 'bundles/orocrmmailchimp/css/styles.css'
