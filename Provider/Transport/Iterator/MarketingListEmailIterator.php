@@ -10,7 +10,7 @@ use OroCRM\Bundle\MailChimpBundle\Entity\MarketingListEmail;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MarketingListEmailIterator extends AbstractStaticSegmentIterator
 {

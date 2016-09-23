@@ -11,7 +11,7 @@ use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Acl\Voter\MarketingListStateItemVoter;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
 {
@@ -56,7 +56,7 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->em));
 
         $this->contactInformationFieldsProvider = $this->getMockBuilder(
-            'OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider'
+            'Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider'
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -215,8 +215,8 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
      */
     protected function getItem()
     {
-        $item = $this->getMock('OroCRM\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface');
-        $marketingList = $this->getMock('OroCRM\Bundle\MarketingListBundle\Entity\MarketingList');
+        $item = $this->getMock('Oro\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface');
+        $marketingList = $this->getMock('Oro\Bundle\MarketingListBundle\Entity\MarketingList');
 
         $item
             ->expects($this->any())

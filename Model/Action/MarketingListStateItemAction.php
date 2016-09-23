@@ -8,8 +8,8 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface;
 
 class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
 {
@@ -79,8 +79,8 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
     protected function getMarketingListIterator(SubscribersList $subscriberList)
     {
         $qb = $this->doctrineHelper
-            ->getEntityManager('OroCRMMarketingListBundle:MarketingList')
-            ->getRepository('OroCRMMarketingListBundle:MarketingList')
+            ->getEntityManager('OroMarketingListBundle:MarketingList')
+            ->getRepository('OroMarketingListBundle:MarketingList')
             ->createQueryBuilder('ml');
 
         $qb

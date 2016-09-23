@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Placeholder;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport;
 
 class EmailCampaignPlaceholderFilter

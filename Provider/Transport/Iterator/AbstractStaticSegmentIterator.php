@@ -6,7 +6,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProvider;
-use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
 abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator

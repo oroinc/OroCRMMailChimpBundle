@@ -10,7 +10,7 @@ use Oro\Bundle\ImportExportBundle\Field\FieldHelper;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\ConfigurableEntityNormalizer;
 use Oro\Bundle\LocaleBundle\Formatter\NumberFormatter;
 use Oro\Bundle\LocaleBundle\Formatter\DateTimeFormatter;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;

@@ -3,7 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Model\MarketingList;
 
 use Oro\Bundle\DataGridBundle\Datagrid\Common\DatagridConfiguration;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 interface DataGridProviderInterface
 {

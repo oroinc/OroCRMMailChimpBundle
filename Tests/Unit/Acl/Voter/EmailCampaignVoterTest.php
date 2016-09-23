@@ -3,7 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Acl\Voter;
 
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 

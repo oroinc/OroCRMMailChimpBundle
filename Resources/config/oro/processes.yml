@@ -29,7 +29,7 @@ processes:
                         # Prepare constants values
                         - '@assign_constant_value':
                             attribute: $.scheduleManual
-                            value: OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign::SCHEDULE_MANUAL
+                            value: Oro\Bundle\CampaignBundle\Entity\EmailCampaign::SCHEDULE_MANUAL
                         - '@assign_constant_value':
                             attribute: $.mailchimpTransport
                             value: OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport::NAME
@@ -37,7 +37,7 @@ processes:
                         - '@tree':
                             actions:
                                 - '@create_entity': # Create OroCRM EmailCampaign
-                                    class:     OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign
+                                    class:     Oro\Bundle\CampaignBundle\Entity\EmailCampaign
                                     attribute: $emailCampaign
                                     data:
                                         name: $title

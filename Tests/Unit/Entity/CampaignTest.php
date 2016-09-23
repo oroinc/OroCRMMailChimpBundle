@@ -3,7 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;

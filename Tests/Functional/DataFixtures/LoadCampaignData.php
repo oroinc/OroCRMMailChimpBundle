@@ -6,7 +6,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 use OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport;

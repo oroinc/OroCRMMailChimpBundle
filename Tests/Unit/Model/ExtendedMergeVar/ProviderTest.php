@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\ExtendedMergeVar;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\Provider;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 

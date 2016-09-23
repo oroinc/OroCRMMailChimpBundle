@@ -8,12 +8,12 @@ use Doctrine\ORM\UnitOfWork;
 
 use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
 
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
-use OroCRM\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
+use Oro\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
 {

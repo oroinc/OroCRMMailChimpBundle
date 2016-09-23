@@ -5,8 +5,8 @@ namespace OroCRM\Bundle\MailChimpBundle\Placeholder;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use OroCRM\Bundle\MailChimpBundle\Provider\ChannelType;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class ButtonsPlaceholderFilter
 {

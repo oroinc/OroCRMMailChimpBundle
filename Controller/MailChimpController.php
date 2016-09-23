@@ -14,13 +14,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
 
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
 use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler;
 use OroCRM\Bundle\MailChimpBundle\Form\Type\MarketingListConnectionType;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
  * @Route("/mailchimp")
@@ -84,7 +84,7 @@ class MailChimpController extends Controller
     /**
      * @ParamConverter(
      *      "marketingList",
-     *      class="OroCRMMarketingListBundle:MarketingList",
+     *      class="OroMarketingListBundle:MarketingList",
      *      options={"id" = "entity"}
      * )
      * @AclAncestor("orocrm_mailchimp")
@@ -107,7 +107,7 @@ class MailChimpController extends Controller
      *      name="orocrm_mailchimp_sync_status",
      *      requirements={"marketingList"="\d+"})
      * @ParamConverter("marketingList",
-     *      class="OroCRMMarketingListBundle:MarketingList",
+     *      class="OroMarketingListBundle:MarketingList",
      *      options={"id" = "marketingList"})
      * @AclAncestor("orocrm_mailchimp")
      *
@@ -126,7 +126,7 @@ class MailChimpController extends Controller
      *      name="orocrm_mailchimp_email_campaign_status",
      *      requirements={"entity"="\d+"})
      * @ParamConverter("emailCampaign",
-     *      class="OroCRMCampaignBundle:EmailCampaign",
+     *      class="OroCampaignBundle:EmailCampaign",
      *      options={"id" = "entity"})
      * @AclAncestor("orocrm_mailchimp")
      *
@@ -145,7 +145,7 @@ class MailChimpController extends Controller
     /**
      * @ParamConverter(
      *      "emailCampaign",
-     *      class="OroCRMCampaignBundle:EmailCampaign",
+     *      class="OroCampaignBundle:EmailCampaign",
      *      options={"id" = "entity"}
      * )
      * @AclAncestor("orocrm_mailchimp")

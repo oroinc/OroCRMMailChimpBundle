@@ -161,7 +161,7 @@ services:
     orocrm_mailchimp.validator.email_column:
         class: %orocrm_mailchimp.validator.email_column.class%
         arguments:
-            - "@orocrm_marketing_list.contact_information_column_validator"
+            - "@oro_marketing_list.contact_information_column_validator"
             - "@doctrine"
         tags:
             - { name: validator.constraint_validator, alias: orocrm_mailchimp.validator.email_column }
@@ -176,7 +176,7 @@ services:
     orocrm_mailchimp.placeholder.filter.buttons_filder:
         class: %orocrm_mailchimp.placeholder.filter.buttons_filder.class%
         arguments:
-            - "@orocrm_marketing_list.provider.contact_information_fields"
+            - "@oro_marketing_list.provider.contact_information_fields"
             - "@doctrine"
 
     orocrm_mailchimp.static_segment.manager.api:
@@ -196,7 +196,7 @@ services:
         class: %orocrm_mailchimp.importexport.reader.static_segment.class%
         parent: orocrm_mailchimp.importexport.reader.abstract_iterator_based
         calls:
-            - [setMarketingListClassName, [%orocrm_marketing_list.entity.class%]]
+            - [setMarketingListClassName, [%oro_marketing_list.entity.class%]]
             - [setStaticSegmentClassName, [%orocrm_mailchimp.entity.static_segment.class%]]
 
     orocrm_mailchimp.importexport.reader.marketing_list_email:
@@ -840,15 +840,15 @@ services:
         astract: true
         arguments:
             - "@oro_workflow.context_accessor"
-            - "@orocrm_marketing_list.provider.contact_information_fields"
-            - "@orocrm_marketing_list.provider.marketing_list"
+            - "@oro_marketing_list.provider.contact_information_fields"
+            - "@oro_marketing_list.provider.marketing_list"
             - "@orocrm_mailchimp.model.field_helper"
 
     orocrm_mailchimp.workflow.action.update_email_campaign_statistics:
         class: %orocrm_mailchimp.workflow.action.update_email_campaign_statistics.class%
         parent: orocrm_mailchimp.workflow.action.abstract_marketing_list_entities
         calls:
-            - [setCampaignStatisticsConnector, ["@orocrm_campaign.email_campaign.statistics_connector"]]
+            - [setCampaignStatisticsConnector, ["@oro_campaign.email_campaign.statistics_connector"]]
             - [setRegistry, ["@doctrine"]]
         tags:
             - { name: oro_workflow.action, alias: update_email_campaign_statistics }
@@ -862,7 +862,7 @@ services:
         class: %orocrm_mailchimp.workflow.action.create_marketing_list_state_item.class%
         parent: orocrm_mailchimp.workflow.action.create_marketing_list_state_item
         calls:
-            - [setMarketingListStateItemClassName, [%orocrm_marketing_list.unsubscribed_item.class%]]
+            - [setMarketingListStateItemClassName, [%oro_marketing_list.unsubscribed_item.class%]]
         tags:
             - { name: oro_workflow.action, alias: create_marketing_list_unsubscribed_item }
 
@@ -871,7 +871,7 @@ services:
         arguments:
             - "@oro_entity.doctrine_helper"
         calls:
-            - [setClassName, [%orocrm_campaign.email_campaign.entity.class%]]
+            - [setClassName, [%oro_campaign.email_campaign.entity.class%]]
         tags:
             - { name: security.voter, priority: 500 }
 
@@ -879,13 +879,13 @@ services:
         class: %orocrm_mailchimp.acl.voter.marketing_list_state_item.class%
         arguments:
             - "@oro_entity.doctrine_helper"
-            - "@orocrm_marketing_list.provider.contact_information_fields"
+            - "@oro_marketing_list.provider.contact_information_fields"
             - "@orocrm_mailchimp.model.field_helper"
             - %orocrm_mailchimp.entity.member.class%
             - %orocrm_mailchimp.entity.subscribers_list.class%
-            - %orocrm_marketing_list.entity.class%
+            - %oro_marketing_list.entity.class%
         calls:
-            - [setClassName, [%orocrm_marketing_list.unsubscribed_item.class%]]
+            - [setClassName, [%oro_marketing_list.unsubscribed_item.class%]]
         tags:
             - { name: security.voter, priority: 500 }
 
@@ -902,10 +902,10 @@ services:
         class: %orocrm_mailchimp.iterator.static_segment.class%
         abstract: true
         arguments:
-            - "@orocrm_marketing_list.provider.marketing_list"
+            - "@oro_marketing_list.provider.marketing_list"
             - "@oro_security.owner.ownership_metadata_provider"
-            - %orocrm_marketing_list.removed_item.class%
-            - %orocrm_marketing_list.unsubscribed_item.class%
+            - %oro_marketing_list.removed_item.class%
+            - %oro_marketing_list.unsubscribed_item.class%
         calls:
             - [setSegmentMemberClassName, [%orocrm_mailchimp.entity.static_segment_member.class%]]
 
@@ -914,7 +914,7 @@ services:
         parent: orocrm_mailchimp.iterator.static_segment
         abstract: true
         calls:
-            - [setContactInformationFieldsProvider, ["@orocrm_marketing_list.provider.contact_information_fields"]]
+            - [setContactInformationFieldsProvider, ["@oro_marketing_list.provider.contact_information_fields"]]
             - [setFieldHelper, ["@orocrm_mailchimp.model.field_helper"]]
             - [setMemberClassName, [%orocrm_mailchimp.entity.member.class%]]
 
@@ -922,7 +922,7 @@ services:
         class: %orocrm_mailchimp.iterator.marketing_list_email.class%
         parent: orocrm_mailchimp.iterator.static_segment
         calls:
-            - [setContactInformationFieldsProvider, ["@orocrm_marketing_list.provider.contact_information_fields"]]
+            - [setContactInformationFieldsProvider, ["@oro_marketing_list.provider.contact_information_fields"]]
             - [setFieldHelper, ["@orocrm_mailchimp.model.field_helper"]]
 
     orocrm_mailchimp.iterator.member_sync:
@@ -1007,4 +1007,4 @@ services:
 
     orocrm_mailchimp.marketinglist.datagrid_provider:
         class: %orocrm_mailchimp.marketinglist.datagrid_provider.class%
-        parent: orocrm_marketing_list.provider.marketing_list
+        parent: oro_marketing_list.provider.marketing_list

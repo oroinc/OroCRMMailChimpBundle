@@ -5,7 +5,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\Segment;
 use Oro\Bundle\SegmentBundle\Entity\Segment;
 
 use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,7 +27,7 @@ class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->marketingList = $this
-            ->getMockBuilder('OroCRM\Bundle\MarketingListBundle\Entity\MarketingList')
+            ->getMockBuilder('Oro\Bundle\MarketingListBundle\Entity\MarketingList')
             ->disableOriginalConstructor()
             ->getMock();
         $this->segment = $this

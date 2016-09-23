@@ -9,8 +9,8 @@ use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\SecurityBundle\Acl\Voter\AbstractEntityVoter;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface;
+use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MarketingListStateItemVoter extends AbstractEntityVoter
 {

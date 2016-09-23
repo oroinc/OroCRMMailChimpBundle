@@ -7,7 +7,7 @@ use Doctrine\ORM\AbstractQuery;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
-use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
 

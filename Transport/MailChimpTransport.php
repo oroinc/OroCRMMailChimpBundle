@@ -2,9 +2,9 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Transport;
 
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
-use OroCRM\Bundle\CampaignBundle\Transport\TransportInterface;
-use OroCRM\Bundle\CampaignBundle\Transport\VisibilityTransportInterface;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\CampaignBundle\Transport\TransportInterface;
+use Oro\Bundle\CampaignBundle\Transport\VisibilityTransportInterface;
 use OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType;
 
 class MailChimpTransport implements TransportInterface, VisibilityTransportInterface

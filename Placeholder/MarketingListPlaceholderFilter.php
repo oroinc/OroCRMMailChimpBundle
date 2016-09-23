@@ -4,7 +4,7 @@ namespace OroCRM\Bundle\MailChimpBundle\Placeholder;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class MarketingListPlaceholderFilter
 {

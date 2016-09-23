@@ -13,7 +13,7 @@ use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
 {

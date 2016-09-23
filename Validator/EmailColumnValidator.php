@@ -7,9 +7,9 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
-use OroCRM\Bundle\MarketingListBundle\Validator\Constraints\ContactInformationColumnConstraint;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use Oro\Bundle\MarketingListBundle\Validator\Constraints\ContactInformationColumnConstraint;
 
 class EmailColumnValidator extends ConstraintValidator
 {

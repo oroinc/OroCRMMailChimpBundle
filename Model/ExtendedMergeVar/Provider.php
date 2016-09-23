@@ -2,7 +2,7 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class Provider implements CompositeProviderInterface
 {

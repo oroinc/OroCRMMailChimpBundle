@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityRepository;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingListType;
 
 class StaticSegmentRepository extends EntityRepository
 {

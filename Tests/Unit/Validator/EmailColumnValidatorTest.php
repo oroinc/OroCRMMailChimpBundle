@@ -3,8 +3,8 @@
 namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Validator;
 
 use OroCRM\Bundle\MailChimpBundle\Validator\EmailColumnValidator;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
-use OroCRM\Bundle\MarketingListBundle\Validator\Constraints\ContactInformationColumnConstraint;
+use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use Oro\Bundle\MarketingListBundle\Validator\Constraints\ContactInformationColumnConstraint;
 
 class EmailColumnValidatorTest extends \PHPUnit_Framework_TestCase
 {
@@ -66,7 +66,7 @@ class EmailColumnValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function validDataProvider()
     {
-        $manualMarketingList = $this->getMockBuilder('OroCRM\Bundle\MarketingListBundle\Entity\MarketingList')
+        $manualMarketingList = $this->getMockBuilder('Oro\Bundle\MarketingListBundle\Entity\MarketingList')
             ->disableOriginalConstructor()
             ->getMock();
         $manualMarketingList->expects($this->any())
@@ -81,7 +81,7 @@ class EmailColumnValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidateNotConnected()
     {
-        $marketingList = $this->getMockBuilder('OroCRM\Bundle\MarketingListBundle\Entity\MarketingList')
+        $marketingList = $this->getMockBuilder('Oro\Bundle\MarketingListBundle\Entity\MarketingList')
             ->disableOriginalConstructor()
             ->getMock();
         $marketingList->expects($this->once())
@@ -115,7 +115,7 @@ class EmailColumnValidatorTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $marketingList = $this->getMockBuilder('OroCRM\Bundle\MarketingListBundle\Entity\MarketingList')
+        $marketingList = $this->getMockBuilder('Oro\Bundle\MarketingListBundle\Entity\MarketingList')
             ->disableOriginalConstructor()
             ->getMock();
         $marketingList->expects($this->once())

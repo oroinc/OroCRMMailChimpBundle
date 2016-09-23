@@ -5,11 +5,11 @@ namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Model\Action;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\WorkflowBundle\Model\ProcessData;
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
 use OroCRM\Bundle\MailChimpBundle\Model\Action\UpdateEmailCampaignStatistics;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListItem;
-use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingListItem;
+use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 /**
  * @dbIsolation
@@ -60,13 +60,13 @@ class UpdateEmailCampaignStatisticsTest extends WebTestCase
 
         // Check that all marketing list items are created
         /** @var MarketingListItem[] $items */
-        $items = $this->registry->getRepository('OroCRMMarketingListBundle:MarketingListItem')
+        $items = $this->registry->getRepository('OroMarketingListBundle:MarketingListItem')
             ->findAll();
         $this->assertCount(2, $items);
 
         // Check that statistics is updated correctly
         /** @var EmailCampaignStatistics[] $statistics */
-        $statistics = $this->registry->getRepository('OroCRMCampaignBundle:EmailCampaignStatistics')
+        $statistics = $this->registry->getRepository('OroCampaignBundle:EmailCampaignStatistics')
             ->findAll();
         $this->assertCount(3, $statistics);
         $statisticsData = [];
