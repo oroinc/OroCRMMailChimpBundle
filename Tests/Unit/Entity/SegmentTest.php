@@ -56,7 +56,7 @@ class SegmentTest extends \PHPUnit_Framework_TestCase
             ['name', 'segment'],
             ['originId', 123456789],
             ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
-            ['marketingList', $this->getMock('Oro\\Bundle\\MarketingListBundle\\Entity\\MarketingList')],
+            ['marketingList', $this->getMock('OroCRM\\Bundle\\MarketingListBundle\\Entity\\MarketingList')],
             ['subscribersList', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
             ['subscribersList', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
             ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],

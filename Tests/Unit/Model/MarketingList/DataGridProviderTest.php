@@ -3,11 +3,11 @@
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\MarketingList;
 
 use Oro\Bundle\DataGridBundle\Datagrid\Manager;
-use Oro\Bundle\MarketingListBundle\Datagrid\ConfigurationProvider;
-use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
-use Oro\Bundle\MarketingListBundle\Entity\MarketingListType;
-use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use Oro\Bundle\MailChimpBundle\Model\MarketingList\DataGridProvider;
+use OroCRM\Bundle\MarketingListBundle\Datagrid\ConfigurationProvider;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType;
+use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 class DataGridProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -45,7 +45,7 @@ class DataGridProviderTest extends \PHPUnit_Framework_TestCase
     {
         /** @var \PHPUnit_Framework_MockObject_MockObject|MarketingList $marketingList */
         $marketingList = $this
-            ->getMockBuilder('Oro\Bundle\MarketingListBundle\Entity\MarketingList')
+            ->getMockBuilder('OroCRM\Bundle\MarketingListBundle\Entity\MarketingList')
             ->disableOriginalConstructor()
             ->getMock();
         $marketingList->expects($this->any())->method('getId')->will($this->returnValue(1));

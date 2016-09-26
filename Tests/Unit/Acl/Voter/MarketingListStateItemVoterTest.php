@@ -56,7 +56,7 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->em));
 
         $this->contactInformationFieldsProvider = $this->getMockBuilder(
-            'Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider'
+            'OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider'
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -215,8 +215,8 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
      */
     protected function getItem()
     {
-        $item = $this->getMock('Oro\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface');
-        $marketingList = $this->getMock('Oro\Bundle\MarketingListBundle\Entity\MarketingList');
+        $item = $this->getMock('OroCRM\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface');
+        $marketingList = $this->getMock('OroCRM\Bundle\MarketingListBundle\Entity\MarketingList');
 
         $item
             ->expects($this->any())
