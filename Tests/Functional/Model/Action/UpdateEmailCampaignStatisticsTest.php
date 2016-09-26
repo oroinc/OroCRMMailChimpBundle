@@ -66,7 +66,7 @@ class UpdateEmailCampaignStatisticsTest extends WebTestCase
 
         // Check that statistics is updated correctly
         /** @var EmailCampaignStatistics[] $statistics */
-        $statistics = $this->registry->getRepository('OroCampaignBundle:EmailCampaignStatistics')
+        $statistics = $this->registry->getRepository('OroCRMCampaignBundle:EmailCampaignStatistics')
             ->findAll();
         $this->assertCount(3, $statistics);
         $statisticsData = [];

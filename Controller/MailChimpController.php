@@ -125,7 +125,7 @@ class MailChimpController extends Controller
      *      name="oro_mailchimp_email_campaign_status",
      *      requirements={"entity"="\d+"})
      * @ParamConverter("emailCampaign",
-     *      class="OroCampaignBundle:EmailCampaign",
+     *      class="OroCRMCampaignBundle:EmailCampaign",
      *      options={"id" = "entity"})
      * @AclAncestor("oro_mailchimp")
      *
@@ -144,7 +144,7 @@ class MailChimpController extends Controller
     /**
      * @ParamConverter(
      *      "emailCampaign",
-     *      class="OroCampaignBundle:EmailCampaign",
+     *      class="OroCRMCampaignBundle:EmailCampaign",
      *      options={"id" = "entity"}
      * )
      * @AclAncestor("oro_mailchimp")
