@@ -41,7 +41,7 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
     public function settersAndGettersDataProvider()
     {
         return [
-            ['channel', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\Channel')],
+            ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
             ['template', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\Template')],
         ];
     }
@@ -56,7 +56,7 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
     public function testSettingsBag()
     {
         /** @var Channel|\PHPUnit_Framework_MockObject_MockObject $channel */
-        $channel = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\Channel');
+        $channel = $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel');
         $template = new Template();
         $this->target->setChannel($channel);
         $this->target->setTemplate($template);
