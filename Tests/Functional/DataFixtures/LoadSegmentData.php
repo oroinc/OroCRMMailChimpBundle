@@ -17,7 +17,7 @@ class LoadSegmentData extends AbstractMailChimpFixture
             'type' => 'dynamic',
             'name' => 'Test ML Segment',
             'description' => 'description',
-            'entity' => 'Oro\Bundle\ContactBundle\Entity\Contact',
+            'entity' => 'OroCRM\Bundle\ContactBundle\Entity\Contact',
             'definition' => [
                 'columns' => [
                     [
