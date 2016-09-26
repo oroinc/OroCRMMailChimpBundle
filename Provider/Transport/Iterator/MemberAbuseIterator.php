@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class MemberAbuseIterator extends AbstractMemberActivityIterator
 {

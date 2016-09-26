@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
 
 class MemberImportStrategy extends AbstractImportStrategy
 {

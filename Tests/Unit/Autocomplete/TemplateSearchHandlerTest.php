@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Autocomplete;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Autocomplete;
 
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\AbstractQuery;
@@ -11,8 +11,8 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
 use Oro\Bundle\SearchBundle\Query\Result;
-use OroCRM\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler;
-use OroCRM\Bundle\MailChimpBundle\Entity\Template;
+use Oro\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler;
+use Oro\Bundle\MailChimpBundle\Entity\Template;
 
 class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
 {

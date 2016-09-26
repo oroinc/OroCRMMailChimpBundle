@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProvider;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 
 abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 {

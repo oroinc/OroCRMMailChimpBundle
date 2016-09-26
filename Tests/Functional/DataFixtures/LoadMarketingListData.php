@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class LoadMarketingListData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {
@@ -17,7 +17,7 @@ class LoadMarketingListData extends AbstractMailChimpFixture implements Dependen
             'type' => 'dynamic',
             'name' => 'Test ML',
             'description' => '',
-            'entity' => 'OroCRM\Bundle\ContactBundle\Entity\Contact',
+            'entity' => 'Oro\Bundle\ContactBundle\Entity\Contact',
             'reference' => 'mailchimp:ml_one',
             'segment' => 'mailchimp:ml_one:segment',
         ],

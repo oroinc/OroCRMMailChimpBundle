@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity;
+namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -42,7 +42,7 @@ class ExtendedMergeVar
     /**
      * @var StaticSegment
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment", inversedBy="extendedMergeVars")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\StaticSegment", inversedBy="extendedMergeVars")
      * @ORM\JoinColumn(name="static_segment_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @ConfigField(
      *      defaultValues={

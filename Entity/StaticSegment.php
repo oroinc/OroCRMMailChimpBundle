@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity;
+namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +13,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
- * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository")
+ * @ORM\Entity(repositoryClass="Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository")
  * @ORM\Table(name="orocrm_mc_static_segment")
  * @ORM\HasLifecycleCallbacks()
  * @Config(
@@ -101,7 +101,7 @@ class StaticSegment implements OriginAwareInterface
     /**
      * @var SubscribersList
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\SubscribersList")
      * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $subscribersList;
@@ -109,14 +109,14 @@ class StaticSegment implements OriginAwareInterface
     /**
     * @var Collection|StaticSegmentMember[]
      *
-     * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="staticSegment")
+     * @ORM\OneToMany(targetEntity="Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="staticSegment")
      */
     protected $segmentMembers;
 
     /**
      * @var Collection|ExtendedMergeVar[]
      *
-     * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar", mappedBy="staticSegment")
+     * @ORM\OneToMany(targetEntity="Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar", mappedBy="staticSegment")
      */
     protected $extendedMergeVars;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider;
 
-use OroCRM\Bundle\MailChimpBundle\Provider\ChannelType;
+use Oro\Bundle\MailChimpBundle\Provider\ChannelType;
 
 class ChannelTypeTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,12 +17,12 @@ class ChannelTypeTest extends \PHPUnit_Framework_TestCase
     public function testGetLabel()
     {
         $this->assertInstanceOf('Oro\Bundle\IntegrationBundle\Provider\ChannelInterface', $this->channel);
-        $this->assertEquals('orocrm.mailchimp.channel_type.label', $this->channel->getLabel());
+        $this->assertEquals('oro.mailchimp.channel_type.label', $this->channel->getLabel());
     }
 
     public function testGetIcon()
     {
         $this->assertInstanceOf('Oro\Bundle\IntegrationBundle\Provider\IconAwareIntegrationInterface', $this->channel);
-        $this->assertEquals('bundles/orocrmmailchimp/img/freddie.ico', $this->channel->getIcon());
+        $this->assertEquals('bundles/oromailchimp/img/freddie.ico', $this->channel->getIcon());
     }
 }

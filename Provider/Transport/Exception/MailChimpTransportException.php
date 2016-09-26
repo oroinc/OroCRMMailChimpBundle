@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Exception;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Exception;
 
-use OroCRM\Bundle\MailChimpBundle\Exception\MailChimpException;
+use Oro\Bundle\MailChimpBundle\Exception\MailChimpException;
 
 interface MailChimpTransportException extends MailChimpException
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\MarketingList;
+namespace Oro\Bundle\MailChimpBundle\Model\MarketingList;
 
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;

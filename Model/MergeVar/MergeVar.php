@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\MergeVar;
+namespace Oro\Bundle\MailChimpBundle\Model\MergeVar;
 
 class MergeVar implements MergeVarInterface
 {

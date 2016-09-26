@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Processor;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Processor;
 
 class CampaignRemoveProcessor extends RemoveProcessor
 {

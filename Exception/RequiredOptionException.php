@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Exception;
+namespace Oro\Bundle\MailChimpBundle\Exception;
 
 class RequiredOptionException extends \Exception implements MailChimpException
 {

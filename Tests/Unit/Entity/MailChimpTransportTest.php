@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 
 class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 {

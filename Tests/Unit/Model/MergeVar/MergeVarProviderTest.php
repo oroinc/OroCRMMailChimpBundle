@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\MergeVar;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\MergeVar;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVar;
-use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFields;
-use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProvider;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVar;
+use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFields;
+use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProvider;
 
 class MergeVarProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -54,27 +54,27 @@ class MergeVarProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testAssignMergeVarValuesWorks()
     {
-        $emailField = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $emailField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $emailField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Email Address'));
 
-        $phoneField = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $phoneField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $phoneField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Phone'));
 
-        $firstNameField = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $firstNameField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $firstNameField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('First Name'));
 
-        $lastNameField = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $lastNameField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $lastNameField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Last Name'));
 
-        $mergeVarFields = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
+        $mergeVarFields = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
         $mergeVarFields->expects($this->once())
             ->method('getEmail')
             ->will($this->returnValue($emailField));
@@ -115,27 +115,27 @@ class MergeVarProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testAssignMergeVarValuesWorksWithEmptyValues()
     {
-        $emailField = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $emailField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $emailField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Email Address'));
 
-        $phoneField = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $phoneField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $phoneField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Phone'));
 
-        $firstNameField = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $firstNameField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $firstNameField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('First Name'));
 
-        $lastNameField = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $lastNameField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $lastNameField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Last Name'));
 
-        $mergeVarFields = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
+        $mergeVarFields = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
         $mergeVarFields->expects($this->once())
             ->method('getEmail')
             ->will($this->returnValue($emailField));
@@ -164,7 +164,7 @@ class MergeVarProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testAssignMergeVarValuesWorksWithEmptyFields()
     {
-        $mergeVarFields = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
+        $mergeVarFields = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
         $mergeVarFields->expects($this->once())
             ->method('getEmail')
             ->will($this->returnValue(null));

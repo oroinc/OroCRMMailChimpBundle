@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 
 use Oro\Bundle\ImportExportBundle\Writer\CleanUpInterface;
 use Oro\Bundle\ImportExportBundle\Writer\InsertFromSelectWriter;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
 class StaticSegmentMemberAddStateWriter extends InsertFromSelectWriter implements CleanUpInterface
 {

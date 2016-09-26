@@ -1,11 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Acl\Voter;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Acl\Voter;
 
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
-use OroCRM\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+
+use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter;
 
 class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
 {
@@ -90,7 +91,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
      */
     public function testVote($attributes, $emailCampaign, $expected)
     {
-        $object = $this->getMockBuilder('Oro\Bundle\CampaignBundle\Entity\EmailCampaign')
+        $object = $this->getMockBuilder('OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign')
             ->disableOriginalConstructor()
             ->getMock();
 

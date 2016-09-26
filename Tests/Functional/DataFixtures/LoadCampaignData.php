@@ -1,15 +1,15 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
-use OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
+use Oro\Bundle\MailChimpBundle\Transport\MailChimpTransport;
 
 class LoadCampaignData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {

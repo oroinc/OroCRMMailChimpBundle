@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Controller;
+namespace Oro\Bundle\MailChimpBundle\Controller;
 
 use Doctrine\Common\Util\ClassUtils;
 
@@ -13,13 +13,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
-
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler;
+use Oro\Bundle\MailChimpBundle\Form\Type\MarketingListConnectionType;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler;
-use OroCRM\Bundle\MailChimpBundle\Form\Type\MarketingListConnectionType;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
@@ -28,8 +27,8 @@ use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 class MailChimpController extends Controller
 {
     /**
-     * @Route("/ping", name="orocrm_mailchimp_ping")
-     * @AclAncestor("orocrm_mailchimp")
+     * @Route("/ping", name="oro_mailchimp_ping")
+     * @AclAncestor("oro_mailchimp")
      * @param Request $request
      * @return JsonResponse
      */
@@ -37,7 +36,7 @@ class MailChimpController extends Controller
     {
         $apiKey = $request->get('api_key');
 
-        $mailChimpClientFactory = $this->get('orocrm_mailchimp.client.factory');
+        $mailChimpClientFactory = $this->get('oro_mailchimp.client.factory');
         $client = $mailChimpClientFactory->create($apiKey);
         try {
             $result = $client->ping();
@@ -53,10 +52,10 @@ class MailChimpController extends Controller
     /**
      * @Route(
      *      "/manage-connection/marketing-list/{id}",
-     *      name="orocrm_mailchimp_marketing_list_connect",
+     *      name="oro_mailchimp_marketing_list_connect",
      *      requirements={"id"="\d+"}
      * )
-     * @AclAncestor("orocrm_mailchimp")
+     * @AclAncestor("oro_mailchimp")
      *
      * @Template
      * @param MarketingList $marketingList
@@ -87,7 +86,7 @@ class MailChimpController extends Controller
      *      class="OroCRMMarketingListBundle:MarketingList",
      *      options={"id" = "entity"}
      * )
-     * @AclAncestor("orocrm_mailchimp")
+     * @AclAncestor("oro_mailchimp")
      *
      * @Template
      *
@@ -104,12 +103,12 @@ class MailChimpController extends Controller
 
     /**
      * @Route("/sync-status/{marketingList}",
-     *      name="orocrm_mailchimp_sync_status",
+     *      name="oro_mailchimp_sync_status",
      *      requirements={"marketingList"="\d+"})
      * @ParamConverter("marketingList",
      *      class="OroCRMMarketingListBundle:MarketingList",
      *      options={"id" = "marketingList"})
-     * @AclAncestor("orocrm_mailchimp")
+     * @AclAncestor("oro_mailchimp")
      *
      * @Template
      *
@@ -123,12 +122,12 @@ class MailChimpController extends Controller
 
     /**
      * @Route("/email-campaign-status-positive/{entity}",
-     *      name="orocrm_mailchimp_email_campaign_status",
+     *      name="oro_mailchimp_email_campaign_status",
      *      requirements={"entity"="\d+"})
      * @ParamConverter("emailCampaign",
-     *      class="OroCRMCampaignBundle:EmailCampaign",
+     *      class="OroCampaignBundle:EmailCampaign",
      *      options={"id" = "entity"})
-     * @AclAncestor("orocrm_mailchimp")
+     * @AclAncestor("oro_mailchimp")
      *
      * @Template
      *
@@ -145,10 +144,10 @@ class MailChimpController extends Controller
     /**
      * @ParamConverter(
      *      "emailCampaign",
-     *      class="OroCRMCampaignBundle:EmailCampaign",
+     *      class="OroCampaignBundle:EmailCampaign",
      *      options={"id" = "entity"}
      * )
-     * @AclAncestor("orocrm_mailchimp")
+     * @AclAncestor("oro_mailchimp")
      *
      * @Template
      *
@@ -165,9 +164,9 @@ class MailChimpController extends Controller
 
     /**
      * @Route("/email-campaign/{id}/activity-updates/toggle",
-     *      name="orocrm_mailchimp_email_campaign_activity_update_toggle",
+     *      name="oro_mailchimp_email_campaign_activity_update_toggle",
      *      requirements={"id"="\d+"})
-     * @AclAncestor("orocrm_mailchimp")
+     * @AclAncestor("oro_mailchimp")
      *
      * @param EmailCampaign $emailCampaign
      * @return JsonResponse
@@ -183,9 +182,9 @@ class MailChimpController extends Controller
         $em->flush();
 
         if ($settings->isReceiveActivities()) {
-            $message = 'orocrm.mailchimp.controller.email_campaign.receive_activities.enabled.message';
+            $message = 'oro.mailchimp.controller.email_campaign.receive_activities.enabled.message';
         } else {
-            $message = 'orocrm.mailchimp.controller.email_campaign.receive_activities.disabled.message';
+            $message = 'oro.mailchimp.controller.email_campaign.receive_activities.disabled.message';
         }
 
         return new JsonResponse(['message' => $this->get('translator')->trans($message)]);
@@ -216,7 +215,7 @@ class MailChimpController extends Controller
     protected function findStaticSegmentByMarketingList(MarketingList $marketingList)
     {
         return $this->getDoctrine()
-            ->getRepository('OroCRMMailChimpBundle:StaticSegment')
+            ->getRepository('OroMailChimpBundle:StaticSegment')
             ->findOneBy(['marketingList' => $marketingList]);
     }
 
@@ -227,7 +226,7 @@ class MailChimpController extends Controller
     protected function getCampaignByEmailCampaign(EmailCampaign $emailCampaign)
     {
         $campaign = $this->getDoctrine()
-            ->getRepository('OroCRMMailChimpBundle:Campaign')
+            ->getRepository('OroMailChimpBundle:Campaign')
             ->findOneBy(['emailCampaign' => $emailCampaign]);
 
         return $campaign;

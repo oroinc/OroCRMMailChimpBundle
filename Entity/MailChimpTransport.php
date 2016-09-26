@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity;
+namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

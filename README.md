@@ -1,4 +1,4 @@
-# OroCRMMailChimpBundle
+# OroMailChimpBundle
 
 This Bundle provides integration with [MailChimp](http://mailchimp.com) for OroCRM.
 It allows to link Marketing List to MailChimp service and receive MailChimp Email Campaign statistics

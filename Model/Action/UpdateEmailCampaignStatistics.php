@@ -1,17 +1,17 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
+namespace Oro\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 
 use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
+use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
 
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
 use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use OroCRM\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model;
+namespace Oro\Bundle\MailChimpBundle\Model;
 
 use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\Query\Expr\Join;

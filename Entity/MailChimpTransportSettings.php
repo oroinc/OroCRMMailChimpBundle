@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity;
+namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -24,7 +24,7 @@ class MailChimpTransportSettings extends TransportSettings
     /**
      * @var Template
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Template")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\Template")
      * @ORM\JoinColumn(name="mailchimp_template_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     protected $template;

@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\MergeVar;
+namespace Oro\Bundle\MailChimpBundle\Model\MergeVar;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 interface MergeVarProviderInterface
 {

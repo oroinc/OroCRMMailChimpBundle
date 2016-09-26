@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -17,7 +17,7 @@ class LoadSegmentData extends AbstractMailChimpFixture
             'type' => 'dynamic',
             'name' => 'Test ML Segment',
             'description' => 'description',
-            'entity' => 'OroCRM\Bundle\ContactBundle\Entity\Contact',
+            'entity' => 'Oro\Bundle\ContactBundle\Entity\Contact',
             'definition' => [
                 'columns' => [
                     [

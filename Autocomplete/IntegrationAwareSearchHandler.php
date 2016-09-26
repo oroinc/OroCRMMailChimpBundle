@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Autocomplete;
+namespace Oro\Bundle\MailChimpBundle\Autocomplete;
 
 use Oro\Bundle\FormBundle\Autocomplete\SearchHandler;
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity\Repository;
+namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListType;
 
 class StaticSegmentRepository extends EntityRepository

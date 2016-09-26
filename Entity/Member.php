@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity;
+namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -272,7 +272,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**
      * @var SubscribersList
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\SubscribersList")
      * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
      * @ConfigField(
      *      defaultValues={
@@ -295,7 +295,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     /**
      * @var Collection|ArrayCollection|Member[]
      *
-     * @ORM\OneToMany(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="member")
+     * @ORM\OneToMany(targetEntity="Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember", mappedBy="member")
      */
     protected $segmentMembers;
 

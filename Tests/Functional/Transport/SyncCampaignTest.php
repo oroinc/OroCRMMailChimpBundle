@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Transport;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Transport;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 /**
  * @outputBuffering enabled
@@ -25,14 +25,14 @@ class SyncCampaignTest extends WebTestCase
     {
         $this->initClient();
         $this->clientFactory = $this->getMockBuilder(
-            'OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory'
+            'Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory'
         )
             ->disableOriginalConstructor()
             ->setMethods(
                 ['create']
             )
             ->getMock();
-        $this->apiClient = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
+        $this->apiClient = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
             ->disableOriginalConstructor()
             ->setMethods(
                 ['export', 'getLists', 'getListMergeVars', 'getCampaigns']
@@ -43,8 +43,8 @@ class SyncCampaignTest extends WebTestCase
             ->will($this->returnValue($this->apiClient));
 
         $transport = new MailChimpTransport($this->clientFactory, $this->getContainer()->get('doctrine'));
-        $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
-        $this->loadFixtures(['OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData']);
+        $this->getContainer()->set('oro_mailchimp.transport.integration_transport', $transport);
+        $this->loadFixtures(['Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData']);
     }
 
     /**
@@ -80,7 +80,7 @@ class SyncCampaignTest extends WebTestCase
             $this->assertContains($expected, $result);
         }
         if ($assertMethod) {
-            $listRepo = $this->getContainer()->get('doctrine')->getRepository('OroCRMMailChimpBundle:' . $entity);
+            $listRepo = $this->getContainer()->get('doctrine')->getRepository('OroMailChimpBundle:' . $entity);
             $list = $listRepo->findAll();
             $this->$assertMethod($assertCount, count($list));
         }

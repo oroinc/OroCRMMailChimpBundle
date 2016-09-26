@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Acl\Voter;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Acl\Voter;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Query\Expr;
@@ -8,9 +8,9 @@ use Doctrine\ORM\Query\Expr;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use OroCRM\Bundle\MailChimpBundle\Acl\Voter\MarketingListStateItemVoter;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
+use Oro\Bundle\MailChimpBundle\Acl\Voter\MarketingListStateItemVoter;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
 use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
@@ -56,12 +56,12 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->em));
 
         $this->contactInformationFieldsProvider = $this->getMockBuilder(
-            'OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider'
+            'Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider'
         )
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->fieldHelper = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Model\FieldHelper')
+        $this->fieldHelper = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Model\FieldHelper')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -215,8 +215,8 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
      */
     protected function getItem()
     {
-        $item = $this->getMock('OroCRM\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface');
-        $marketingList = $this->getMock('OroCRM\Bundle\MarketingListBundle\Entity\MarketingList');
+        $item = $this->getMock('Oro\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface');
+        $marketingList = $this->getMock('Oro\Bundle\MarketingListBundle\Entity\MarketingList');
 
         $item
             ->expects($this->any())

@@ -1,8 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
+
 use Oro\Bundle\ImportExportBundle\Reader\AbstractReader;
 
 class ProcessedEntities extends AbstractReader

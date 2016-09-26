@@ -1,4 +1,4 @@
-OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport:
+Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport:
     properties:
         apiKey:
             - NotBlank: ~
@@ -8,7 +8,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport:
                 pattern: '/^[a-z0-9]{32,}-[a-z]{2,}[0-9]+$/'
                 message: API Key is invalid
 
-OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings:
+Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings:
     properties:
         channel:
             - NotBlank: ~
@@ -17,11 +17,11 @@ OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings:
 
 OroCRM\Bundle\MarketingListBundle\Entity\MarketingList:
     constraints:
-        - OroCRM\Bundle\MailChimpBundle\Validator\Constraints\EmailColumnConstraint: ~
+        - Oro\Bundle\MailChimpBundle\Validator\Constraints\EmailColumnConstraint: ~
 
-OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment:
+Oro\Bundle\MailChimpBundle\Entity\StaticSegment:
     constraints:
-        - OroCRM\Bundle\MailChimpBundle\Validator\Constraints\UniqueStaticSegmentNameConstraint: ~
+        - Oro\Bundle\MailChimpBundle\Validator\Constraints\UniqueStaticSegmentNameConstraint: ~
     properties:
         name:
             - NotBlank: ~
@@ -37,7 +37,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment:
         syncStatus:
             - NotBlank: ~
 
-OroCRM\Bundle\MailChimpBundle\Entity\Member:
+Oro\Bundle\MailChimpBundle\Entity\Member:
     properties:
         email:
             - Email: ~
@@ -45,7 +45,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\Member:
         status:
             - NotBlank: ~
 
-OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity:
+Oro\Bundle\MailChimpBundle\Entity\MemberActivity:
     properties:
         email:
             - Email: ~
@@ -55,7 +55,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity:
         member:
             - NotBlank: ~
 
-OroCRM\Bundle\MailChimpBundle\Entity\Campaign:
+Oro\Bundle\MailChimpBundle\Entity\Campaign:
     properties:
         originId:
             - NotBlank: ~
@@ -64,7 +64,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\Campaign:
         status:
             - NotBlank: ~
 
-OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember:
+Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember:
     properties:
         staticSegment:
             - NotBlank: ~
@@ -73,7 +73,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember:
         state:
             - NotBlank: ~
 
-OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList:
+Oro\Bundle\MailChimpBundle\Entity\SubscribersList:
     properties:
         originId:
             - NotBlank: ~
@@ -82,7 +82,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList:
         name:
             - NotBlank: ~
 
-OroCRM\Bundle\MailChimpBundle\Entity\Template:
+Oro\Bundle\MailChimpBundle\Entity\Template:
     properties:
         originId:
             - NotBlank: ~
@@ -91,7 +91,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\Template:
         name:
             - NotBlank: ~
 
-OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar:
+Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar:
     properties:
         staticSegment:
             - NotBlank: ~
@@ -110,7 +110,7 @@ OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar:
         state:
             - NotBlank: ~
 
-OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar:
+Oro\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar:
     proerties:
         staticSegment:
             - NotBlank: ~

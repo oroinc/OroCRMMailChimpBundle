@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Migrations\Schema\v1_3;
+namespace Oro\Bundle\MailChimpBundle\Migrations\Schema\v1_3;
 
 use Doctrine\DBAL\Platforms\PostgreSQL92Platform;
 

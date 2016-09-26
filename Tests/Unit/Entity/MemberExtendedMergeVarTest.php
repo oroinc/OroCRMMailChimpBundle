@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
+use Oro\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 
 class MemberExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
 {
@@ -69,7 +69,7 @@ class MemberExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
     public function settersAndGettersDataProvider()
     {
         return [
-            ['staticSegment', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')],
+            ['staticSegment', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')],
             ['state', MemberExtendedMergeVar::STATE_SYNCED, MemberExtendedMergeVar::STATE_ADD],
             ['merge_var_values', ['var' => 'value'], []],
             ['merge_var_values_context', ['context'], []]

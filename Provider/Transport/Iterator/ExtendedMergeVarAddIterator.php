@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
-use OroCRM\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
+use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
+use Oro\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
 
 class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
 {

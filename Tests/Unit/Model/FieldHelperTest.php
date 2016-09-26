@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model;
 
 use Doctrine\ORM\Query\Expr\Join;
 
 use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\EntityBundle\Provider\VirtualFieldProviderInterface;
-use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
+use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
 
 class FieldHelperTest extends \PHPUnit_Framework_TestCase
 {

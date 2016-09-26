@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Doctrine\ORM\Query\Expr\Join;
 
@@ -8,7 +8,7 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Exception\InvalidConfigurationException;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSyncIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSyncIterator;
 
 class StaticSegmentReader extends AbstractIteratorBasedReader
 {

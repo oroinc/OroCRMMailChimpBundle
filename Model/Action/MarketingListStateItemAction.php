@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
+namespace Oro\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\ORM\Query\Expr\Join;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
 use OroCRM\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface;
 
@@ -86,7 +86,7 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
         $qb
             ->select('ml')
             ->join(
-                'OroCRMMailChimpBundle:StaticSegment',
+                'OroMailChimpBundle:StaticSegment',
                 'staticSegment',
                 Join::WITH,
                 'staticSegment.marketingList = ml.id'
