@@ -1005,6 +1005,6 @@ services:
     oro_mailchimp.extended_merge_var.composite_provider:
         class: %oro_mailchimp.extended_merge_var.composite_provider.class%
 
-    orocrm_mailchimp.marketinglist.datagrid_provider:
+    oro_mailchimp.marketinglist.datagrid_provider:
         class: %oro_mailchimp.marketinglist.datagrid_provider.class%
         parent: oro_marketing_list.provider.marketing_list
