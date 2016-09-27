@@ -40,7 +40,7 @@
         <li>
             {{  UI.deleteLink({
                 'dataUrl': path('oro_api_delete_staticsegment', {id: staticSegment.id}),
-                'dataRedirect': path('orocrm_marketing_list_view', {id: marketingList.id}),
+                'dataRedirect': path('oro_marketing_list_view', {id: marketingList.id}),
                 'dataMessage': 'oro.mailchimp.connection.confirmation.disconnect'|trans,
                 'aCss': 'no-hash remove-button',
                 'id': 'btn-remove-mailchimp-connection',

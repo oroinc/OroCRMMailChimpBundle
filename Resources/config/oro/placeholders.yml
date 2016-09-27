@@ -2,7 +2,7 @@ placeholders:
     placeholders:
         marketing_list_nav_buttons:
             items:
-                orocrm_marketing_list_mailchimp_buttons: ~
+                oro_marketing_list_mailchimp_buttons: ~
         view_navButtons_before:
             items:
                 oro_mailchimp_email_campaign_buttons: ~
@@ -14,7 +14,7 @@ placeholders:
                 oro_mailchimp_marketing_list_sync_data: ~
 
     items:
-        orocrm_marketing_list_mailchimp_buttons:
+        oro_marketing_list_mailchimp_buttons:
             action: OroMailChimpBundle:MailChimp:connectionButtons
             applicable: "@oro_mailchimp.placeholder.filter.buttons_filder->isApplicable($entity$)"
         oro_mailchimp_email_campaign_buttons:

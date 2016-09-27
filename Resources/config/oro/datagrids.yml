@@ -53,7 +53,7 @@ datagrids:
             id: ~
     oro_mailchimp_templates_grid:
         extended_entity_name: %oro_mailchimp.entity.template.class%
-        acl_resource: orocrm_email_campaign_view
+        acl_resource: oro_email_campaign_view
         channel_limitation:
             channel_relation_path: .channel
         options:

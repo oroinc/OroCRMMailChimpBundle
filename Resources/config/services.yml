@@ -151,7 +151,7 @@ services:
     oro_mailchimp.transport.mailchimp:
         class: %oro_mailchimp.transport.mailchimp.class%
         tags:
-            - { name: "orocrm_campaign.email_transport" }
+            - { name: "oro_campaign.email_transport" }
 
     oro_mailchimp.model.field_helper:
         class: %oro_mailchimp.model.field_helper.class%
@@ -464,7 +464,7 @@ services:
             - [initDoctrinePropertiesByManagerRegistry, ["@doctrine"]]
             - [setAclHelper,["@oro_security.acl_helper"]]
         tags:
-            - { name: oro_form.autocomplete.search_handler, alias: "mailchimp_templates", acl_resource: "orocrm_email_campaign_view" }
+            - { name: oro_form.autocomplete.search_handler, alias: "mailchimp_templates", acl_resource: "oro_email_campaign_view" }
 
     oro_mailchimp.form.autocomplete.list.search_handler:
         class: %oro_mailchimp.form.autocomplete.list.search_handler.class%
@@ -475,7 +475,7 @@ services:
             - [initDoctrinePropertiesByManagerRegistry, ["@doctrine"]]
             - [setAclHelper,["@oro_security.acl_helper"]]
         tags:
-            - { name: oro_form.autocomplete.search_handler, alias: "mailchimp_lists", acl_resource: "orocrm_email_campaign_view" }
+            - { name: oro_form.autocomplete.search_handler, alias: "mailchimp_lists", acl_resource: "oro_email_campaign_view" }
 
     # Integration related services
     oro_mailchimp.provider.channel_type:
@@ -880,7 +880,7 @@ services:
         arguments:
             - "@oro_entity.doctrine_helper"
             - "@oro_marketing_list.provider.contact_information_fields"
-            - "@orocrm_mailchimp.model.field_helper"
+            - "@oro_mailchimp.model.field_helper"
             - %oro_mailchimp.entity.member.class%
             - %oro_mailchimp.entity.subscribers_list.class%
             - %oro_marketing_list.entity.class%
