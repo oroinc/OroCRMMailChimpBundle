@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity;
+namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,7 +19,7 @@ class StaticSegmentMemberToRemove
      * @var Member
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Member")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\Member")
      * @ORM\JoinColumn(name="member_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */
     protected $member;
@@ -28,7 +28,7 @@ class StaticSegmentMemberToRemove
      * @var StaticSegment
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\StaticSegment")
      * @ORM\JoinColumn(name="static_segment_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */
     protected $staticSegment;

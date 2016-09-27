@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\DependencyInjection\CompilerPass;
+namespace Oro\Bundle\MailChimpBundle\DependencyInjection\CompilerPass;
 
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -8,8 +8,8 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 class ExtendedMergeVarsProviderPass implements CompilerPassInterface
 {
-    const COMPOSITE_PROVIDER_ID = 'orocrm_mailchimp.extended_merge_var.composite_provider';
-    const PROVIDER_TAG_NAME     = 'orocrm_mailchimp.extended_merge_vars.provider';
+    const COMPOSITE_PROVIDER_ID = 'oro_mailchimp.extended_merge_var.composite_provider';
+    const PROVIDER_TAG_NAME     = 'oro_mailchimp.extended_merge_vars.provider';
 
     /**
      * {@inheritDoc}

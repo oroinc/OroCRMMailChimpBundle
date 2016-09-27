@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
+use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
 
 class MemberActivityTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,8 +37,8 @@ class MemberActivityTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['channel', $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel')],
-            ['campaign', $this->getMock('OroCRM\Bundle\MailChimpBundle\Entity\Campaign')],
-            ['member', $this->getMock('OroCRM\Bundle\MailChimpBundle\Entity\Member')],
+            ['campaign', $this->getMock('Oro\Bundle\MailChimpBundle\Entity\Campaign')],
+            ['member', $this->getMock('Oro\Bundle\MailChimpBundle\Entity\Member')],
             ['owner', $this->getMock('Oro\Bundle\OrganizationBundle\Entity\Organization')],
             ['email', 'test@test.com'],
             ['action', 'open'],

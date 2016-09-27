@@ -1,13 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Serializer;
 
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\DenormalizerInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
 
 /**
  * Added during performance improvement. Please, keep it as simple as possible.
@@ -134,7 +133,7 @@ class MemberActivitySerializer implements DenormalizerInterface
      */
     public function supportsDenormalization($data, $type, $format = null, array $context = [])
     {
-        return is_a($type, 'OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity', true)
+        return is_a($type, 'Oro\Bundle\MailChimpBundle\Entity\MemberActivity', true)
             && is_array($data)
             && !empty($context['channel']);
     }

@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Placeholder;
+namespace Oro\Bundle\MailChimpBundle\Placeholder;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
-use OroCRM\Bundle\MailChimpBundle\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Transport\MailChimpTransport;
 
 class EmailCampaignPlaceholderFilter
 {
@@ -32,7 +32,7 @@ class EmailCampaignPlaceholderFilter
     {
         if ($entity instanceof EmailCampaign && $entity->getTransport() === MailChimpTransport::NAME) {
             $campaign = $this->registry->getManager()
-                ->getRepository('OroCRMMailChimpBundle:Campaign')
+                ->getRepository('OroMailChimpBundle:Campaign')
                 ->findOneBy(['emailCampaign' => $entity]);
             return (bool) $campaign;
         } else {

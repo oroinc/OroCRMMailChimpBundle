@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Form\Type;
+namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class MailchimpTemplateSelectType extends AbstractType
 {
-    const NAME = 'orocrm_mailchimp_template_select';
+    const NAME = 'oro_mailchimp_template_select';
 
     /**
      * {@inheritdoc}
@@ -17,9 +17,9 @@ class MailchimpTemplateSelectType extends AbstractType
         $resolver->setDefaults(
             [
                 'autocomplete_alias' => 'mailchimp_templates',
-                'grid_name' => 'orocrm_mailchimp_templates_grid',
+                'grid_name' => 'oro_mailchimp_templates_grid',
                 'configs' => [
-                    'placeholder' => 'orocrm.mailchimp.emailcampaign.template.placeholder'
+                    'placeholder' => 'oro.mailchimp.emailcampaign.template.placeholder'
                 ]
             ]
         );

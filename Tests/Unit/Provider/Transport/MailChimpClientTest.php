@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
 
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class MailChimpClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,7 +16,7 @@ class MailChimpClientTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->client = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
+        $this->client = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
             ->setMethods(['createRequest', 'callExportApi'])
             ->setConstructorArgs([self::API_KEY])
             ->getMock();
@@ -108,7 +108,7 @@ class MailChimpClientTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('{"error":"API Key can not be blank","code":104}'));
 
         $this->setExpectedException(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Exception\\BadResponseException',
+            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\Exception\\BadResponseException',
             implode(
                 PHP_EOL,
                 [

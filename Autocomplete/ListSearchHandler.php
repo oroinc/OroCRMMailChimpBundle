@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Autocomplete;
+namespace Oro\Bundle\MailChimpBundle\Autocomplete;
 
 class ListSearchHandler extends IntegrationAwareSearchHandler
 {

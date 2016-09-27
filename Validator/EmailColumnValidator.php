@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Validator;
+namespace Oro\Bundle\MailChimpBundle\Validator;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Constraint;
@@ -56,7 +56,7 @@ class EmailColumnValidator extends ConstraintValidator
      */
     protected function isConnectedToMailChimp(MarketingList $marketingList)
     {
-        return (bool)$this->registry->getRepository('OroCRMMailChimpBundle:StaticSegment')
+        return (bool)$this->registry->getRepository('OroMailChimpBundle:StaticSegment')
             ->findOneBy(['marketingList' => $marketingList]);
     }
 }

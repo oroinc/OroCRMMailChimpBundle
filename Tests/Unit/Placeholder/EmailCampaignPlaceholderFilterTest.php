@@ -1,14 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Placeholder;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Placeholder;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Placeholder\EmailCampaignPlaceholderFilter;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Placeholder\EmailCampaignPlaceholderFilter;
 
 class EmailCampaignPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
 {

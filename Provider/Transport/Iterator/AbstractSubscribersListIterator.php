@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 abstract class AbstractSubscribersListIterator extends AbstractSubordinateIterator
 {
@@ -44,7 +44,7 @@ abstract class AbstractSubscribersListIterator extends AbstractSubordinateIterat
             throw new \InvalidArgumentException(
                 sprintf(
                     'Instance of %s is expected, %s given.',
-                    'OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList',
+                    'Oro\Bundle\MailChimpBundle\Entity\SubscribersList',
                     is_object($subscribersList) ? get_class($subscribersList) : gettype($subscribersList)
                 )
             );

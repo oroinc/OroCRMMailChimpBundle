@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Doctrine\ORM\AbstractQuery;
 
@@ -11,10 +11,10 @@ use Symfony\Component\Validator\ValidatorInterface;
 
 use Oro\Bundle\ImportExportBundle\Strategy\Import\AbstractImportStrategy as BasicImportStrategy;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
-use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
+use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
 
 class MemberActivityImportStrategy extends BasicImportStrategy implements LoggerAwareInterface
 {
@@ -165,7 +165,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
             return null;
         }
 
-        return $this->findEntity('OroCRM\Bundle\MailChimpBundle\Entity\Member', $searchCondition, ['id']);
+        return $this->findEntity('Oro\Bundle\MailChimpBundle\Entity\Member', $searchCondition, ['id']);
     }
 
     /**
@@ -201,7 +201,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
 
         if ($searchCondition) {
             return (bool)$this->findEntity(
-                'OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity',
+                'Oro\Bundle\MailChimpBundle\Entity\MemberActivity',
                 $searchCondition,
                 ['id'],
                 AbstractQuery::HYDRATE_SCALAR

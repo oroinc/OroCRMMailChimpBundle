@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberExportListIterator;
+use Oro\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberExportListIterator;
 
 class MemberExportReader extends AbstractIteratorBasedReader
 {

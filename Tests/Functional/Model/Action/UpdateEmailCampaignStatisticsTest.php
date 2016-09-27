@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Model\Action;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Model\Action;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\WorkflowBundle\Model\ProcessData;
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
-use OroCRM\Bundle\MailChimpBundle\Model\Action\UpdateEmailCampaignStatistics;
+use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
+use Oro\Bundle\MailChimpBundle\Model\Action\UpdateEmailCampaignStatistics;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingListItem;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
@@ -41,13 +41,13 @@ class UpdateEmailCampaignStatisticsTest extends WebTestCase
         $this->initClient();
 
         $this->action = $this->getContainer()
-            ->get('orocrm_mailchimp.workflow.action.update_email_campaign_statistics');
+            ->get('oro_mailchimp.workflow.action.update_email_campaign_statistics');
 
         $this->registry = $this->getContainer()->get('doctrine');
 
         $this->loadFixtures(
             [
-                'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMemberActivityData'
+                'Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMemberActivityData'
             ]
         );
     }

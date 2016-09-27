@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Stub;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Stub;
 
 use Guzzle\Http\Message\Response;
 
 use Symfony\Component\Yaml\Yaml;
 
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class MailChimpClientStub extends MailChimpClient
 {

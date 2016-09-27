@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Oro\Bundle\ImportExportBundle\Strategy\Import\ConfigurableAddOrReplaceStrategy;
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
+use Oro\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 
 class MemberExtendedMergeVarStrategy extends ConfigurableAddOrReplaceStrategy
 {

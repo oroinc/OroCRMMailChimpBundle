@@ -1,17 +1,17 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Command;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Command;
 
 use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
 use Akeneo\Bundle\BatchBundle\Job\BatchStatus;
 
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\MailChimpBundle\Command\MailChimpExportCommand;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
-use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
-use OroCRM\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
+use Oro\Bundle\MailChimpBundle\Command\MailChimpExportCommand;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
+use Oro\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 
 /**
  * @dbIsolation
@@ -23,7 +23,7 @@ class MailChimpExportCommandTest extends WebTestCase
         $this->initClient();
         $this->loadFixtures(
             [
-                'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentMemberData',
+                'Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentMemberData',
             ]
         );
 
@@ -62,7 +62,7 @@ class MailChimpExportCommandTest extends WebTestCase
         array $exportExtendedMergeVars,
         array $batchUnsubscribe
     ) {
-        $transport = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport')
+        $transport = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -98,7 +98,7 @@ class MailChimpExportCommandTest extends WebTestCase
             ->method('updateListMember')
             ->will($this->returnValue($batchUnsubscribe));
 
-        $this->getContainer()->set('orocrm_mailchimp.transport.integration_transport', $transport);
+        $this->getContainer()->set('oro_mailchimp.transport.integration_transport', $transport);
 
         // no failed jobs
         $this->assertEmpty($this->getJobs(MemberConnector::JOB_EXPORT, BatchStatus::FAILED));
@@ -248,7 +248,7 @@ class MailChimpExportCommandTest extends WebTestCase
     protected function getMembers()
     {
         return $this->getContainer()->get('oro_entity.doctrine_helper')
-            ->getEntityRepository('OroCRMMailChimpBundle:Member')
+            ->getEntityRepository('OroMailChimpBundle:Member')
             ->findAll();
     }
 
@@ -258,7 +258,7 @@ class MailChimpExportCommandTest extends WebTestCase
     protected function getStaticSegment()
     {
         return $this->getContainer()->get('oro_entity.doctrine_helper')
-            ->getEntityRepository('OroCRMMailChimpBundle:StaticSegment')
+            ->getEntityRepository('OroMailChimpBundle:StaticSegment')
             ->findAll();
     }
 
@@ -268,7 +268,7 @@ class MailChimpExportCommandTest extends WebTestCase
     protected function getStaticSegmentMember()
     {
         return $this->getContainer()->get('oro_entity.doctrine_helper')
-            ->getEntityRepository('OroCRMMailChimpBundle:StaticSegmentMember')
+            ->getEntityRepository('OroMailChimpBundle:StaticSegmentMember')
             ->findAll();
     }
 

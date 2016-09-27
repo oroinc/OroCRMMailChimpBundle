@@ -1,19 +1,20 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Migrations\Schema\v1_3;
+namespace Oro\Bundle\MailChimpBundle\Migrations\Schema\v1_1;
 
 use Doctrine\DBAL\Schema\Schema;
 
 use Oro\Bundle\MigrationBundle\Migration\Migration;
 use Oro\Bundle\MigrationBundle\Migration\QueryBag;
 
-class OroCRMMailChimpBundle implements Migration
+class OroMailChimpBundle implements Migration
 {
     /**
      * {@inheritdoc}
      */
     public function up(Schema $schema, QueryBag $queries)
     {
-        $queries->addPostQuery(new UpdateMailChimpEntitiesJsonArrayQuery());
+        $table = $schema->getTable('orocrm_mailchimp_member');
+        $table->addIndex(['email', 'subscribers_list_id'], 'mc_mmbr_email_list_idx');
     }
 }

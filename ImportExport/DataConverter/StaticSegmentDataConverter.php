@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentIterator;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentIterator;
 
 class StaticSegmentDataConverter extends IntegrationAwareDataConverter
 {

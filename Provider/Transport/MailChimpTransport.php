@@ -1,31 +1,30 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MailChimpBundle\Entity\Template;
-use OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberAbuseIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberActivityIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSentToIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberUnsubscribesIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentListIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository;
+use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
+use Oro\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Entity\Template;
+use Oro\Bundle\MailChimpBundle\Exception\RequiredOptionException;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberAbuseIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberActivityIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSentToIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberUnsubscribesIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentListIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
@@ -106,7 +105,7 @@ class MailChimpTransport implements TransportInterface
     /**
      * @link http://apidocs.mailchimp.com/api/2.0/campaigns/list.php
      * @param Channel $channel
-     * @param string|null $status Constant of \OroCRM\Bundle\MailChimpBundle\Entity\Campaign::STATUS_XXX
+     * @param string|null $status Constant of \Oro\Bundle\MailChimpBundle\Entity\Campaign::STATUS_XXX
      * @param bool|null $usesSegment
      * @return \Iterator
      */
@@ -120,9 +119,9 @@ class MailChimpTransport implements TransportInterface
             $filters['uses_segment'] = (bool)$usesSegment;
         }
 
-        // Synchronize only campaigns that are connected to subscriber lists that are used within OroCRM.
+        // Synchronize only campaigns that are connected to subscriber lists that are used within Oro.
         /** @var StaticSegmentRepository $repository */
-        $repository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:StaticSegment');
+        $repository = $this->managerRegistry->getRepository('OroMailChimpBundle:StaticSegment');
         $staticSegments = $repository->getStaticSegments($channel);
 
         $listsToSynchronize = [];
@@ -162,7 +161,7 @@ class MailChimpTransport implements TransportInterface
     public function getMembersToSync(Channel $channel, \DateTime $since = null)
     {
         /** @var SubscribersListRepository $subscribersListRepository */
-        $subscribersListRepository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:SubscribersList');
+        $subscribersListRepository = $this->managerRegistry->getRepository('OroMailChimpBundle:SubscribersList');
         $subscribersLists = $subscribersListRepository->getUsedSubscribersListIterator($channel);
 
         $parameters = ['status' => [Member::STATUS_SUBSCRIBED, Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED]];
@@ -204,7 +203,7 @@ class MailChimpTransport implements TransportInterface
     public function getSegmentsToSync(Channel $channel)
     {
         /** @var SubscribersListRepository $subscribersListRepository */
-        $subscribersListRepository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:SubscribersList');
+        $subscribersListRepository = $this->managerRegistry->getRepository('OroMailChimpBundle:SubscribersList');
         $subscribersLists = $subscribersListRepository->getUsedSubscribersListIterator($channel);
 
         return new StaticSegmentListIterator($subscribersLists, $this->client);
@@ -394,7 +393,7 @@ class MailChimpTransport implements TransportInterface
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.integration_transport.label';
+        return 'oro.mailchimp.integration_transport.label';
     }
 
     /**
@@ -402,7 +401,7 @@ class MailChimpTransport implements TransportInterface
      */
     public function getSettingsFormType()
     {
-        return 'orocrm_mailchimp_integration_transport_setting_type';
+        return 'oro_mailchimp_integration_transport_setting_type';
     }
 
     /**
@@ -410,7 +409,7 @@ class MailChimpTransport implements TransportInterface
      */
     public function getSettingsEntityFQCN()
     {
-        return 'OroCRM\\Bundle\\MailChimpBundle\\Entity\\MailChimpTransport';
+        return 'Oro\\Bundle\\MailChimpBundle\\Entity\\MailChimpTransport';
     }
 
     /**
@@ -436,7 +435,7 @@ class MailChimpTransport implements TransportInterface
     protected function getSentCampaignsIterator(Channel $channel)
     {
         /** @var CampaignRepository $repository */
-        $repository = $this->managerRegistry->getRepository('OroCRMMailChimpBundle:Campaign');
+        $repository = $this->managerRegistry->getRepository('OroMailChimpBundle:Campaign');
         return $repository->getSentCampaigns($channel);
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Transport;
+namespace Oro\Bundle\MailChimpBundle\Transport;
 
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use Oro\Bundle\CampaignBundle\Transport\TransportInterface;
 use Oro\Bundle\CampaignBundle\Transport\VisibilityTransportInterface;
-use OroCRM\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType;
+use Oro\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType;
 
 class MailChimpTransport implements TransportInterface, VisibilityTransportInterface
 {
@@ -32,7 +32,7 @@ class MailChimpTransport implements TransportInterface, VisibilityTransportInter
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.emailcampaign.transport.' . self::NAME;
+        return 'oro.mailchimp.emailcampaign.transport.' . self::NAME;
     }
 
     /**
@@ -48,7 +48,7 @@ class MailChimpTransport implements TransportInterface, VisibilityTransportInter
      */
     public function getSettingsEntityFQCN()
     {
-        return 'OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings';
+        return 'Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings';
     }
 
     /**

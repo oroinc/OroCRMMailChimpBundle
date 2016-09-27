@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Step;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Step;
 
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 

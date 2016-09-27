@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Form\Type;
+namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 
 class ApiKeyType extends AbstractType
 {
-    const NAME = 'orocrm_mailchimp_api_key_type';
+    const NAME = 'oro_mailchimp_api_key_type';
 
     /**
      * {@inheritdoc}

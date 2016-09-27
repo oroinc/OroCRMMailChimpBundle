@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExportIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExportIterator;
 
 class ExportIteratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +14,7 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->client = $this->getMockBuilder(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient'
+            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient'
         )->disableOriginalConstructor()->getMock();
     }
 

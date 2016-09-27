@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 
 class SegmentTest extends \PHPUnit_Framework_TestCase
 {
@@ -57,8 +57,8 @@ class SegmentTest extends \PHPUnit_Framework_TestCase
             ['originId', 123456789],
             ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
             ['marketingList', $this->getMock('Oro\\Bundle\\MarketingListBundle\\Entity\\MarketingList')],
-            ['subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
-            ['subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
+            ['subscribersList', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
+            ['subscribersList', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
             ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
             ['syncStatus', 1],
             ['lastSynced', new \DateTime()],

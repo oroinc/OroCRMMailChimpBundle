@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 
 class CampaignTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,9 +49,9 @@ class CampaignTest extends \PHPUnit_Framework_TestCase
             ['fromEmail', 'text@example.com'],
             ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
             ['webId', 123425223],
-            ['template', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Template')],
-            ['subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
-            ['staticSegment', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')],
+            ['template', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\Template')],
+            ['subscribersList', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
+            ['staticSegment', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')],
             ['emailCampaign', $this->getMock('Oro\\Bundle\\CampaignBundle\\Entity\\EmailCampaign')],
             ['contentType', 'Content Type'],
             ['contentType', null],

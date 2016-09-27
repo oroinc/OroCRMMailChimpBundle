@@ -1,14 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\MarketingList;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\MarketingList;
 
 use Oro\Bundle\DataGridBundle\Datagrid\Manager;
-
 use Oro\Bundle\MarketingListBundle\Datagrid\ConfigurationProvider;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingListType;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
-use OroCRM\Bundle\MailChimpBundle\Model\MarketingList\DataGridProvider;
+use Oro\Bundle\MailChimpBundle\Model\MarketingList\DataGridProvider;
 
 class DataGridProviderTest extends \PHPUnit_Framework_TestCase
 {

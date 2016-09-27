@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExtendedMergeVarExportIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExtendedMergeVarExportIterator;
 
 class ExtendedMergeVarExportReader extends AbstractExtendedMergeVarExportReader
 {

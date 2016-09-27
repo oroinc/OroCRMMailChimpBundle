@@ -1,10 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\Segment;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\Segment;
 
 use Oro\Bundle\SegmentBundle\Entity\Segment;
-
-use OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
+use Oro\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
@@ -49,6 +48,6 @@ class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $object = $this->factory->create($this->marketingList);
 
-        $this->assertInstanceOf('OroCRM\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList', $object);
+        $this->assertInstanceOf('Oro\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList', $object);
     }
 }

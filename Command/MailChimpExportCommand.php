@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Command;
+namespace Oro\Bundle\MailChimpBundle\Command;
 
 use JMS\JobQueueBundle\Entity\Job;
 
@@ -9,18 +9,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Oro\Component\Log\OutputLogger;
+
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\IntegrationBundle\Command\AbstractSyncCronCommand;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
-use Oro\Component\Log\OutputLogger;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
-use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
-use OroCRM\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
+use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
+use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
+use Oro\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 
 class MailChimpExportCommand extends AbstractSyncCronCommand
 {
@@ -189,7 +189,7 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
     protected function getStaticSegmentRepository()
     {
         return $this->getContainer()->get('doctrine')->getRepository(
-            $this->getContainer()->getParameter('orocrm_mailchimp.entity.static_segment.class')
+            $this->getContainer()->getParameter('oro_mailchimp.entity.static_segment.class')
         );
     }
 
@@ -212,7 +212,7 @@ class MailChimpExportCommand extends AbstractSyncCronCommand
     {
         if (!$this->staticSegmentStateManager) {
             $this->staticSegmentStateManager = $this->getContainer()->get(
-                'orocrm_mailchimp.static_segment_manager.state_manager'
+                'oro_mailchimp.static_segment_manager.state_manager'
             );
         }
 

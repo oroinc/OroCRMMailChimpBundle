@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider;
+namespace Oro\Bundle\MailChimpBundle\Provider;
 
 use Oro\Bundle\IntegrationBundle\Provider\ChannelInterface;
 use Oro\Bundle\IntegrationBundle\Provider\IconAwareIntegrationInterface;
@@ -14,7 +14,7 @@ class ChannelType implements ChannelInterface, IconAwareIntegrationInterface
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.channel_type.label';
+        return 'oro.mailchimp.channel_type.label';
     }
 
     /**
@@ -22,6 +22,6 @@ class ChannelType implements ChannelInterface, IconAwareIntegrationInterface
      */
     public function getIcon()
     {
-        return 'bundles/orocrmmailchimp/img/freddie.ico';
+        return 'bundles/oromailchimp/img/freddie.ico';
     }
 }

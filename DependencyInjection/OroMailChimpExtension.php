@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\DependencyInjection;
+namespace Oro\Bundle\MailChimpBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-class OroCRMMailChimpExtension extends Extension
+class OroMailChimpExtension extends Extension
 {
     /**
      * {@inheritDoc}

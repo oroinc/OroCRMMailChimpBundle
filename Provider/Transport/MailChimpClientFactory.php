@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport;
 
 class MailChimpClientFactory
 {
     /**
      * @var string
      */
-    protected $clientClass = 'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient';
+    protected $clientClass = 'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient';
 
     /**
      * @var string

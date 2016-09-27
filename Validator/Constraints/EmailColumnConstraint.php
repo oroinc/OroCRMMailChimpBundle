@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Validator\Constraints;
+namespace Oro\Bundle\MailChimpBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
@@ -19,6 +19,6 @@ class EmailColumnConstraint extends Constraint
      */
     public function validatedBy()
     {
-        return 'orocrm_mailchimp.validator.email_column';
+        return 'oro_mailchimp.validator.email_column';
     }
 }

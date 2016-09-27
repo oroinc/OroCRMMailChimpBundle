@@ -1,15 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Serializer;
 
 use Symfony\Component\Serializer\Exception\RuntimeException;
 
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\DateTimeNormalizer as BaseNormalizer;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\DenormalizerInterface;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\NormalizerInterface;
-
-use OroCRM\Bundle\MailChimpBundle\Provider\ChannelType;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Provider\ChannelType;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 class DateTimeSerializer implements NormalizerInterface, DenormalizerInterface
 {

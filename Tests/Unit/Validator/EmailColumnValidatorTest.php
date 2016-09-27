@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Validator;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Validator;
 
-use OroCRM\Bundle\MailChimpBundle\Validator\EmailColumnValidator;
+use Oro\Bundle\MailChimpBundle\Validator\EmailColumnValidator;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use Oro\Bundle\MarketingListBundle\Validator\Constraints\ContactInformationColumnConstraint;
 
@@ -96,7 +96,7 @@ class EmailColumnValidatorTest extends \PHPUnit_Framework_TestCase
             ->with(['marketingList' => $marketingList]);
         $this->registry->expects($this->once())
             ->method('getRepository')
-            ->with('OroCRMMailChimpBundle:StaticSegment')
+            ->with('OroMailChimpBundle:StaticSegment')
             ->will($this->returnValue($repository));
 
         $constraint = $this->getMockBuilder('Symfony\Component\Validator\Constraint')
@@ -134,7 +134,7 @@ class EmailColumnValidatorTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(new \stdClass()));
         $this->registry->expects($this->once())
             ->method('getRepository')
-            ->with('OroCRMMailChimpBundle:StaticSegment')
+            ->with('OroMailChimpBundle:StaticSegment')
             ->will($this->returnValue($repository));
 
         $fieldValidatorConstraint = new ContactInformationColumnConstraint();
