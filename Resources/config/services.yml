@@ -409,7 +409,7 @@ services:
         calls:
             - [setDispatcher, ["@event_dispatcher"]]
         tags:
-            - { name: oro_importexport.normalizer }
+            - { name: oro_importexport.normalizer, priority: -6 }
 
     # Forms and extensions
     oro_mailchimp.form.extension.channel_connectors:
