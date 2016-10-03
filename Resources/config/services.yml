@@ -839,7 +839,7 @@ services:
         class: %orocrm_mailchimp.workflow.action.abstract_marketing_list_entities.class%
         astract: true
         arguments:
-            - "@oro_workflow.context_accessor"
+            - "@oro_action.context_accessor"
             - "@orocrm_marketing_list.provider.contact_information_fields"
             - "@orocrm_marketing_list.provider.marketing_list"
             - "@orocrm_mailchimp.model.field_helper"
@@ -851,7 +851,7 @@ services:
             - [setCampaignStatisticsConnector, ["@orocrm_campaign.email_campaign.statistics_connector"]]
             - [setRegistry, ["@doctrine"]]
         tags:
-            - { name: oro_workflow.action, alias: update_email_campaign_statistics }
+            - { name: oro_action.action, alias: update_email_campaign_statistics }
 
     orocrm_mailchimp.workflow.action.create_marketing_list_state_item:
         parent: orocrm_mailchimp.workflow.action.abstract_marketing_list_entities
@@ -864,7 +864,7 @@ services:
         calls:
             - [setMarketingListStateItemClassName, [%orocrm_marketing_list.unsubscribed_item.class%]]
         tags:
-            - { name: oro_workflow.action, alias: create_marketing_list_unsubscribed_item }
+            - { name: oro_action.action, alias: create_marketing_list_unsubscribed_item }
 
     orocrm_mailchimp.email_campaign.security.acl.voter.entity:
         class: %orocrm_mailchimp.email_campaign.security.acl.voter.entity.class%
