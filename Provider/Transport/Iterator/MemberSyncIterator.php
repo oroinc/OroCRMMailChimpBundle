@@ -277,7 +277,6 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
             $mergeVars = str_replace($separator, sprintf("', %s ,'", $value), $mergeVars);
         } else {
             $mergeVars = str_replace(json_encode($separator), 'null', $mergeVars);
-
         }
 
         return $mergeVars;
