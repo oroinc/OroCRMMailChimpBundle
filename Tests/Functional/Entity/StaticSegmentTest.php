@@ -5,7 +5,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use Oro\Component\MessageQueue\Client\TraceableMessageProducer;
 use OroCRM\Bundle\MailChimpBundle\Async\Topics;
 use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
 use OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMarketingListData;
@@ -23,7 +22,6 @@ class StaticSegmentTest extends WebTestCase
         parent::setUp();
 
         $this->initClient();
-        $this->getMessageProducer()->clear();
         $this->loadFixtures([LoadMarketingListData::class, LoadSubscribersListData::class]);
     }
 
@@ -43,20 +41,12 @@ class StaticSegmentTest extends WebTestCase
         $this->getEntityManager()->persist($segment);
         $this->getEntityManager()->flush();
 
-        $traces = $this->getMessageProducer()->getTopicSentMessages(Topics::EXPORT_MAIL_CHIMP_SEGMENTS);
+        $traces = self::getMessageCollector()->getTopicSentMessages(Topics::EXPORT_MAIL_CHIMP_SEGMENTS);
         self::assertCount(1, $traces);
         self::assertEquals([
             'integrationId' => $segment->getChannel()->getId(),
             'segmentsIds' => [$segment->getId()],
         ], $traces[0]['message']);
-    }
-
-    /**
-     * @return TraceableMessageProducer
-     */
-    private function getMessageProducer()
-    {
-        return self::getContainer()->get('oro_message_queue.message_producer');
     }
 
     /**

@@ -77,25 +77,18 @@ processes:
             label:   Schedule MailChimp Static Segment synchronization
             enabled: true
             entity:  OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment
-            preconditions:
-                '@or':
-                    - '@equal': [$syncStatus, 'not_synced']
-                    - '@equal': [$syncStatus, 'scheduled']
             actions_configuration:
                 - '@tree':
                     actions:
-                        - '@format_string':
-                            attribute: $.segmentArguments
-                            string: '--segments=%segment_id%'
-                            arguments:
-                                segment_id: $id
-                        - '@create_entity':
-                            class: JMS\JobQueueBundle\Entity\Job
-                            attribute: $.syncJob
-                            flush: true
-                            arguments:
-                                - 'oro:cron:mailchimp:export'
-                                - [$.segmentArguments, '-v']
+                        - '@assign_constant_value':
+                            attribute: '$.topic'
+                            value: 'OroCRM\Bundle\MailChimpBundle\Async\Topics::EXPORT_MAIL_CHIMP_SEGMENTS'
+                        - '@call_service_method':
+                            service: 'oro_message_queue.message_producer'
+                            method: 'send'
+                            method_parameters:
+                                - '$.topic'
+                                - { integrationId: '$channel.id', segmentsIds: ['$id'] }
 
     triggers:
         synchronize_marketing_list_item_for_mailchimp_member_activity:
