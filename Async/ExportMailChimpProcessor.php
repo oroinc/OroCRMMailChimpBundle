@@ -54,7 +54,6 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
     public function process(MessageInterface $message, SessionInterface $session)
     {
         // TODO CRM-5838 unique job
-        // TODO CRM-5838 message could be redelivered on dbal transport if run for a long time.
 
         $body = JSON::decode($message->getBody());
         $body = array_replace_recursive([
