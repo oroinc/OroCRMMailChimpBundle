@@ -7,6 +7,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
 use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
+use Oro\Component\MessageQueue\Job\JobRunner;
 use Oro\Component\MessageQueue\Transport\MessageInterface;
 use Oro\Component\MessageQueue\Transport\SessionInterface;
 use Oro\Component\MessageQueue\Util\JSON;
@@ -34,6 +35,11 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
     private $staticSegmentsMemberStateManager;
 
     /**
+     * @var JobRunner
+     */
+    private $jobRunner;
+
+    /**
      * @param DoctrineHelper $doctrineHelper
      * @param ReverseSyncProcessor $reverseSyncProcessor
      * @param StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager
@@ -41,11 +47,13 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
     public function __construct(
         DoctrineHelper $doctrineHelper,
         ReverseSyncProcessor $reverseSyncProcessor,
-        StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager
+        StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager,
+        JobRunner $jobRunner
     ) {
         $this->doctrineHelper = $doctrineHelper;
         $this->reverseSyncProcessor = $reverseSyncProcessor;
         $this->staticSegmentsMemberStateManager = $staticSegmentsMemberStateManager;
+        $this->jobRunner = $jobRunner;
     }
 
     /**
@@ -53,8 +61,6 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
      */
     public function process(MessageInterface $message, SessionInterface $session)
     {
-        // TODO CRM-5838 unique job
-
         $body = JSON::decode($message->getBody());
         $body = array_replace_recursive([
             'integrationId' => null,
@@ -68,49 +74,56 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
             throw new \LogicException('The message invalid. It must have segmentsIds set');
         }
 
-        /** @var EntityManagerInterface $em */
-        $em = $this->doctrineHelper->getEntityManagerForClass(Channel::class);
+        $jobName = 'oro_mailchimp:export_mail_chimp:'.$body['integrationId'];
+        $ownerId = $message->getMessageId();
 
-        /** @var Channel $channel */
-        $channel = $em->find(Channel::class, $body['integrationId']);
-        if (false == $channel) {
-            return self::REJECT;
-        }
-        if (false == $channel->isEnabled()) {
-            return self::REJECT;
-        }
+        $result = $this->jobRunner->runUnique($ownerId, $jobName, function () use ($body) {
+            /** @var EntityManagerInterface $em */
+            $em = $this->doctrineHelper->getEntityManagerForClass(Channel::class);
 
-        $em->getConnection()->getConfiguration()->setSQLLogger(null);
-
-        $segmentsIds = $body['segmentsIds'];
-        /** @var StaticSegmentRepository $staticSegmentRepository */
-        $staticSegmentRepository = $this->doctrineHelper->getEntityRepository(StaticSegment::class);
-
-        $segmentsIdsToSync = [];
-        $syncStatuses = [StaticSegment::STATUS_NOT_SYNCED, StaticSegment::STATUS_SCHEDULED];
-        foreach ($segmentsIds as $segmentId) {
-            /** @var StaticSegment $staticSegment */
-            $staticSegment = $staticSegmentRepository->find($segmentId);
-            if ($staticSegment && in_array($staticSegment->getSyncStatus(), $syncStatuses)) {
-                $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_IN_PROGRESS);
-                $segmentsIdsToSync[] = $segmentId;
+            /** @var Channel $channel */
+            $channel = $em->find(Channel::class, $body['integrationId']);
+            if (false == $channel) {
+                return false;
             }
-        }
-
-        $parameters = ['segments' => $segmentsIdsToSync];
-        $this->reverseSyncProcessor->process($channel, MemberConnector::TYPE, $parameters);
-        $this->reverseSyncProcessor->process($channel, StaticSegmentConnector::TYPE, $parameters);
-
-        // reverse sync process does implicit entity manager clear, we have to re-query everything again.
-        foreach ($segmentsIdsToSync as $segmentId) {
-            /** @var StaticSegment $staticSegment */
-            $staticSegment = $staticSegmentRepository->find($segmentId);
-            if ($staticSegment) {
-                $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED);
+            if (false == $channel->isEnabled()) {
+                return false;
             }
-        }
 
-        return self::ACK;
+            $em->getConnection()->getConfiguration()->setSQLLogger(null);
+
+            $segmentsIds = $body['segmentsIds'];
+            /** @var StaticSegmentRepository $staticSegmentRepository */
+            $staticSegmentRepository = $this->doctrineHelper->getEntityRepository(StaticSegment::class);
+
+            $segmentsIdsToSync = [];
+            $syncStatuses = [StaticSegment::STATUS_NOT_SYNCED, StaticSegment::STATUS_SCHEDULED];
+            foreach ($segmentsIds as $segmentId) {
+                /** @var StaticSegment $staticSegment */
+                $staticSegment = $staticSegmentRepository->find($segmentId);
+                if ($staticSegment && in_array($staticSegment->getSyncStatus(), $syncStatuses)) {
+                    $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_IN_PROGRESS);
+                    $segmentsIdsToSync[] = $segmentId;
+                }
+            }
+
+            $parameters = ['segments' => $segmentsIdsToSync];
+            $this->reverseSyncProcessor->process($channel, MemberConnector::TYPE, $parameters);
+            $this->reverseSyncProcessor->process($channel, StaticSegmentConnector::TYPE, $parameters);
+
+            // reverse sync process does implicit entity manager clear, we have to re-query everything again.
+            foreach ($segmentsIdsToSync as $segmentId) {
+                /** @var StaticSegment $staticSegment */
+                $staticSegment = $staticSegmentRepository->find($segmentId);
+                if ($staticSegment) {
+                    $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED);
+                }
+            }
+
+            return true;
+        });
+
+        return $result ? self::ACK : self::REJECT;
     }
 
     /**
