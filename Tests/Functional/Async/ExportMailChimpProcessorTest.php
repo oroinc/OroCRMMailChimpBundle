@@ -18,7 +18,7 @@ class ExportMailChimpProcessorTest extends WebTestCase
 
     public function testCouldBeGetFromContainerAsService()
     {
-        $processor = self::getContainer()->get('orocrm_mailchimp.async.export_mail_chimp_processor:');
+        $processor = self::getContainer()->get('orocrm_mailchimp.async.export_mail_chimp_processor');
 
         self::assertInstanceOf(ExportMailChimpProcessor::class, $processor);
     }

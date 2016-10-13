@@ -78,52 +78,61 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         $ownerId = $message->getMessageId();
 
         $result = $this->jobRunner->runUnique($ownerId, $jobName, function () use ($body) {
-            /** @var EntityManagerInterface $em */
-            $em = $this->doctrineHelper->getEntityManagerForClass(Channel::class);
-
-            /** @var Channel $channel */
-            $channel = $em->find(Channel::class, $body['integrationId']);
-            if (false == $channel) {
-                return false;
-            }
-            if (false == $channel->isEnabled()) {
-                return false;
-            }
-
-            $em->getConnection()->getConfiguration()->setSQLLogger(null);
-
-            $segmentsIds = $body['segmentsIds'];
-            /** @var StaticSegmentRepository $staticSegmentRepository */
-            $staticSegmentRepository = $this->doctrineHelper->getEntityRepository(StaticSegment::class);
-
-            $segmentsIdsToSync = [];
-            $syncStatuses = [StaticSegment::STATUS_NOT_SYNCED, StaticSegment::STATUS_SCHEDULED];
-            foreach ($segmentsIds as $segmentId) {
-                /** @var StaticSegment $staticSegment */
-                $staticSegment = $staticSegmentRepository->find($segmentId);
-                if ($staticSegment && in_array($staticSegment->getSyncStatus(), $syncStatuses)) {
-                    $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_IN_PROGRESS);
-                    $segmentsIdsToSync[] = $segmentId;
-                }
-            }
-
-            $parameters = ['segments' => $segmentsIdsToSync];
-            $this->reverseSyncProcessor->process($channel, MemberConnector::TYPE, $parameters);
-            $this->reverseSyncProcessor->process($channel, StaticSegmentConnector::TYPE, $parameters);
-
-            // reverse sync process does implicit entity manager clear, we have to re-query everything again.
-            foreach ($segmentsIdsToSync as $segmentId) {
-                /** @var StaticSegment $staticSegment */
-                $staticSegment = $staticSegmentRepository->find($segmentId);
-                if ($staticSegment) {
-                    $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED);
-                }
-            }
-
-            return true;
+            return $this->processMessageData($body);
         });
 
         return $result ? self::ACK : self::REJECT;
+    }
+
+    /**
+     * @param array $body
+     * @return bool
+     */
+    protected function processMessageData(array $body)
+    {
+        /** @var EntityManagerInterface $em */
+        $em = $this->doctrineHelper->getEntityManagerForClass(Channel::class);
+
+        /** @var Channel $channel */
+        $channel = $em->find(Channel::class, $body['integrationId']);
+        if (false == $channel) {
+            return false;
+        }
+        if (false == $channel->isEnabled()) {
+            return false;
+        }
+
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
+
+        $segmentsIds = $body['segmentsIds'];
+        /** @var StaticSegmentRepository $staticSegmentRepository */
+        $staticSegmentRepository = $this->doctrineHelper->getEntityRepository(StaticSegment::class);
+
+        $segmentsIdsToSync = [];
+        $syncStatuses = [StaticSegment::STATUS_NOT_SYNCED, StaticSegment::STATUS_SCHEDULED];
+        foreach ($segmentsIds as $segmentId) {
+            /** @var StaticSegment $staticSegment */
+            $staticSegment = $staticSegmentRepository->find($segmentId);
+            if ($staticSegment && in_array($staticSegment->getSyncStatus(), $syncStatuses)) {
+                $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_IN_PROGRESS);
+                $segmentsIdsToSync[] = $segmentId;
+            }
+        }
+
+        $parameters = ['segments' => $segmentsIdsToSync];
+        $this->reverseSyncProcessor->process($channel, MemberConnector::TYPE, $parameters);
+        $this->reverseSyncProcessor->process($channel, StaticSegmentConnector::TYPE, $parameters);
+
+        // reverse sync process does implicit entity manager clear, we have to re-query everything again.
+        foreach ($segmentsIdsToSync as $segmentId) {
+            /** @var StaticSegment $staticSegment */
+            $staticSegment = $staticSegmentRepository->find($segmentId);
+            if ($staticSegment) {
+                $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED);
+            }
+        }
+
+        return true;
     }
 
     /**
