@@ -7,6 +7,7 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
 use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
+use Oro\Component\MessageQueue\Job\JobRunner;
 use Oro\Component\MessageQueue\Transport\MessageInterface;
 use Oro\Component\MessageQueue\Transport\SessionInterface;
 use Oro\Component\MessageQueue\Util\JSON;
@@ -34,18 +35,26 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
     private $staticSegmentsMemberStateManager;
 
     /**
+     * @var JobRunner
+     */
+    private $jobRunner;
+
+    /**
      * @param DoctrineHelper $doctrineHelper
      * @param ReverseSyncProcessor $reverseSyncProcessor
      * @param StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager
+     * @param JobRunner $jobRunner
      */
     public function __construct(
         DoctrineHelper $doctrineHelper,
         ReverseSyncProcessor $reverseSyncProcessor,
-        StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager
+        StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager,
+        JobRunner $jobRunner
     ) {
         $this->doctrineHelper = $doctrineHelper;
         $this->reverseSyncProcessor = $reverseSyncProcessor;
         $this->staticSegmentsMemberStateManager = $staticSegmentsMemberStateManager;
+        $this->jobRunner = $jobRunner;
     }
 
     /**
@@ -53,8 +62,6 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
      */
     public function process(MessageInterface $message, SessionInterface $session)
     {
-        // TODO CRM-5838 unique job
-
         $body = JSON::decode($message->getBody());
         $body = array_replace_recursive([
             'integrationId' => null,
@@ -68,16 +75,32 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
             throw new \LogicException('The message invalid. It must have segmentsIds set');
         }
 
+        $jobName = 'oro_mailchimp:export_mail_chimp:'.$body['integrationId'];
+        $ownerId = $message->getMessageId();
+
+        $result = $this->jobRunner->runUnique($ownerId, $jobName, function () use ($body) {
+            return $this->processMessageData($body);
+        });
+
+        return $result ? self::ACK : self::REJECT;
+    }
+
+    /**
+     * @param array $body
+     * @return bool
+     */
+    protected function processMessageData(array $body)
+    {
         /** @var EntityManagerInterface $em */
         $em = $this->doctrineHelper->getEntityManagerForClass(Channel::class);
 
         /** @var Channel $channel */
         $channel = $em->find(Channel::class, $body['integrationId']);
         if (false == $channel) {
-            return self::REJECT;
+            return false;
         }
         if (false == $channel->isEnabled()) {
-            return self::REJECT;
+            return false;
         }
 
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
@@ -110,7 +133,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
             }
         }
 
-        return self::ACK;
+        return true;
     }
 
     /**
