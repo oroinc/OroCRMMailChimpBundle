@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\From;
@@ -8,12 +8,11 @@ use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\ImportExportBundle\Writer\AbstractNativeQueryWriter;
 use Oro\Bundle\LocaleBundle\DQL\DQLNameFormatter;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
 {

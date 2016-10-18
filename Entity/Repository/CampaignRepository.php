@@ -1,14 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity\Repository;
+namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 
 class CampaignRepository extends EntityRepository
 {
@@ -23,10 +22,10 @@ class CampaignRepository extends EntityRepository
         $qb = $this->getEntityManager()->createQueryBuilder();
 
         $qb->select('c')
-            ->from('OroCRMMailChimpBundle:Campaign', 'c')
+            ->from('OroMailChimpBundle:Campaign', 'c')
             ->innerJoin('c.emailCampaign', 'emailCampaign')
             ->innerJoin(
-                'OroCRMMailChimpBundle:MailChimpTransportSettings',
+                'OroMailChimpBundle:MailChimpTransportSettings',
                 'transportSettings',
                 Join::WITH,
                 $qb->expr()->eq('IDENTITY(emailCampaign.transportSettings)', 'transportSettings.id')

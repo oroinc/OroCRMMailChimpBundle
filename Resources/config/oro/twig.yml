@@ -1,2 +1,2 @@
 bundles:
-    - OroCRMMailChimpBundle:Form:fields.html.twig
+    - OroMailChimpBundle:Form:fields.html.twig

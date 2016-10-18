@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 
 class StaticSegmentImportStrategy extends AbstractImportStrategy
 {

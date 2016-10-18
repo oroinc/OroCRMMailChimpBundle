@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity;
+namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
-use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)
@@ -17,7 +17,7 @@ use OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  *
- * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository")
+ * @ORM\Entity(repositoryClass="Oro\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository")
  * @ORM\Table(
  *      name="orocrm_mailchimp_campaign",
  *      uniqueConstraints={
@@ -147,7 +147,7 @@ class Campaign implements OriginAwareInterface
     /**
      * @var Template
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Template")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\Template")
      * @ORM\JoinColumn(name="template_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $template;
@@ -155,7 +155,7 @@ class Campaign implements OriginAwareInterface
     /**
      * @var SubscribersList
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\StaticSegment")
      * @ORM\JoinColumn(name="static_segment_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $staticSegment;
@@ -163,7 +163,7 @@ class Campaign implements OriginAwareInterface
     /**
      * @var SubscribersList
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\SubscribersList")
      * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $subscribersList;
@@ -171,7 +171,7 @@ class Campaign implements OriginAwareInterface
     /**
      * @var EmailCampaign
      *
-     * @ORM\OneToOne(targetEntity="OroCRM\Bundle\CampaignBundle\Entity\EmailCampaign")
+     * @ORM\OneToOne(targetEntity="Oro\Bundle\CampaignBundle\Entity\EmailCampaign")
      * @ORM\JoinColumn(name="email_campaign_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $emailCampaign;

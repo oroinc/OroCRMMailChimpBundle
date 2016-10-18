@@ -1,12 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle;
+namespace Oro\Bundle\MailChimpBundle;
 
-use Oro\Bundle\MessageQueueBundle\DependencyInjection\Compiler\AddTopicMetaPass;
-use OroCRM\Bundle\MailChimpBundle\Async\Topics;
-use OroCRM\Bundle\MailChimpBundle\DependencyInjection\CompilerPass\ExtendedMergeVarsProviderPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+use Oro\Bundle\MessageQueueBundle\DependencyInjection\Compiler\AddTopicMetaPass;
+use Oro\Bundle\MailChimpBundle\Async\Topics;
+use Oro\Bundle\MailChimpBundle\DependencyInjection\CompilerPass\ExtendedMergeVarsProviderPass;
 
 class OroCRMMailChimpBundle extends Bundle
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\StaticSegment;
+namespace Oro\Bundle\MailChimpBundle\Model\StaticSegment;
 
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 class StaticSegmentsMemberStateManager
 {

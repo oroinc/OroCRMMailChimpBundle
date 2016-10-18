@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Util;
+namespace Oro\Bundle\MailChimpBundle\Util;
 
 /**
  * This is replacement of CallbackFilterIterator to fix bug (https://bugs.php.net/bug.php?id=72051)

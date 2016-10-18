@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Step;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Step;
 
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Akeneo\Bundle\BatchBundle\Item\ItemReaderInterface;
@@ -8,7 +8,7 @@ use Akeneo\Bundle\BatchBundle\Item\ItemReaderInterface;
 use Oro\Bundle\BatchBundle\Step\StepExecutionWarningHandlerInterface;
 use Oro\Bundle\BatchBundle\Step\StepExecutor as BaseStepExecutor;
 use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
+use Oro\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
 
 class StepExecutor extends BaseStepExecutor
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
+namespace Oro\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 
 class CampaignConnector extends AbstractMailChimpConnector implements ConnectorInterface
 {
@@ -16,7 +16,7 @@ class CampaignConnector extends AbstractMailChimpConnector implements ConnectorI
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.connector.campaign.label';
+        return 'oro.mailchimp.connector.campaign.label';
     }
 
     /**

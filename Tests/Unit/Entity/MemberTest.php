@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
 
 class MemberTest extends \PHPUnit_Framework_TestCase
 {
@@ -62,7 +62,7 @@ class MemberTest extends \PHPUnit_Framework_TestCase
             ['createdAt', new \DateTime()],
             ['updatedAt', new \DateTime()],
             ['updatedAt', null],
-            ['subscribersList', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
+            ['subscribersList', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
             ['mergeVarValues', ['Email Address' => 'test@example.com']],
             ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
         ];

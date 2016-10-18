@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\MarketingList;
+namespace Oro\Bundle\MailChimpBundle\Model\MarketingList;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 class DataGridProvider extends MarketingListProvider implements DataGridProviderInterface
 {

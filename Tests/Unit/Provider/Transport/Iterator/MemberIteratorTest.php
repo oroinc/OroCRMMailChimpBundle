@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class MemberIteratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->client = $this->getMockBuilder(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient'
+            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient'
         )->disableOriginalConstructor()->getMock();
     }
 
@@ -30,7 +30,7 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
     protected function createIterator(\Iterator $subscriberLists, array $parameters)
     {
         return $this->getMock(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MemberIterator',
+            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MemberIterator',
             ['createExportIterator'],
             [$subscriberLists, $this->client, $parameters]
         );
@@ -44,7 +44,7 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testIteratorWorks(array $parameters, array $expectedValueMap, array $expected)
     {
-        $list = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
+        $list = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
         $list->expects($this->atLeastOnce())
             ->method('getOriginId')
             ->will($this->returnValue(self::TEST_LIST_ORIGIN_ID));

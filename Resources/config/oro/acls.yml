@@ -1,6 +1,6 @@
 acls:
-    orocrm_mailchimp:
-        label:      orocrm.mailchimp.acl.action.general
+    oro_mailchimp:
+        label:      oro.mailchimp.acl.action.general
         type:       action
         group_name: ""
         bindings:   ~

@@ -13,7 +13,7 @@ define(function(require) {
         var $pingHolder = $source.find('.ping-holder');
 
         var onError = function(message) {
-            message = message || __('orocrm.mailchimp.integration_transport.api_key.check.message');
+            message = message || __('oro.mailchimp.integration_transport.api_key.check.message');
             $status.removeClass('alert-info')
                 .addClass('alert-error')
                 .html(message);

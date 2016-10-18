@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\MemberActivity;
+use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
 
 class MemberUnsubscribeActivityDataConverter extends AbstractMemberActivityDataConverter
 {

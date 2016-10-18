@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFieldsInterface;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFieldsInterface;
 
 class SubscribersListTest extends \PHPUnit_Framework_TestCase
 {
@@ -108,7 +108,7 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
             ['clickRate', null],
             [
                 'mergeVarFields',
-                $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface')
+                $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface')
             ],
             ['mergeVarConfig', [['foo' => 'bar']]],
             ['createdAt', new \DateTime()],
@@ -131,7 +131,7 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
     public function testSetMergeVarConfigResetsMergeVarFields()
     {
         /** @var MergeVarFieldsInterface|\PHPUnit_Framework_MockObject_MockObject $mergeVarsFields */
-        $mergeVarsFields = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
+        $mergeVarsFields = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
 
         $this->target->setMergeVarFields($mergeVarsFields);
 

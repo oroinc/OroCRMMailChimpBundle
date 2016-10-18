@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\BatchJob;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\BatchJob;
 
 use Symfony\Component\Yaml\Yaml;
 
@@ -8,7 +8,7 @@ use Oro\Bundle\ImportExportBundle\Job\JobResult;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
+use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
 
 /**
  * @dbIsolation
@@ -27,13 +27,13 @@ class MemberActivityImportTest extends WebTestCase
         $this->jobExecutor = $this->getContainer()->get('oro_importexport.job_executor');
 
         $this->getContainer()
-            ->get('orocrm_mailchimp.client.factory')
-            ->setClientClass('OroCRM\Bundle\MailChimpBundle\Tests\Functional\Stub\MailChimpClientStub');
+            ->get('oro_mailchimp.client.factory')
+            ->setClientClass('Oro\Bundle\MailChimpBundle\Tests\Functional\Stub\MailChimpClientStub');
 
         $this->loadFixtures(
             [
-                'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadCampaignData',
-                'OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMemberData',
+                'Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadCampaignData',
+                'Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMemberData',
             ]
         );
     }
@@ -71,8 +71,8 @@ class MemberActivityImportTest extends WebTestCase
             \RecursiveDirectoryIterator::SKIP_DOTS
         );
 
-        $campaignRepo = $this->getContainer()->get('doctrine')->getRepository('OroCRMMailChimpBundle:Campaign');
-        $repository = $this->getContainer()->get('doctrine')->getRepository('OroCRMMailChimpBundle:MemberActivity');
+        $campaignRepo = $this->getContainer()->get('doctrine')->getRepository('OroMailChimpBundle:Campaign');
+        $repository = $this->getContainer()->get('doctrine')->getRepository('OroMailChimpBundle:MemberActivity');
 
         $addCount = 0;
         $fullCount = 0;

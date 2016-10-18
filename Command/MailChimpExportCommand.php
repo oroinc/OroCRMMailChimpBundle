@@ -1,6 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Command;
+namespace Oro\Bundle\MailChimpBundle\Command;
+
+use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 use Oro\Bundle\CronBundle\Command\CronCommandInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
@@ -9,17 +17,10 @@ use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
 use Oro\Component\MessageQueue\Client\MessageProducerInterface;
-use OroCRM\Bundle\MailChimpBundle\Async\Topics;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
-use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Oro\Bundle\MailChimpBundle\Async\Topics;
+use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 
 class MailChimpExportCommand extends Command implements CronCommandInterface, ContainerAwareInterface
 {
@@ -124,7 +125,7 @@ class MailChimpExportCommand extends Command implements CronCommandInterface, Co
         $registry = $this->container->get('doctrine');
 
         return $registry->getRepository(
-            $this->container->getParameter('orocrm_mailchimp.entity.static_segment.class')
+            $this->container->getParameter('oro_mailchimp.entity.static_segment.class')
         );
     }
 

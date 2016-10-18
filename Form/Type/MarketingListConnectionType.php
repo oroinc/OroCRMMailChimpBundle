@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Form\Type;
+namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MarketingListConnectionType extends AbstractType
 {
-    const NAME = 'orocrm_mailchimp_marketing_list_connection';
+    const NAME = 'oro_mailchimp_marketing_list_connection';
 
     /**
      * {@inheritdoc}
@@ -20,23 +20,23 @@ class MarketingListConnectionType extends AbstractType
                 'name',
                 'text',
                 [
-                    'label' => 'orocrm.mailchimp.connection.segment_name',
+                    'label' => 'oro.mailchimp.connection.segment_name',
                     'required' => true
                 ]
             )
             ->add(
                 'channel',
-                'orocrm_mailchimp_integration_select',
+                'oro_mailchimp_integration_select',
                 [
-                    'label' => 'orocrm.mailchimp.emailcampaign.integration.label',
+                    'label' => 'oro.mailchimp.emailcampaign.integration.label',
                     'required' => true
                 ]
             )
             ->add(
                 'subscribersList',
-                'orocrm_mailchimp_list_select',
+                'oro_mailchimp_list_select',
                 [
-                    'label' => 'orocrm.mailchimp.subscriberslist.entity_label',
+                    'label' => 'oro.mailchimp.subscriberslist.entity_label',
                     'required' => true,
                     'channel_field' => 'channel'
                 ]
@@ -50,7 +50,7 @@ class MarketingListConnectionType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => 'OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment'
+                'data_class' => 'Oro\Bundle\MailChimpBundle\Entity\StaticSegment'
             ]
         );
     }

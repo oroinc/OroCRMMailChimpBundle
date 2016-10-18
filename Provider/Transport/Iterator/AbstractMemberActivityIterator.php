@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
-use OroCRM\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use Oro\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
 
 abstract class AbstractMemberActivityIterator extends AbstractSubordinateIterator
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Form\Type;
+namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -8,11 +8,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
-use OroCRM\Bundle\MailChimpBundle\Provider\ChannelType;
+use Oro\Bundle\MailChimpBundle\Provider\ChannelType;
 
 class MailChimpIntegrationSelectType extends AbstractType
 {
-    const NAME = 'orocrm_mailchimp_integration_select';
+    const NAME = 'oro_mailchimp_integration_select';
     const ENTITY = 'Oro\Bundle\IntegrationBundle\Entity\Channel';
 
     /**
@@ -48,7 +48,7 @@ class MailChimpIntegrationSelectType extends AbstractType
         ];
 
         if (count($integrations) != 1) {
-            $options['empty_value'] = 'orocrm.mailchimp.emailcampaign.integration.placeholder';
+            $options['empty_value'] = 'oro.mailchimp.emailcampaign.integration.placeholder';
         }
         $resolver->setDefaults($options);
     }

@@ -1,13 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Migrations\Schema\v1_2;
+namespace Oro\Bundle\MailChimpBundle\Migrations\Schema\v1_2;
 
 use Doctrine\DBAL\Schema\Schema;
 
 use Oro\Bundle\MigrationBundle\Migration\Migration;
 use Oro\Bundle\MigrationBundle\Migration\QueryBag;
 
-class OroCRMMailChimpBundle implements Migration
+class OroMailChimpBundle implements Migration
 {
     /**
      * {@inheritdoc}

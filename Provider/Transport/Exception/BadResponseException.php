@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Exception;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Exception;
 
 use Guzzle\Http\Message\Response;
 

@@ -19,7 +19,7 @@ define(function(require) {
                 });
                 mediator.execute('refreshPage');
             }).error(function() {
-                mediator.execute('showFlashMessage', 'error', __('orocrm.mailchimp.request.error'));
+                mediator.execute('showFlashMessage', 'error', __('oro.mailchimp.request.error'));
             }).always(function() {
                 mediator.execute('hideLoading');
             });

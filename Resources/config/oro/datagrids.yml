@@ -1,6 +1,6 @@
 datagrids:
-    orocrm-mailchimp-member-grid:
-        extended_entity_name: OroCRM\Bundle\MailChimpBundle\Entity\Member
+    oro-mailchimp-member-grid:
+        extended_entity_name: Oro\Bundle\MailChimpBundle\Entity\Member
         source:
             type: orm
             query:
@@ -12,18 +12,18 @@ datagrids:
                     - m.memberRating
                     - m.lastChangedAt
                 from:
-                    - { table: OroCRM\Bundle\MailChimpBundle\Entity\Member, alias: m }
+                    - { table: Oro\Bundle\MailChimpBundle\Entity\Member, alias: m }
         columns:
             email:
-                label: orocrm.mailchimp.member.email.label
+                label: oro.mailchimp.member.email.label
             firstName:
-                label: orocrm.mailchimp.member.first_name.label
+                label: oro.mailchimp.member.first_name.label
             lastName:
-                label: orocrm.mailchimp.member.last_name.label
+                label: oro.mailchimp.member.last_name.label
             memberRating:
-                label: orocrm.mailchimp.member.member_rating.label
+                label: oro.mailchimp.member.member_rating.label
             lastChangedAt:
-                label: orocrm.mailchimp.member.last_changed_at.label
+                label: oro.mailchimp.member.last_changed_at.label
                 frontend_type: datetime
         filters:
             columns:
@@ -51,9 +51,9 @@ datagrids:
                 lastChangedAt: { data_name: m.lastChangedAt }
         properties:
             id: ~
-    orocrm_mailchimp_templates_grid:
-        extended_entity_name: %orocrm_mailchimp.entity.template.class%
-        acl_resource: orocrm_email_campaign_view
+    oro_mailchimp_templates_grid:
+        extended_entity_name: %oro_mailchimp.entity.template.class%
+        acl_resource: oro_email_campaign_view
         channel_limitation:
             channel_relation_path: .channel
         options:
@@ -68,20 +68,20 @@ datagrids:
                     - t.type
                     - t.layout
                 from:
-                    - { table: %orocrm_mailchimp.entity.template.class%, alias: t }
+                    - { table: %oro_mailchimp.entity.template.class%, alias: t }
                 where:
                     and:
                         - t.active = true
                         - t.owner = @oro_security.security_facade->getOrganizationId
         columns:
             name:
-                label: orocrm.mailchimp.template.name.label
+                label: oro.mailchimp.template.name.label
             category:
-                label: orocrm.mailchimp.template.category.label
+                label: oro.mailchimp.template.category.label
             type:
-                label: orocrm.mailchimp.template.type.label
+                label: oro.mailchimp.template.type.label
             layout:
-                label: orocrm.mailchimp.template.layout.label
+                label: oro.mailchimp.template.layout.label
         sorters:
             columns:
                 name:
@@ -112,8 +112,8 @@ datagrids:
         properties:
             id: ~
 
-    orocrm_mailchimp_lists_grid:
-        extended_entity_name: %orocrm_mailchimp.entity.subscribers_list.class%
+    oro_mailchimp_lists_grid:
+        extended_entity_name: %oro_mailchimp.entity.subscribers_list.class%
         channel_limitation:
             channel_relation_path: .channel
         options:
@@ -127,18 +127,18 @@ datagrids:
                     - l.createdAt
                     - l.updatedAt
                 from:
-                    - { table: %orocrm_mailchimp.entity.subscribers_list.class%, alias: l }
+                    - { table: %oro_mailchimp.entity.subscribers_list.class%, alias: l }
                 where:
                     and:
                         - l.owner = @oro_security.security_facade->getOrganizationId
         columns:
             name:
-                label: orocrm.mailchimp.subscriberslist.name.label
+                label: oro.mailchimp.subscriberslist.name.label
             createdAt:
-                label: orocrm.mailchimp.subscriberslist.created_at.label
+                label: oro.mailchimp.subscriberslist.created_at.label
                 frontend_type: datetime
             updatedAt:
-                label: orocrm.mailchimp.subscriberslist.updated_at.label
+                label: oro.mailchimp.subscriberslist.updated_at.label
                 frontend_type: datetime
         sorters:
             columns:

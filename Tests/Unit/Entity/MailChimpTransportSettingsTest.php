@@ -1,12 +1,12 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Entity;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use OroCRM\Bundle\MailChimpBundle\Entity\Template;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
+use Oro\Bundle\MailChimpBundle\Entity\Template;
+use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 
 class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,8 +41,8 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
     public function settersAndGettersDataProvider()
     {
         return [
-            ['channel', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\Channel')],
-            ['template', $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Template')],
+            ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
+            ['template', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\Template')],
         ];
     }
 
@@ -56,7 +56,7 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
     public function testSettingsBag()
     {
         /** @var Channel|\PHPUnit_Framework_MockObject_MockObject $channel */
-        $channel = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\Channel');
+        $channel = $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel');
         $template = new Template();
         $this->target->setChannel($channel);
         $this->target->setTemplate($template);

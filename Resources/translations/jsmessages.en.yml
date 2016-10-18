@@ -1,4 +1,4 @@
-orocrm:
+oro:
     mailchimp:
         request.error: 'Sorry, something went wrong while executing request'
         integration_transport:

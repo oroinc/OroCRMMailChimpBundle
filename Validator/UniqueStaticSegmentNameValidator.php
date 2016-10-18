@@ -1,14 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Validator;
+namespace Oro\Bundle\MailChimpBundle\Validator;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
-use OroCRM\Bundle\MailChimpBundle\Validator\Constraints\UniqueStaticSegmentNameConstraint;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Validator\Constraints\UniqueStaticSegmentNameConstraint;
 
 class UniqueStaticSegmentNameValidator extends ConstraintValidator
 {

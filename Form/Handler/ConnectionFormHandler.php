@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Form\Handler;
+namespace Oro\Bundle\MailChimpBundle\Form\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -8,8 +8,8 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Entity\Repository\CampaignRepository;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 
 class ConnectionFormHandler
 {
@@ -46,7 +46,7 @@ class ConnectionFormHandler
      */
     public function process($entity)
     {
-        $manager = $this->registry->getManagerForClass('OroCRMMailChimpBundle:StaticSegment');
+        $manager = $this->registry->getManagerForClass('OroMailChimpBundle:StaticSegment');
 
         $oldSubscribersListId = null;
         $oldStaticSegment = $entity;
@@ -93,8 +93,8 @@ class ConnectionFormHandler
     {
         /** @var CampaignRepository $campaignRepository */
         $campaignRepository = $this->registry
-            ->getManagerForClass('OroCRMMailChimpBundle:Campaign')
-            ->getRepository('OroCRMMailChimpBundle:Campaign');
+            ->getManagerForClass('OroMailChimpBundle:Campaign')
+            ->getRepository('OroMailChimpBundle:Campaign');
 
         return (bool)$campaignRepository->findOneBy(['staticSegment' => $segment]);
     }

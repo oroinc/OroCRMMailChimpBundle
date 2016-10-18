@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
+namespace Oro\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
 
@@ -14,7 +14,7 @@ class MemberSendActivityConnector extends AbstractMailChimpConnector implements 
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.connector.member_activity_send.label';
+        return 'oro.mailchimp.connector.member_activity_send.label';
     }
 
     /**

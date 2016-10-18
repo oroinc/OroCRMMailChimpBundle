@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Validator\Constraints;
+namespace Oro\Bundle\MailChimpBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
@@ -9,7 +9,7 @@ class UniqueStaticSegmentNameConstraint extends Constraint
     /**
      * @var string
      */
-    public $message = 'orocrm.mailchimp.unique_static_segment_name.message';
+    public $message = 'oro.mailchimp.unique_static_segment_name.message';
 
     /**
      * {@inheritdoc}
@@ -24,6 +24,6 @@ class UniqueStaticSegmentNameConstraint extends Constraint
      */
     public function validatedBy()
     {
-        return 'orocrm_mailchimp.validator.unique_static_segment_name';
+        return 'oro_mailchimp.validator.unique_static_segment_name';
     }
 }

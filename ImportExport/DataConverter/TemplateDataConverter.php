@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\DataConverter;
 
 class TemplateDataConverter extends IntegrationAwareDataConverter
 {

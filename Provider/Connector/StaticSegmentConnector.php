@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
+namespace Oro\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
@@ -18,7 +18,7 @@ class StaticSegmentConnector extends AbstractMailChimpConnector implements
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.connector.staticSegment.label';
+        return 'oro.mailchimp.connector.staticSegment.label';
     }
 
     /**
