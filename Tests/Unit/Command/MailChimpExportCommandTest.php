@@ -1,9 +1,9 @@
 <?php
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Command;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Command;
 
 use Oro\Bundle\CronBundle\Command\CronCommandInterface;
+use Oro\Bundle\MailChimpBundle\Command\MailChimpExportCommand;
 use Oro\Component\Testing\ClassExtensionTrait;
-use OroCRM\Bundle\MailChimpBundle\Command\MailChimpExportCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;

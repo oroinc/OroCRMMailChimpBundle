@@ -1,8 +1,8 @@
 <?php
-namespace OroCRM\Bundle\DotmailerBundle\Tests\Functional\Async;
+namespace Oro\Bundle\DotmailerBundle\Tests\Functional\Async;
 
+use Oro\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor;
 
 /**
  * @dbIsolationPerTest

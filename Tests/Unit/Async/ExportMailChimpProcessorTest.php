@@ -1,17 +1,17 @@
 <?php
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Async;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Async;
 
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
+use Oro\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor;
+use Oro\Bundle\MailChimpBundle\Async\Topics;
+use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
 use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
 use Oro\Component\MessageQueue\Job\JobRunner;
 use Oro\Component\MessageQueue\Transport\Null\NullMessage;
 use Oro\Component\MessageQueue\Transport\Null\NullSession;
 use Oro\Component\Testing\ClassExtensionTrait;
-use OroCRM\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor;
-use OroCRM\Bundle\MailChimpBundle\Async\Topics;
-use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 
 /**
  * @dbIsolationPerTest

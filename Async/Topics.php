@@ -1,5 +1,5 @@
 <?php
-namespace OroCRM\Bundle\MailChimpBundle\Async;
+namespace Oro\Bundle\MailChimpBundle\Async;
 
 class Topics
 {

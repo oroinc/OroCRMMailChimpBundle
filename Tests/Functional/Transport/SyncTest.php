@@ -1,11 +1,11 @@
 <?php
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Transport;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Transport;
 
 use Oro\Bundle\IntegrationBundle\Async\Topics;
+use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData;
 use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Component\MessageQueue\Client\MessagePriority;
-use OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData;
 
 /**
  * @outputBuffering enabled

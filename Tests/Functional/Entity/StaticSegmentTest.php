@@ -1,14 +1,14 @@
 <?php
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\Entity;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Entity;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Oro\Bundle\MailChimpBundle\Async\Topics;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMarketingListData;
+use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadSubscribersListData;
 use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use OroCRM\Bundle\MailChimpBundle\Async\Topics;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMarketingListData;
-use OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadSubscribersListData;
 
 /**
  * @dbIsolationPerTest

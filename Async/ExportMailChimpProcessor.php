@@ -1,21 +1,21 @@
 <?php
-namespace OroCRM\Bundle\MailChimpBundle\Async;
+namespace Oro\Bundle\MailChimpBundle\Async;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
+use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
+use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
+use Oro\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
 use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
 use Oro\Component\MessageQueue\Job\JobRunner;
 use Oro\Component\MessageQueue\Transport\MessageInterface;
 use Oro\Component\MessageQueue\Transport\SessionInterface;
 use Oro\Component\MessageQueue\Util\JSON;
-use OroCRM\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
-use OroCRM\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
-use OroCRM\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 
 class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscriberInterface
 {
