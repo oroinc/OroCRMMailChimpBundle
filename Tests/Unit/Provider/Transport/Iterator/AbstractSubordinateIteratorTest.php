@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
 class AbstractSubordinateIteratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -12,7 +12,7 @@ class AbstractSubordinateIteratorTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->iterator = $this->getMockBuilder(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient'
+            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient'
         )->disableOriginalConstructor()->getMock();
     }
 
@@ -23,7 +23,7 @@ class AbstractSubordinateIteratorTest extends \PHPUnit_Framework_TestCase
     protected function createIterator(\Iterator $mainIterator)
     {
         return $this->getMockForAbstractClass(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\AbstractSubordinateIterator',
+            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\AbstractSubordinateIterator',
             [$mainIterator]
         );
     }

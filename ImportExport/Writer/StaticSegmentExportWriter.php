@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -9,11 +9,10 @@ use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
 class StaticSegmentExportWriter extends AbstractExportWriter
 {

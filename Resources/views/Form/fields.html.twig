@@ -1,13 +1,13 @@
-{% block orocrm_mailchimp_api_key_type_widget %}
+{% block oro_mailchimp_api_key_type_widget %}
     {% set options = {
-        'pingUrl': path('orocrm_mailchimp_ping')
+        'pingUrl': path('oro_mailchimp_ping')
     } %}
-    <div data-page-component-module="orocrmmailchimp/js/app/components/api-key-component"
+    <div data-page-component-module="oromailchimp/js/app/components/api-key-component"
          data-page-component-options="{{ options|json_encode }}">
         {{ form_widget(form) }}
 
         <div style="margin-top: 10px;display: none;" class="ping-holder">
-            <button type="button" class="btn btn-primary">{{ 'orocrm.mailchimp.integration_transport.api_key.check.label'|trans }}</button>
+            <button type="button" class="btn btn-primary">{{ 'oro.mailchimp.integration_transport.api_key.check.label'|trans }}</button>
             <div class="connection-status alert" style="display: none"></div>
         </div>
     </div>

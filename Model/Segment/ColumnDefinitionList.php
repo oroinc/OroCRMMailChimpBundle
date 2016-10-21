@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\Segment;
+namespace Oro\Bundle\MailChimpBundle\Model\Segment;
 
 use Oro\Bundle\SegmentBundle\Entity\Segment;
 

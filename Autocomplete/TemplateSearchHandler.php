@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Autocomplete;
+namespace Oro\Bundle\MailChimpBundle\Autocomplete;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Template;
+use Oro\Bundle\MailChimpBundle\Entity\Template;
 
 class TemplateSearchHandler extends IntegrationAwareSearchHandler
 {

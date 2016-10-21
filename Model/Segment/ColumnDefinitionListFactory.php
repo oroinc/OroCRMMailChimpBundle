@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\Segment;
+namespace Oro\Bundle\MailChimpBundle\Model\Segment;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class ColumnDefinitionListFactory
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
 
 class LoadMemberData extends AbstractMailChimpFixture implements DependentFixtureInterface
 {

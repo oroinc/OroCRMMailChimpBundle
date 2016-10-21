@@ -13,7 +13,7 @@
         >
 
     <testsuites>
-        <testsuite name="OroCRMMailChimpBundle Test Suite">
+        <testsuite name="OroMailChimpBundle Test Suite">
             <directory>./Tests/Unit</directory>
         </testsuite>
     </testsuites>

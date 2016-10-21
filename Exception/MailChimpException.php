@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Exception;
+namespace Oro\Bundle\MailChimpBundle\Exception;
 
 interface MailChimpException
 {

@@ -1,12 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Oro\Component\PhpUtils\ArrayUtil;
-
 use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 abstract class AbstractExportWriter extends PersistentBatchWriter
 {

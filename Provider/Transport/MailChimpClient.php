@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport;
 
 use Guzzle\Http\Message\Response;
 use Guzzle\Service\Description\Operation;
@@ -8,7 +8,7 @@ use Guzzle\Service\Description\ServiceDescription;
 use Guzzle\Service\Description\ServiceDescriptionInterface;
 use ZfrMailChimp\Client\MailChimpClient as BaseClient;
 
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Exception\BadResponseException;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Exception\BadResponseException;
 
 // @codingStandardsIgnoreStart
 /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Form\Type;
+namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class IntegrationSettingsType extends AbstractType
 {
-    const NAME = 'orocrm_mailchimp_integration_transport_setting_type';
+    const NAME = 'oro_mailchimp_integration_transport_setting_type';
 
     /**
      * {@inheritdoc}
@@ -18,10 +18,10 @@ class IntegrationSettingsType extends AbstractType
         $builder
             ->add(
                 'apiKey',
-                'orocrm_mailchimp_api_key_type',
+                'oro_mailchimp_api_key_type',
                 [
-                    'label' => 'orocrm.mailchimp.integration_transport.api_key.label',
-                    'tooltip' => 'orocrm.mailchimp.form.api_key.tooltip',
+                    'label' => 'oro.mailchimp.integration_transport.api_key.label',
+                    'tooltip' => 'oro.mailchimp.form.api_key.tooltip',
                     'required' => true
                 ]
             )
@@ -29,15 +29,15 @@ class IntegrationSettingsType extends AbstractType
                 'activityUpdateInterval',
                 'choice',
                 [
-                    'label' => 'orocrm.mailchimp.integration_transport.activity_update_interval.label',
-                    'tooltip' => 'orocrm.mailchimp.form.activity_update_interval.tooltip',
+                    'label' => 'oro.mailchimp.integration_transport.activity_update_interval.label',
+                    'tooltip' => 'oro.mailchimp.form.activity_update_interval.tooltip',
                     'choices' => [
-                        '0' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.forever',
-                        '7' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.1week',
-                        '14' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.2week',
-                        '30' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.1month',
-                        '60' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.2month',
-                        '90' => 'orocrm.mailchimp.integration_transport.activity_update_interval.choice.3month'
+                        '0' => 'oro.mailchimp.integration_transport.activity_update_interval.choice.forever',
+                        '7' => 'oro.mailchimp.integration_transport.activity_update_interval.choice.1week',
+                        '14' => 'oro.mailchimp.integration_transport.activity_update_interval.choice.2week',
+                        '30' => 'oro.mailchimp.integration_transport.activity_update_interval.choice.1month',
+                        '60' => 'oro.mailchimp.integration_transport.activity_update_interval.choice.2month',
+                        '90' => 'oro.mailchimp.integration_transport.activity_update_interval.choice.3month'
                     ]
                 ]
             );
@@ -48,7 +48,7 @@ class IntegrationSettingsType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(['data_class' => 'OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport']);
+        $resolver->setDefaults(['data_class' => 'Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport']);
     }
 
     /**

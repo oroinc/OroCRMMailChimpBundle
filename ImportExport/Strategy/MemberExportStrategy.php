@@ -1,14 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Strategy;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
 use Oro\Bundle\ImportExportBundle\Strategy\Import\AbstractImportStrategy as BaseStrategy;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
 
 class MemberExportStrategy extends BaseStrategy implements LoggerAwareInterface
 {

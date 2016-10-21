@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\MergeVar;
+namespace Oro\Bundle\MailChimpBundle\Model\MergeVar;
 
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/lists/merge-vars.php

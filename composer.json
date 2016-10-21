@@ -11,10 +11,10 @@
     ],
     "autoload": {
         "psr-0": {
-            "OroCRM\\Bundle\\MailChimpBundle": "src/"
+            "Oro\\Bundle\\MailChimpBundle": "src/"
         }
     },
-    "target-dir": "src/OroCRM/Bundle/MailChimpBundle",
+    "target-dir": "src/Oro/Bundle/MailChimpBundle",
     "require": {
         "php": ">=5.5.9",
         "oro/crm": "1.x-dev",

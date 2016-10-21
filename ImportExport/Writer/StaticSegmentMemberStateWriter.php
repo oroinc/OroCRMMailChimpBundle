@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Oro\Bundle\EntityBundle\ORM\NativeQueryExecutorHelper;
 use Oro\Bundle\ImportExportBundle\Writer\AbstractNativeQueryWriter;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberToRemoveIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberToRemoveIterator;
 
 class StaticSegmentMemberStateWriter extends AbstractNativeQueryWriter
 {

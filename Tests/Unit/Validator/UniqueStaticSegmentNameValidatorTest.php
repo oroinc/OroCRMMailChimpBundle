@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Validator;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Validator;
 
-use OroCRM\Bundle\MailChimpBundle\Validator\Constraints\UniqueStaticSegmentNameConstraint;
-use OroCRM\Bundle\MailChimpBundle\Validator\UniqueStaticSegmentNameValidator;
+use Oro\Bundle\MailChimpBundle\Validator\Constraints\UniqueStaticSegmentNameConstraint;
+use Oro\Bundle\MailChimpBundle\Validator\UniqueStaticSegmentNameValidator;
 
 class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +19,7 @@ class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->transport = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport')
+        $this->transport = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -39,7 +39,7 @@ class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testValidateHasOrigin()
     {
-        $value = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
+        $value = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
         $value->expects($this->once())
@@ -66,11 +66,11 @@ class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
             ->method('getTransport')
             ->will($this->returnValue($transport));
 
-        $list = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
+        $list = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\SubscribersList')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $value = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
+        $value = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
         $value->expects($this->once())
@@ -115,11 +115,11 @@ class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
             ->method('getTransport')
             ->will($this->returnValue($transport));
 
-        $list = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
+        $list = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\SubscribersList')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $value = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
+        $value = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
         $value->expects($this->once())

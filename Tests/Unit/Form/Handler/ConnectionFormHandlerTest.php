@@ -1,15 +1,15 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Form\Handler;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Form\Handler;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment;
-use OroCRM\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler;
 
 class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,7 +49,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testProcessGet()
     {
         /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
-        $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
+        $staticSegment = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
         $staticSegment->expects($this->any())
@@ -59,7 +59,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
         $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
         $this->registry->expects($this->once())
             ->method('getManagerForClass')
-            ->with('OroCRMMailChimpBundle:StaticSegment');
+            ->with('OroMailChimpBundle:StaticSegment');
 
         $staticSegmentManager->expects($this->never())
             ->method($this->anything());
@@ -74,7 +74,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
     public function testProcessNewEntity()
     {
         /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
-        $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
+        $staticSegment = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
         $staticSegment->expects($this->any())
@@ -84,7 +84,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
         $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
         $this->registry->expects($this->once())
             ->method('getManagerForClass')
-            ->with('OroCRMMailChimpBundle:StaticSegment')
+            ->with('OroMailChimpBundle:StaticSegment')
             ->will($this->returnValue($staticSegmentManager));
 
         $this->assertSubmit();
@@ -95,7 +95,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessExistingEntitySameList()
     {
-        $subscribersList = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
+        $subscribersList = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\SubscribersList')
             ->disableOriginalConstructor()
             ->getMock();
         $subscribersList->expects($this->any())
@@ -103,7 +103,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(2));
 
         /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
-        $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
+        $staticSegment = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
         $staticSegment->expects($this->any())
@@ -119,7 +119,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
         $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
         $this->registry->expects($this->once())
             ->method('getManagerForClass')
-            ->with('OroCRMMailChimpBundle:StaticSegment')
+            ->with('OroMailChimpBundle:StaticSegment')
             ->will($this->returnValue($staticSegmentManager));
 
         $this->assertSubmit();
@@ -134,7 +134,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessExistingEntityListChange($campaign)
     {
-        $subscribersList = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
+        $subscribersList = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\SubscribersList')
             ->disableOriginalConstructor()
             ->getMock();
         $subscribersList->expects($this->any())
@@ -142,7 +142,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(2));
 
         /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
-        $staticSegment = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment')
+        $staticSegment = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->setMethods(['getId'])
             ->getMock();
@@ -162,7 +162,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($campaign));
         $campaignManager->expects($this->any())
             ->method('getRepository')
-            ->with('OroCRMMailChimpBundle:Campaign')
+            ->with('OroMailChimpBundle:Campaign')
             ->will($this->returnValue($campaignRepository));
 
         $this->registry->expects($this->any())
@@ -170,8 +170,8 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->will(
                 $this->returnValueMap(
                     [
-                        ['OroCRMMailChimpBundle:StaticSegment', $staticSegmentManager],
-                        ['OroCRMMailChimpBundle:Campaign', $campaignManager]
+                        ['OroMailChimpBundle:StaticSegment', $staticSegmentManager],
+                        ['OroMailChimpBundle:Campaign', $campaignManager]
                     ]
                 )
             );
@@ -187,7 +187,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->will(
                 $this->returnCallback(
                     function () use ($staticSegment) {
-                        $subscribersList = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList')
+                        $subscribersList = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\SubscribersList')
                             ->disableOriginalConstructor()
                             ->setMethods(['getId'])
                             ->getMock();
@@ -208,7 +208,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('flush');
 
         $actualSegment = $this->handler->process($staticSegment);
-        $this->assertInstanceOf('OroCRM\Bundle\MailChimpBundle\Entity\StaticSegment', $actualSegment);
+        $this->assertInstanceOf('Oro\Bundle\MailChimpBundle\Entity\StaticSegment', $actualSegment);
         $this->assertNull($actualSegment->getId());
         $this->assertEquals(StaticSegment::STATUS_NOT_SYNCED, $actualSegment->getSyncStatus());
     }

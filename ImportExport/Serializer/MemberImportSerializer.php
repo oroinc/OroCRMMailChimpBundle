@@ -1,14 +1,13 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Serializer;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Serializer;
 
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\DenormalizerInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberDataConverter;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\ImportExport\DataConverter\MemberDataConverter;
 
 /**
  * Added during performance improvement. Please, keep it as simple as possible.
@@ -140,7 +139,7 @@ class MemberImportSerializer implements DenormalizerInterface
             $subscribersList->setOriginId($data['subscribersList']['originId']);
         } elseif (!empty($data['subscribersList']['id'])) {
             $subscribersList = $this->doctrineHelper->getEntityReference(
-                'OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList',
+                'Oro\Bundle\MailChimpBundle\Entity\SubscribersList',
                 $data['subscribersList']['id']
             );
         }
@@ -175,6 +174,6 @@ class MemberImportSerializer implements DenormalizerInterface
         return is_array($data)
             && array_key_exists(MemberDataConverter::IMPORT_DATA, $data)
             && !empty($context['channel'])
-            && is_a($type, 'OroCRM\Bundle\MailChimpBundle\Entity\Member', true);
+            && is_a($type, 'Oro\Bundle\MailChimpBundle\Entity\Member', true);
     }
 }

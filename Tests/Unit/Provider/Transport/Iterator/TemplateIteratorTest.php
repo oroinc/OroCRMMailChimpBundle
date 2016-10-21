@@ -1,9 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class TemplateIteratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +19,7 @@ class TemplateIteratorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->client = $this->getMockBuilder('OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
+        $this->client = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient')
             ->disableOriginalConstructor()
             ->setMethods(['getTemplates'])
             ->getMock();

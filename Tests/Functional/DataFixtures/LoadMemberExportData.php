@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
 
 class LoadMemberExportData extends LoadMemberData
 {

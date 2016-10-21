@@ -1,8 +1,8 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Model\MergeVar;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\MergeVar;
 
-use OroCRM\Bundle\MailChimpBundle\Model\MergeVar\MergeVar;
+use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVar;
 
 class MergeVarTest extends \PHPUnit_Framework_TestCase
 {

@@ -1,8 +1,9 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Akeneo\Bundle\BatchBundle\Item\ItemWriterInterface;
+
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;

@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Placeholder;
+namespace Oro\Bundle\MailChimpBundle\Placeholder;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class MarketingListPlaceholderFilter
 {
@@ -31,7 +31,7 @@ class MarketingListPlaceholderFilter
     {
         if ($marketingList instanceof MarketingList) {
             return (bool)$this->registry->getManager()
-                ->getRepository('OroCRMMailChimpBundle:StaticSegment')
+                ->getRepository('OroMailChimpBundle:StaticSegment')
                 ->findOneBy(['marketingList' => $marketingList]);
         }
 

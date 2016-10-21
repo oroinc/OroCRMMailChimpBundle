@@ -6,15 +6,15 @@
         {{ UI.dropdownItem({
             'path': 'javascript:void(0);',
             'data': {
-                'page-component-module': 'orocrmmailchimp/js/app/components/synchronize-btn-component',
+                'page-component-module': 'oromailchimp/js/app/components/synchronize-btn-component',
                 'page-component-options': {
-                    'status': constant('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment::STATUS_SCHEDULED')
+                    'status': constant('Oro\\Bundle\\MailChimpBundle\\Entity\\StaticSegment::STATUS_SCHEDULED')
                 }|json_encode|raw,
-                'url': path('orocrm_api_update_staticsegment_status', {id: staticSegment.id}),
-                'message': 'orocrm.mailchimp.connection.message.syncronize_scheduled'|trans
+                'url': path('oro_api_update_staticsegment_status', {id: staticSegment.id}),
+                'message': 'oro.mailchimp.connection.message.syncronize_scheduled'|trans
             },
             'id': 'mailchimp-synchronize-btn',
-            'label': 'orocrm.mailchimp.connection.button.synchronize'|trans,
+            'label': 'oro.mailchimp.connection.button.synchronize'|trans,
             'class': 'no-hash',
             'iCss': 'icon-refresh'
         }) }}
@@ -22,38 +22,38 @@
         {{ UI.dropdownItem({
             'path': 'javascript:void(0);',
             'data': {
-                'url': path('orocrm_mailchimp_marketing_list_connect', {id: marketingList.id}),
-                'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
+                'url': path('oro_mailchimp_marketing_list_connect', {id: marketingList.id}),
+                'page-component-module': 'oromailchimp/js/app/components/connect-btn-component',
                 'page-component-options': {
                     'createOnEvent': 'click',
-                    'message': 'orocrm.mailchimp.connection.message.update'|trans,
+                    'message': 'oro.mailchimp.connection.message.update'|trans,
                     'options': {
-                        'title': 'orocrm.mailchimp.connection.dialog.title.update'|trans,
+                        'title': 'oro.mailchimp.connection.dialog.title.update'|trans,
                     }
                 }|json_encode|raw
             },
             'id': 'mailchimp-connection-btn',
-            'label': 'orocrm.mailchimp.connection.button.manage_connection'|trans,
+            'label': 'oro.mailchimp.connection.button.manage_connection'|trans,
             'class': 'no-hash',
             'iCss': 'icon-edit'
         }) }}
         <li>
             {{  UI.deleteLink({
-                'dataUrl': path('orocrm_api_delete_staticsegment', {id: staticSegment.id}),
-                'dataRedirect': path('orocrm_marketing_list_view', {id: marketingList.id}),
-                'dataMessage': 'orocrm.mailchimp.connection.confirmation.disconnect'|trans,
+                'dataUrl': path('oro_api_delete_staticsegment', {id: staticSegment.id}),
+                'dataRedirect': path('oro_marketing_list_view', {id: marketingList.id}),
+                'dataMessage': 'oro.mailchimp.connection.confirmation.disconnect'|trans,
                 'aCss': 'no-hash remove-button',
                 'id': 'btn-remove-mailchimp-connection',
-                'entity_label': 'orocrm.mailchimp.connection.name'|trans,
-                'successMessage': 'orocrm.mailchimp.connection.message.disconnect'|trans,
-                'title': 'orocrm.mailchimp.connection.button.disconnect'|trans,
-                'label': 'orocrm.mailchimp.connection.button.disconnect'|trans
+                'entity_label': 'oro.mailchimp.connection.name'|trans,
+                'successMessage': 'oro.mailchimp.connection.message.disconnect'|trans,
+                'title': 'oro.mailchimp.connection.button.disconnect'|trans,
+                'label': 'oro.mailchimp.connection.button.disconnect'|trans
             }) }}
         </li>
     {% endset %}
 
     {{ UI.dropdownButton({
-        'label': 'orocrm.mailchimp.connection.button.group_name'|trans,
+        'label': 'oro.mailchimp.connection.button.group_name'|trans,
         'iCss': 'icon icon-cog',
         'html': html
     }) }}
@@ -61,18 +61,18 @@
     {{ UI.link({
         'path': 'javascript:void(0);',
         'data': {
-            'url': path('orocrm_mailchimp_marketing_list_connect', {id: marketingList.id}),
-            'page-component-module': 'orocrmmailchimp/js/app/components/connect-btn-component',
+            'url': path('oro_mailchimp_marketing_list_connect', {id: marketingList.id}),
+            'page-component-module': 'oromailchimp/js/app/components/connect-btn-component',
             'page-component-options': {
-                'message': 'orocrm.mailchimp.connection.message.connect'|trans,
+                'message': 'oro.mailchimp.connection.message.connect'|trans,
                 'createOnEvent': 'click',
                 'options': {
-                    'title': 'orocrm.mailchimp.connection.dialog.title.connect'|trans
+                    'title': 'oro.mailchimp.connection.dialog.title.connect'|trans
                 }
             }|json_encode|raw
         },
         'id': 'mailchimp-connection-btn',
-        'label': 'orocrm.mailchimp.connection.button.connect'|trans,
+        'label': 'oro.mailchimp.connection.button.connect'|trans,
         'class': 'no-hash btn',
         'iCss': 'icon-mailchimp'
     }) }}

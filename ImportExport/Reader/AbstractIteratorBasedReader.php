@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Reader;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;

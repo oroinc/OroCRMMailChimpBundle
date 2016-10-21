@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
+namespace Oro\Bundle\MailChimpBundle\Provider\Connector;
 
 class TemplateConnector extends AbstractMailChimpConnector
 {
@@ -20,7 +20,7 @@ class TemplateConnector extends AbstractMailChimpConnector
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.connector.template.label';
+        return 'oro.mailchimp.connector.template.label';
     }
 
     /**

@@ -1,11 +1,11 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
+namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use OroCRM\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
-use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
+use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
+use Oro\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
 
 class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator implements SubordinateReaderInterface
 {

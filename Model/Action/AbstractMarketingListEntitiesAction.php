@@ -1,16 +1,16 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\Action;
+namespace Oro\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\ORM\QueryBuilder;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\WorkflowBundle\Model\Action\AbstractAction;
 use Oro\Bundle\WorkflowBundle\Model\ContextAccessor;
-use OroCRM\Bundle\MailChimpBundle\Model\FieldHelper;
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
-use OroCRM\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
-use OroCRM\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 abstract class AbstractMarketingListEntitiesAction extends AbstractAction
 {

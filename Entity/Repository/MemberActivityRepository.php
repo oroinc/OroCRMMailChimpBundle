@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity\Repository;
+namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
+namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Campaign;
-use OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransport as MailChimpTransportEntity;
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Entity\Campaign;
+use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport as MailChimpTransportEntity;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
 class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,7 +30,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->clientFactory = $this->getMockBuilder(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClientFactory'
+            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClientFactory'
         )->disableOriginalConstructor()->getMock();
 
         $this->managerRegistry = $this->getMock('Doctrine\\Common\\Persistence\\ManagerRegistry');
@@ -45,13 +45,13 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLabel()
     {
-        $this->assertEquals('orocrm.mailchimp.integration_transport.label', $this->transport->getLabel());
+        $this->assertEquals('oro.mailchimp.integration_transport.label', $this->transport->getLabel());
     }
 
     public function testGetSettingsFormType()
     {
         $this->assertEquals(
-            'orocrm_mailchimp_integration_transport_setting_type',
+            'oro_mailchimp_integration_transport_setting_type',
             $this->transport->getSettingsFormType()
         );
     }
@@ -73,7 +73,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
         $transportEntity = new MailChimpTransportEntity();
         $transportEntity->setApiKey($apiKey);
 
-        $client = $this->getMockBuilder('OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient')
+        $client = $this->getMockBuilder('Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -88,7 +88,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \OroCRM\Bundle\MailChimpBundle\Exception\RequiredOptionException
+     * @expectedException \Oro\Bundle\MailChimpBundle\Exception\RequiredOptionException
      * @expectedExceptionMessage Option "apiKey" is required
      */
     public function testInitFails()
@@ -109,7 +109,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
     public function testGetCampaigns($status, $usesSegment, array $expectedFilters)
     {
         $staticSegmentRepository = $this
-            ->getMockBuilder('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Repository\\StaticSegmentRepository')
+            ->getMockBuilder('Oro\\Bundle\\MailChimpBundle\\Entity\\Repository\\StaticSegmentRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -131,7 +131,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
         $result = $this->transport->getCampaigns($channel, $status, $usesSegment);
 
         $this->assertInstanceOf(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\CampaignIterator',
+            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\CampaignIterator',
             $result
         );
 
@@ -144,12 +144,12 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
     protected function getStaticSegmentMock()
     {
         $staticSegmentMock = $this
-            ->getMockBuilder('OroCRM\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')
+            ->getMockBuilder('Oro\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
 
         $subscribersList = $this
-            ->getMockBuilder('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')
+            ->getMockBuilder('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -214,7 +214,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
     public function testGetMembersToSync()
     {
         $subscribersListRepository = $this
-            ->getMockBuilder('OroCRM\\Bundle\\MailChimpBundle\\Entity\\Repository\\SubscribersListRepository')
+            ->getMockBuilder('Oro\\Bundle\\MailChimpBundle\\Entity\\Repository\\SubscribersListRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -222,7 +222,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
             ->method('getRepository')
             ->will($this->returnValue($subscribersListRepository));
 
-        $subscribersList = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
+        $subscribersList = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
         $subscribersLists = new \ArrayIterator([$subscribersList]);
 
         $subscribersListRepository->expects($this->once())
@@ -239,7 +239,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
         $result = $this->transport->getMembersToSync($channel, $since);
 
         $this->assertInstanceOf(
-            'OroCRM\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MemberIterator',
+            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MemberIterator',
             $result
         );
 

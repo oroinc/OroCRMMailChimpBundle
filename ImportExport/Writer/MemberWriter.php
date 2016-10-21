@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Writer;
+namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Psr\Log\LoggerInterface;
 
-use OroCRM\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
 
 class MemberWriter extends AbstractExportWriter
 {

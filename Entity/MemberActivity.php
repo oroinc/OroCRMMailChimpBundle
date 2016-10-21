@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity;
+namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,7 +11,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
 /**
  * @link http://apidocs.mailchimp.com/api/2.0/lists/member-activity.php
  *
- * @ORM\Entity(repositoryClass="OroCRM\Bundle\MailChimpBundle\Entity\Repository\MemberActivityRepository")
+ * @ORM\Entity(repositoryClass="Oro\Bundle\MailChimpBundle\Entity\Repository\MemberActivityRepository")
  * @ORM\Table(
  *      name="orocrm_mc_mmbr_activity",
  *      indexes={
@@ -78,7 +78,7 @@ class MemberActivity
     /**
      * @var Campaign
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Campaign")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\Campaign")
      * @ORM\JoinColumn(name="campaign_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $campaign;
@@ -86,7 +86,7 @@ class MemberActivity
     /**
      * @var Member
      *
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MailChimpBundle\Entity\Member")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\Member")
      * @ORM\JoinColumn(name="member_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $member;

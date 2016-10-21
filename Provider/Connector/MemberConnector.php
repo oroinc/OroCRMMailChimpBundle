@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Provider\Connector;
+namespace Oro\Bundle\MailChimpBundle\Provider\Connector;
 
 use Oro\Bundle\IntegrationBundle\Provider\ConnectorInterface;
 use Oro\Bundle\IntegrationBundle\Provider\TwoWaySyncConnectorInterface;
@@ -16,7 +16,7 @@ class MemberConnector extends AbstractMailChimpConnector implements TwoWaySyncCo
      */
     public function getLabel()
     {
-        return 'orocrm.mailchimp.connector.member.label';
+        return 'oro.mailchimp.connector.member.label';
     }
 
     /**

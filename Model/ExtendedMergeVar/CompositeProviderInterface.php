@@ -1,6 +1,6 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Model\ExtendedMergeVar;
+namespace Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar;
 
 interface CompositeProviderInterface extends ProviderInterface
 {

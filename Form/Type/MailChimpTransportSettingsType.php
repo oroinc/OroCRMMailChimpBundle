@@ -1,15 +1,15 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Form\Type;
+namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use OroCRM\Bundle\CampaignBundle\Form\Type\AbstractTransportSettingsType;
+use Oro\Bundle\CampaignBundle\Form\Type\AbstractTransportSettingsType;
 
 class MailChimpTransportSettingsType extends AbstractTransportSettingsType
 {
-    const NAME = 'orocrm_mailchimp_email_transport_settings';
+    const NAME = 'oro_mailchimp_email_transport_settings';
 
     /**
      * {@inheritdoc}
@@ -19,18 +19,18 @@ class MailChimpTransportSettingsType extends AbstractTransportSettingsType
         $builder
             ->add(
                 'channel',
-                'orocrm_mailchimp_integration_select',
+                'oro_mailchimp_integration_select',
                 [
-                    'label' => 'orocrm.mailchimp.emailcampaign.integration.label',
+                    'label' => 'oro.mailchimp.emailcampaign.integration.label',
                     'required' => true
                 ]
             )
             /*
             ->add(
                 'template',
-                'orocrm_mailchimp_template_select',
+                'oro_mailchimp_template_select',
                 [
-                    'label' => 'orocrm.mailchimp.emailcampaign.template.label',
+                    'label' => 'oro.mailchimp.emailcampaign.template.label',
                     'required' => true,
                     'channel_field' => 'channel'
                 ]
@@ -46,7 +46,7 @@ class MailChimpTransportSettingsType extends AbstractTransportSettingsType
     {
         $resolver->setDefaults(
             [
-                'data_class' => 'OroCRM\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings'
+                'data_class' => 'Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings'
             ]
         );
     }

@@ -1,10 +1,10 @@
 <?php
 
-namespace OroCRM\Bundle\MailChimpBundle\Entity;
+namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use OroCRM\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 /**
  * @ORM\Entity
@@ -24,7 +24,7 @@ class MarketingListEmail
      * @var MarketingList
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="OroCRM\Bundle\MarketingListBundle\Entity\MarketingList")
+     * @ORM\ManyToOne(targetEntity="Oro\Bundle\MarketingListBundle\Entity\MarketingList")
      * @ORM\JoinColumn(name="marketing_list_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      */
     protected $marketingList;
