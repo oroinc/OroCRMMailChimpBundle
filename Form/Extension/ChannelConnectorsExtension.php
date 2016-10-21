@@ -80,7 +80,7 @@ class ChannelConnectorsExtension extends AbstractTypeExtension
             return;
         }
         $options = $event->getForm()['connectors']->getConfig()->getOptions();
-        $connectors = array_keys($options['choices']);
+        $connectors = array_values($options['choices']);
         $data->setConnectors($connectors);
     }
 
