@@ -4,8 +4,8 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Command;
 
 use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
-use Oro\Component\MessageQueue\Client\TraceableMessageProducer;
 use Oro\Bundle\MailChimpBundle\Async\Topics;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData;
@@ -47,22 +47,15 @@ class MailChimpExportCommandTest extends WebTestCase
 
         $this->assertContains('Completed', $result);
 
-        $traces = $this->getMessageProducer()->getTopicSentMessages(Topics::EXPORT_MAIL_CHIMP_SEGMENTS);
-
-        $this->assertCount(1, $traces);
-
-        $this->assertEquals([
-            'integrationId' => $segment->getChannel()->getId(),
-            'segmentsIds' => [$segment->getId()],
-        ], $traces[0]['message']->getBody());
-        $this->assertEquals(MessagePriority::VERY_LOW, $traces[0]['message']->getPriority());
-    }
-
-    /**
-     * @return TraceableMessageProducer
-     */
-    private function getMessageProducer()
-    {
-        return $this->getContainer()->get('oro_message_queue.message_producer');
+        self::assertMessageSent(
+            Topics::EXPORT_MAIL_CHIMP_SEGMENTS,
+            new Message(
+                [
+                    'integrationId' => $segment->getChannel()->getId(),
+                    'segmentsIds' => [$segment->getId()],
+                ],
+                MessagePriority::VERY_LOW
+            )
+        );
     }
 }
