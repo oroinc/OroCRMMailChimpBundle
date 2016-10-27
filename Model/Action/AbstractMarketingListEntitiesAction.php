@@ -11,7 +11,7 @@ use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 use Oro\Component\Action\Action\AbstractAction;
-use Oro\Component\Action\Model\ContextAccessor;
+use Oro\Component\ConfigExpression\ContextAccessor;
 
 abstract class AbstractMarketingListEntitiesAction extends AbstractAction
 {
