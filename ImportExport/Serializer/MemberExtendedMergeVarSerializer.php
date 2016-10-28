@@ -6,7 +6,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 use Oro\Bundle\DataGridBundle\Extension\Formatter\Property\PropertyInterface;
 use Oro\Bundle\ImportExportBundle\Field\DatabaseHelper;
-use Oro\Bundle\ImportExportBundle\Field\FieldHelper;
+use Oro\Bundle\EntityBundle\Helper\FieldHelper;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\ConfigurableEntityNormalizer;
 use Oro\Bundle\LocaleBundle\Formatter\NumberFormatter;
 use Oro\Bundle\LocaleBundle\Formatter\DateTimeFormatter;
