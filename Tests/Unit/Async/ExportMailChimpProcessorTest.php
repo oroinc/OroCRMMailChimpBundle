@@ -1,7 +1,11 @@
 <?php
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Async;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor;
 use Oro\Bundle\MailChimpBundle\Async\Topics;
@@ -12,6 +16,7 @@ use Oro\Component\MessageQueue\Job\JobRunner;
 use Oro\Component\MessageQueue\Transport\Null\NullMessage;
 use Oro\Component\MessageQueue\Transport\Null\NullSession;
 use Oro\Component\Testing\ClassExtensionTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  * @dbIsolationPerTest
@@ -33,10 +38,11 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     public function testCouldBeConstructedWithExpectedArguments()
     {
         new ExportMailChimpProcessor(
-            $this->createDoctrineHelperMock(),
+            $this->createDoctrineHelperStub(),
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
-            $this->createJobRunnerMock()
+            $this->createJobRunnerMock(),
+            $this->createLoggerMock()
         );
     }
 
@@ -45,42 +51,54 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([Topics::EXPORT_MAIL_CHIMP_SEGMENTS], ExportMailChimpProcessor::getSubscribedTopics());
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage The message invalid. It must have integrationId set
-     */
-    public function testThrowIfMessageBodyMissIntegrationId()
+    public function testShouldLogAndRejectIfMessageBodyMissIntegrationId()
     {
-        $processor = new ExportMailChimpProcessor(
-            $this->createDoctrineHelperMock(),
-            $this->createReverseSyncProcessorMock(),
-            $this->createStaticSegmentsMemberStateManagerMock(),
-            $this->createJobRunnerMock()
-        );
-
         $message = new NullMessage();
         $message->setBody('[]');
 
-        $processor->process($message, new NullSession());
-    }
+        $logger = $this->createLoggerMock();
+        $logger
+            ->expects($this->once())
+            ->method('critical')
+            ->with('The message invalid. It must have integrationId set', ['message' => $message])
+        ;
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage The message invalid. It must have segmentsIds set
-     */
-    public function testThrowIfMessageBodyMissSegmentsIds()
-    {
         $processor = new ExportMailChimpProcessor(
-            $this->createDoctrineHelperMock(),
+            $this->createDoctrineHelperStub(),
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
-            $this->createJobRunnerMock()
+            $this->createJobRunnerMock(),
+            $logger
         );
 
+        $status = $processor->process($message, new NullSession());
+
+        $this->assertEquals(MessageProcessorInterface::REJECT, $status);
+    }
+
+    public function testShouldLogAndRejectIfMessageBodyMissSegmentsIds()
+    {
         $message = new NullMessage();
         $message->setBody('{"integrationId":1}');
 
-        $processor->process($message, new NullSession());
+        $logger = $this->createLoggerMock();
+        $logger
+            ->expects($this->once())
+            ->method('critical')
+            ->with('The message invalid. It must have segmentsIds set', ['message' => $message])
+        ;
+
+        $processor = new ExportMailChimpProcessor(
+            $this->createDoctrineHelperStub(),
+            $this->createReverseSyncProcessorMock(),
+            $this->createStaticSegmentsMemberStateManagerMock(),
+            $this->createJobRunnerMock(),
+            $logger
+        );
+
+        $status = $processor->process($message, new NullSession());
+
+        $this->assertEquals(MessageProcessorInterface::REJECT, $status);
     }
     
     /**
@@ -90,10 +108,11 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     public function testThrowIfMessageBodyInvalidJson()
     {
         $processor = new ExportMailChimpProcessor(
-            $this->createDoctrineHelperMock(),
+            $this->createDoctrineHelperStub(),
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
-            $this->createJobRunnerMock()
+            $this->createJobRunnerMock(),
+            $this->createLoggerMock()
         );
 
         $message = new NullMessage();
@@ -102,32 +121,116 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->process($message, new NullSession());
     }
 
-    public function testShouldRunUniqueJob()
+    public function testShouldLogAndRejectIfChannelNotFound()
+    {
+        $message = new NullMessage();
+        $message->setBody('{"integrationId":"theIntegrationId", "segmentsIds": 1}');
+        $message->setMessageId('theMessageId');
+
+        $logger = $this->createLoggerMock();
+        $logger
+            ->expects($this->once())
+            ->method('critical')
+            ->with('The channel not found: theIntegrationId', ['message' => $message])
+        ;
+
+        $processor = new ExportMailChimpProcessor(
+            $this->createDoctrineHelperStub(),
+            $this->createReverseSyncProcessorMock(),
+            $this->createStaticSegmentsMemberStateManagerMock(),
+            $this->createJobRunnerMock(),
+            $logger
+        );
+
+        $status = $processor->process($message, new NullSession());
+
+        $this->assertEquals(MessageProcessorInterface::REJECT, $status);
+    }
+
+    public function testShouldLogAndRejectIfChannelNotEnabled()
+    {
+        $channel = new Channel();
+        $channel->setEnabled(false);
+
+        $doctrineHelper = $this->createDoctrineHelperStub($channel);
+
+        $message = new NullMessage();
+        $message->setBody('{"integrationId":"theIntegrationId", "segmentsIds": 1}');
+        $message->setMessageId('theMessageId');
+
+        $logger = $this->createLoggerMock();
+        $logger
+            ->expects($this->once())
+            ->method('critical')
+            ->with('The channel is not enabled: theIntegrationId', ['message' => $message])
+        ;
+
+        $processor = new ExportMailChimpProcessor(
+            $doctrineHelper,
+            $this->createReverseSyncProcessorMock(),
+            $this->createStaticSegmentsMemberStateManagerMock(),
+            $this->createJobRunnerMock(),
+            $logger
+        );
+
+        $status = $processor->process($message, new NullSession());
+
+        $this->assertEquals(MessageProcessorInterface::REJECT, $status);
+    }
+
+    public function testShouldRunUniqueJobAndReturnAckIfClosureReturnTrue()
     {
         $jobRunner = $this->createJobRunnerMock();
         $jobRunner->expects($this->once())
-            ->method('runUnique');
+            ->method('runUnique')
+            ->willReturn(true)
+        ;
+
+        $channel = new Channel();
+        $channel->setEnabled(true);
+
+        $doctrineHelper = $this->createDoctrineHelperStub($channel);
 
         $processor = new ExportMailChimpProcessor(
-            $this->createDoctrineHelperMock(),
+            $doctrineHelper,
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
-            $jobRunner
+            $jobRunner,
+            $this->createLoggerMock()
         );
 
         $message = new NullMessage();
         $message->setBody('{"integrationId":"theIntegrationId", "segmentsIds": 1}');
         $message->setMessageId('theMessageId');
 
-        $processor->process($message, new NullSession());
+        $status = $processor->process($message, new NullSession());
+
+        $this->assertEquals(MessageProcessorInterface::ACK, $status);
     }
 
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject|DoctrineHelper
      */
-    private function createDoctrineHelperMock()
+    private function createDoctrineHelperStub($channel = null)
     {
-        return $this->getMock(DoctrineHelper::class, [], [], '', false);
+        $entityManagerMock = $this->createEntityManagerStub();
+        $entityManagerMock
+            ->expects(self::any())
+            ->method('find')
+            ->with(Channel::class)
+            ->willReturn($channel);
+        ;
+
+
+        $helperMock = $this->getMock(DoctrineHelper::class, [], [], '', false);
+        $helperMock
+            ->expects($this->any())
+            ->method('getEntityManagerForClass')
+            ->with(Channel::class)
+            ->willReturn($entityManagerMock)
+        ;
+
+        return $helperMock;
     }
 
     /**
@@ -152,5 +255,37 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     private function createJobRunnerMock()
     {
         return $this->getMock(JobRunner::class, [], [], '', false);
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|EntityManagerInterface
+     */
+    private function createEntityManagerStub()
+    {
+        $configuration = new Configuration();
+
+        $connectionMock = $this->getMock(Connection::class, [], [], '', false);
+        $connectionMock
+            ->expects($this->any())
+            ->method('getConfiguration')
+            ->willReturn($configuration)
+        ;
+
+        $entityManagerMock = $this->getMock(EntityManagerInterface::class);
+        $entityManagerMock
+            ->expects($this->any())
+            ->method('getConnection')
+            ->willReturn($connectionMock)
+        ;
+
+        return $entityManagerMock;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|LoggerInterface
+     */
+    private function createLoggerMock()
+    {
+        return $this->getMock(LoggerInterface::class);
     }
 }

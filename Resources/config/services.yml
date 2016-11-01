@@ -1016,6 +1016,7 @@ services:
             - '@oro_integration.reverse_sync.processor'
             - '@oro_mailchimp.static_segment_manager.state_manager'
             - '@oro_message_queue.job.runner'
+            - '@logger'
         tags:
             - { name: 'oro_message_queue.client.message_processor' }
 
