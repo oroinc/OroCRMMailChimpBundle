@@ -215,7 +215,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $entityManagerMock = $this->createEntityManagerStub();
         $entityManagerMock
-            ->expects(self::any())
+            ->expects($this->any())
             ->method('find')
             ->with(Channel::class)
             ->willReturn($channel);
