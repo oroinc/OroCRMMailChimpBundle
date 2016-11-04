@@ -13,12 +13,12 @@ define(function(require) {
             e.preventDefault();
 
             mediator.execute('showLoading');
-            $.post(url, function(response) {
+            $.post(url).then(function(response) {
                 mediator.once('page:update', function() {
                     mediator.execute('showFlashMessage', 'success', response.message);
                 });
                 mediator.execute('refreshPage');
-            }).error(function() {
+            }, function() {
                 mediator.execute('showFlashMessage', 'error', __('oro.mailchimp.request.error'));
             }).always(function() {
                 mediator.execute('hideLoading');
