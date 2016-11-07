@@ -399,7 +399,7 @@ services:
     oro_mailchimp.importexport.serializer.memeber_extended_merge_var:
         class: %oro_mailchimp.importexport.serializer.memeber_extended_merge_var.class%
         arguments:
-            - "@oro_importexport.field.field_helper"
+            - "@oro_entity.helper.field_helper"
             - "@oro_importexport.field.database_helper"
             - "@oro_mailchimp.marketinglist.datagrid_provider"
             - "@translator"
@@ -649,7 +649,7 @@ services:
         arguments:
             - "@event_dispatcher"
             - "@oro_importexport.strategy.import.helper"
-            - "@oro_importexport.field.field_helper"
+            - "@oro_entity.helper.field_helper"
             - "@oro_importexport.field.database_helper"
         calls:
             - [setEntityName, [%oro_mailchimp.entity.member.class%]]
