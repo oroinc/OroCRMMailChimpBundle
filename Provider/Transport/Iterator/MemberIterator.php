@@ -111,7 +111,10 @@ class MemberIterator extends AbstractSubordinateIterator
     protected function createExportIterator($method, array $parameters)
     {
         $exportIterator = new ExportIterator($this->client, $method, $parameters);
-        $exportIterator->setLogger($this->logger);
+
+        if ($this->logger) {
+            $exportIterator->setLogger($this->logger);
+        }
 
         return $exportIterator;
     }

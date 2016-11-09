@@ -177,7 +177,10 @@ class MailChimpTransport implements TransportInterface
         }
 
         $memberIterator = new MemberIterator($subscribersLists, $this->client, $parameters);
-        $memberIterator->setLogger($this->logger);
+
+        if ($this->logger) {
+            $memberIterator->setLogger($this->logger);
+        }
 
         return $memberIterator;
     }
