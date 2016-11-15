@@ -3,6 +3,7 @@
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Psr\Log\NullLogger;
 
 use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport as MailChimpTransportEntity;
@@ -36,6 +37,8 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
         $this->managerRegistry = $this->getMock('Doctrine\\Common\\Persistence\\ManagerRegistry');
 
         $this->transport = new MailChimpTransport($this->clientFactory, $this->managerRegistry);
+
+        $this->transport->setLogger(new NullLogger());
     }
 
     public function testGetSettingsEntityFQCN()
