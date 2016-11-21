@@ -3,6 +3,7 @@
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Psr\Log\LoggerInterface;
 
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
@@ -62,6 +63,11 @@ class MailChimpTransport implements TransportInterface
      * @var ManagerRegistry
      */
     protected $managerRegistry;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * @param MailChimpClientFactory $mailChimpClientFactory
@@ -170,7 +176,13 @@ class MailChimpTransport implements TransportInterface
             $parameters['since'] = $this->getSinceForApi($since);
         }
 
-        return new MemberIterator($subscribersLists, $this->client, $parameters);
+        $memberIterator = new MemberIterator($subscribersLists, $this->client, $parameters);
+
+        if ($this->logger) {
+            $memberIterator->setLogger($this->logger);
+        }
+
+        return $memberIterator;
     }
 
     /**
@@ -410,6 +422,14 @@ class MailChimpTransport implements TransportInterface
     public function getSettingsEntityFQCN()
     {
         return 'Oro\\Bundle\\MailChimpBundle\\Entity\\MailChimpTransport';
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
