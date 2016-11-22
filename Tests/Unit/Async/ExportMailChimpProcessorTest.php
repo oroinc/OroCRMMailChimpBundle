@@ -5,7 +5,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor;
 use Oro\Bundle\MailChimpBundle\Async\Topics;
@@ -48,7 +48,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldSubscribeOnExportMailChimpSegmentsTopic()
     {
-        $this->assertEquals([Topics::EXPORT_MAIL_CHIMP_SEGMENTS], ExportMailChimpProcessor::getSubscribedTopics());
+        $this->assertEquals([Topics::EXPORT_MAILCHIMP_SEGMENTS], ExportMailChimpProcessor::getSubscribedTopics());
     }
 
     public function testShouldLogAndRejectIfMessageBodyMissIntegrationId()
@@ -121,7 +121,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->process($message, new NullSession());
     }
 
-    public function testShouldLogAndRejectIfChannelNotFound()
+    public function testShouldLogAndRejectIfIntegrationNotFound()
     {
         $message = new NullMessage();
         $message->setBody('{"integrationId":"theIntegrationId", "segmentsIds": 1}');
@@ -130,8 +130,8 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $logger = $this->createLoggerMock();
         $logger
             ->expects($this->once())
-            ->method('critical')
-            ->with('The channel not found: theIntegrationId', ['message' => $message])
+            ->method('error')
+            ->with('The integration not found: theIntegrationId', ['message' => $message])
         ;
 
         $processor = new ExportMailChimpProcessor(
@@ -147,12 +147,12 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(MessageProcessorInterface::REJECT, $status);
     }
 
-    public function testShouldLogAndRejectIfChannelNotEnabled()
+    public function testShouldLogAndRejectIfIntegrationNotEnabled()
     {
-        $channel = new Channel();
-        $channel->setEnabled(false);
+        $integration = new Integration();
+        $integration->setEnabled(false);
 
-        $doctrineHelper = $this->createDoctrineHelperStub($channel);
+        $doctrineHelper = $this->createDoctrineHelperStub($integration);
 
         $message = new NullMessage();
         $message->setBody('{"integrationId":"theIntegrationId", "segmentsIds": 1}');
@@ -161,8 +161,8 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $logger = $this->createLoggerMock();
         $logger
             ->expects($this->once())
-            ->method('critical')
-            ->with('The channel is not enabled: theIntegrationId', ['message' => $message])
+            ->method('error')
+            ->with('The integration is not enabled: theIntegrationId', ['message' => $message])
         ;
 
         $processor = new ExportMailChimpProcessor(
@@ -186,10 +186,10 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
             ->willReturn(true)
         ;
 
-        $channel = new Channel();
-        $channel->setEnabled(true);
+        $integration = new Integration();
+        $integration->setEnabled(true);
 
-        $doctrineHelper = $this->createDoctrineHelperStub($channel);
+        $doctrineHelper = $this->createDoctrineHelperStub($integration);
 
         $processor = new ExportMailChimpProcessor(
             $doctrineHelper,
@@ -211,14 +211,14 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject|DoctrineHelper
      */
-    private function createDoctrineHelperStub($channel = null)
+    private function createDoctrineHelperStub($integration = null)
     {
         $entityManagerMock = $this->createEntityManagerStub();
         $entityManagerMock
             ->expects($this->any())
             ->method('find')
-            ->with(Channel::class)
-            ->willReturn($channel);
+            ->with(Integration::class)
+            ->willReturn($integration);
         ;
 
 
@@ -226,7 +226,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $helperMock
             ->expects($this->any())
             ->method('getEntityManagerForClass')
-            ->with(Channel::class)
+            ->with(Integration::class)
             ->willReturn($entityManagerMock)
         ;
 

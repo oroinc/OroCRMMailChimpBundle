@@ -2,6 +2,18 @@
 
 namespace Oro\Bundle\MailChimpBundle\Command;
 
+use Oro\Bundle\CronBundle\Command\CronCommandInterface;
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\MailChimpBundle\Async\Topics;
+use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+
+use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
+use Oro\Component\MessageQueue\Client\Message;
+use Oro\Component\MessageQueue\Client\MessagePriority;
+use Oro\Component\MessageQueue\Client\MessageProducerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,18 +21,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-use Oro\Bundle\CronBundle\Command\CronCommandInterface;
-use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Component\MessageQueue\Client\Message;
-use Oro\Component\MessageQueue\Client\MessagePriority;
-use Oro\Component\MessageQueue\Client\MessageProducerInterface;
-use Oro\Bundle\MailChimpBundle\Async\Topics;
-use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
-use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
-use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 
 class MailChimpExportCommand extends Command implements CronCommandInterface, ContainerAwareInterface
 {
@@ -95,7 +95,7 @@ class MailChimpExportCommand extends Command implements CronCommandInterface, Co
             $channelSegments[$channel->getId()][] = $staticSegment->getId();
         }
 
-        $output->writeln('Send export mail chimp message for channel:');
+        $output->writeln('Send export MailChimp message for channel:');
         foreach ($channelToSync as $channel) {
             $message = new Message();
             $message->setPriority(MessagePriority::VERY_LOW);
@@ -110,7 +110,7 @@ class MailChimpExportCommand extends Command implements CronCommandInterface, Co
                 implode('", "', $message->getBody()['segmentsIds'])
             ));
 
-            $this->getMessageProducer()->send(Topics::EXPORT_MAIL_CHIMP_SEGMENTS, $message);
+            $this->getMessageProducer()->send(Topics::EXPORT_MAILCHIMP_SEGMENTS, $message);
         }
 
         $output->writeln('Completed');

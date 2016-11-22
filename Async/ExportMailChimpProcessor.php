@@ -3,7 +3,7 @@ namespace Oro\Bundle\MailChimpBundle\Async;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -90,22 +90,22 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         }
 
         /** @var EntityManagerInterface $em */
-        $em = $this->doctrineHelper->getEntityManagerForClass(Channel::class);
+        $em = $this->doctrineHelper->getEntityManagerForClass(Integration::class);
 
-        /** @var Channel $channel */
-        $channel = $em->find(Channel::class, $body['integrationId']);
+        /** @var Integration $integration */
+        $integration = $em->find(Integration::class, $body['integrationId']);
 
-        if (! $channel) {
-            $this->logger->critical(
-                sprintf('The channel not found: %s', $body['integrationId']),
+        if (! $integration) {
+            $this->logger->error(
+                sprintf('The integration not found: %s', $body['integrationId']),
                 ['message' => $message]
             );
 
             return self::REJECT;
         }
-        if (! $channel->isEnabled()) {
-            $this->logger->critical(
-                sprintf('The channel is not enabled: %s', $body['integrationId']),
+        if (! $integration->isEnabled()) {
+            $this->logger->error(
+                sprintf('The integration is not enabled: %s', $body['integrationId']),
                 ['message' => $message]
             );
 
@@ -115,8 +115,8 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         $jobName = 'oro_mailchimp:export_mail_chimp:'.$body['integrationId'];
         $ownerId = $message->getMessageId();
 
-        $result = $this->jobRunner->runUnique($ownerId, $jobName, function () use ($body, $channel) {
-            return $this->processMessageData($body, $channel);
+        $result = $this->jobRunner->runUnique($ownerId, $jobName, function () use ($body, $integration) {
+            return $this->processMessageData($body, $integration);
         });
 
         return $result ? self::ACK : self::REJECT;
@@ -126,10 +126,10 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
      * @param array $body
      * @return bool
      */
-    protected function processMessageData(array $body, $channel)
+    protected function processMessageData(array $body, $integration)
     {
         /** @var EntityManagerInterface $em */
-        $em = $this->doctrineHelper->getEntityManagerForClass(Channel::class);
+        $em = $this->doctrineHelper->getEntityManagerForClass(Integration::class);
 
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
@@ -142,15 +142,15 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         foreach ($segmentsIds as $segmentId) {
             /** @var StaticSegment $staticSegment */
             $staticSegment = $staticSegmentRepository->find($segmentId);
-            if ($staticSegment && in_array($staticSegment->getSyncStatus(), $syncStatuses)) {
+            if ($staticSegment && in_array($staticSegment->getSyncStatus(), $syncStatuses, true)) {
                 $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_IN_PROGRESS);
                 $segmentsIdsToSync[] = $segmentId;
             }
         }
 
         $parameters = ['segments' => $segmentsIdsToSync];
-        $this->reverseSyncProcessor->process($channel, MemberConnector::TYPE, $parameters);
-        $this->reverseSyncProcessor->process($channel, StaticSegmentConnector::TYPE, $parameters);
+        $this->reverseSyncProcessor->process($integration, MemberConnector::TYPE, $parameters);
+        $this->reverseSyncProcessor->process($integration, StaticSegmentConnector::TYPE, $parameters);
 
         // reverse sync process does implicit entity manager clear, we have to re-query everything again.
         foreach ($segmentsIdsToSync as $segmentId) {
@@ -189,6 +189,6 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
      */
     public static function getSubscribedTopics()
     {
-        return [Topics::EXPORT_MAIL_CHIMP_SEGMENTS];
+        return [Topics::EXPORT_MAILCHIMP_SEGMENTS];
     }
 }

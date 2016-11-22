@@ -82,7 +82,7 @@ processes:
                     actions:
                         - '@assign_constant_value':
                             attribute: '$.topic'
-                            value: 'Oro\Bundle\MailChimpBundle\Async\Topics::EXPORT_MAIL_CHIMP_SEGMENTS'
+                            value: 'Oro\Bundle\MailChimpBundle\Async\Topics::EXPORT_MAILCHIMP_SEGMENTS'
                         - '@call_service_method':
                             service: 'oro_message_queue.message_producer'
                             method: 'send'

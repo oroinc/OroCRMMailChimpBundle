@@ -2,13 +2,13 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Command;
 
+use Oro\Bundle\MailChimpBundle\Async\Topics;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData;
 use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Component\MessageQueue\Client\Message;
 use Oro\Component\MessageQueue\Client\MessagePriority;
-use Oro\Bundle\MailChimpBundle\Async\Topics;
-use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
-use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentData;
 
 /**
  * @dbIsolationPerTest
@@ -39,7 +39,7 @@ class MailChimpExportCommandTest extends WebTestCase
 
         $result = $this->runCommand('oro:cron:mailchimp:export', ['--segments='.$segment->getId()]);
 
-        $this->assertContains('Send export mail chimp message for channel:', $result);
+        $this->assertContains('Send export MailChimp message for channel:', $result);
         $this->assertContains(
             'Channel "'.$segment->getChannel()->getId().'" and segments "'.$segment->getId().'"',
             $result
@@ -48,7 +48,7 @@ class MailChimpExportCommandTest extends WebTestCase
         $this->assertContains('Completed', $result);
 
         self::assertMessageSent(
-            Topics::EXPORT_MAIL_CHIMP_SEGMENTS,
+            Topics::EXPORT_MAILCHIMP_SEGMENTS,
             new Message(
                 [
                     'integrationId' => $segment->getChannel()->getId(),

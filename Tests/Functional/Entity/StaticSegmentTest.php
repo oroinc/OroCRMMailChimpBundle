@@ -41,7 +41,7 @@ class StaticSegmentTest extends WebTestCase
         $this->getEntityManager()->persist($segment);
         $this->getEntityManager()->flush();
 
-        $traces = self::getMessageCollector()->getTopicSentMessages(Topics::EXPORT_MAIL_CHIMP_SEGMENTS);
+        $traces = self::getMessageCollector()->getTopicSentMessages(Topics::EXPORT_MAILCHIMP_SEGMENTS);
         self::assertCount(1, $traces);
         self::assertEquals([
             'integrationId' => $segment->getChannel()->getId(),
