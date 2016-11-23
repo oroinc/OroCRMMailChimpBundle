@@ -38,8 +38,6 @@ class MailChimpExportCommandTest extends WebTestCase
             $result
         );
 
-        $this->assertContains('Completed', $result);
-
         self::assertMessageSent(
             Topics::EXPORT_MAILCHIMP_SEGMENTS,
             new Message(
