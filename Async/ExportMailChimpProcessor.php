@@ -112,7 +112,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
             return self::REJECT;
         }
 
-        $jobName = 'oro_mailchimp:export_mail_chimp:'.$body['integrationId'];
+        $jobName = 'oro_mailchimp:export_mailchimp:'.$body['integrationId'];
         $ownerId = $message->getMessageId();
 
         $result = $this->jobRunner->runUnique($ownerId, $jobName, function () use ($body, $integration) {

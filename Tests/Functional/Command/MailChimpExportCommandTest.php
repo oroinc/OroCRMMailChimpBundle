@@ -25,13 +25,6 @@ class MailChimpExportCommandTest extends WebTestCase
         $this->loadFixtures([LoadStaticSegmentData::class]);
     }
 
-    public function testShouldOutputHelpForTheCommand()
-    {
-        $result = $this->runCommand('oro:cron:mailchimp:export', ['--help']);
-
-        $this->assertContains("Usage:\n  oro:cron:mailchimp:export [options]", $result);
-    }
-
     public function testShouldSendExportMailChimpSegmentsMessage()
     {
         /** @var StaticSegment $segment */
@@ -39,9 +32,9 @@ class MailChimpExportCommandTest extends WebTestCase
 
         $result = $this->runCommand('oro:cron:mailchimp:export', ['--segments='.$segment->getId()]);
 
-        $this->assertContains('Send export MailChimp message for channel:', $result);
+        $this->assertContains('Send export MailChimp message for integration:', $result);
         $this->assertContains(
-            'Channel "'.$segment->getChannel()->getId().'" and segments "'.$segment->getId().'"',
+            'Integration "'.$segment->getChannel()->getId().'" and segments "'.$segment->getId().'"',
             $result
         );
 

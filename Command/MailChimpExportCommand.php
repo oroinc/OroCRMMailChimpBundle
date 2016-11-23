@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Command;
 use Oro\Bundle\CronBundle\Command\CronCommandInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\MailChimpBundle\Async\Topics;
 use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -86,34 +86,32 @@ class MailChimpExportCommand extends Command implements CronCommandInterface, Co
         /** @var StaticSegment[] $iterator */
         $iterator = $this->getStaticSegmentRepository()->getStaticSegmentsToSync($segments, null, $force);
 
-        /** @var Channel[] $channelToSync */
-        $channelToSync   = [];
-        $channelSegments = [];
+        /** @var Integration[] $integrationToSync */
+        $integrationToSync   = [];
+        $integrationSegments = [];
         foreach ($iterator as $staticSegment) {
-            $channel = $staticSegment->getChannel();
-            $channelToSync[$channel->getId()] = $channel;
-            $channelSegments[$channel->getId()][] = $staticSegment->getId();
+            $integration = $staticSegment->getChannel();
+            $integrationToSync[$integration->getId()] = $integration;
+            $integrationSegments[$integration->getId()][] = $staticSegment->getId();
         }
 
-        $output->writeln('Send export MailChimp message for channel:');
-        foreach ($channelToSync as $channel) {
+        $output->writeln('Send export MailChimp message for integration:');
+        foreach ($integrationToSync as $integration) {
             $message = new Message();
             $message->setPriority(MessagePriority::VERY_LOW);
             $message->setBody([
-                'integrationId' => $channel->getId(),
-                'segmentsIds' => $channelSegments[$channel->getId()]
+                'integrationId' => $integration->getId(),
+                'segmentsIds' => $integrationSegments[$integration->getId()]
             ]);
 
             $output->writeln(sprintf(
-                'Channel "%s" and segments "%s"',
+                'Integration "%s" and segments "%s"',
                 $message->getBody()['integrationId'],
                 implode('", "', $message->getBody()['segmentsIds'])
             ));
 
             $this->getMessageProducer()->send(Topics::EXPORT_MAILCHIMP_SEGMENTS, $message);
         }
-
-        $output->writeln('Completed');
     }
 
     /**
