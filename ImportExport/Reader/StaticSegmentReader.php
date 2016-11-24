@@ -62,9 +62,12 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
         $iterator = $this->getSourceIterator();
         if ($iterator) {
             /** @var MemberSyncIterator $iterator */
-            $iterator->setMainIterator(
-                $this->getStaticSegmentIterator($channel, $context->getOption('segments'))
-            );
+            if (method_exists($iterator, 'setMainIterator')) { //toDo: Check why do we need it
+                //toDo: actually it gets BufferedQueryResultIterator and tries to put it as a main for itself
+                $iterator->setMainIterator(
+                    $this->getStaticSegmentIterator($channel, $context->getOption('segments'))
+                );
+            }
             $this->setSourceIterator($iterator);
         } else {
             $this->setSourceIterator($this->getStaticSegmentIterator($channel, $context->getOption('segments')));
