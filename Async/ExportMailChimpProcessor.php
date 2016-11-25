@@ -64,6 +64,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         $this->staticSegmentsMemberStateManager = $staticSegmentsMemberStateManager;
         $this->jobRunner = $jobRunner;
         $this->logger = $logger;
+        $this->reverseSyncProcessor->getLoggerStrategy()->setLogger($logger);
     }
 
     /**
