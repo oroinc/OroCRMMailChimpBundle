@@ -6,6 +6,7 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
+use Oro\Bundle\IntegrationBundle\Logger\LoggerStrategy;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor;
 use Oro\Bundle\MailChimpBundle\Async\Topics;
@@ -238,7 +239,14 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
      */
     private function createReverseSyncProcessorMock()
     {
-        return $this->getMock(ReverseSyncProcessor::class, [], [], '', false);
+        $reverseSyncProcessor =  $this->getMock(ReverseSyncProcessor::class, [], [], '', false);
+        $reverseSyncProcessor
+            ->expects($this->any())
+            ->method('getLoggerStrategy')
+            ->willReturn(new LoggerStrategy())
+        ;
+
+        return $reverseSyncProcessor;
     }
 
     /**
