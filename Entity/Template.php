@@ -35,7 +35,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  *          "category"="marketing"
  *      },
  *      "entity"={
- *          "icon"="icon-file-alt"
+ *          "icon"="fa-file-o"
  *      }
  *  }
  * )
