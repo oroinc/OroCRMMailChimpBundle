@@ -33,7 +33,7 @@ use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFieldsInterface;
  *          "category"="marketing"
  *      },
  *      "entity"={
- *          "icon"="icon-group"
+ *          "icon"="fa-users"
  *      }
  *  }
  * )

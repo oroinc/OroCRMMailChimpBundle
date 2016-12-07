@@ -21,7 +21,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  * @Config(
  *  defaultValues={
  *      "entity"={
- *          "icon"="icon-bar-chart"
+ *          "icon"="fa-bar-chart-o"
  *      },
  *      "ownership"={
  *          "owner_type"="ORGANIZATION",

@@ -38,7 +38,7 @@ use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
  *          "category"="marketing"
  *      },
  *      "entity"={
- *          "icon"="icon-envelope"
+ *          "icon"="fa-envelope"
  *      }
  *  }
  * )
