@@ -4,13 +4,14 @@ namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Doctrine\ORM\Query\Expr\Join;
 
+use Oro\Bundle\BatchBundle\Item\Support\ClosableInterface;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSyncIterator;
 
-class StaticSegmentReader extends AbstractIteratorBasedReader
+class StaticSegmentReader extends AbstractIteratorBasedReader implements ClosableInterface
 {
     /**
      * @var string
@@ -21,6 +22,11 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
      * @var string
      */
     protected $staticSegmentClassName;
+
+    /**
+     * @var bool
+     */
+    private $isSelfCreatedIterator = false;
 
     /**
      * @param string $marketingListClassName
@@ -36,6 +42,17 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
     public function setStaticSegmentClassName($staticSegmentClassName)
     {
         $this->staticSegmentClassName = $staticSegmentClassName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function close()
+    {
+        // if the iterator is self crated - clear it to avoid usage the iterator with wrong context data
+        if ($this->isSelfCreatedIterator && $this->getSourceIterator()) {
+            $this->setSourceIterator();
+        }
     }
 
     /**
@@ -62,16 +79,16 @@ class StaticSegmentReader extends AbstractIteratorBasedReader
         $iterator = $this->getSourceIterator();
         if ($iterator) {
             /** @var MemberSyncIterator $iterator */
-            if (method_exists($iterator, 'setMainIterator')) { //toDo: Check why do we need it
-                //toDo: actually it gets BufferedQueryResultIterator and tries to put it as a main for itself
-                // toDo: (see CRM-6930)
-                $iterator->setMainIterator(
-                    $this->getStaticSegmentIterator($channel, $context->getOption('segments'))
-                );
-            }
+            $iterator->setMainIterator(
+                $this->getStaticSegmentIterator($channel, $context->getOption('segments'))
+            );
+
             $this->setSourceIterator($iterator);
         } else {
             $this->setSourceIterator($this->getStaticSegmentIterator($channel, $context->getOption('segments')));
+            // set isSelfCreatedIterator to true cause this iterator was created in reader instance
+            // and it depends on context data
+            $this->isSelfCreatedIterator = true;
         }
     }
 
