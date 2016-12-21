@@ -107,8 +107,8 @@ class MailChimpClientTest extends \PHPUnit_Framework_TestCase
             ->with(true)
             ->will($this->returnValue('{"error":"API Key can not be blank","code":104}'));
 
-        $this->setExpectedException(
-            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\Exception\\BadResponseException',
+        $this->expectException('Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\Exception\\BadResponseException');
+        $this->expectExceptionMessage(
             implode(
                 PHP_EOL,
                 [

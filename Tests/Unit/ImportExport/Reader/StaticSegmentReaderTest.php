@@ -32,7 +32,7 @@ class StaticSegmentReaderTest extends \PHPUnit_Framework_TestCase
 
     public function testCloseOnNonSelfGeneratedIterator()
     {
-        $iterator = $this->getMock('\Iterator');
+        $iterator = $this->createMock('\Iterator');
         $this->reader->setSourceIterator($iterator);
 
         $this->reader->close();
@@ -47,7 +47,7 @@ class StaticSegmentReaderTest extends \PHPUnit_Framework_TestCase
         $property->setAccessible(true);
         $property->setValue($this->reader, true);
 
-        $iterator = $this->getMock('\Iterator');
+        $iterator = $this->createMock('\Iterator');
         $this->reader->setSourceIterator($iterator);
 
         $this->reader->close();

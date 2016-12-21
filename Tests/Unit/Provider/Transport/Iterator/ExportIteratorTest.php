@@ -47,7 +47,7 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
             ->with($methodName, $parameters)
             ->will($this->returnValue($response));
 
-        $body = $this->getMock('Guzzle\\Http\\EntityBodyInterface');
+        $body = $this->createMock('Guzzle\\Http\\EntityBodyInterface');
 
         $response->expects($this->any())
             ->method('getBody')
@@ -90,7 +90,7 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
             ->with($methodName, $parameters)
             ->will($this->returnValue($response));
 
-        $body = $this->getMock('Guzzle\\Http\\EntityBodyInterface');
+        $body = $this->createMock('Guzzle\\Http\\EntityBodyInterface');
 
         $response->expects($this->any())
             ->method('getBody')
@@ -122,7 +122,7 @@ class ExportIteratorTest extends \PHPUnit_Framework_TestCase
             ->with($methodName, $parameters)
             ->will($this->returnValue($response));
 
-        $body = $this->getMock('Guzzle\\Http\\EntityBodyInterface');
+        $body = $this->createMock('Guzzle\\Http\\EntityBodyInterface');
 
         $response->expects($this->any())
             ->method('getBody')

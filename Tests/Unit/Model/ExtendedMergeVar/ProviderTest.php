@@ -46,7 +46,7 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
     ) {
         /** @var \PHPUnit_Framework_MockObject_MockObject|ProviderInterface $externalProvider */
         $externalProvider = $this
-            ->getMock('Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface');
+            ->createMock('Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface');
         $externalProvider->expects($this->once())->method('provideExtendedMergeVars')
             ->will($this->returnValue($externalProviderMergeVars));
 

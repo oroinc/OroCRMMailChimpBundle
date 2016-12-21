@@ -54,8 +54,8 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['originId', 123456789],
-            ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
-            ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
+            ['channel', $this->createMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
+            ['owner', $this->createMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
             ['webId', 12],
             ['name', 'string'],
             ['defaultFromName', 'string'],
@@ -108,7 +108,7 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
             ['clickRate', null],
             [
                 'mergeVarFields',
-                $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface')
+                $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface')
             ],
             ['mergeVarConfig', [['foo' => 'bar']]],
             ['createdAt', new \DateTime()],
@@ -131,7 +131,7 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
     public function testSetMergeVarConfigResetsMergeVarFields()
     {
         /** @var MergeVarFieldsInterface|\PHPUnit_Framework_MockObject_MockObject $mergeVarsFields */
-        $mergeVarsFields = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
+        $mergeVarsFields = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
 
         $this->target->setMergeVarFields($mergeVarsFields);
 

@@ -42,14 +42,14 @@ class MarketingListPlaceholderFilterTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getRepository', 'getMetadataFactory'))
             ->getMock();
-        $this->managerRegistry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $this->managerRegistry = $this->createMock('Doctrine\Common\Persistence\ManagerRegistry');
 
         $this->placeholderFilter = new MarketingListPlaceholderFilter($this->managerRegistry);
     }
 
     public function testIsNotApplicableEntityOnMarketingList()
     {
-        $entity = $this->getMock('Oro\Bundle\CampaignBundle\Entity\EmailCampaign');
+        $entity = $this->createMock('Oro\Bundle\CampaignBundle\Entity\EmailCampaign');
         $this->placeholderFilter->isApplicableOnMarketingList($entity);
 
         $this->assertFalse($this->placeholderFilter->isApplicableOnMarketingList($entity));

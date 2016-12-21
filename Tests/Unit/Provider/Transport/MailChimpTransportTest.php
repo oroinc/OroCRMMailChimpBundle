@@ -34,7 +34,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
             'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClientFactory'
         )->disableOriginalConstructor()->getMock();
 
-        $this->managerRegistry = $this->getMock('Doctrine\\Common\\Persistence\\ManagerRegistry');
+        $this->managerRegistry = $this->createMock('Doctrine\\Common\\Persistence\\ManagerRegistry');
 
         $this->transport = new MailChimpTransport($this->clientFactory, $this->managerRegistry);
 
@@ -225,7 +225,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
             ->method('getRepository')
             ->will($this->returnValue($subscribersListRepository));
 
-        $subscribersList = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
+        $subscribersList = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
         $subscribersLists = new \ArrayIterator([$subscribersList]);
 
         $subscribersListRepository->expects($this->once())

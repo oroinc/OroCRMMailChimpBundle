@@ -36,10 +36,10 @@ class MemberActivityTest extends \PHPUnit_Framework_TestCase
     public function settersAndGettersDataProvider()
     {
         return [
-            ['channel', $this->getMock('Oro\Bundle\IntegrationBundle\Entity\Channel')],
-            ['campaign', $this->getMock('Oro\Bundle\MailChimpBundle\Entity\Campaign')],
-            ['member', $this->getMock('Oro\Bundle\MailChimpBundle\Entity\Member')],
-            ['owner', $this->getMock('Oro\Bundle\OrganizationBundle\Entity\Organization')],
+            ['channel', $this->createMock('Oro\Bundle\IntegrationBundle\Entity\Channel')],
+            ['campaign', $this->createMock('Oro\Bundle\MailChimpBundle\Entity\Campaign')],
+            ['member', $this->createMock('Oro\Bundle\MailChimpBundle\Entity\Member')],
+            ['owner', $this->createMock('Oro\Bundle\OrganizationBundle\Entity\Organization')],
             ['email', 'test@test.com'],
             ['action', 'open'],
             ['ip', '127.0.0.1'],

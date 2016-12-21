@@ -29,11 +29,10 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
      */
     protected function createIterator(\Iterator $subscriberLists, array $parameters)
     {
-        return $this->getMock(
-            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MemberIterator',
-            ['createExportIterator'],
-            [$subscriberLists, $this->client, $parameters]
-        );
+        return $this->getMockBuilder('Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\Iterator\\MemberIterator')
+            ->setMethods(['createExportIterator'])
+            ->setConstructorArgs([$subscriberLists, $this->client, $parameters])
+            ->getMock();
     }
 
     /**
@@ -44,7 +43,7 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testIteratorWorks(array $parameters, array $expectedValueMap, array $expected)
     {
-        $list = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
+        $list = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
         $list->expects($this->atLeastOnce())
             ->method('getOriginId')
             ->will($this->returnValue(self::TEST_LIST_ORIGIN_ID));

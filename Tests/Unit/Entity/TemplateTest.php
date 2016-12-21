@@ -53,8 +53,8 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['originId', 123456789],
-            ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
-            ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
+            ['channel', $this->createMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
+            ['owner', $this->createMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
             ['type', Template::TYPE_USER],
             ['name', 'String'],
             ['layout', 'Text'],
