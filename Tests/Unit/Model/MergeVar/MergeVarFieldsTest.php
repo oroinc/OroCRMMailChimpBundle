@@ -18,7 +18,7 @@ class MergeVarFieldsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetEmailFieldNotFound()
     {
-        $field = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $field = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $field->expects($this->once())
             ->method('isEmail')
             ->will($this->returnValue(false));
@@ -30,12 +30,12 @@ class MergeVarFieldsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetEmailFieldFound()
     {
-        $field = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $field = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $field->expects($this->once())
             ->method('isEmail')
             ->will($this->returnValue(false));
 
-        $foundField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $foundField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $foundField->expects($this->once())
             ->method('isEmail')
             ->will($this->returnValue(true));
@@ -47,7 +47,7 @@ class MergeVarFieldsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPhoneFieldNotFound()
     {
-        $field = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $field = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $field->expects($this->once())
             ->method('isPhone')
             ->will($this->returnValue(false));
@@ -59,12 +59,12 @@ class MergeVarFieldsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPhoneFieldFound()
     {
-        $field = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $field = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $field->expects($this->once())
             ->method('isPhone')
             ->will($this->returnValue(false));
 
-        $foundField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $foundField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $foundField->expects($this->once())
             ->method('isPhone')
             ->will($this->returnValue(true));
@@ -76,7 +76,7 @@ class MergeVarFieldsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFirstNameFieldNotFound()
     {
-        $field = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $field = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $field->expects($this->once())
             ->method('isFirstName')
             ->will($this->returnValue(false));
@@ -88,12 +88,12 @@ class MergeVarFieldsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFirstNameFieldFound()
     {
-        $field = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $field = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $field->expects($this->once())
             ->method('isFirstName')
             ->will($this->returnValue(false));
 
-        $foundField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $foundField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $foundField->expects($this->once())
             ->method('isFirstName')
             ->will($this->returnValue(true));
@@ -105,7 +105,7 @@ class MergeVarFieldsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLastNameFieldNotFound()
     {
-        $field = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $field = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $field->expects($this->once())
             ->method('isLastName')
             ->will($this->returnValue(false));
@@ -117,12 +117,12 @@ class MergeVarFieldsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLastNameFieldFound()
     {
-        $field = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $field = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $field->expects($this->once())
             ->method('isLastName')
             ->will($this->returnValue(false));
 
-        $foundField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $foundField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $foundField->expects($this->once())
             ->method('isLastName')
             ->will($this->returnValue(true));

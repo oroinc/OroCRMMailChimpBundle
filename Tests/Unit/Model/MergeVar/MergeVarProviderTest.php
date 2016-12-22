@@ -54,27 +54,27 @@ class MergeVarProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testAssignMergeVarValuesWorks()
     {
-        $emailField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $emailField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $emailField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Email Address'));
 
-        $phoneField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $phoneField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $phoneField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Phone'));
 
-        $firstNameField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $firstNameField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $firstNameField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('First Name'));
 
-        $lastNameField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $lastNameField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $lastNameField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Last Name'));
 
-        $mergeVarFields = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
+        $mergeVarFields = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
         $mergeVarFields->expects($this->once())
             ->method('getEmail')
             ->will($this->returnValue($emailField));
@@ -115,27 +115,27 @@ class MergeVarProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testAssignMergeVarValuesWorksWithEmptyValues()
     {
-        $emailField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $emailField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $emailField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Email Address'));
 
-        $phoneField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $phoneField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $phoneField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Phone'));
 
-        $firstNameField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $firstNameField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $firstNameField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('First Name'));
 
-        $lastNameField = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
+        $lastNameField = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarInterface');
         $lastNameField->expects($this->atLeastOnce())
             ->method('getName')
             ->will($this->returnValue('Last Name'));
 
-        $mergeVarFields = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
+        $mergeVarFields = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
         $mergeVarFields->expects($this->once())
             ->method('getEmail')
             ->will($this->returnValue($emailField));
@@ -164,7 +164,7 @@ class MergeVarProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testAssignMergeVarValuesWorksWithEmptyFields()
     {
-        $mergeVarFields = $this->getMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
+        $mergeVarFields = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
         $mergeVarFields->expects($this->once())
             ->method('getEmail')
             ->will($this->returnValue(null));

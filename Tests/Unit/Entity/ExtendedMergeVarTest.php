@@ -70,7 +70,7 @@ class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
     public function settersAndGettersDataProvider()
     {
         return [
-            ['staticSegment', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')],
+            ['staticSegment', $this->createMock('Oro\\Bundle\\MailChimpBundle\\Entity\\StaticSegment')],
             ['label', 'Dummy Label'],
             ['state', ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_ADD]
         ];

@@ -223,7 +223,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         ;
 
 
-        $helperMock = $this->getMock(DoctrineHelper::class, [], [], '', false);
+        $helperMock = $this->createMock(DoctrineHelper::class);
         $helperMock
             ->expects($this->any())
             ->method('getEntityManagerForClass')
@@ -239,7 +239,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
      */
     private function createReverseSyncProcessorMock()
     {
-        $reverseSyncProcessor =  $this->getMock(ReverseSyncProcessor::class, [], [], '', false);
+        $reverseSyncProcessor =  $this->createMock(ReverseSyncProcessor::class);
         $reverseSyncProcessor
             ->expects($this->any())
             ->method('getLoggerStrategy')
@@ -254,7 +254,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
      */
     private function createStaticSegmentsMemberStateManagerMock()
     {
-        return $this->getMock(StaticSegmentsMemberStateManager::class, [], [], '', false);
+        return $this->createMock(StaticSegmentsMemberStateManager::class);
     }
 
     /**
@@ -262,7 +262,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
      */
     private function createJobRunnerMock()
     {
-        return $this->getMock(JobRunner::class, [], [], '', false);
+        return $this->createMock(JobRunner::class);
     }
 
     /**
@@ -272,14 +272,14 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $configuration = new Configuration();
 
-        $connectionMock = $this->getMock(Connection::class, [], [], '', false);
+        $connectionMock = $this->createMock(Connection::class);
         $connectionMock
             ->expects($this->any())
             ->method('getConfiguration')
             ->willReturn($configuration)
         ;
 
-        $entityManagerMock = $this->getMock(EntityManagerInterface::class);
+        $entityManagerMock = $this->createMock(EntityManagerInterface::class);
         $entityManagerMock
             ->expects($this->any())
             ->method('getConnection')
@@ -294,6 +294,6 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
      */
     private function createLoggerMock()
     {
-        return $this->getMock(LoggerInterface::class);
+        return $this->createMock(LoggerInterface::class);
     }
 }

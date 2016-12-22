@@ -37,7 +37,7 @@ class MemberTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['originId', 123456789],
-            ['channel', $this->getMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
+            ['channel', $this->createMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel')],
             ['email', 'email@example.com'],
             ['phone', '555-666-777'],
             ['status', Member::STATUS_CLEANED],
@@ -62,9 +62,9 @@ class MemberTest extends \PHPUnit_Framework_TestCase
             ['createdAt', new \DateTime()],
             ['updatedAt', new \DateTime()],
             ['updatedAt', null],
-            ['subscribersList', $this->getMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
+            ['subscribersList', $this->createMock('Oro\\Bundle\\MailChimpBundle\\Entity\\SubscribersList')],
             ['mergeVarValues', ['Email Address' => 'test@example.com']],
-            ['owner', $this->getMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
+            ['owner', $this->createMock('Oro\\Bundle\\OrganizationBundle\\Entity\\Organization')],
         ];
     }
 

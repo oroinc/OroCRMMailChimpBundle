@@ -35,13 +35,13 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->form = $this->getMock('Symfony\Component\Form\FormInterface');
+        $this->form = $this->createMock('Symfony\Component\Form\FormInterface');
 
         $this->request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->registry = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
+        $this->registry = $this->createMock('Doctrine\Common\Persistence\ManagerRegistry');
 
         $this->handler = new ConnectionFormHandler($this->request, $this->registry, $this->form);
     }
@@ -56,7 +56,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('getId')
             ->will($this->returnValue(null));
 
-        $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
+        $staticSegmentManager = $this->createMock('\Doctrine\Common\Persistence\ObjectManager');
         $this->registry->expects($this->once())
             ->method('getManagerForClass')
             ->with('OroMailChimpBundle:StaticSegment');
@@ -81,7 +81,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('getId')
             ->will($this->returnValue(null));
 
-        $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
+        $staticSegmentManager = $this->createMock('\Doctrine\Common\Persistence\ObjectManager');
         $this->registry->expects($this->once())
             ->method('getManagerForClass')
             ->with('OroMailChimpBundle:StaticSegment')
@@ -116,7 +116,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('setSyncStatus')
             ->with(StaticSegment::STATUS_SCHEDULED);
 
-        $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
+        $staticSegmentManager = $this->createMock('\Doctrine\Common\Persistence\ObjectManager');
         $this->registry->expects($this->once())
             ->method('getManagerForClass')
             ->with('OroMailChimpBundle:StaticSegment')
@@ -151,12 +151,12 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(1));
         $staticSegment->setSubscribersList($subscribersList);
 
-        $staticSegmentManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
+        $staticSegmentManager = $this->createMock('\Doctrine\Common\Persistence\ObjectManager');
         $staticSegmentManager->expects(!$campaign ? $this->once() : $this->never())
             ->method('remove');
 
-        $campaignManager = $this->getMock('\Doctrine\Common\Persistence\ObjectManager');
-        $campaignRepository = $this->getMock('\Doctrine\Common\Persistence\ObjectRepository');
+        $campaignManager = $this->createMock('\Doctrine\Common\Persistence\ObjectManager');
+        $campaignRepository = $this->createMock('\Doctrine\Common\Persistence\ObjectRepository');
         $campaignRepository->expects($this->any())
             ->method('findOneBy')
             ->will($this->returnValue($campaign));

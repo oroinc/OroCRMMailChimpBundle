@@ -185,7 +185,7 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
         $this->voter->setClassName($className);
 
         /** @var TokenInterface $token */
-        $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
+        $token = $this->createMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $this->assertEquals(
             $expected,
             $this->voter->vote($token, $object, $attributes)
@@ -215,8 +215,8 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
      */
     protected function getItem()
     {
-        $item = $this->getMock('Oro\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface');
-        $marketingList = $this->getMock('Oro\Bundle\MarketingListBundle\Entity\MarketingList');
+        $item = $this->createMock('Oro\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface');
+        $marketingList = $this->createMock('Oro\Bundle\MarketingListBundle\Entity\MarketingList');
 
         $item
             ->expects($this->any())
