@@ -21,7 +21,7 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->marketingList = new MarketingList();
-        $this->provider = new Provider($this->columnDefinitionListFactory);
+        $this->provider = new Provider();
     }
 
     protected function tearDown()
