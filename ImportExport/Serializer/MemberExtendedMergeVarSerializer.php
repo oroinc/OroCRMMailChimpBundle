@@ -15,6 +15,7 @@ use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Model\MarketingList\DataGridProviderInterface;
+use Oro\Bundle\QueryDesignerBundle\Grid\QueryDesignerQueryConfiguration;
 
 class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
 {
@@ -208,6 +209,6 @@ class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
     protected function getColumnAliases(MarketingList $marketingList)
     {
         return $this->dataGridProvider->getDataGridConfiguration($marketingList)
-            ->offsetGetByPath('[source][query_config][column_aliases]');
+            ->offsetGetByPath(QueryDesignerQueryConfiguration::COLUMN_ALIASES, []);
     }
 }
