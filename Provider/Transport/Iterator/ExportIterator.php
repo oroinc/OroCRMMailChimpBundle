@@ -178,7 +178,7 @@ class ExportIterator implements \Iterator
         if ($this->useFirstLineAsHeader) {
             if (count($this->header) !== count($line)) {
                 if ($this->logger) {
-                    $this->logger->notice(sprintf(
+                    $this->logger->info(sprintf(
                         'Notice: The line is skipped, ' .
                         'as the number of elements for the header and the line is not the same. ' .
                         'Header count: "%s", line count: "%s", ' .
