@@ -35,6 +35,16 @@ class MailChimpExportCommand extends Command implements CronCommandInterface, Co
     }
 
     /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        $count = $this->getStaticSegmentRepository()->countStaticSegments();
+
+        return ($count > 0);
+    }
+
+    /**
      * @var JobExecutor
      */
     protected $jobExecutor;

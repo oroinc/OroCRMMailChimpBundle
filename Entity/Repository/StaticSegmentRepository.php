@@ -4,6 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
+use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -38,9 +39,23 @@ class StaticSegmentRepository extends EntityRepository
     }
 
     /**
+     * @param array $segments
+     * @param Channel|null $channel
+     *
+     * @return int
+     */
+    public function countStaticSegments($segments = [], Channel $channel = null)
+    {
+        $qb = $this->getStaticSegmentsQueryBuilder($segments, $channel);
+        $qb->select('COUNT(staticSegment.id)');
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
      * @param array|null $segments
      * @param Channel|null $channel
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function getStaticSegmentsQueryBuilder(array $segments = null, Channel $channel = null)
     {
