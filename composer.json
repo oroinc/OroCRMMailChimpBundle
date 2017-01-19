@@ -10,19 +10,15 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "Oro\\Bundle\\MailChimpBundle": "src/"
-        }
+        "psr-4": {"Oro\\Bundle\\MailChimpBundle\\": ""},
+        "exclude-from-classmap": ["/Tests/"]
     },
-    "target-dir": "src/Oro/Bundle/MailChimpBundle",
     "require": {
         "php": ">=5.6",
         "oro/crm": "1.x-dev",
         "zfr/zfr-mailchimp": "2.0.*",
         "oro/marketing": "1.x-dev"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "extra": {
         "branch-alias": {
             "dev-master": "1.x-dev"
