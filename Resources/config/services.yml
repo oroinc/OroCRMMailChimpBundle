@@ -488,6 +488,8 @@ services:
         arguments:
             - "@orocrm_mailchimp.client.factory"
             - "@doctrine"
+        calls:
+            - [setLogger, ["@oro_integration.logger.strategy"]]
         tags:
             - { name: oro_integration.transport, type: mailchimp_api, channel_type: mailchimp }
 
