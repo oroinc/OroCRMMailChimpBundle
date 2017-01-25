@@ -3,6 +3,7 @@
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Guzzle\Http\EntityBodyInterface;
+use Psr\Log\LoggerInterface;
 
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
@@ -47,6 +48,11 @@ class ExportIterator implements \Iterator
      * @var bool
      */
     protected $useFirstLineAsHeader;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * @param MailChimpClient $client
@@ -115,6 +121,14 @@ class ExportIterator implements \Iterator
     }
 
     /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * Read one line from export response, if read success converts line to associative array according to export data
      * format.
      *
@@ -163,15 +177,20 @@ class ExportIterator implements \Iterator
 
         if ($this->useFirstLineAsHeader) {
             if (count($this->header) !== count($line)) {
-                throw new \RuntimeException(sprintf(
-                    'Number of elements for header and line have to be the same. ' .
-                    'Header count: "%s", line count: "%s", ' .
-                    'header: "%s", line: "%s"',
-                    count($this->header),
-                    count($line),
-                    json_encode($this->header),
-                    json_encode($line)
-                ));
+                if ($this->logger) {
+                    $this->logger->info(sprintf(
+                        'Notice: The line is skipped, ' .
+                        'as the number of elements for the header and the line is not the same. ' .
+                        'Header count: "%s", line count: "%s", ' .
+                        'header: "%s", line: "%s"',
+                        count($this->header),
+                        count($line),
+                        json_encode($this->header),
+                        json_encode($line)
+                    ));
+                }
+
+                return null;
             }
             $line = array_combine($this->header, $line);
         }

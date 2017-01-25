@@ -2,6 +2,8 @@
 
 namespace OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Psr\Log\LoggerInterface;
+
 use OroCRM\Bundle\MailChimpBundle\Entity\Member;
 use OroCRM\Bundle\MailChimpBundle\Entity\SubscribersList;
 use OroCRM\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
@@ -19,6 +21,11 @@ class MemberIterator extends AbstractSubordinateIterator
     protected $parameters;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @param \Iterator $subscribersLists
      * @param MailChimpClient $client
      * @param array $parameters
@@ -31,6 +38,14 @@ class MemberIterator extends AbstractSubordinateIterator
         if (!isset($this->parameters['status'])) {
             $this->parameters['status'] = Member::STATUS_SUBSCRIBED;
         }
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -94,6 +109,12 @@ class MemberIterator extends AbstractSubordinateIterator
      */
     protected function createExportIterator($method, array $parameters)
     {
-        return new ExportIterator($this->client, $method, $parameters);
+        $exportIterator = new ExportIterator($this->client, $method, $parameters);
+
+        if ($this->logger) {
+            $exportIterator->setLogger($this->logger);
+        }
+
+        return $exportIterator;
     }
 }
