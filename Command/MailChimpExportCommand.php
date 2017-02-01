@@ -104,23 +104,26 @@ class MailChimpExportCommand extends Command implements CronCommandInterface, Co
             $integrationToSync[$integration->getId()] = $integration;
             $integrationSegments[$integration->getId()][] = $staticSegment->getId();
         }
+        if (count($integrationToSync) > 0) {
+            $output->writeln('Send export MailChimp message for integration:');
+            foreach ($integrationToSync as $integration) {
+                $message = new Message();
+                $message->setPriority(MessagePriority::VERY_LOW);
+                $message->setBody([
+                    'integrationId' => $integration->getId(),
+                    'segmentsIds' => $integrationSegments[$integration->getId()]
+                ]);
 
-        $output->writeln('Send export MailChimp message for integration:');
-        foreach ($integrationToSync as $integration) {
-            $message = new Message();
-            $message->setPriority(MessagePriority::VERY_LOW);
-            $message->setBody([
-                'integrationId' => $integration->getId(),
-                'segmentsIds' => $integrationSegments[$integration->getId()]
-            ]);
+                $output->writeln(sprintf(
+                    'Integration "%s" and segments "%s"',
+                    $message->getBody()['integrationId'],
+                    implode('", "', $message->getBody()['segmentsIds'])
+                ));
 
-            $output->writeln(sprintf(
-                'Integration "%s" and segments "%s"',
-                $message->getBody()['integrationId'],
-                implode('", "', $message->getBody()['segmentsIds'])
-            ));
-
-            $this->getMessageProducer()->send(Topics::EXPORT_MAILCHIMP_SEGMENTS, $message);
+                $this->getMessageProducer()->send(Topics::EXPORT_MAILCHIMP_SEGMENTS, $message);
+            }
+        } else {
+            $output->writeln('Active MailChimp Integrations not found.');
         }
     }
 

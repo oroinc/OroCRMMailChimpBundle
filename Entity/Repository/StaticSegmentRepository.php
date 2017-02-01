@@ -25,7 +25,7 @@ class StaticSegmentRepository extends EntityRepository
         if (!$segments && !$getAll) {
             $qb
                 ->leftJoin('staticSegment.marketingList', 'ml')
-                ->where(
+                ->andWhere(
                     $qb->expr()->andX(
                         $qb->expr()->eq('ml.type', ':type'),
                         $qb->expr()->neq('staticSegment.syncStatus', ':status')
@@ -73,6 +73,11 @@ class StaticSegmentRepository extends EntityRepository
             $qb
                 ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
                 ->setParameter('channel', $channel);
+        } else {
+            $qb
+                ->leftJoin('staticSegment.channel', 'channel')
+                ->andWhere('channel.enabled = 1')
+            ;
         }
 
         return $qb;
