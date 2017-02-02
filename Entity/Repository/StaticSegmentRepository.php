@@ -4,6 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -75,8 +76,7 @@ class StaticSegmentRepository extends EntityRepository
                 ->setParameter('channel', $channel);
         } else {
             $qb
-                ->leftJoin('staticSegment.channel', 'channel')
-                ->andWhere('channel.enabled = 1')
+                ->innerJoin('staticSegment.channel', 'channel', Join::WITH, 'channel.enabled = 1')
             ;
         }
 

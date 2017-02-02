@@ -116,7 +116,7 @@ class MailChimpExportCommand extends Command implements CronCommandInterface, Co
 
                 $output->writeln(sprintf(
                     'Integration "%s" and segments "%s"',
-                    $message->getBody()['integrationId'],
+                    $integration->getId(),
                     implode('", "', $message->getBody()['segmentsIds'])
                 ));
 
