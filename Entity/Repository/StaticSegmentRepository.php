@@ -76,7 +76,8 @@ class StaticSegmentRepository extends EntityRepository
                 ->setParameter('channel', $channel);
         } else {
             $qb
-                ->innerJoin('staticSegment.channel', 'channel', Join::WITH, 'channel.enabled = 1')
+                ->innerJoin('staticSegment.channel', 'channel', Join::WITH, 'channel.enabled = :channelEnabled')
+                ->setParameter('channelEnabled', true)
             ;
         }
 
