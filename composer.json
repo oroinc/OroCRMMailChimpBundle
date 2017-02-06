@@ -17,15 +17,15 @@
     "target-dir": "src/Oro/Bundle/MailChimpBundle",
     "require": {
         "php": ">=5.6",
-        "oro/crm": "2.0.0",
+        "oro/crm": "2.0.*",
         "zfr/zfr-mailchimp": "2.0.*",
-        "oro/marketing": "2.0.0"
+        "oro/marketing": "2.0.*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev"
+            "dev-master": "2.x-dev"
         }
     }
 }

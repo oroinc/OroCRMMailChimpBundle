@@ -4,6 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -25,7 +26,7 @@ class StaticSegmentRepository extends EntityRepository
         if (!$segments && !$getAll) {
             $qb
                 ->leftJoin('staticSegment.marketingList', 'ml')
-                ->where(
+                ->andWhere(
                     $qb->expr()->andX(
                         $qb->expr()->eq('ml.type', ':type'),
                         $qb->expr()->neq('staticSegment.syncStatus', ':status')
@@ -73,6 +74,11 @@ class StaticSegmentRepository extends EntityRepository
             $qb
                 ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
                 ->setParameter('channel', $channel);
+        } else {
+            $qb
+                ->innerJoin('staticSegment.channel', 'channel', Join::WITH, 'channel.enabled = :channelEnabled')
+                ->setParameter('channelEnabled', true)
+            ;
         }
 
         return $qb;
