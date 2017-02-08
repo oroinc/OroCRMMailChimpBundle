@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 use Doctrine\ORM\Query\Expr\Join;
 
 use Oro\Bundle\BatchBundle\Item\Support\ClosableInterface;
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Exception\InvalidConfigurationException;
@@ -96,7 +96,7 @@ class StaticSegmentReader extends AbstractIteratorBasedReader implements Closabl
      * @param Channel    $channel
      * @param array|null $segments
      *
-     * @return BufferedQueryResultIterator
+     * @return \Iterator
      */
     protected function getStaticSegmentIterator(Channel $channel, array $segments = null)
     {
@@ -119,6 +119,6 @@ class StaticSegmentReader extends AbstractIteratorBasedReader implements Closabl
                 ->setParameter('segments', $segments);
         }
 
-        return new BufferedQueryResultIterator($qb);
+        return new BufferedIdentityQueryResultIterator($qb);
     }
 }

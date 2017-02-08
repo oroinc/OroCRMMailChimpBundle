@@ -4,7 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\ORM\Query\Expr\Join;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
@@ -74,7 +74,7 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
 
     /**
      * @param SubscribersList $subscriberList
-     * @return BufferedQueryResultIterator|MarketingList[]
+     * @return \Iterator|MarketingList[]
      */
     protected function getMarketingListIterator(SubscribersList $subscriberList)
     {
@@ -95,7 +95,7 @@ class MarketingListStateItemAction extends AbstractMarketingListEntitiesAction
             ->where($qb->expr()->eq('subscribersList.id', ':subscribersList'))
             ->setParameter('subscribersList', $subscriberList->getId());
 
-        return new BufferedQueryResultIterator($qb);
+        return new BufferedIdentityQueryResultIterator($qb);
     }
 
     /**

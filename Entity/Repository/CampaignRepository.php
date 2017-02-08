@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 
@@ -44,6 +44,6 @@ class CampaignRepository extends EntityRepository
                 ->setParameter('now', new \DateTime('now', new \DateTimeZone('UTC')));
         }
 
-        return new BufferedQueryResultIterator($qb);
+        return new BufferedIdentityQueryResultIterator($qb);
     }
 }

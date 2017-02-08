@@ -4,7 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\AbstractQuery;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
@@ -94,8 +94,8 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
             )
         );
 
-        $bufferedIterator = new BufferedQueryResultIterator($qb);
-        $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
+        $bufferedIterator = new BufferedIdentityQueryResultIterator($qb);
+        $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
 
         $uniqueMembers = &$this->uniqueMembers;
 

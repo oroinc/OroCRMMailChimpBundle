@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 
 class SubscribersListRepository extends EntityRepository
@@ -30,6 +30,6 @@ class SubscribersListRepository extends EntityRepository
             ->where('subscribersList.channel = :channel')
             ->setParameter('channel', $channel);
 
-        return new BufferedQueryResultIterator($queryBuilder);
+        return new BufferedIdentityQueryResultIterator($queryBuilder);
     }
 }

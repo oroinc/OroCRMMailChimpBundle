@@ -2,7 +2,6 @@
 
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -68,7 +67,7 @@ class MemberExportReader extends AbstractIteratorBasedReader
     /**
      * @param Channel $channel
      *
-     * @return BufferedQueryResultIterator
+     * @return \Iterator
      */
     protected function getSubscribersListIterator(Channel $channel)
     {

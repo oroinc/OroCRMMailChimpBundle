@@ -8,7 +8,8 @@ use Doctrine\ORM\QueryBuilder;
 
 use Psr\Log\LoggerInterface;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIteratorInterface;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -254,7 +255,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
      * @param StaticSegment $staticSegment
      * @param string|array $state
      *
-     * @return BufferedQueryResultIterator
+     * @return BufferedQueryResultIteratorInterface
      */
     protected function getSegmentMembersEmailsIterator(StaticSegment $staticSegment, $state)
     {
@@ -263,9 +264,8 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         $qb->select('staticSegmentMember.id as staticSegmentMemberId, mmbr.email as memberEmail')
             ->leftJoin('staticSegmentMember.member', 'mmbr');
 
-        $iterator = new BufferedQueryResultIterator($qb);
+        $iterator = new BufferedIdentityQueryResultIterator($qb);
         $iterator->setBufferSize(self::BATCH_SIZE);
-        $iterator->setReverse(true);
 
         return $iterator;
     }

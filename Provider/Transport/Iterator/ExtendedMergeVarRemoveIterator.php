@@ -4,7 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\AbstractQuery;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
@@ -93,8 +93,8 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
             ->setParameter('vars', $varNames)
             ->setParameter('state', ExtendedMergeVar::STATE_DROPPED);
 
-        $bufferedIterator = new BufferedQueryResultIterator($qb);
-        $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
+        $bufferedIterator = new BufferedIdentityQueryResultIterator($qb);
+        $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
 
         return $bufferedIterator;
     }

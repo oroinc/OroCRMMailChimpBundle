@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
@@ -78,8 +78,7 @@ class MemberExportListIterator extends AbstractSubscribersListIterator implement
             )
             ->addOrderBy('mmb.id');
 
-        $bufferedIterator = new BufferedQueryResultIterator($qb);
-        $bufferedIterator->setReverse(true);
+        $bufferedIterator = new BufferedIdentityQueryResultIterator($qb);
 
         return $bufferedIterator;
     }

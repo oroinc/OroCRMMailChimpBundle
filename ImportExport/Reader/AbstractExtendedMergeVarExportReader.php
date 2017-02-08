@@ -2,7 +2,8 @@
 
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIteratorInterface;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -50,7 +51,7 @@ abstract class AbstractExtendedMergeVarExportReader extends AbstractIteratorBase
 
     /**
      * @param Channel $channel
-     * @return BufferedQueryResultIterator
+     * @return BufferedQueryResultIteratorInterface
      */
     protected function getSegmentsIterator(Channel $channel)
     {
@@ -68,6 +69,6 @@ abstract class AbstractExtendedMergeVarExportReader extends AbstractIteratorBase
             ->andWhere($qb->expr()->eq('staticSegment.channel', ':channel'))
             ->setParameter('channel', $channel);
 
-        return new BufferedQueryResultIterator($qb);
+        return new BufferedIdentityQueryResultIterator($qb);
     }
 }

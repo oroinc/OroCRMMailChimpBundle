@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
@@ -72,6 +72,6 @@ class ExtendedMergeVarExportIterator extends AbstractSubordinateIterator impleme
             ->setParameter('staticSegment', $staticSegment)
             ->setParameter('states', [ExtendedMergeVar::STATE_SYNCED, ExtendedMergeVar::STATE_DROPPED]);
 
-        return new BufferedQueryResultIterator($qb);
+        return new BufferedIdentityQueryResultIterator($qb);
     }
 }

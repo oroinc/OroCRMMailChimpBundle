@@ -4,7 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\ORM\QueryBuilder;
 
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
@@ -82,11 +82,11 @@ abstract class AbstractMarketingListEntitiesAction extends AbstractAction
     /**
      * @param MarketingList $marketingList
      * @param string $email
-     * @return BufferedQueryResultIterator
+     * @return \Iterator
      */
     protected function getMarketingListEntitiesByEmail(MarketingList $marketingList, $email)
     {
-        return new BufferedQueryResultIterator(
+        return new BufferedIdentityQueryResultIterator(
             $this->getMarketingListEntitiesByEmailQueryBuilder($marketingList, $email)
         );
     }

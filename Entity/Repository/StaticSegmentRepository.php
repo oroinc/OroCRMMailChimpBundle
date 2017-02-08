@@ -6,7 +6,8 @@ use Doctrine\ORM\EntityRepository;
 
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
-use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
+use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIteratorInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingListType;
@@ -36,7 +37,7 @@ class StaticSegmentRepository extends EntityRepository
                 ->setParameter('status', StaticSegment::STATUS_IN_PROGRESS);
         }
 
-        return new BufferedQueryResultIterator($qb);
+        return new BufferedIdentityQueryResultIterator($qb);
     }
 
     /**
@@ -87,10 +88,10 @@ class StaticSegmentRepository extends EntityRepository
     /**
      * @param Channel|null $channel
      * @param array|null $segments
-     * @return BufferedQueryResultIterator
+     * @return BufferedQueryResultIteratorInterface
      */
     public function getStaticSegments(Channel $channel = null, array $segments = null)
     {
-        return new BufferedQueryResultIterator($this->getStaticSegmentsQueryBuilder($segments, $channel));
+        return new BufferedIdentityQueryResultIterator($this->getStaticSegmentsQueryBuilder($segments, $channel));
     }
 }
