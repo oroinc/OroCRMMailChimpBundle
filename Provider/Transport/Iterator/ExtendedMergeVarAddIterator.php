@@ -50,7 +50,7 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
             })
             ->toArray();
 
-        $vars = array_filter(
+        $newVars = array_filter(
             $vars,
             function ($var) use ($existingVars) {
                 return !in_array($var['name'], $existingVars, true);
@@ -58,7 +58,7 @@ class ExtendedMergeVarAddIterator extends AbstractSubordinateIterator
         );
 
         return new CallbackFilterIteratorCompatible(
-            new \ArrayIterator($vars),
+            new \ArrayIterator($newVars),
             function (&$current) use ($staticSegment) {
                 if (is_array($current)) {
                     $current['static_segment_id'] = $staticSegment->getId();

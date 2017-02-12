@@ -26,6 +26,8 @@ class ExtendedMergeVar
     const STATE_DROPPED = 'dropped';
 
     const TAG_TEXT_FIELD_TYPE = 'text';
+    const TAG_NUMBER_FIELD_TYPE = 'number';
+    const TAG_DATE_FIELD_TYPE = 'date';
 
     const TAG_PREFIX = 'E_';
     const MAXIMUM_TAG_LENGTH = 10;

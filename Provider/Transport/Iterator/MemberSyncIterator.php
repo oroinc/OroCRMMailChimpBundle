@@ -5,7 +5,6 @@ namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\QueryBuilder;
-
 use Oro\Bundle\ImportExportBundle\Writer\AbstractNativeQueryWriter;
 use Oro\Bundle\LocaleBundle\DQL\DQLNameFormatter;
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
@@ -13,6 +12,7 @@ use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Component\PhpUtils\ArrayUtil;
 
 class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
 {
@@ -212,6 +212,25 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
         );
         foreach ($extendMergeVars as $mergeVar) {
             $mergeVarsTemplate[$mergeVar->getTag()] = '__' . $mergeVar->getTag() . '__';
+        }
+
+        $hasTagField = ArrayUtil::some(
+            function (ExtendedMergeVar $var) {
+                return $var->getName() === 'tag_field';
+            },
+            $extendMergeVars
+        );
+        if ($hasTagField) {
+            $qb
+                ->join(
+                    'OroTagBundle:Tagging',
+                    'tagging',
+                    'WITH',
+                    'tagging.entityName = :entity_name AND tagging.recordId = t1.id'
+                )
+                ->join('tagging.tag', 'tag')
+                ->setParameter('entity_name', $staticSegment->getMarketingList()->getEntity());
+            $columnInformation['tag_field'] = 'GROUP_CONCAT(tag.name)';
         }
 
         $emailFieldExpr = $this->getEmailFieldExpression($qb, $staticSegment);

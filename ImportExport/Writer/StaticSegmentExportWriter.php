@@ -152,7 +152,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
         }
 
         $emailsToProcess = [];
-        $emailsIterator->next();
+        $emailsIterator->rewind();
         while ($emailsIterator->valid()) {
             $data = $emailsIterator->current();
             $emailsToProcess[$data['staticSegmentMemberId']] = $data['memberEmail'];

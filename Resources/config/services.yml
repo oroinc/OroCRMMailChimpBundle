@@ -1021,3 +1021,10 @@ services:
             - '@logger'
         tags:
             - { name: 'oro_message_queue.client.message_processor' }
+
+    oro_mailchimp.marketing_list_extend_merge_var_provider:
+        class: Oro\Bundle\MailChimpBundle\Provider\MarketingListExtendedMergeVarProvider
+        arguments:
+            - '@oro_entity.entity_field_provider'
+        tags:
+            - { name: oro_mailchimp.extended_merge_vars.provider }
