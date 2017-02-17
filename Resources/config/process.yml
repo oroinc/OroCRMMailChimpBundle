@@ -91,7 +91,6 @@ definitions:
                     - '@create_entity':
                         class: JMS\JobQueueBundle\Entity\Job
                         attribute: $.syncJob
-                        flush: true
                         arguments:
                             - 'oro:cron:mailchimp:export'
                             - [$.segmentArguments, '-v']
