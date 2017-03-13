@@ -47,21 +47,19 @@ class MemberExportReader extends AbstractIteratorBasedReader
             throw new InvalidConfigurationException('Member class name must be provided');
         }
 
-        if (!$this->getSourceIterator()) {
-            /** @var Channel $channel */
-            $channel = $this->doctrineHelper->getEntityReference(
-                $this->channelClassName,
-                $context->getOption('channel')
-            );
+        /** @var Channel $channel */
+        $channel = $this->doctrineHelper->getEntityReference(
+            $this->channelClassName,
+            $context->getOption('channel')
+        );
 
-            $iterator = new MemberExportListIterator(
-                $this->getSubscribersListIterator($channel),
-                $this->doctrineHelper
-            );
-            $iterator->setMemberClassName($this->memberClassName);
+        $iterator = new MemberExportListIterator(
+            $this->getSubscribersListIterator($channel),
+            $this->doctrineHelper
+        );
+        $iterator->setMemberClassName($this->memberClassName);
 
-            $this->setSourceIterator($iterator);
-        }
+        $this->setSourceIterator($iterator);
     }
 
     /**
