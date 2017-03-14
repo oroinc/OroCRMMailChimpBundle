@@ -9,7 +9,6 @@ use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Exception\InvalidConfigurationException;
-use OroCRM\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSyncIterator;
 
 class StaticSegmentReader extends AbstractIteratorBasedReader implements ClosableInterface
 {
@@ -76,20 +75,18 @@ class StaticSegmentReader extends AbstractIteratorBasedReader implements Closabl
             $context->getOption('channel')
         );
 
-        $iterator = $this->getSourceIterator();
-        if ($iterator) {
-            /** @var MemberSyncIterator $iterator */
-            $iterator->setMainIterator(
+        $sourceIterator = $this->getSourceIterator();
+        if (method_exists($sourceIterator, 'setMainIterator')) {
+            $sourceIterator->setMainIterator(
                 $this->getStaticSegmentIterator($channel, $context->getOption('segments'))
             );
-
-            $this->setSourceIterator($iterator);
         } else {
-            $this->setSourceIterator($this->getStaticSegmentIterator($channel, $context->getOption('segments')));
+            $sourceIterator = $this->getStaticSegmentIterator($channel, $context->getOption('segments'));
             // set isSelfCreatedIterator to true cause this iterator was created in reader instance
             // and it depends on context data
             $this->isSelfCreatedIterator = true;
         }
+        $this->setSourceIterator($sourceIterator);
     }
 
     /**
