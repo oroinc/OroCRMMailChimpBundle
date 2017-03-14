@@ -3,20 +3,14 @@
 namespace OroCRM\Bundle\MailChimpBundle\ImportExport\Step;
 
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
-use Akeneo\Bundle\BatchBundle\Item\ItemReaderInterface;
 
 use Oro\Bundle\BatchBundle\Step\StepExecutionWarningHandlerInterface;
 use Oro\Bundle\BatchBundle\Step\StepExecutor as BaseStepExecutor;
-use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;
+use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\AbstractIteratorBasedReader;
 use OroCRM\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
 
 class StepExecutor extends BaseStepExecutor
 {
-    /**
-     * @var ItemReaderInterface|IteratorBasedReader
-     */
-    protected $reader;
-
     /**
      * {@inheritdoc}
      */
@@ -52,7 +46,7 @@ class StepExecutor extends BaseStepExecutor
                     }
                 }
 
-                if ($this->reader instanceof IteratorBasedReader) {
+                if ($this->reader instanceof AbstractIteratorBasedReader) {
                     $sourceIterator = $this->reader->getSourceIterator();
                     if ($sourceIterator instanceof SubordinateReaderInterface && $sourceIterator->writeRequired()) {
                         $scheduleWrite = true;
