@@ -15,13 +15,13 @@
     },
     "require": {
         "php": ">=5.6",
-        "oro/crm": "1.x-dev",
+        "oro/crm": "2.1.*",
         "zfr/zfr-mailchimp": "2.0.*",
-        "oro/marketing": "1.x-dev"
+        "oro/marketing": "2.1.*"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev"
+            "dev-master": "2.1.x-dev"
         }
     }
 }
