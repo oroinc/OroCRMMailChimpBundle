@@ -3,6 +3,7 @@ namespace Oro\Bundle\MailChimpBundle\Async;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Bundle\IntegrationBundle\Authentication\Token\IntegrationTokenAwareTrait;
 use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
@@ -17,9 +18,12 @@ use Oro\Component\MessageQueue\Transport\MessageInterface;
 use Oro\Component\MessageQueue\Transport\SessionInterface;
 use Oro\Component\MessageQueue\Util\JSON;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscriberInterface
 {
+    use IntegrationTokenAwareTrait;
+
     /**
      * @var DoctrineHelper
      */
@@ -50,6 +54,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
      * @param ReverseSyncProcessor $reverseSyncProcessor
      * @param StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager
      * @param JobRunner $jobRunner
+     * @param TokenStorageInterface $tokenStorage
      * @param LoggerInterface $logger
      */
     public function __construct(
@@ -57,12 +62,14 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         ReverseSyncProcessor $reverseSyncProcessor,
         StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager,
         JobRunner $jobRunner,
+        TokenStorageInterface $tokenStorage,
         LoggerInterface $logger
     ) {
         $this->doctrineHelper = $doctrineHelper;
         $this->reverseSyncProcessor = $reverseSyncProcessor;
         $this->staticSegmentsMemberStateManager = $staticSegmentsMemberStateManager;
         $this->jobRunner = $jobRunner;
+        $this->tokenStorage = $tokenStorage;
         $this->logger = $logger;
         $this->reverseSyncProcessor->getLoggerStrategy()->setLogger($logger);
     }
@@ -117,6 +124,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         $ownerId = $message->getMessageId();
 
         $result = $this->jobRunner->runUnique($ownerId, $jobName, function () use ($body, $integration) {
+            $this->setTemporaryIntegrationToken($integration);
             return $this->processMessageData($body, $integration);
         });
 

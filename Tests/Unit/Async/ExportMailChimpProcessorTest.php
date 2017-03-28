@@ -11,6 +11,7 @@ use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor;
 use Oro\Bundle\MailChimpBundle\Async\Topics;
 use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
+use Oro\Bundle\OrganizationBundle\Entity\Organization;
 use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
 use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
 use Oro\Component\MessageQueue\Job\JobRunner;
@@ -18,6 +19,7 @@ use Oro\Component\MessageQueue\Transport\Null\NullMessage;
 use Oro\Component\MessageQueue\Transport\Null\NullSession;
 use Oro\Component\Testing\ClassExtensionTrait;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @dbIsolationPerTest
@@ -43,6 +45,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
             $this->createJobRunnerMock(),
+            $this->createTokenStorageMock(),
             $this->createLoggerMock()
         );
     }
@@ -69,6 +72,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
             $this->createJobRunnerMock(),
+            $this->createTokenStorageMock(),
             $logger
         );
 
@@ -94,6 +98,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
             $this->createJobRunnerMock(),
+            $this->createTokenStorageMock(),
             $logger
         );
 
@@ -113,6 +118,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
             $this->createJobRunnerMock(),
+            $this->createTokenStorageMock(),
             $this->createLoggerMock()
         );
 
@@ -140,6 +146,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
             $this->createJobRunnerMock(),
+            $this->createTokenStorageMock(),
             $logger
         );
 
@@ -152,6 +159,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $integration = new Integration();
         $integration->setEnabled(false);
+        $integration->setOrganization(new Organization());
 
         $doctrineHelper = $this->createDoctrineHelperStub($integration);
 
@@ -171,6 +179,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
             $this->createJobRunnerMock(),
+            $this->createTokenStorageMock(),
             $logger
         );
 
@@ -189,6 +198,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
 
         $integration = new Integration();
         $integration->setEnabled(true);
+        $integration->setOrganization(new Organization());
 
         $doctrineHelper = $this->createDoctrineHelperStub($integration);
 
@@ -197,6 +207,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
             $this->createReverseSyncProcessorMock(),
             $this->createStaticSegmentsMemberStateManagerMock(),
             $jobRunner,
+            $this->createTokenStorageMock(),
             $this->createLoggerMock()
         );
 
@@ -287,6 +298,14 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         ;
 
         return $entityManagerMock;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|TokenStorageInterface
+     */
+    private function createTokenStorageMock()
+    {
+        return $this->createMock(TokenStorageInterface::class);
     }
 
     /**
