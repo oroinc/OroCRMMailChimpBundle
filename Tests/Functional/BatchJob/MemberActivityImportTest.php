@@ -19,6 +19,8 @@ class MemberActivityImportTest extends WebTestCase
 
     public function setUp()
     {
+        $this->markTestSkipped('CRM-8206');
+
         $this->initClient();
 
         $this->jobExecutor = $this->getContainer()->get('oro_importexport.job_executor');
