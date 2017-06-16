@@ -2,6 +2,8 @@
 
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -10,12 +12,14 @@ use Psr\Log\LoggerInterface;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIteratorInterface;
+use Oro\Bundle\ImportExportBundle\Context\ContextAwareInterface;
+use Oro\Bundle\ImportExportBundle\Context\ContextInterface;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
-class StaticSegmentExportWriter extends AbstractExportWriter
+class StaticSegmentExportWriter extends AbstractExportWriter implements ContextAwareInterface
 {
     const BATCH_SIZE = 2000;
 
@@ -38,6 +42,28 @@ class StaticSegmentExportWriter extends AbstractExportWriter
      * @var EntityManager
      */
     protected $manager;
+
+    /**
+     * @var ContextInterface
+     */
+    protected $context;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setImportExportContext(ContextInterface $context)
+    {
+        $this->context = $context;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStepExecution(StepExecution $stepExecution)
+    {
+        parent::setStepExecution($stepExecution);
+        $this->setImportExportContext($this->contextRegistry->getByStepExecution($this->stepExecution));
+    }
 
     /**
      * @param string $staticSegmentMemberClassName
@@ -66,7 +92,6 @@ class StaticSegmentExportWriter extends AbstractExportWriter
 
         foreach ($items as $staticSegment) {
             $this->addStaticListSegment($staticSegment);
-
             $this->handleMembersUpdate(
                 $staticSegment,
                 StaticSegmentMember::STATE_ADD,
@@ -126,6 +151,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter
                 $this->logger->debug(sprintf('StaticSegment with id "%s" added', $staticSegment->getOriginId()));
 
                 parent::write([$staticSegment]);
+                $this->context->incrementAddCount();
             }
         }
     }
