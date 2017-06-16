@@ -5,9 +5,12 @@ namespace Oro\Bundle\MailChimpBundle\ImportExport\Step;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 
 use Oro\Bundle\BatchBundle\Step\ItemStep as BaseItemStep;
+use Oro\Bundle\ImportExportBundle\Job\Step\AddToJobSummaryStepTrait;
 
 class ItemStep extends BaseItemStep
 {
+    use AddToJobSummaryStepTrait;
+
     /** @var StepExecutor */
     protected $stepExecutor;
 
@@ -36,5 +39,14 @@ class ItemStep extends BaseItemStep
 
         $this->stepExecutor->execute($this);
         $this->flushStepElements();
+    }
+
+    /**
+     * @param StepExecution $stepExecution
+     */
+    protected function initializeStepElements(StepExecution $stepExecution)
+    {
+        parent::initializeStepElements($stepExecution);
+        $this->addToJobSummaryToStepExecution($stepExecution);
     }
 }

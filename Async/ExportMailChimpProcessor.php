@@ -1,61 +1,60 @@
 <?php
 namespace Oro\Bundle\MailChimpBundle\Async;
 
+use Psr\Log\LoggerInterface;
+
 use Doctrine\ORM\EntityManagerInterface;
+
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+
+use Oro\Component\MessageQueue\Transport\MessageInterface;
+use Oro\Component\MessageQueue\Transport\SessionInterface;
+use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
+use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
+use Oro\Component\MessageQueue\Job\JobRunner;
+use Oro\Component\MessageQueue\Util\JSON;
+
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+
+use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
+use Oro\Bundle\ImportExportBundle\Job\Context\SelectiveContextAggregator;
+
 use Oro\Bundle\IntegrationBundle\Authentication\Token\IntegrationTokenAwareTrait;
 use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
+
 use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
-use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
 use Oro\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
-use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
-use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
-use Oro\Component\MessageQueue\Job\JobRunner;
-use Oro\Component\MessageQueue\Transport\MessageInterface;
-use Oro\Component\MessageQueue\Transport\SessionInterface;
-use Oro\Component\MessageQueue\Util\JSON;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 
 class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscriberInterface
 {
     use IntegrationTokenAwareTrait;
 
-    /**
-     * @var DoctrineHelper
-     */
+    /** @var DoctrineHelper */
     private $doctrineHelper;
 
-    /**
-     * @var ReverseSyncProcessor
-     */
+    /** @var ReverseSyncProcessor */
     private $reverseSyncProcessor;
 
-    /**
-     * @var StaticSegmentsMemberStateManager
-     */
+    /** @var StaticSegmentsMemberStateManager */
     private $staticSegmentsMemberStateManager;
 
-    /**
-     * @var JobRunner
-     */
+    /** @var JobRunner */
     private $jobRunner;
 
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
 
     /**
-     * @param DoctrineHelper $doctrineHelper
-     * @param ReverseSyncProcessor $reverseSyncProcessor
+     * @param DoctrineHelper                   $doctrineHelper
+     * @param ReverseSyncProcessor             $reverseSyncProcessor
      * @param StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager
-     * @param JobRunner $jobRunner
-     * @param TokenStorageInterface $tokenStorage
-     * @param LoggerInterface $logger
+     * @param JobRunner                        $jobRunner
+     * @param TokenStorageInterface            $tokenStorage
+     * @param LoggerInterface                  $logger
      */
     public function __construct(
         DoctrineHelper $doctrineHelper,
@@ -82,16 +81,16 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         $body = JSON::decode($message->getBody());
         $body = array_replace_recursive([
             'integrationId' => null,
-            'segmentsIds' => [],
+            'segmentsIds'   => [],
         ], $body);
 
-        if (! $body['integrationId']) {
+        if (!$body['integrationId']) {
             $this->logger->critical('The message invalid. It must have integrationId set', ['message' => $message]);
 
             return self::REJECT;
         }
 
-        if (! $body['segmentsIds']) {
+        if (!$body['segmentsIds']) {
             $this->logger->critical('The message invalid. It must have segmentsIds set', ['message' => $message]);
 
             return self::REJECT;
@@ -103,7 +102,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         /** @var Integration $integration */
         $integration = $em->find(Integration::class, $body['integrationId']);
 
-        if (! $integration) {
+        if (!$integration) {
             $this->logger->error(
                 sprintf('The integration not found: %s', $body['integrationId']),
                 ['message' => $message]
@@ -111,7 +110,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
 
             return self::REJECT;
         }
-        if (! $integration->isEnabled()) {
+        if (!$integration->isEnabled()) {
             $this->logger->error(
                 sprintf('The integration is not enabled: %s', $body['integrationId']),
                 ['message' => $message]
@@ -120,11 +119,12 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
             return self::REJECT;
         }
 
-        $jobName = 'oro_mailchimp:export_mailchimp:'.$body['integrationId'];
+        $jobName = 'oro_mailchimp:export_mailchimp:' . $body['integrationId'];
         $ownerId = $message->getMessageId();
 
         $result = $this->jobRunner->runUnique($ownerId, $jobName, function () use ($body, $integration) {
             $this->setTemporaryIntegrationToken($integration);
+
             return $this->processMessageData($body, $integration);
         });
 
@@ -132,10 +132,12 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
     }
 
     /**
-     * @param array $body
+     * @param array       $body
+     * @param Integration $integration
+     *
      * @return bool
      */
-    protected function processMessageData(array $body, $integration)
+    protected function processMessageData(array $body, Integration $integration)
     {
         /** @var EntityManagerInterface $em */
         $em = $this->doctrineHelper->getEntityManagerForClass(Integration::class);
@@ -147,7 +149,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         $staticSegmentRepository = $this->doctrineHelper->getEntityRepository(StaticSegment::class);
 
         $segmentsIdsToSync = [];
-        $syncStatuses = [StaticSegment::STATUS_NOT_SYNCED, StaticSegment::STATUS_SCHEDULED];
+        $syncStatuses      = [StaticSegment::STATUS_NOT_SYNCED, StaticSegment::STATUS_SCHEDULED];
         foreach ($segmentsIds as $segmentId) {
             /** @var StaticSegment $staticSegment */
             $staticSegment = $staticSegmentRepository->find($segmentId);
@@ -157,7 +159,10 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
             }
         }
 
-        $parameters = ['segments' => $segmentsIdsToSync];
+        $parameters = [
+            'segments'                               => $segmentsIdsToSync,
+            JobExecutor::JOB_CONTEXT_AGGREGATOR_TYPE => SelectiveContextAggregator::TYPE
+        ];
         $this->reverseSyncProcessor->process($integration, MemberConnector::TYPE, $parameters);
         $this->reverseSyncProcessor->process($integration, StaticSegmentConnector::TYPE, $parameters);
 
@@ -175,8 +180,8 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
 
     /**
      * @param StaticSegment $staticSegment
-     * @param string $status
-     * @param bool $lastSynced
+     * @param string        $status
+     * @param bool          $lastSynced
      */
     protected function setStaticSegmentStatus(StaticSegment $staticSegment, $status, $lastSynced = false)
     {
