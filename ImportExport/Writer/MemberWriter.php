@@ -40,6 +40,7 @@ class MemberWriter extends AbstractExportWriter
         parent::write($items);
 
         $this->logger->info(sprintf('%d members processed', count($items)));
+        $this->stepExecution->setWriteCount($this->stepExecution->getWriteCount() + count($items));
     }
 
     /**
