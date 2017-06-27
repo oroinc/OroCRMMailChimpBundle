@@ -897,7 +897,6 @@ class SubscribersList implements OriginAwareInterface
      */
     public function getMergeVarConfig()
     {
-
         return (array)$this->mergeVarConfig;
     }
 
