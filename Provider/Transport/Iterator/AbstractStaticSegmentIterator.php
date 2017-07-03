@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
-use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProvider;
+use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProviderInterface;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 
@@ -21,7 +21,7 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
     protected $marketingListProvider;
 
     /**
-     * @var OwnershipMetadataProvider
+     * @var OwnershipMetadataProviderInterface
      */
     protected $ownershipMetadataProvider;
 
@@ -42,21 +42,21 @@ abstract class AbstractStaticSegmentIterator extends AbstractSubordinateIterator
 
     /**
      * @param MarketingListProvider $marketingListProvider
-     * @param OwnershipMetadataProvider $ownershipMetadataProvider
+     * @param OwnershipMetadataProviderInterface $ownershipMetadataProvider
      * @param string $removedItemClassName
      * @param string $unsubscribedItemClassName
      * @internal param MarketingListQueryBuilderAdapter $marketingListQueryBuilderAdapter
      */
     public function __construct(
         MarketingListProvider $marketingListProvider,
-        OwnershipMetadataProvider $ownershipMetadataProvider,
+        OwnershipMetadataProviderInterface $ownershipMetadataProvider,
         $removedItemClassName,
         $unsubscribedItemClassName
     ) {
-        $this->marketingListProvider            = $marketingListProvider;
-        $this->ownershipMetadataProvider        = $ownershipMetadataProvider;
-        $this->removedItemClassName             = $removedItemClassName;
-        $this->unsubscribedItemClassName        = $unsubscribedItemClassName;
+        $this->marketingListProvider = $marketingListProvider;
+        $this->ownershipMetadataProvider = $ownershipMetadataProvider;
+        $this->removedItemClassName = $removedItemClassName;
+        $this->unsubscribedItemClassName = $unsubscribedItemClassName;
     }
 
     /**
