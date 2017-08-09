@@ -1,7 +1,7 @@
 {
     "name": "oro/crm-mail-chimp",
     "description": "OroCRM MailChimp integration",
-    "homepage": "https://github.com/orocrm/OroCRMMailChimpBundle.git",
+    "homepage": "https://github.com/oroinc/OroCRMMailChimpBundle.git",
     "license": "OSL-3.0",
     "authors": [
         {
