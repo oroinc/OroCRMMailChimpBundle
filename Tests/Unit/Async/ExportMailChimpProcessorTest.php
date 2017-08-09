@@ -64,7 +64,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $logger
             ->expects($this->once())
             ->method('critical')
-            ->with('The message invalid. It must have integrationId set', ['message' => $message])
+            ->with('The message invalid. It must have integrationId set')
         ;
 
         $processor = new ExportMailChimpProcessor(
@@ -90,7 +90,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $logger
             ->expects($this->once())
             ->method('critical')
-            ->with('The message invalid. It must have segmentsIds set', ['message' => $message])
+            ->with('The message invalid. It must have segmentsIds set')
         ;
 
         $processor = new ExportMailChimpProcessor(
@@ -138,7 +138,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $logger
             ->expects($this->once())
             ->method('error')
-            ->with('The integration not found: theIntegrationId', ['message' => $message])
+            ->with('The integration not found: theIntegrationId')
         ;
 
         $processor = new ExportMailChimpProcessor(
@@ -171,7 +171,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
         $logger
             ->expects($this->once())
             ->method('error')
-            ->with('The integration is not enabled: theIntegrationId', ['message' => $message])
+            ->with('The integration is not enabled: theIntegrationId')
         ;
 
         $processor = new ExportMailChimpProcessor(

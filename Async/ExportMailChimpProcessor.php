@@ -85,13 +85,13 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         ], $body);
 
         if (!$body['integrationId']) {
-            $this->logger->critical('The message invalid. It must have integrationId set', ['message' => $message]);
+            $this->logger->critical('The message invalid. It must have integrationId set');
 
             return self::REJECT;
         }
 
         if (!$body['segmentsIds']) {
-            $this->logger->critical('The message invalid. It must have segmentsIds set', ['message' => $message]);
+            $this->logger->critical('The message invalid. It must have segmentsIds set');
 
             return self::REJECT;
         }
@@ -104,16 +104,14 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
 
         if (!$integration) {
             $this->logger->error(
-                sprintf('The integration not found: %s', $body['integrationId']),
-                ['message' => $message]
+                sprintf('The integration not found: %s', $body['integrationId'])
             );
 
             return self::REJECT;
         }
         if (!$integration->isEnabled()) {
             $this->logger->error(
-                sprintf('The integration is not enabled: %s', $body['integrationId']),
-                ['message' => $message]
+                sprintf('The integration is not enabled: %s', $body['integrationId'])
             );
 
             return self::REJECT;
