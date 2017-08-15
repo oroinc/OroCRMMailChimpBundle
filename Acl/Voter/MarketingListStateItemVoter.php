@@ -132,11 +132,13 @@ class MarketingListStateItemVoter extends AbstractEntityVoter
             )
             ->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('ml.id', $item->getMarketingList()->getId()),
-                    $qb->expr()->in('mmb.email', $contactInformationValues),
+                    $qb->expr()->eq('ml.id', ':marketingListId'),
+                    $qb->expr()->in('mmb.email', ':contactInformationValues'),
                     $qb->expr()->in('mmb.status', ':statuses')
                 )
             )
+            ->setParameter('marketingListId', $item->getMarketingList()->getId())
+            ->setParameter('contactInformationValues', $contactInformationValues)
             ->setParameter('statuses', [Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED]);
 
         return $qb;
