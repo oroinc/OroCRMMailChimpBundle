@@ -171,7 +171,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
             /** @var StaticSegment $staticSegment */
             $staticSegment = $staticSegmentRepository->find($segmentId);
             if ($staticSegment) {
-                $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED);
+                $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED, true);
             }
         }
 
