@@ -280,7 +280,6 @@ class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
         $qb
             ->expects($this->any())
             ->method('setParameter')
-            ->with($this->isType('string'), [Member::STATUS_UNSUBSCRIBED, Member::STATUS_CLEANED])
             ->will($this->returnSelf());
 
         $query = $this
