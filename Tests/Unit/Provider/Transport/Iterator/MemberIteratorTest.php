@@ -44,6 +44,7 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testIteratorWorks(array $parameters, array $expectedValueMap, array $expected)
     {
+        $this->markTestSkipped('Unskip in scope of CRM-8451');
         $list = $this->getMock('OroCRM\\Bundle\\MailChimpBundle\\Entity\\SubscribersList');
         $list->expects($this->atLeastOnce())
             ->method('getOriginId')
