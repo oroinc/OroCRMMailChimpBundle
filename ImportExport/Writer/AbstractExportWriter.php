@@ -7,7 +7,7 @@ use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
-abstract class AbstractExportWriter extends PersistentBatchWriter
+abstract class AbstractExportWriter extends PersistentBatchWriter implements ClearableInterface
 {
     /**
      * @var TransportInterface|MailChimpTransport
@@ -78,5 +78,24 @@ abstract class AbstractExportWriter extends PersistentBatchWriter
                 );
             }
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clear()
+    {
+        return parent::doClear();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function doClear()
+    {
+        // Don't do clear in PersistentBatchWriter::writer()
+        // Mailchimp bundle uses iterators which prefetch and cache entities. (ex. BufferedIdentityQueryResultIterator)
+        // It causes issues with detached entities after EntityManager::clear().
+        // see CRM-8490
     }
 }
