@@ -9,6 +9,7 @@ use Oro\Bundle\BatchBundle\Step\StepExecutionWarningHandlerInterface;
 use Oro\Bundle\BatchBundle\Step\StepExecutor as BaseStepExecutor;
 use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;
 use Oro\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
+use Oro\Bundle\MailChimpBundle\ImportExport\Writer\ClearableInterface;
 
 class StepExecutor extends BaseStepExecutor
 {
@@ -64,10 +65,25 @@ class StepExecutor extends BaseStepExecutor
                 $this->write($itemsToWrite, $warningHandler);
             }
 
+            // Clear writer state at the end of iteration of reader
+            $this->clearWriter();
+
             $this->ensureResourcesReleased($warningHandler);
         } catch (\Exception $error) {
+            $this->clearWriter();
             $this->ensureResourcesReleased($warningHandler);
             throw $error;
+        }
+    }
+
+    /**
+     * Clear writer state.
+     * Manually call writer::clear() instead of automatically inside writer::write()
+     */
+    protected function clearWriter()
+    {
+        if ($this->writer instanceof ClearableInterface) {
+            $this->writer->clear();
         }
     }
 }
