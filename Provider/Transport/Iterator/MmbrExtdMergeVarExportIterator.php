@@ -2,9 +2,11 @@
 
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Oro\Component\Exception\UnexpectedTypeException;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\ImportExport\Reader\SubordinateReaderInterface;
 
 class MmbrExtdMergeVarExportIterator extends AbstractSubordinateIterator implements SubordinateReaderInterface
@@ -56,6 +58,10 @@ class MmbrExtdMergeVarExportIterator extends AbstractSubordinateIterator impleme
      */
     protected function createSubordinateIterator($staticSegment)
     {
+        if (!$staticSegment instanceof StaticSegment) {
+            throw new UnexpectedTypeException($staticSegment, StaticSegment::class);
+        }
+
         $qb = $this->doctrineHelper
             ->getEntityManager($this->mmbrExtdMergeVarClassName)
             ->getRepository($this->mmbrExtdMergeVarClassName)
