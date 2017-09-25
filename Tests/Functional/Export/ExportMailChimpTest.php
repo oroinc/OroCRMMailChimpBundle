@@ -2,9 +2,11 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Export;
 
+use Doctrine\Common\Cache\Cache;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadB2bChannelData;
 use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentB2bCustomerData;
 use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadChannelData;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
@@ -29,6 +31,7 @@ class ExportMailChimpTest extends WebTestCase
         $this->initClient();
 
         $this->loadFixtures([
+            LoadB2bChannelData::class, // add new chanel what uses B2bCustomer entity.
             LoadChannelData::class,
             LoadStaticSegmentB2bCustomerData::class
         ]);
@@ -50,6 +53,16 @@ class ExportMailChimpTest extends WebTestCase
 
     public function testExportSegmentsSeveralTimesWithinOneRequest()
     {
+        // we should mock the oro_channel.state_cache service because
+        //it does not update the real cache files during testing because of dbIsolationPerTest annotation
+        $cache = $this->createMock(Cache::class);
+        static::$kernel->getContainer()->set('oro_channel.state_cache', $cache);
+        $cache->expects($this->any())
+            ->method('fetch')
+            ->willReturn(false);
+        $cache->expects($this->any())
+            ->method('save');
+
         $parameters =  [
             'segmentsIds' => [
                 $this->getReference('mailchimp:segment_b2b')->getId(),
