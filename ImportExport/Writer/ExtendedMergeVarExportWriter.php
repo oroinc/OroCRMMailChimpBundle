@@ -120,43 +120,4 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
         }
         return $successItems;
     }
-
-    /**
-     * @param SubscribersList $subscribersList
-     * @return array
-     */
-    protected function getSubscribersListMergeVars(SubscribersList $subscribersList)
-    {
-        $response = $this->transport->getListMergeVars(
-            [
-                'id' => [
-                    $subscribersList->getOriginId()
-                ]
-            ]
-        );
-
-        $this->handleResponse($response);
-
-        if (!empty($response['errors'])) {
-            throw new \RuntimeException('Can not get list of merge vars.');
-        }
-
-        return $this->extractMergeVarsFromResponse($response);
-    }
-
-    /**
-     * @param array $response
-     * @return array
-     */
-    protected function extractMergeVarsFromResponse(array $response)
-    {
-        if (!isset($response['data'])) {
-            throw new \RuntimeException('Can not extract merge vars data from response.');
-        }
-        $data = reset($response['data']);
-        if (!is_array($data) || !isset($data['merge_vars']) || !is_array($data['merge_vars'])) {
-            return [];
-        }
-        return $data['merge_vars'];
-    }
 }
