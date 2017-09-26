@@ -974,13 +974,13 @@ services:
     oro_mailchimp.iterator.extended_merge_var_add:
         class: %oro_mailchimp.iterator.extended_merge_var_add.class%
         arguments:
-            - "@oro_mailchimp.extended_merge_var.composite_provider"
+            - "@oro_mailchimp.extended_merge_var.filtered_provider"
 
     oro_mailchimp.iterator.extended_merge_var_remove:
         class: %oro_mailchimp.iterator.extended_merge_var_remove.class%
         arguments:
             - "@oro_entity.doctrine_helper"
-            - "@oro_mailchimp.extended_merge_var.composite_provider"
+            - "@oro_mailchimp.extended_merge_var.filtered_provider"
             - %oro_mailchimp.entity.extended_merge_var.class%
 
     oro_mailchimp.iterator.mmbr_extd_merge_var:
@@ -988,7 +988,7 @@ services:
         parent: oro_mailchimp.iterator.static_segment_members.abstract
         calls:
             - [setDoctrineHelper, ["@oro_entity.doctrine_helper"]]
-            - [setExtendMergeVarsProvider, ["@oro_mailchimp.extended_merge_var.composite_provider"]]
+            - [setExtendMergeVarsProvider, ["@oro_mailchimp.extended_merge_var.filtered_provider"]]
 
     # Placeholder
     oro_mailchimp.placeholder.filter.sync_status:
@@ -1006,6 +1006,13 @@ services:
 
     oro_mailchimp.extended_merge_var.composite_provider:
         class: %oro_mailchimp.extended_merge_var.composite_provider.class%
+
+    oro_mailchimp.extended_merge_var.filtered_provider:
+        class: Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\FilteredMergeVarsProvider
+        arguments:
+          - '@oro_mailchimp.extended_merge_var.composite_provider'
+          - '@oro_locale.dql.formatter.name'
+          - '@oro_marketing_list.provider.contact_information_fields'
 
     oro_mailchimp.marketinglist.datagrid_provider:
         class: %oro_mailchimp.marketinglist.datagrid_provider.class%
