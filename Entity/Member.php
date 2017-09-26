@@ -757,7 +757,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
 
     /**
      * @param array|null $data
-     * @return SubscribersList
+     * @return Member
      */
     public function setMergeVarValues(array $data = null)
     {
