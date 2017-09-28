@@ -65,50 +65,12 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
-        $this->assertRequiredDependencies();
-
-        if (!$this->extendMergeVarsProvider->isApplicable($staticSegment->getMarketingList())) {
-            return new \EmptyIterator();
-        }
-
-        if (!$staticSegment->getExtendedMergeVars()) {
-            return new \EmptyIterator();
-        }
-
-        $qb = $this->getIteratorQueryBuilder($staticSegment);
-
-        $marketingList = $staticSegment->getMarketingList();
-        $memberIdentifier = self::MEMBER_ALIAS . '.id';
-        $fieldExpr = $this->fieldHelper
-            ->getFieldExpr(
-                $marketingList->getEntity(),
-                $qb,
-                $this->doctrineHelper->getSingleEntityIdentifierFieldName($marketingList->getEntity())
-            );
-        $qb->addSelect($fieldExpr . ' AS entity_id');
-        $qb->addSelect($memberIdentifier . ' AS member_id');
-
-        $qb->andWhere(
-            $qb->expr()->andX(
-                $qb->expr()->isNotNull($memberIdentifier)
-            )
-        );
-
-        $bufferedIterator = new BufferedIdentityQueryResultIterator($qb);
-        $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
-
-        $uniqueMembers = &$this->uniqueMembers;
-
         return new CallbackFilterIteratorCompatible(
-            $bufferedIterator,
-            function (&$current) use ($staticSegment, &$uniqueMembers) {
+            $this->createBufferedIterator($staticSegment),
+            function (&$current) use ($staticSegment) {
                 if (is_array($current)) {
-                    if (!empty($current['member_id']) && in_array($current['member_id'], $uniqueMembers, true)) {
-                        return false;
-                    }
                     $current['subscribersList_id'] = $staticSegment->getSubscribersList()->getId();
                     $current['static_segment_id']  = $staticSegment->getId();
-                    $uniqueMembers[] = $current['member_id'];
                     unset($current['id']);
                 }
                 return true;
@@ -156,5 +118,47 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
         $this->applyOrganizationRestrictions($staticSegment, $qb);
 
         return $qb;
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     *
+     * @return \EmptyIterator|BufferedIdentityQueryResultIterator
+     */
+    protected function createBufferedIterator($staticSegment)
+    {
+        $this->assertRequiredDependencies();
+
+        if (!$this->extendMergeVarsProvider->isApplicable($staticSegment->getMarketingList())) {
+            return new \EmptyIterator();
+        }
+
+        if (!$staticSegment->getExtendedMergeVars()) {
+            return new \EmptyIterator();
+        }
+
+        $qb = $this->getIteratorQueryBuilder($staticSegment);
+
+        $marketingList = $staticSegment->getMarketingList();
+        $memberIdentifier = self::MEMBER_ALIAS . '.id';
+        $fieldExpr = $this->fieldHelper
+            ->getFieldExpr(
+                $marketingList->getEntity(),
+                $qb,
+                $this->doctrineHelper->getSingleEntityIdentifierFieldName($marketingList->getEntity())
+            );
+        $qb->addSelect($fieldExpr . ' AS entity_id');
+        $qb->addSelect($memberIdentifier . ' AS member_id');
+
+        $qb->andWhere(
+            $qb->expr()->andX(
+                $qb->expr()->isNotNull($memberIdentifier)
+            )
+        );
+
+        $bufferedIterator = new BufferedIdentityQueryResultIterator($qb);
+        $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
+
+        return $bufferedIterator;
     }
 }
