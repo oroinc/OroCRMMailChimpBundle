@@ -192,14 +192,6 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
      */
     protected function addMergeVars(QueryBuilder $qb, StaticSegment $staticSegment)
     {
-        $mergeVarFields = $this->mergeVarsProvider->getMergeVarFields($staticSegment->getSubscribersList());
-        $mergeVarsTemplate = [];
-
-        // Prepare merge vars template
-        $mergeVarsTemplate[$mergeVarFields->getEmail()->getTag()] = self::EMAIL_SEPARATOR;
-        $mergeVarsTemplate[$mergeVarFields->getFirstName()->getTag()] = self::FIRST_NAME_SEPARATOR;
-        $mergeVarsTemplate[$mergeVarFields->getLastName()->getTag()] = self::LAST_NAME_SEPARATOR;
-
         $columnInformation = $this->marketingListProvider->getColumnInformation($staticSegment->getMarketingList());
         $extendMergeVars = $this->getExtendMergeVars($qb->getEntityManager());
 
@@ -210,6 +202,8 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
                 return array_key_exists($mergeVar->getName(), $columnInformation);
             }
         );
+
+        $mergeVarsTemplate = $this->getMergeVarsTemplate($staticSegment);
         foreach ($extendMergeVars as $mergeVar) {
             $mergeVarsTemplate[$mergeVar->getTag()] = '__' . $mergeVar->getTag() . '__';
         }
@@ -245,6 +239,29 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
         if ($mergeVarsExpr) {
             $qb->addSelect($mergeVarsExpr . ' as merge_vars');
         }
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     * @return array
+     */
+    protected function getMergeVarsTemplate(StaticSegment $staticSegment)
+    {
+        $mergeVarFields = $this->mergeVarsProvider->getMergeVarFields($staticSegment->getSubscribersList());
+        $mergeVarsTemplate = [];
+
+        // Prepare merge vars template
+        if ($mergeVarFields->getEmail()) {
+            $mergeVarsTemplate[$mergeVarFields->getEmail()->getTag()] = self::EMAIL_SEPARATOR;
+        }
+        if ($mergeVarFields->getFirstName()) {
+            $mergeVarsTemplate[$mergeVarFields->getFirstName()->getTag()] = self::FIRST_NAME_SEPARATOR;
+        }
+        if ($mergeVarFields->getLastName()) {
+            $mergeVarsTemplate[$mergeVarFields->getLastName()->getTag()] = self::LAST_NAME_SEPARATOR;
+        }
+
+        return $mergeVarsTemplate;
     }
 
     /**
