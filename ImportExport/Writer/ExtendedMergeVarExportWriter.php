@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Psr\Log\LoggerInterface;
 
 class ExtendedMergeVarExportWriter extends AbstractExportWriter
 {
@@ -87,10 +88,20 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
             $this
                 ->handleResponse(
                     $response,
-                    function ($response) use (&$successItems, $each) {
+                    function ($response, LoggerInterface $logger) use (&$successItems, $each) {
                         if (empty($response['errors'])) {
                             $each->markSynced();
                             $successItems[] = $each;
+                        }
+
+                        if (!empty($response['errors']) && is_array($response['errors'])) {
+                            $logger->error(
+                                'Mailchimp error occurs during execution "addListMergeVar" method',
+                                [
+                                    'each_id' => $each->getId(),
+                                    'each_label' => $each->getLabel(),
+                                ]
+                            );
                         }
                     }
                 );
