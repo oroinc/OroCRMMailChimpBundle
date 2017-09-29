@@ -6,6 +6,7 @@ use Oro\Component\PhpUtils\ArrayUtil;
 use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 abstract class AbstractExportWriter extends PersistentBatchWriter implements ClearableInterface
 {
@@ -73,8 +74,9 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Cle
 
         if (!empty($response['errors']) && is_array($response['errors'])) {
             foreach ($response['errors'] as $error) {
-                $this->logger->alert(
-                    sprintf('[Error #%s] %s', $error['code'], $error['error'])
+                $this->logger->error(
+                    'Mailchimp returns error from the server: code: "{code}", message: "{message}"',
+                    ['code' => $error['code'], 'message' => $error['error'], 'errorData' => $error]
                 );
             }
         }
@@ -97,5 +99,44 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Cle
         // Mailchimp bundle uses iterators which prefetch and cache entities. (ex. BufferedIdentityQueryResultIterator)
         // It causes issues with detached entities after EntityManager::clear().
         // see CRM-8490
+    }
+
+    /**
+     * @param SubscribersList $subscribersList
+     * @return array
+     */
+    protected function getSubscribersListMergeVars(SubscribersList $subscribersList)
+    {
+        $response = $this->transport->getListMergeVars(
+            [
+                'id' => [
+                    $subscribersList->getOriginId()
+                ]
+            ]
+        );
+
+        $this->handleResponse($response);
+
+        if (!empty($response['errors'])) {
+            throw new \RuntimeException('Can not get list of merge vars.');
+        }
+
+        return $this->extractMergeVarsFromResponse($response);
+    }
+
+    /**
+     * @param array $response
+     * @return array
+     */
+    protected function extractMergeVarsFromResponse(array $response)
+    {
+        if (!isset($response['data'])) {
+            throw new \RuntimeException('Can not extract merge vars data from response.');
+        }
+        $data = reset($response['data']);
+        if (!is_array($data) || !isset($data['merge_vars']) || !is_array($data['merge_vars'])) {
+            return [];
+        }
+        return $data['merge_vars'];
     }
 }

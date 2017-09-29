@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Psr\Log\LoggerInterface;
 
 class ExtendedMergeVarExportWriter extends AbstractExportWriter
 {
@@ -87,10 +88,20 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
             $this
                 ->handleResponse(
                     $response,
-                    function ($response) use (&$successItems, $each) {
+                    function ($response, LoggerInterface $logger) use (&$successItems, $each) {
                         if (empty($response['errors'])) {
                             $each->markSynced();
                             $successItems[] = $each;
+                        }
+
+                        if (!empty($response['errors']) && is_array($response['errors'])) {
+                            $logger->error(
+                                'Mailchimp error occurs during execution "addListMergeVar" method',
+                                [
+                                    'each_id' => $each->getId(),
+                                    'each_label' => $each->getLabel(),
+                                ]
+                            );
                         }
                     }
                 );
@@ -124,39 +135,22 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
     /**
      * @param SubscribersList $subscribersList
      * @return array
+     *
+     * @deprecated in 2.5 this method will be removed from here to parent class
      */
     protected function getSubscribersListMergeVars(SubscribersList $subscribersList)
     {
-        $response = $this->transport->getListMergeVars(
-            [
-                'id' => [
-                    $subscribersList->getOriginId()
-                ]
-            ]
-        );
-
-        $this->handleResponse($response);
-
-        if (!empty($response['errors'])) {
-            throw new \RuntimeException('Can not get list of merge vars.');
-        }
-
-        return $this->extractMergeVarsFromResponse($response);
+        return parent::getSubscribersListMergeVars($subscribersList);
     }
 
     /**
      * @param array $response
      * @return array
+     *
+     * @deprecated in 2.5 this method will be removed from here to parent class
      */
     protected function extractMergeVarsFromResponse(array $response)
     {
-        if (!isset($response['data'])) {
-            throw new \RuntimeException('Can not extract merge vars data from response.');
-        }
-        $data = reset($response['data']);
-        if (!is_array($data) || !isset($data['merge_vars']) || !is_array($data['merge_vars'])) {
-            return [];
-        }
-        return $data['merge_vars'];
+        return parent::extractMergeVarsFromResponse($response);
     }
 }

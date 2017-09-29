@@ -19,8 +19,15 @@ class MemberWriter extends AbstractExportWriter
         $item = $items[0];
         $this->transport->init($item->getChannel()->getTransport());
 
+        $remoteMergeVars = $this->getSubscribersListMergeVars($item->getSubscribersList());
+        $item->getSubscribersList()->setMergeVarConfig($remoteMergeVars);
+        $remoteMergeVarsTags = array_map(function (array $var) {
+            return $var['tag'];
+        }, $remoteMergeVars);
+
         $membersBySubscriberList = [];
         foreach ($items as $member) {
+            $member = $this->filterMergeVars($member, $remoteMergeVarsTags);
             $membersBySubscriberList[$member->getSubscribersList()->getOriginId()][] = $member;
         }
 
@@ -66,19 +73,19 @@ class MemberWriter extends AbstractExportWriter
 
         $items = array_combine($emails, $items);
 
-        $response = $this->transport->batchSubscribe(
-            [
-                'id' => $subscribersListOriginId,
-                'batch' => $batch,
-                'double_optin' => false,
-                'update_existing' => true,
-            ]
-        );
+        $requestParams = [
+            'id' => $subscribersListOriginId,
+            'batch' => $batch,
+            'double_optin' => false,
+            'update_existing' => true,
+        ];
+
+        $response = $this->transport->batchSubscribe($requestParams);
 
         $this
             ->handleResponse(
                 $response,
-                function ($response, LoggerInterface $logger) use ($subscribersListOriginId) {
+                function ($response, LoggerInterface $logger) use ($subscribersListOriginId, $requestParams) {
                     $logger->info(
                         sprintf(
                             'List [origin_id=%s]: [%s] add, [%s] update, [%s] error',
@@ -88,6 +95,15 @@ class MemberWriter extends AbstractExportWriter
                             $response['error_count']
                         )
                     );
+
+                    if (!empty($response['errors']) && is_array($response['errors'])) {
+                        $logger->error(
+                            'Mailchimp error occurs during execution "batchSubscribe" method',
+                            [
+                                'requestParams' => $requestParams,
+                            ]
+                        );
+                    }
                 }
             );
 
@@ -111,5 +127,22 @@ class MemberWriter extends AbstractExportWriter
 
             $this->logger->debug(sprintf('Member with data "%s" successfully processed', json_encode($emailData)));
         }
+    }
+
+    /**
+     * @param Member $member
+     * @param array $remoteMergeVarTags
+     *
+     * @return Member
+     */
+    protected function filterMergeVars(Member $member, array $remoteMergeVarTags)
+    {
+        return $member->setMergeVarValues(array_filter(
+            $member->getMergeVarValues(),
+            function ($key) use ($remoteMergeVarTags) {
+                return in_array($key, $remoteMergeVarTags, true);
+            },
+            ARRAY_FILTER_USE_KEY
+        ));
     }
 }

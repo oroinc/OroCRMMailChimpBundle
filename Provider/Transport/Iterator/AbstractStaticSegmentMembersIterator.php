@@ -75,6 +75,7 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
                 ->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField);
 
             $qb->addSelect($contactInformationFieldExpr . ' AS ' . $contactInformationField);
+            $qb->andWhere($qb->expr()->isNotNull($contactInformationFieldExpr));
             $expr->add(
                 $qb->expr()->eq(
                     $contactInformationFieldExpr,
