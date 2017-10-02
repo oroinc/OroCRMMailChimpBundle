@@ -2,6 +2,8 @@
 
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
+use Psr\Log\LoggerInterface;
+
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
@@ -52,27 +54,46 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
         $successItems = [];
         /** @var MemberExtendedMergeVar $mmbrExtendedMergeVar */
         foreach ($items as $mmbrExtendedMergeVar) {
+            $requestParams = [
+                'id' => $mmbrExtendedMergeVar->getStaticSegment()->getSubscribersList()->getOriginId(),
+                'email' => ['email' => $mmbrExtendedMergeVar->getMember()->getEmail()],
+                'merge_vars' => $mmbrExtendedMergeVar->getMergeVarValues()
+            ];
+
             try {
-                $response = $this->transport->updateListMember(
-                    [
-                        'id' => $mmbrExtendedMergeVar->getStaticSegment()->getSubscribersList()->getOriginId(),
-                        'email' => ['email' => $mmbrExtendedMergeVar->getMember()->getEmail()],
-                        'merge_vars' => $mmbrExtendedMergeVar->getMergeVarValues()
-                    ]
-                );
+                $response = $this->transport->updateListMember($requestParams);
 
                 $this
                     ->handleResponse(
                         $response,
-                        function ($response) use (&$successItems, $mmbrExtendedMergeVar) {
+                        function (
+                            $response,
+                            LoggerInterface $logger
+                        ) use (
+                            &$successItems,
+                            $mmbrExtendedMergeVar,
+                            $requestParams
+                        ) {
                             if (empty($response['error'])) {
                                 $mmbrExtendedMergeVar->markSynced();
                                 $successItems[] = $mmbrExtendedMergeVar;
                             }
+
+                            if (!empty($response['errors']) && is_array($response['errors'])) {
+                                $logger->error(
+                                    'Mailchimp error occurs during execution "updateListMember" method',
+                                    [
+                                        'requestParams' => $requestParams,
+                                    ]
+                                );
+                            }
                         }
                     );
             } catch (\Exception $e) {
-                $this->logger->error($e->getMessage());
+                $this->logger->error(
+                    'Exception caught during update member list. Message: "{message}"',
+                    ['message' => $e->getMessage(), 'requestParameters' => $requestParams, 'exception' => $e]
+                );
                 $this->stepExecution->addFailureException($e);
             }
         }

@@ -252,7 +252,7 @@ class StaticSegmentExportWriter extends AbstractExportWriter implements ContextA
 
         $this->handleResponse(
             $response,
-            function ($response, LoggerInterface $logger) use ($staticSegment) {
+            function ($response, LoggerInterface $logger) use ($staticSegment, $method, $batchParameters) {
                 $logger->info(
                     sprintf(
                         'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',
@@ -262,6 +262,19 @@ class StaticSegmentExportWriter extends AbstractExportWriter implements ContextA
                         $response['error_count']
                     )
                 );
+
+                if (!empty($response['errors']) && is_array($response['errors'])) {
+                    $logger->error(
+                        'Mailchimp error occurs during execution "{method}" method for ' .
+                        'static segment "{static_segment_name}" (id: {static_segment_id})',
+                        [
+                            'method' => $method,
+                            'batch_parameters' => $batchParameters,
+                            'static_segment_name' => $staticSegment->getName(),
+                            'static_segment_id' => $staticSegment->getId(),
+                        ]
+                    );
+                }
             }
         );
         $emailsToUpdate = array_diff($emailsToProcess, $this->getEmailsWithErrors($response));

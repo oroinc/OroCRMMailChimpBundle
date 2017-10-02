@@ -73,19 +73,19 @@ class MemberWriter extends AbstractExportWriter
 
         $items = array_combine($emails, $items);
 
-        $response = $this->transport->batchSubscribe(
-            [
-                'id' => $subscribersListOriginId,
-                'batch' => $batch,
-                'double_optin' => false,
-                'update_existing' => true,
-            ]
-        );
+        $requestParams = [
+            'id' => $subscribersListOriginId,
+            'batch' => $batch,
+            'double_optin' => false,
+            'update_existing' => true,
+        ];
+
+        $response = $this->transport->batchSubscribe($requestParams);
 
         $this
             ->handleResponse(
                 $response,
-                function ($response, LoggerInterface $logger) use ($subscribersListOriginId) {
+                function ($response, LoggerInterface $logger) use ($subscribersListOriginId, $requestParams) {
                     $logger->info(
                         sprintf(
                             'List [origin_id=%s]: [%s] add, [%s] update, [%s] error',
@@ -95,6 +95,15 @@ class MemberWriter extends AbstractExportWriter
                             $response['error_count']
                         )
                     );
+
+                    if (!empty($response['errors']) && is_array($response['errors'])) {
+                        $logger->error(
+                            'Mailchimp error occurs during execution "batchSubscribe" method',
+                            [
+                                'requestParams' => $requestParams,
+                            ]
+                        );
+                    }
                 }
             );
 

@@ -1,0 +1,4 @@
+MailChimpBundle
+---------------
+* The `ExportMailChimpProcessor::__construct(DoctrineHelper $doctrineHelper, ReverseSyncProcessor $reverseSyncProcessor, StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager, JobRunner $jobRunner, LoggerInterface $logger)`<sup>[[?]](https://github.com/oroinc/OroCRMMailChimpBundle/tree/2.1.0/Async/ExportMailChimpProcessor.php#L55 "Oro\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor")</sup> method was changed to `ExportMailChimpProcessor::__construct(DoctrineHelper $doctrineHelper, ReverseSyncProcessor $reverseSyncProcessor, StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager, JobRunner $jobRunner, TokenStorageInterface $tokenStorage, LoggerInterface $logger)`<sup>[[?]](https://github.com/oroinc/OroCRMMailChimpBundle/tree/2.2.0/Async/ExportMailChimpProcessor.php#L60 "Oro\Bundle\MailChimpBundle\Async\ExportMailChimpProcessor")</sup>
+
