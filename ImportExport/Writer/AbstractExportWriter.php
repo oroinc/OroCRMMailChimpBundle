@@ -74,8 +74,9 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Cle
 
         if (!empty($response['errors']) && is_array($response['errors'])) {
             foreach ($response['errors'] as $error) {
-                $this->logger->alert(
-                    sprintf('[Error #%s] %s', $error['code'], $error['error'])
+                $this->logger->error(
+                    'Mailchimp returns error from the server: code: "{code}", message: "{message}"',
+                    ['code' => $error['code'], 'message' => $error['error'], 'errorData' => $error]
                 );
             }
         }
