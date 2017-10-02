@@ -79,6 +79,7 @@ class MarketingListEmailIterator extends AbstractStaticSegmentIterator
                     . ' END'
                 . ' END as state'
             ])
+            ->andWhere($qb->expr()->isNotNull($contactInformationFieldExpr))
             ->resetDQLPart('orderBy')
             ->groupBy($contactInformationFieldExpr);
 
