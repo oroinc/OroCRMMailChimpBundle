@@ -1036,3 +1036,10 @@ services:
             - '@oro_entity.entity_field_provider'
         tags:
             - { name: oro_mailchimp.extended_merge_vars.provider }
+
+    oro_mailchimp.listener.notify_mailchimp:
+        class: Oro\Bundle\MailChimpBundle\EventListener\NotifyMailChimpListener
+        arguments:
+            - '@oro_entity.doctrine_helper'
+        tags:
+            - { name: kernel.event_listener, event: oro_marketing_list.event.update_marketing_list, method: onMarketingListChange }
