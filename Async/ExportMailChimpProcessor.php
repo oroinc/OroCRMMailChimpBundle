@@ -33,6 +33,9 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
 {
     use IntegrationTokenAwareTrait;
 
+    const JOB_NAME_PREFIX = 'oro_mailchimp:export_mailchimp';
+    const JOB_TIME_BEFORE_STALE = 3600;
+
     /** @var DoctrineHelper */
     private $doctrineHelper;
 
@@ -119,7 +122,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
             return self::REJECT;
         }
 
-        $jobName = 'oro_mailchimp:export_mailchimp:' . $body['integrationId'];
+        $jobName = self::JOB_NAME_PREFIX . ':' . $body['integrationId'];
         $ownerId = $message->getMessageId();
 
         $result = $this->jobRunner->runUnique($ownerId, $jobName, function () use ($body, $integration) {
