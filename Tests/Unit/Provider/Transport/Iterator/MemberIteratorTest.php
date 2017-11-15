@@ -17,7 +17,6 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->markTestSkipped('CRM-8452');
         $this->client = $this->getMockBuilder(
             'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient'
         )->disableOriginalConstructor()->getMock();

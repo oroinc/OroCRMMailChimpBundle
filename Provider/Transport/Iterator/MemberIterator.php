@@ -76,6 +76,7 @@ class MemberIterator extends AbstractSubordinateIterator
                 $parameters['status'] = $status;
                 $result->append($this->createExportMemberIterator($subscribersList, $parameters));
             }
+            $result->rewind();
         } else {
             $result = $this->createExportMemberIterator($subscribersList, $parameters);
         }
