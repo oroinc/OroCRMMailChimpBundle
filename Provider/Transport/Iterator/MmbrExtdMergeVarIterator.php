@@ -6,6 +6,7 @@ use Doctrine\ORM\AbstractQuery;
 
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
@@ -79,6 +80,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
 
         $marketingList = $staticSegment->getMarketingList();
         $memberIdentifier = self::MEMBER_ALIAS . '.id';
+        $memberStatus = self::MEMBER_ALIAS . '.status';
         $fieldExpr = $this->fieldHelper
             ->getFieldExpr(
                 $marketingList->getEntity(),
@@ -90,9 +92,12 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
 
         $qb->andWhere(
             $qb->expr()->andX(
-                $qb->expr()->isNotNull($memberIdentifier)
+                $qb->expr()->isNotNull($memberIdentifier),
+                $qb->expr()->neq($memberStatus, ':status_export_failed')
             )
         );
+
+        $qb->setParameter('status_export_failed', Member::STATUS_EXPORT_FAILED);
 
         $bufferedIterator = new BufferedQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)->setReverse(true);
