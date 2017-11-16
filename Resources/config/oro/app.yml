@@ -1,0 +1,4 @@
+oro_message_queue:
+    time_before_stale:
+        jobs:
+            'oro_mailchimp:export_mailchimp': 3600
