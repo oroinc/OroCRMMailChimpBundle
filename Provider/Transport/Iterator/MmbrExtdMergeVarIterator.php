@@ -134,7 +134,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
             return new \EmptyIterator();
         }
 
-        if (!$staticSegment->getExtendedMergeVars()) {
+        if ($staticSegment->getExtendedMergeVars()->isEmpty()) {
             return new \EmptyIterator();
         }
 
