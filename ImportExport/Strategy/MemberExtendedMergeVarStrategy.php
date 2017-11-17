@@ -16,6 +16,16 @@ class MemberExtendedMergeVarStrategy extends ConfigurableAddOrReplaceStrategy
     {
         $itemData = $this->context->getValue('itemData');
         $entity->setMergeVarValuesContext($itemData);
+
+        // Set state to synced if merge vars are already synced, e.g. during execution of
+        // oro_mailchimp.importexport.writer.member
+        if ($entity->isAddState()) {
+            $memberMergeVarValues = $entity->getMember()->getMergeVarValues();
+            if (!array_diff($entity->getMergeVarValues(), $memberMergeVarValues)) {
+                $entity->setState(MemberExtendedMergeVar::STATE_SYNCED);
+            }
+        }
+
         return parent::afterProcessEntity($entity);
     }
 }
