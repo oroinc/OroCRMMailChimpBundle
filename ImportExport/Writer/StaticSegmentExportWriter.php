@@ -269,6 +269,16 @@ class StaticSegmentExportWriter extends AbstractExportWriter implements ContextA
                         'static segment "{static_segment_name}" (id: {static_segment_id})',
                         [
                             'method' => $method,
+                            'static_segment_name' => $staticSegment->getName(),
+                            'static_segment_id' => $staticSegment->getId(),
+                        ]
+                    );
+
+                    $logger->debug(
+                        'Mailchimp error occurs during execution "{method}" method for ' .
+                        'static segment "{static_segment_name}" (id: {static_segment_id})',
+                        [
+                            'method' => $method,
                             'batch_parameters' => $batchParameters,
                             'static_segment_name' => $staticSegment->getName(),
                             'static_segment_id' => $staticSegment->getId(),
