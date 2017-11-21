@@ -39,8 +39,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
 
             $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-            $this->stepExecution->addFailureException($e);
+            $this->logger->error('Extended merge vars error occurs', ['exception'=> $e]);
         }
 
         parent::write($itemsToWrite);
