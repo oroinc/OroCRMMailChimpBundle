@@ -76,7 +76,7 @@ class Template implements OriginAwareInterface
      * @var Channel
      *
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\IntegrationBundle\Entity\Channel")
-     * @ORM\JoinColumn(name="channel_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="channel_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
