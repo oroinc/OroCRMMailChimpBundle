@@ -1043,3 +1043,11 @@ services:
             - '@oro_entity.doctrine_helper'
         tags:
             - { name: kernel.event_listener, event: oro_marketing_list.event.update_marketing_list, method: onMarketingListChange }
+
+    oro_mailchimp.entity.entity_listener.channel_listener:
+        class: 'Oro\Bundle\MailChimpBundle\Entity\EntityListener\ChannelListener'
+        public: false
+        arguments:
+            - "@doctrine"
+        tags:
+            - { name: doctrine.orm.entity_listener, entity: '%oro_integration.entity.class%', event: preRemove }

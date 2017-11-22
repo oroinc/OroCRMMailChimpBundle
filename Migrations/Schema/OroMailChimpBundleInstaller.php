@@ -18,7 +18,7 @@ class OroMailChimpBundleInstaller implements Installation
      */
     public function getMigrationVersion()
     {
-        return 'v1_4';
+        return 'v1_5';
     }
 
     /**
@@ -117,7 +117,7 @@ class OroMailChimpBundleInstaller implements Installation
         $table->addColumn('static_segment_id', 'integer', ['notnull' => false]);
         $table->addColumn('template_id', 'integer', ['notnull' => false]);
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);
-        $table->addColumn('channel_id', 'integer', ['notnull' => false]);
+        $table->addColumn('channel_id', 'integer', ['notnull' => true]);
         $table->addColumn('origin_id', 'string', ['length' => 32]);
         $table->addColumn('web_id', 'bigint', []);
         $table->addColumn('title', 'string', ['notnull' => false, 'length' => 255]);
@@ -166,7 +166,7 @@ class OroMailChimpBundleInstaller implements Installation
         $table = $schema->createTable('orocrm_mailchimp_template');
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);
-        $table->addColumn('channel_id', 'integer', ['notnull' => false]);
+        $table->addColumn('channel_id', 'integer', ['notnull' => true]);
         $table->addColumn('origin_id', 'bigint', []);
         $table->addColumn('type', 'string', ['length' => 255]);
         $table->addColumn('name', 'string', ['length' => 255]);
@@ -193,7 +193,7 @@ class OroMailChimpBundleInstaller implements Installation
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);
         $table->addColumn('subscribers_list_id', 'integer', ['notnull' => false]);
-        $table->addColumn('channel_id', 'integer', ['notnull' => false]);
+        $table->addColumn('channel_id', 'integer', ['notnull' => true]);
         $table->addColumn('origin_id', 'bigint', ['notnull' => false]);
         $table->addColumn('email', 'string', ['length' => 255]);
         $table->addColumn('phone', 'string', ['notnull' => false, 'length' => 255]);
@@ -252,7 +252,7 @@ class OroMailChimpBundleInstaller implements Installation
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);
         $table->addColumn('subscribers_list_id', 'integer', ['notnull' => false]);
         $table->addColumn('marketing_list_id', 'integer', ['notnull' => false]);
-        $table->addColumn('channel_id', 'integer', ['notnull' => false]);
+        $table->addColumn('channel_id', 'integer', ['notnull' => true]);
         $table->addColumn('name', 'string', ['notnull' => false, 'length' => 255]);
         $table->addColumn('origin_id', 'bigint', ['notnull' => false]);
         $table->addColumn('sync_status', 'string', ['length' => 255]);
@@ -275,7 +275,7 @@ class OroMailChimpBundleInstaller implements Installation
         $table = $schema->createTable('orocrm_mc_subscribers_list');
         $table->addColumn('id', 'integer', ['autoincrement' => true]);
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);
-        $table->addColumn('channel_id', 'integer', ['notnull' => false]);
+        $table->addColumn('channel_id', 'integer', ['notnull' => true]);
         $table->addColumn('origin_id', 'string', ['length' => 32]);
         $table->addColumn('web_id', 'bigint', []);
         $table->addColumn('name', 'string', ['length' => 255]);
@@ -477,7 +477,7 @@ class OroMailChimpBundleInstaller implements Installation
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
     }
 
@@ -499,7 +499,7 @@ class OroMailChimpBundleInstaller implements Installation
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
     }
 
@@ -527,7 +527,7 @@ class OroMailChimpBundleInstaller implements Installation
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
     }
 
@@ -583,7 +583,7 @@ class OroMailChimpBundleInstaller implements Installation
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
     }
 
@@ -605,7 +605,7 @@ class OroMailChimpBundleInstaller implements Installation
             $schema->getTable('oro_integration_channel'),
             ['channel_id'],
             ['id'],
-            ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
     }
 
