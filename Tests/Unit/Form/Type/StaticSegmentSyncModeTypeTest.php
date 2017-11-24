@@ -3,7 +3,7 @@
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Form\Type;
 
 use Oro\Bundle\MailChimpBundle\Form\Type\StaticSegmentSyncModeType;
-use Oro\Bundle\MailChimpBundle\Provider\StaticSegmentSyncModeChoicesProviderInterface;
+use Oro\Bundle\MailChimpBundle\Provider\StaticSegmentSyncModeChoicesProvider;
 use Oro\Component\Testing\Unit\FormIntegrationTestCase;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,7 +21,7 @@ class StaticSegmentSyncModeTypeTest extends FormIntegrationTestCase
     private $staticSegmentSyncModeType;
 
     /**
-     * @var StaticSegmentSyncModeChoicesProviderInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var StaticSegmentSyncModeChoicesProvider|\PHPUnit_Framework_MockObject_MockObject
      */
     private $staticSegmentSyncModesProvider;
 
@@ -32,7 +32,7 @@ class StaticSegmentSyncModeTypeTest extends FormIntegrationTestCase
     {
         parent::setUp();
 
-        $this->staticSegmentSyncModesProvider = $this->createMock(StaticSegmentSyncModeChoicesProviderInterface::class);
+        $this->staticSegmentSyncModesProvider = $this->createMock(StaticSegmentSyncModeChoicesProvider::class);
 
         $this->staticSegmentSyncModeType = new StaticSegmentSyncModeType($this->staticSegmentSyncModesProvider);
     }
@@ -56,18 +56,17 @@ class StaticSegmentSyncModeTypeTest extends FormIntegrationTestCase
     {
         $this->mockStaticSegmentSyncModesProvider();
 
-        $resolver = $this->createMock(OptionsResolver::class);
-        $resolver
-            ->expects(self::once())
-            ->method('setDefaults')
-            ->with([
-                'required' => true,
-                'choices' => self::CHOICES,
-                'translatable_options' => false,
-            ]);
+        $resolver = new OptionsResolver();
+        $this->staticSegmentSyncModeType->configureOptions($resolver);
 
-        $this->staticSegmentSyncModeType
-            ->configureOptions($resolver);
+        $actualOptions = $resolver->resolve();
+        $expectedOptions = [
+            'required' => true,
+            'choices' => self::CHOICES,
+            'translatable_options' => false,
+        ];
+
+        self::assertEquals($expectedOptions, $actualOptions);
     }
 
     public function testGetBlockPrefix()

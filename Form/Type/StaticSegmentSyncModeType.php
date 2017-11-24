@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
-use Oro\Bundle\MailChimpBundle\Provider\StaticSegmentSyncModeChoicesProviderInterface;
+use Oro\Bundle\MailChimpBundle\Provider\StaticSegmentSyncModeChoicesProvider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,14 +12,14 @@ class StaticSegmentSyncModeType extends AbstractType
     const NAME = 'oro_mailchimp_static_segment_sync_mode';
 
     /**
-     * @var StaticSegmentSyncModeChoicesProviderInterface
+     * @var StaticSegmentSyncModeChoicesProvider
      */
     private $staticSegmentSyncModesProvider;
 
     /**
-     * @param StaticSegmentSyncModeChoicesProviderInterface $staticSegmentSyncModesProvider
+     * @param StaticSegmentSyncModeChoicesProvider $staticSegmentSyncModesProvider
      */
-    public function __construct(StaticSegmentSyncModeChoicesProviderInterface $staticSegmentSyncModesProvider)
+    public function __construct(StaticSegmentSyncModeChoicesProvider $staticSegmentSyncModesProvider)
     {
         $this->staticSegmentSyncModesProvider = $staticSegmentSyncModesProvider;
     }

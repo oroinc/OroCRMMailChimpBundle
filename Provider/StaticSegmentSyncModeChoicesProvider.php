@@ -6,7 +6,7 @@ use Oro\Bundle\CronBundle\Entity\Schedule;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class StaticSegmentSyncModeChoicesProvider implements StaticSegmentSyncModeChoicesProviderInterface
+class StaticSegmentSyncModeChoicesProvider
 {
     /**
      * @internal
@@ -43,22 +43,20 @@ class StaticSegmentSyncModeChoicesProvider implements StaticSegmentSyncModeChoic
                 ->trans('oro.mailchimp.configuration.fields.static_segment_sync_mode.choices.on_update'),
             'scheduled' => $this->translator->trans(
                 'oro.mailchimp.configuration.fields.static_segment_sync_mode.choices.scheduled',
-                ['{{ schedule_definition }}' => $this->getCronScheduleDefinition(self::CRON_COMMAND_NAME)]
+                ['{{ schedule_definition }}' => $this->getCronScheduleDefinition()]
             ),
         ];
     }
 
     /**
-     * @param string $commandName
-     *
      * @return string
      */
-    private function getCronScheduleDefinition(string $commandName): string
+    private function getCronScheduleDefinition(): string
     {
         $scheduleRepository = $this->doctrineHelper->getEntityRepository(Schedule::class);
 
         /** @var Schedule $schedule */
-        $schedule = $scheduleRepository->findOneBy(['command' => $commandName]);
+        $schedule = $scheduleRepository->findOneBy(['command' => self::CRON_COMMAND_NAME]);
         if (!$schedule) {
             return '';
         }
