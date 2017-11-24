@@ -78,7 +78,23 @@ processes:
             enabled: true
             entity:  Oro\Bundle\MailChimpBundle\Entity\StaticSegment
             actions_configuration:
+                - '@call_service_method':
+                    attribute: $.staticSegmentSyncMode
+                    service: oro_config.manager
+                    method: get
+                    method_parameters: ['oro_mailchimp.static_segment_sync_mode']
                 - '@tree':
+                    conditions:
+                        '@and':
+                            - '@or':
+                                - '@equal': [$syncStatus, 'scheduled_by_change']
+                                - '@equal': [$syncStatus, 'scheduled']
+                                - '@equal': [$syncStatus, 'not_synced']
+                            - '@or':
+                                - '@equal': [$.staticSegmentSyncMode, 'on_update']
+                                - '@and':
+                                    - '@equal': [$.staticSegmentSyncMode, 'scheduled']
+                                    - '@not_equal': [$syncStatus, 'scheduled_by_change']
                     actions:
                         - '@assign_constant_value':
                             attribute: '$.topic'

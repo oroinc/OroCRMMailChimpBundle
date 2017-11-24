@@ -76,6 +76,6 @@ class NotifyMailChimpListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->listener->onMarketingListChange($event);
 
-        $this->assertSame(StaticSegment::STATUS_SCHEDULED, $staticSegment->getSyncStatus());
+        $this->assertSame(StaticSegment::STATUS_SCHEDULED_BY_CHANGE, $staticSegment->getSyncStatus());
     }
 }

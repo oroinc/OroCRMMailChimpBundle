@@ -333,6 +333,7 @@ oro:
             not_synced: Not Synced
             in_progress: In Progress
             scheduled: Scheduled for Sync
+            scheduled_by_change: Scheduled for Sync
             list_is_connected.lebel: 'This list is linked to "%segment%" segment of "%list%" Mailchimp List. Last synchronization date: %synced%. Synchronization status: %status%.'
         form:
             api_key:
@@ -344,3 +345,18 @@ oro:
             email_campaign.receive_activities:
                 enabled.message: 'Receiving of connected MailChimp campaign activities enabled'
                 disabled.message: 'Receiving of connected MailChimp campaign activities disabled'
+
+        configuration:
+            groups:
+                mailchimp_settings:  'MailChimp Settings'
+                mailchimp_synchronization: 'Synchronization settings'
+            fields:
+                static_segment_sync_mode:
+                    label: 'Static segment synchronization mode'
+                    tooltip: |
+                        Scheduled - synchronizations are scheduled only by cron.
+                        On update - synchronizations are scheduled both by cron and as soon as data in static segment changes.
+                        You have to have the process "Schedule MailChimp Static Segment synchronization" to be enabled to make this configuration be respected.
+                    choices:
+                        scheduled: 'Scheduled ({{ schedule_definition }})'
+                        on_update: 'On data update'
