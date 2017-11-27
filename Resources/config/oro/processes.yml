@@ -78,7 +78,38 @@ processes:
             enabled: true
             entity:  Oro\Bundle\MailChimpBundle\Entity\StaticSegment
             actions_configuration:
+                - '@call_service_method':
+                    attribute: $.staticSegmentSyncMode
+                    service: oro_config.manager
+                    method: get
+                    method_parameters: ['oro_mailchimp.static_segment_sync_mode']
+                - '@assign_constant_value':
+                    attribute: '$.syncModeScheduled'
+                    value: 'Oro\Bundle\MailChimpBundle\DependencyInjection\Configuration::STATIC_SEGMENT_SYNC_MODE_SCHEDULED'
+                - '@assign_constant_value':
+                    attribute: '$.syncModeOnUpdate'
+                    value: 'Oro\Bundle\MailChimpBundle\DependencyInjection\Configuration::STATIC_SEGMENT_SYNC_MODE_ON_UPDATE'
+                - '@assign_constant_value':
+                    attribute: '$.syncStatusScheduled'
+                    value: 'Oro\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_SCHEDULED'
+                - '@assign_constant_value':
+                    attribute: '$.syncStatusScheduledByChange'
+                    value: 'Oro\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_SCHEDULED_BY_CHANGE'
+                - '@assign_constant_value':
+                    attribute: '$.syncStatusNotSynced'
+                    value: 'Oro\Bundle\MailChimpBundle\Entity\StaticSegment::STATUS_NOT_SYNCED'
                 - '@tree':
+                    conditions:
+                        '@and':
+                            - '@or':
+                                - '@equal': [$syncStatus, $.syncStatusScheduledByChange]
+                                - '@equal': [$syncStatus, $.syncStatusScheduled]
+                                - '@equal': [$syncStatus, $.syncStatusNotSynced]
+                            - '@or':
+                                - '@equal': [$.staticSegmentSyncMode, $.syncModeOnUpdate]
+                                - '@and':
+                                    - '@equal': [$.staticSegmentSyncMode, $.syncModeScheduled]
+                                    - '@not_equal': [$syncStatus, $.syncStatusScheduledByChange]
                     actions:
                         - '@assign_constant_value':
                             attribute: '$.topic'
