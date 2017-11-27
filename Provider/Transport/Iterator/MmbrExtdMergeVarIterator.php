@@ -155,11 +155,11 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
         $qb->andWhere(
             $qb->expr()->andX(
                 $qb->expr()->isNotNull($memberIdentifier),
-                $qb->expr()->neq($memberStatus, ':status_export_failed')
+                $qb->expr()->notIn($memberStatus, ':exclude_statuses')
             )
         );
 
-        $qb->setParameter('status_export_failed', Member::STATUS_EXPORT_FAILED);
+        $qb->setParameter('exclude_statuses', [Member::STATUS_EXPORT_FAILED, Member::STATUS_DROPPED]);
 
         $bufferedIterator = new BufferedIdentityQueryResultIterator($qb);
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
