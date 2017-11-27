@@ -18,7 +18,7 @@ class OroMailChimpBundleInstaller implements Installation
      */
     public function getMigrationVersion()
     {
-        return 'v1_5';
+        return 'v1_6';
     }
 
     /**
@@ -521,7 +521,7 @@ class OroMailChimpBundleInstaller implements Installation
             $schema->getTable('orocrm_mc_subscribers_list'),
             ['subscribers_list_id'],
             ['id'],
-            ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            ['onUpdate' => null, 'onDelete' => 'CASCADE']
         );
         $table->addForeignKeyConstraint(
             $schema->getTable('oro_integration_channel'),
