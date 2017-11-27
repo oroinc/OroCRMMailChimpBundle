@@ -139,7 +139,11 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         $staticSegmentRepository = $this->doctrineHelper->getEntityRepository(StaticSegment::class);
 
         $segmentsIdsToSync = [];
-        $syncStatuses      = [StaticSegment::STATUS_NOT_SYNCED, StaticSegment::STATUS_SCHEDULED];
+        $syncStatuses = [
+            StaticSegment::STATUS_NOT_SYNCED,
+            StaticSegment::STATUS_SCHEDULED,
+            StaticSegment::STATUS_SCHEDULED_BY_CHANGE,
+        ];
         foreach ($segmentsIds as $segmentId) {
             /** @var StaticSegment $staticSegment */
             $staticSegment = $staticSegmentRepository->find($segmentId);

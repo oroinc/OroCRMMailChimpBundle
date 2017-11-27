@@ -35,7 +35,7 @@ class NotifyMailChimpListener
                 ->findBy(['marketingList' => $marketingList]);
 
             foreach ($staticSegments as $staticSegment) {
-                $staticSegment->setSyncStatus(StaticSegment::STATUS_SCHEDULED);
+                $staticSegment->setSyncStatus(StaticSegment::STATUS_SCHEDULED_BY_CHANGE);
                 $changedStaticSegments[] = $staticSegment;
             }
         }
