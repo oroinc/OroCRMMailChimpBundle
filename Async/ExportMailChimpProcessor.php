@@ -1,33 +1,26 @@
 <?php
 namespace Oro\Bundle\MailChimpBundle\Async;
 
-use Psr\Log\LoggerInterface;
-
 use Doctrine\ORM\EntityManagerInterface;
-
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-
-use Oro\Component\MessageQueue\Transport\MessageInterface;
-use Oro\Component\MessageQueue\Transport\SessionInterface;
-use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
-use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
-use Oro\Component\MessageQueue\Job\JobRunner;
-use Oro\Component\MessageQueue\Util\JSON;
-
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-
-use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\ImportExportBundle\Job\Context\SelectiveContextAggregator;
-
+use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
 use Oro\Bundle\IntegrationBundle\Authentication\Token\IntegrationTokenAwareTrait;
 use Oro\Bundle\IntegrationBundle\Entity\Channel as Integration;
 use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
-
 use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
 use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberConnector;
 use Oro\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
-use Oro\Bundle\MailChimpBundle\Model\StaticSegment\StaticSegmentsMemberStateManager;
+use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
+use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
+use Oro\Component\MessageQueue\Job\JobRunner;
+use Oro\Component\MessageQueue\Transport\MessageInterface;
+use Oro\Component\MessageQueue\Transport\SessionInterface;
+use Oro\Component\MessageQueue\Util\JSON;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscriberInterface
 {
@@ -149,7 +142,11 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         $staticSegmentRepository = $this->doctrineHelper->getEntityRepository(StaticSegment::class);
 
         $segmentsIdsToSync = [];
-        $syncStatuses      = [StaticSegment::STATUS_NOT_SYNCED, StaticSegment::STATUS_SCHEDULED];
+        $syncStatuses = [
+            StaticSegment::STATUS_NOT_SYNCED,
+            StaticSegment::STATUS_SCHEDULED,
+            StaticSegment::STATUS_SCHEDULED_BY_CHANGE,
+        ];
         foreach ($segmentsIds as $segmentId) {
             /** @var StaticSegment $staticSegment */
             $staticSegment = $staticSegmentRepository->find($segmentId);

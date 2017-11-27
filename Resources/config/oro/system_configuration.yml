@@ -1,0 +1,33 @@
+system_configuration:
+    groups:
+        mailchimp_settings:
+            title: oro.mailchimp.configuration.groups.mailchimp_settings
+            icon: fa-envelope
+
+        synchronization_mailchimp_settings:
+            title: oro.mailchimp.configuration.groups.mailchimp_synchronization
+
+    fields:
+        oro_mailchimp.static_segment_sync_mode:
+            data_type: string
+            type: 'Oro\Bundle\MailChimpBundle\Form\Type\StaticSegmentSyncModeType'
+            priority: 10
+            options:
+                label: oro.mailchimp.configuration.fields.static_segment_sync_mode.label
+                tooltip: oro.mailchimp.configuration.fields.static_segment_sync_mode.tooltip
+                required: false
+                choice_translation_domain: false
+
+    tree:
+        system_configuration:
+            platform:
+                children:
+                    integrations:
+                        children:
+                            mailchimp_settings:
+                                priority: -30
+                                children:
+                                    synchronization_mailchimp_settings:
+                                        priority: 10
+                                        children:
+                                            - oro_mailchimp.static_segment_sync_mode
