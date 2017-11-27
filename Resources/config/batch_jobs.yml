@@ -253,7 +253,7 @@ connector:
                         writer:    oro_mailchimp.importexport.writer.prepare_static_segment_member_to_remove
                     parameters:
                         batch_size: 1
-                # Update static segment member state based on calcualted StaticSegmentMemberToRemove for remove
+                # Update static segment member state based on calculated StaticSegmentMemberToRemove for remove
                 handle_out_of_list_state:
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
@@ -263,7 +263,7 @@ connector:
                         writer:    oro_mailchimp.importexport.writer.static_segment_member_state
                     parameters:
                         batch_size: 1
-                # Update static segment member state based on calcualted StaticSegmentMemberToRemove for unsubscribe
+                # Update static segment member state based on calculated StaticSegmentMemberToRemove for unsubscribe
                 handle_unsubscribe_state:
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
@@ -273,7 +273,7 @@ connector:
                         writer:    oro_mailchimp.importexport.writer.static_segment_member_state
                     parameters:
                         batch_size: 1
-                # Update static segment member state based on calcualted StaticSegmentMemberToRemove for unsubscribe_delete
+                # Update static segment member state based on calculated StaticSegmentMemberToRemove for unsubscribe_delete
                 handle_delete_state:
                     title: export
                     class: Oro\Bundle\BatchBundle\Step\ItemStep
@@ -283,6 +283,16 @@ connector:
                         writer:    oro_mailchimp.importexport.writer.static_segment_member_state
                     parameters:
                         batch_size: 1
+                # Mark as "to_drop" static segment members, which are absent in subscribers list in Mailchimp
+                handle_dropped_state:
+                    title: export
+                    class: Oro\Bundle\BatchBundle\Step\ItemStep
+                    services:
+                        reader:    oro_mailchimp.importexport.reader.static_segment_member_dropped_state
+                        processor: oro_mailchimp.importexport.processor.dummy
+                        writer:    oro_mailchimp.importexport.writer.static_segment_member_state
+                    parameters:
+                        batch_size: 100
                 # Perform export of static segment members to MailChimp with API
                 export:
                     title: export

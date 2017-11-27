@@ -22,16 +22,40 @@ use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
  */
 class StaticSegmentMember
 {
-    /**#@+
-     * @const string State of Static Segment Member
+    /**
+     * @const For members which should be added to static segment.
      */
     const STATE_ADD = 'add';
+
+    /**
+     * @const For members which should be removed.
+     */
     const STATE_REMOVE = 'remove';
+
+    /**
+     * @const For members which are already synced.
+     */
     const STATE_SYNCED = 'synced';
+
+    /**
+     * @const For members which are already dropped.
+     */
     const STATE_DROP = 'drop';
+
+    /**
+     * @const For members which should be dropped.
+     */
+    const STATE_TO_DROP = 'to_drop';
+
+    /**
+     * @const For members which should be unsubscribed.
+     */
     const STATE_UNSUBSCRIBE = 'unsubscribe';
+
+    /**
+     * @const For members which should be unsubscribed and removed from static segment.
+     */
     const STATE_UNSUBSCRIBE_DELETE = 'unsubscribe_delete';
-    /**#@-*/
 
     /**
      * @var int

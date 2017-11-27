@@ -128,6 +128,7 @@ parameters:
     oro_mailchimp.iterator.member_sync.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSyncIterator
     oro_mailchimp.iterator.static_segment_member_add_state.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberAddStateIterator
     oro_mailchimp.iterator.static_segment_member_remove_state.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberRemoveStateIterator
+    oro_mailchimp.iterator.static_segment_member_dropped_state.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberDroppedStateIterator
     oro_mailchimp.iterator.extended_merge_var_add.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExtendedMergeVarAddIterator
     oro_mailchimp.iterator.extended_merge_var_remove.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExtendedMergeVarRemoveIterator
     oro_mailchimp.iterator.mmbr_extd_merge_var.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MmbrExtdMergeVarIterator
@@ -228,6 +229,11 @@ services:
         parent: oro_mailchimp.importexport.reader.static_segment
         calls:
             - [setSourceIterator, ["@oro_mailchimp.iterator.static_segment_member_unsubscribe_delete_state"]]
+
+    oro_mailchimp.importexport.reader.static_segment_member_dropped_state:
+        parent: oro_mailchimp.importexport.reader.static_segment
+        calls:
+            - [setSourceIterator, ["@oro_mailchimp.iterator.static_segment_member_dropped_state"]]
 
     oro_mailchimp.importexport.reader.abstract_iterator_based:
         class: %oro_mailchimp.importexport.reader.iterator_based.class%
@@ -947,6 +953,13 @@ services:
         calls:
             - [setRegistry, ["@doctrine"]]
             - [setMarketingListEmailEntity, [%oro_mailchimp.entity.marketing_list_email.class%]]
+            - [setMemberEntity, [%oro_mailchimp.entity.member.class%]]
+
+    oro_mailchimp.iterator.static_segment_member_dropped_state:
+        class: %oro_mailchimp.iterator.static_segment_member_dropped_state.class%
+        calls:
+            - [setRegistry, ["@doctrine"]]
+            - [setMemberExtendedMergeVarEntity, [%oro_mailchimp.entity.member_extended_merge_var.class%]]
             - [setMemberEntity, [%oro_mailchimp.entity.member.class%]]
 
     oro_mailchimp.iterator.static_segment_member_remove_by_state:

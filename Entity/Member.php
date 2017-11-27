@@ -52,15 +52,35 @@ use Oro\Bundle\OrganizationBundle\Entity\Organization;
  */
 class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterface
 {
-    /**#@+
-     * @const string Status of member
+    /**
+     * @const Member is subscribed.
      */
     const STATUS_SUBSCRIBED = 'subscribed';
+
+    /**
+     * @const Member is unsubscribed.
+     */
     const STATUS_UNSUBSCRIBED = 'unsubscribed';
+
+    /**
+     * @const Member is cleaned.
+     */
     const STATUS_CLEANED = 'cleaned';
+
+    /**
+     * @const Member should be exported during next sync.
+     */
     const STATUS_EXPORT = 'export';
+
+    /**
+     * @const Sync failed for member. Such member will not be synced anymore.
+     */
+    const STATUS_DROPPED = 'dropped';
+
+    /**
+     * @const Export failed for member. Such member will not be synced anymore.
+     */
     const STATUS_EXPORT_FAILED = 'export_failed';
-    /**#@-*/
 
     /**
      * @var int
