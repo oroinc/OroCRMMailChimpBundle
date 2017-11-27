@@ -273,7 +273,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @var SubscribersList
      *
      * @ORM\ManyToOne(targetEntity="Oro\Bundle\MailChimpBundle\Entity\SubscribersList")
-     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="subscribers_list_id", referencedColumnName="id", onDelete="CASCADE")
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
