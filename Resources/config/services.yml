@@ -27,6 +27,7 @@ parameters:
     oro_mailchimp.form.type.transport_settings.class: Oro\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType
     oro_mailchimp.form.type.api_key_type.class: Oro\Bundle\MailChimpBundle\Form\Type\ApiKeyType
     oro_mailchimp.form.type.marketing_list_connecion.class: Oro\Bundle\MailChimpBundle\Form\Type\MarketingListConnectionType
+    oro_mailchimp.form.type.static_segment_sync_mode.class: Oro\Bundle\MailChimpBundle\Form\Type\StaticSegmentSyncModeType
     oro_mailchimp.form.autocomplete.template.search_handler.class: Oro\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler
     oro_mailchimp.form.autocomplete.list.search_handler.class: Oro\Bundle\MailChimpBundle\Autocomplete\ListSearchHandler
     oro_mailchimp.static_segment.manager.api.class: Oro\Bundle\SoapBundle\Entity\Manager\ApiEntityManager
@@ -460,6 +461,13 @@ services:
         class: %oro_mailchimp.form.type.marketing_list_connecion.class%
         tags:
             - { name: form.type, alias: "oro_mailchimp_marketing_list_connection" }
+
+    oro_mailchimp.form.type.static_segment_sync_mode:
+        class: %oro_mailchimp.form.type.static_segment_sync_mode.class%
+        arguments:
+            - '@oro_mailchimp.provider.static_segment_sync_mode_choices'
+        tags:
+            - { name: form.type }
 
     oro_mailchimp.form.autocomplete.template.search_handler:
         class: %oro_mailchimp.form.autocomplete.template.search_handler.class%
@@ -1064,3 +1072,9 @@ services:
             - "@doctrine"
         tags:
             - { name: doctrine.orm.entity_listener, entity: '%oro_integration.entity.class%', event: preRemove }
+
+    oro_mailchimp.provider.static_segment_sync_mode_choices:
+        class: 'Oro\Bundle\MailChimpBundle\Provider\StaticSegmentSyncModeChoicesProvider'
+        arguments:
+            - '@oro_entity.doctrine_helper'
+            - '@translator'
