@@ -5,9 +5,9 @@ namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Expr\Join;
-
 use Oro\Bundle\ImportExportBundle\Writer\AbstractNativeQueryWriter;
 use Oro\Bundle\MailChimpBundle\Entity\MarketingListEmail;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 
@@ -113,13 +113,15 @@ class StaticSegmentMemberAddStateIterator extends AbstractSubordinateIterator
             )
             ->where(
                 $qb->expr()->andX(
-                    $qb->expr()->eq('mlEmail.state', ':state'),
                     $qb->expr()->isNull('segmentMembers.id'),
+                    $qb->expr()->eq('mlEmail.state', ':state'),
+                    $qb->expr()->eq('mlEmail.marketingList', ':marketingList'),
                     $qb->expr()->isNotNull('mmb.originId'),
-                    $qb->expr()->eq('mmb.subscribersList', ':subscribersList'),
-                    $qb->expr()->eq('mlEmail.marketingList', ':marketingList')
+                    $qb->expr()->notIn('mmb.status', ':exclude_statuses'),
+                    $qb->expr()->eq('mmb.subscribersList', ':subscribersList')
                 )
             )
+            ->setParameter('exclude_statuses', [Member::STATUS_EXPORT_FAILED, Member::STATUS_DROPPED])
             ->setParameter('state', MarketingListEmail::STATE_IN_LIST)
             ->setParameter('marketingList', $staticSegment->getMarketingList())
             ->setParameter('subscribersList', $staticSegment->getSubscribersList());
