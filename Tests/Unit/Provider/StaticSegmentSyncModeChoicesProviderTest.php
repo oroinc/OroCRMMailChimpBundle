@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider;
 
-use Oro\Bundle\CronBundle\Entity\Repository\ScheduleRepository;
+use Doctrine\ORM\EntityRepository;
 use Oro\Bundle\CronBundle\Entity\Schedule;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Provider\StaticSegmentSyncModeChoicesProvider;
@@ -59,7 +59,7 @@ class StaticSegmentSyncModeChoicesProviderTest extends \PHPUnit_Framework_TestCa
             )
             ->willReturnArgument(0);
 
-        $scheduleRepository = $this->createMock(ScheduleRepository::class);
+        $scheduleRepository = $this->createMock(EntityRepository::class);
         $this->doctrineHelper
             ->expects(self::once())
             ->method('getEntityRepository')
