@@ -94,7 +94,6 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
                     'Exception caught during update member list. Message: "{message}"',
                     ['message' => $e->getMessage(), 'requestParameters' => $requestParams, 'exception' => $e]
                 );
-                $this->stepExecution->addFailureException($e);
             }
         }
         return $successItems;
