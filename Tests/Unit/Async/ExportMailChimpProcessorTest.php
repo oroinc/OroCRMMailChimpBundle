@@ -190,7 +190,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider processMessageDataProvider
      */
-    public function testProcessMessageData(int $segmentId, array $segmentsIdsToSync, string $syncStatus)
+    public function testProcessMessageData($segmentId, array $segmentsIdsToSync, $syncStatus)
     {
         $integrationId = 'theIntegrationId';
         $messageId = 'theMessageId';
