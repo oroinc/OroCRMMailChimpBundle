@@ -36,7 +36,7 @@ class StaticSegmentSyncModeChoicesProvider
     /**
      * @return array
      */
-    public function getTranslatedChoices(): array
+    public function getTranslatedChoices()
     {
         return [
             'on_update' => $this->translator
@@ -51,7 +51,7 @@ class StaticSegmentSyncModeChoicesProvider
     /**
      * @return string
      */
-    private function getCronScheduleDefinition(): string
+    private function getCronScheduleDefinition()
     {
         $scheduleRepository = $this->doctrineHelper->getEntityRepository(Schedule::class);
 
