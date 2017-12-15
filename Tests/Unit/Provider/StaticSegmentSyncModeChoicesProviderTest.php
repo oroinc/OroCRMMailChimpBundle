@@ -45,7 +45,7 @@ class StaticSegmentSyncModeChoicesProviderTest extends \PHPUnit_Framework_TestCa
      * @param Schedule|null $schedule
      * @param string        $scheduleDefinition
      */
-    public function testGetChoices(Schedule $schedule = null, string $scheduleDefinition)
+    public function testGetChoices(Schedule $schedule = null, $scheduleDefinition)
     {
         $this->translator
             ->expects(self::exactly(2))
