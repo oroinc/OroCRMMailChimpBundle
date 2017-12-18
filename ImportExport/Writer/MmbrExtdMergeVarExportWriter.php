@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
+use ZfrMailChimp\Exception\Ls\NotSubscribedException;
 
 class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
 {
@@ -89,12 +90,21 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
                             }
                         }
                     );
+            } catch (NotSubscribedException $e) {
+                $successItems[] = $mmbrExtendedMergeVar;
+                $mmbrExtendedMergeVar->setState(MemberExtendedMergeVar::STATE_DROPPED);
+                $this->logger->warning(
+                    'Mailchimp reports that {email} is not subscribed, marking MemberExtendedMergeVar #{id} as dropped',
+                    [
+                        'email' => $mmbrExtendedMergeVar->getMember()->getEmail(),
+                        'id' => $mmbrExtendedMergeVar->getId(),
+                    ]
+                );
             } catch (\Exception $e) {
                 $this->logger->error(
                     'Exception caught during update member list. Message: "{message}"',
                     ['message' => $e->getMessage(), 'requestParameters' => $requestParams, 'exception' => $e]
                 );
-                $this->stepExecution->addFailureException($e);
             }
         }
         return $successItems;
