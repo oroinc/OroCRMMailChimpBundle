@@ -97,7 +97,8 @@ class MemberWriter extends AbstractExportWriter
                     );
 
                     if (!empty($response['errors']) && is_array($response['errors'])) {
-                        $logger->error(
+                        $logger->error('Mailchimp error occurs during execution "batchSubscribe" method');
+                        $logger->debug(
                             'Mailchimp error occurs during execution "batchSubscribe" method',
                             [
                                 'requestParams' => $requestParams,
