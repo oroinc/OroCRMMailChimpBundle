@@ -27,6 +27,7 @@ parameters:
     oro_mailchimp.form.type.transport_settings.class: Oro\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType
     oro_mailchimp.form.type.api_key_type.class: Oro\Bundle\MailChimpBundle\Form\Type\ApiKeyType
     oro_mailchimp.form.type.marketing_list_connecion.class: Oro\Bundle\MailChimpBundle\Form\Type\MarketingListConnectionType
+    oro_mailchimp.form.type.static_segment_sync_mode.class: Oro\Bundle\MailChimpBundle\Form\Type\StaticSegmentSyncModeType
     oro_mailchimp.form.autocomplete.template.search_handler.class: Oro\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler
     oro_mailchimp.form.autocomplete.list.search_handler.class: Oro\Bundle\MailChimpBundle\Autocomplete\ListSearchHandler
     oro_mailchimp.static_segment.manager.api.class: Oro\Bundle\SoapBundle\Entity\Manager\ApiEntityManager
@@ -128,6 +129,7 @@ parameters:
     oro_mailchimp.iterator.member_sync.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSyncIterator
     oro_mailchimp.iterator.static_segment_member_add_state.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberAddStateIterator
     oro_mailchimp.iterator.static_segment_member_remove_state.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberRemoveStateIterator
+    oro_mailchimp.iterator.static_segment_member_dropped_state.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentMemberDroppedStateIterator
     oro_mailchimp.iterator.extended_merge_var_add.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExtendedMergeVarAddIterator
     oro_mailchimp.iterator.extended_merge_var_remove.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExtendedMergeVarRemoveIterator
     oro_mailchimp.iterator.mmbr_extd_merge_var.class: Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MmbrExtdMergeVarIterator
@@ -228,6 +230,11 @@ services:
         parent: oro_mailchimp.importexport.reader.static_segment
         calls:
             - [setSourceIterator, ["@oro_mailchimp.iterator.static_segment_member_unsubscribe_delete_state"]]
+
+    oro_mailchimp.importexport.reader.static_segment_member_dropped_state:
+        parent: oro_mailchimp.importexport.reader.static_segment
+        calls:
+            - [setSourceIterator, ["@oro_mailchimp.iterator.static_segment_member_dropped_state"]]
 
     oro_mailchimp.importexport.reader.abstract_iterator_based:
         class: %oro_mailchimp.importexport.reader.iterator_based.class%
@@ -454,6 +461,13 @@ services:
         class: %oro_mailchimp.form.type.marketing_list_connecion.class%
         tags:
             - { name: form.type, alias: "oro_mailchimp_marketing_list_connection" }
+
+    oro_mailchimp.form.type.static_segment_sync_mode:
+        class: %oro_mailchimp.form.type.static_segment_sync_mode.class%
+        arguments:
+            - '@oro_mailchimp.provider.static_segment_sync_mode_choices'
+        tags:
+            - { name: form.type }
 
     oro_mailchimp.form.autocomplete.template.search_handler:
         class: %oro_mailchimp.form.autocomplete.template.search_handler.class%
@@ -949,6 +963,13 @@ services:
             - [setMarketingListEmailEntity, [%oro_mailchimp.entity.marketing_list_email.class%]]
             - [setMemberEntity, [%oro_mailchimp.entity.member.class%]]
 
+    oro_mailchimp.iterator.static_segment_member_dropped_state:
+        class: %oro_mailchimp.iterator.static_segment_member_dropped_state.class%
+        calls:
+            - [setRegistry, ["@doctrine"]]
+            - [setMemberExtendedMergeVarEntity, [%oro_mailchimp.entity.member_extended_merge_var.class%]]
+            - [setMemberEntity, [%oro_mailchimp.entity.member.class%]]
+
     oro_mailchimp.iterator.static_segment_member_remove_by_state:
         class: %oro_mailchimp.iterator.static_segment_member_to_remove.class%
         abstract: true
@@ -1028,3 +1049,9 @@ services:
             - '@oro_entity.doctrine_helper'
         tags:
             - { name: kernel.event_listener, event: oro_marketing_list.event.update_marketing_list, method: onMarketingListChange }
+
+    oro_mailchimp.provider.static_segment_sync_mode_choices:
+        class: 'Oro\Bundle\MailChimpBundle\Provider\StaticSegmentSyncModeChoicesProvider'
+        arguments:
+            - '@oro_entity.doctrine_helper'
+            - '@translator'
