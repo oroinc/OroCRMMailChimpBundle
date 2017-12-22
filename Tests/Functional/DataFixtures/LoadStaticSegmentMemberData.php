@@ -17,11 +17,19 @@ class LoadStaticSegmentMemberData extends AbstractMailChimpFixture implements De
             'member' => 'mailchimp:member',
             'segment' => 'mailchimp:segment_one',
             'state' => StaticSegmentMember::STATE_SYNCED,
+            'reference' => 'mailchimp:static-segment-member',
         ],
         [
             'member' => 'mailchimp:member2',
             'segment' => 'mailchimp:segment_one',
             'state' => StaticSegmentMember::STATE_SYNCED,
+            'reference' => 'mailchimp:static-segment-member2',
+        ],
+        [
+            'member' => 'mailchimp:member3',
+            'segment' => 'mailchimp:segment_one',
+            'state' => StaticSegmentMember::STATE_TO_DROP,
+            'reference' => 'mailchimp:static-segment-member3',
         ],
     ];
 
@@ -37,6 +45,7 @@ class LoadStaticSegmentMemberData extends AbstractMailChimpFixture implements De
             $entity->setMember($this->getReference($data['member']));
 
             $this->setEntityPropertyValues($entity, $data, ['reference', 'segment', 'member']);
+            $this->setReference($data['reference'], $entity);
             $manager->persist($entity);
         }
         $manager->flush();
