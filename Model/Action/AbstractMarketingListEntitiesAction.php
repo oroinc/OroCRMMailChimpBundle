@@ -12,6 +12,7 @@ use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 use Oro\Component\Action\Action\AbstractAction;
 use Oro\Component\ConfigExpression\ContextAccessor;
+use Oro\Component\DoctrineUtils\ORM\QueryBuilderUtil;
 
 abstract class AbstractMarketingListEntitiesAction extends AbstractAction
 {
@@ -66,6 +67,7 @@ abstract class AbstractMarketingListEntitiesAction extends AbstractAction
         $expr = $qb->expr()->orX();
         foreach ($emailFields as $emailField) {
             $parameterName = $emailField . mt_rand();
+            QueryBuilderUtil::checkIdentifier($parameterName);
             $expr->add(
                 $qb->expr()->eq(
                     $this->fieldHelper->getFieldExpr($marketingList->getEntity(), $qb, $emailField),

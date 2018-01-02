@@ -4,6 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Doctrine\ORM\AbstractQuery;
 
+use Oro\Component\DoctrineUtils\ORM\QueryBuilderUtil;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
@@ -248,6 +249,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
 
         $queryBuilder = $em->createQueryBuilder()->from($entityName, 'e');
         if ($partialFields) {
+            array_walk($partialFields, [QueryBuilderUtil::class, 'checkIdentifier']);
             $queryBuilder->select(sprintf('partial e.{%s}', implode(',', $partialFields)));
         } else {
             $queryBuilder->select('e');
@@ -255,6 +257,7 @@ class MemberActivityImportStrategy extends BasicImportStrategy implements Logger
 
         $where = $queryBuilder->expr()->andX();
         foreach ($criteria as $field => $value) {
+            QueryBuilderUtil::checkIdentifier($field);
             $where->add(sprintf('e.%s = :%s', $field, $field));
         }
 
