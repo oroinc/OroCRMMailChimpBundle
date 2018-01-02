@@ -10,6 +10,7 @@ use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
+use Oro\Component\DoctrineUtils\ORM\QueryBuilderUtil;
 
 abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmentIterator
 {
@@ -75,6 +76,7 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
         $expr = $qb->expr()->orX();
         $contactInformationFields = array_keys($contactInformationFields);
         foreach ($contactInformationFields as $contactInformationField) {
+            QueryBuilderUtil::checkIdentifier($contactInformationField);
             $contactInformationFieldExpr = $this->fieldHelper
                 ->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField);
 
