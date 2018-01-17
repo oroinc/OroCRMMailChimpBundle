@@ -14,7 +14,7 @@
         "exclude-from-classmap": ["/Tests/"]
     },
     "require": {
-        "php": ">=7.0",
+        "php": "7.1.*",
         "oro/crm": "2.x-dev",
         "zfr/zfr-mailchimp": "2.0.*",
         "oro/marketing": "2.x-dev"
