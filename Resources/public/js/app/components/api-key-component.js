@@ -36,7 +36,7 @@ define(function(require) {
             if ($apiKeyEl.valid()) {
                 $.getJSON(
                     options.pingUrl,
-                    {'api_key': $apiKeyEl.val()},
+                    {api_key: $apiKeyEl.val()},
                     function(response) {
                         if (_.isUndefined(response.error)) {
                             $status.removeClass('alert-error')
