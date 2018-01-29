@@ -15,9 +15,9 @@
     },
     "require": {
         "php": "7.1.*",
-        "oro/crm": "2.6.x-dev",
+        "oro/crm": "2.6.*",
         "zfr/zfr-mailchimp": "2.0.*",
-        "oro/marketing": "2.6.x-dev"
+        "oro/marketing": "2.6.*"
     },
     "repositories": {
         "oro": {
