@@ -85,7 +85,7 @@ During segment export we have 4 steps
  - **handle_unsubscribe_state**: Will unsubscribe members from List at MailChimp
  - **handle_delete_state**: Will delete members from List at MailChimp
 
-## Extended Merge Vars ##
+## Extended Merge Vars
 
 Extended Merge Vars is a functionality to add MailChimp Merge Vars. 
 Merge Vars creates from the definition of the Segment of the MarketingList. 
