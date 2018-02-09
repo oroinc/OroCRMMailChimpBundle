@@ -53,6 +53,9 @@ class MarketingListEmailIterator extends AbstractStaticSegmentIterator
      */
     protected function createSubordinateIterator($staticSegment)
     {
+        if (!$staticSegment instanceof StaticSegment) {
+            return new \ArrayIterator();
+        }
         $marketingList = $staticSegment->getMarketingList();
         $qb = $this->getIteratorQueryBuilder($staticSegment);
 

@@ -6,6 +6,7 @@ use Doctrine\ORM\Query\Expr\From;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\EntityBundle\Provider\VirtualFieldProviderInterface;
+use Oro\Component\DoctrineUtils\ORM\QueryBuilderUtil;
 
 class FieldHelper
 {
@@ -34,7 +35,7 @@ class FieldHelper
             return $this->getVirtualFieldExpression($qb, $entityClass, $fieldName);
         }
 
-        return sprintf('%s.%s', $this->getRootTableAlias($qb), $fieldName);
+        return QueryBuilderUtil::getField($this->getRootTableAlias($qb), $fieldName);
     }
 
     /**
