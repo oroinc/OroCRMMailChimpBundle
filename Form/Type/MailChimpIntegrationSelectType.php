@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Form\Type;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
 use Oro\Bundle\MailChimpBundle\Provider\ChannelType;
@@ -38,7 +38,7 @@ class MailChimpIntegrationSelectType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $integrations = $this->getMailChimpIntegrations();
         $options = [
