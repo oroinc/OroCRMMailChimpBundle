@@ -8,6 +8,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
@@ -55,12 +56,13 @@ class StaticSegmentController extends RestController implements ClassResourceInt
      *      resource=false
      * )
      * @AclAncestor("oro_mailchimp")
+     * @param Request $request
      * @param StaticSegment $staticSegment
      * @return Response
      */
-    public function updateStatusAction(StaticSegment $staticSegment)
+    public function updateStatusAction(Request $request, StaticSegment $staticSegment)
     {
-        $status = $this->getRequest()->get('status');
+        $status = $request->get('status');
         $staticSegment->setSyncStatus($status);
 
         $em = $this->getDoctrine()->getManager();
