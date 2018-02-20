@@ -339,6 +339,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     public function __construct()
     {
         $this->segments = new ArrayCollection();
+        $this->segmentMembers = new ArrayCollection();
     }
 
     /**
