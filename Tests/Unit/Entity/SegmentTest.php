@@ -2,10 +2,9 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use Symfony\Component\PropertyAccess\PropertyAccess;
-
-use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class SegmentTest extends \PHPUnit_Framework_TestCase
 {

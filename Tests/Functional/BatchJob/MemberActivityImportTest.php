@@ -2,13 +2,12 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Functional\BatchJob;
 
-use Symfony\Component\Yaml\Yaml;
-
-use Oro\Bundle\ImportExportBundle\Job\JobResult;
 use Oro\Bundle\ImportExportBundle\Job\JobExecutor;
+use Oro\Bundle\ImportExportBundle\Job\JobResult;
 use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Yaml\Yaml;
 
 class MemberActivityImportTest extends WebTestCase
 {

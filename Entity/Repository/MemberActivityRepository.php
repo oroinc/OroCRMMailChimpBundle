@@ -3,7 +3,6 @@
 namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
-
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 
 class MemberActivityRepository extends EntityRepository

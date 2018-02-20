@@ -2,9 +2,9 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\ExtendedMergeVar;
 
-use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\Provider;
 use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
 class ProviderTest extends \PHPUnit_Framework_TestCase
 {

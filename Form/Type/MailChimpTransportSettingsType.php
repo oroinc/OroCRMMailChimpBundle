@@ -2,10 +2,9 @@
 
 namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
+use Oro\Bundle\CampaignBundle\Form\Type\AbstractTransportSettingsType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
-use Oro\Bundle\CampaignBundle\Form\Type\AbstractTransportSettingsType;
 
 class MailChimpTransportSettingsType extends AbstractTransportSettingsType
 {

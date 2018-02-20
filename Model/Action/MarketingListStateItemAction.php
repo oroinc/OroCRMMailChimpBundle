@@ -3,7 +3,6 @@
 namespace Oro\Bundle\MailChimpBundle\Model\Action;
 
 use Doctrine\ORM\Query\Expr\Join;
-
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Entity\Member;

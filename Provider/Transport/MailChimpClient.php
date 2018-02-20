@@ -6,9 +6,8 @@ use Guzzle\Http\Message\Response;
 use Guzzle\Service\Description\Operation;
 use Guzzle\Service\Description\ServiceDescription;
 use Guzzle\Service\Description\ServiceDescriptionInterface;
-use ZfrMailChimp\Client\MailChimpClient as BaseClient;
-
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Exception\BadResponseException;
+use ZfrMailChimp\Client\MailChimpClient as BaseClient;
 
 // @codingStandardsIgnoreStart
 /**

@@ -4,7 +4,6 @@ namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
-
 use Oro\Bundle\ImportExportBundle\Writer\CleanUpInterface;
 use Oro\Bundle\ImportExportBundle\Writer\InsertFromSelectWriter;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember;

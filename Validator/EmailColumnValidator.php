@@ -3,13 +3,12 @@
 namespace Oro\Bundle\MailChimpBundle\Validator;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
-use Symfony\Component\Validator\ExecutionContextInterface;
-
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use Oro\Bundle\MarketingListBundle\Validator\Constraints\ContactInformationColumnConstraint;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\ExecutionContextInterface;
 
 class EmailColumnValidator extends ConstraintValidator
 {

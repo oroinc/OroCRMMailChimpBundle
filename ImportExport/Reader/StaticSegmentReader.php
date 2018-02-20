@@ -3,7 +3,6 @@
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Reader;
 
 use Doctrine\ORM\Query\Expr\Join;
-
 use Oro\Bundle\BatchBundle\Item\Support\ClosableInterface;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\ImportExportBundle\Context\ContextInterface;

@@ -3,7 +3,6 @@
 namespace Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\Persistence\ObjectManager;
-
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 
 class LoadTransportData extends AbstractMailChimpFixture

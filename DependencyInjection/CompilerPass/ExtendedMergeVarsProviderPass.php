@@ -2,9 +2,9 @@
 
 namespace Oro\Bundle\MailChimpBundle\DependencyInjection\CompilerPass;
 
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class ExtendedMergeVarsProviderPass implements CompilerPassInterface
 {

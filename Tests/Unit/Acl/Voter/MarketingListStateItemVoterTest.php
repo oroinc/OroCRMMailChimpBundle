@@ -4,14 +4,12 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Acl\Voter;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\Query\Expr;
-
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Acl\Voter\MarketingListStateItemVoter;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class MarketingListStateItemVoterTest extends \PHPUnit_Framework_TestCase
 {

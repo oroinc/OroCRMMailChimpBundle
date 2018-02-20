@@ -3,12 +3,11 @@
 namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\ConfigField;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
-use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)

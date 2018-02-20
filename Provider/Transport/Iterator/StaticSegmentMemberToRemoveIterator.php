@@ -4,7 +4,6 @@ namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
-
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 
 class StaticSegmentMemberToRemoveIterator extends AbstractSubordinateIterator

@@ -2,11 +2,10 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
-
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
-use Oro\Bundle\MailChimpBundle\Entity\Template;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
+use Oro\Bundle\MailChimpBundle\Entity\Template;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
 {

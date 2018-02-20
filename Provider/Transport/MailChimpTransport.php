@@ -3,8 +3,6 @@
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Psr\Log\LoggerInterface;
-
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
@@ -26,6 +24,7 @@ use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberUnsubscribesIte
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentIterator;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\StaticSegmentListIterator;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
+use Psr\Log\LoggerInterface;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)

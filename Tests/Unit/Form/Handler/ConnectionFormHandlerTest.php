@@ -3,13 +3,11 @@
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Form\Handler;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
-
 use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
 {

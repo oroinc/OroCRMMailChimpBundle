@@ -2,20 +2,19 @@
 
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Serializer;
 
-use Symfony\Component\Translation\TranslatorInterface;
-
 use Oro\Bundle\DataGridBundle\Extension\Formatter\Property\PropertyInterface;
-use Oro\Bundle\ImportExportBundle\Field\DatabaseHelper;
 use Oro\Bundle\EntityBundle\Helper\FieldHelper;
+use Oro\Bundle\ImportExportBundle\Field\DatabaseHelper;
 use Oro\Bundle\ImportExportBundle\Serializer\Normalizer\ConfigurableEntityNormalizer;
-use Oro\Bundle\LocaleBundle\Formatter\NumberFormatter;
 use Oro\Bundle\LocaleBundle\Formatter\DateTimeFormatter;
-use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\LocaleBundle\Formatter\NumberFormatter;
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Model\MarketingList\DataGridProviderInterface;
+use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\QueryDesignerBundle\Grid\QueryDesignerQueryConfiguration;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
 {

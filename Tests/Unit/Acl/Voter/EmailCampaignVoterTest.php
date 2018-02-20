@@ -2,11 +2,10 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Acl\Voter;
 
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
 {

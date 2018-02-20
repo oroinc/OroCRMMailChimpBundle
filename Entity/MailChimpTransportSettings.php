@@ -3,10 +3,9 @@
 namespace Oro\Bundle\MailChimpBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\ParameterBag;
-
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CampaignBundle\Entity\TransportSettings;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
+use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
  * @ORM\Entity

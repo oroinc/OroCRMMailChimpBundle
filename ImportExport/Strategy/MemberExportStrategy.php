@@ -2,12 +2,11 @@
 
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Strategy;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
-
 use Oro\Bundle\ImportExportBundle\Strategy\Import\AbstractImportStrategy as BaseStrategy;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 class MemberExportStrategy extends BaseStrategy implements LoggerAwareInterface
 {

@@ -3,7 +3,6 @@
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model;
 
 use Doctrine\ORM\Query\Expr\Join;
-
 use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\EntityBundle\Provider\VirtualFieldProviderInterface;
 use Oro\Bundle\MailChimpBundle\Model\FieldHelper;

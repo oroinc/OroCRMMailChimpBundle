@@ -3,19 +3,16 @@
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Strategy;
 
 use Doctrine\ORM\AbstractQuery;
-
-use Oro\Component\DoctrineUtils\ORM\QueryBuilderUtil;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
-
-use Symfony\Component\Validator\ValidatorInterface;
-
 use Oro\Bundle\ImportExportBundle\Strategy\Import\AbstractImportStrategy as BasicImportStrategy;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
 use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
+use Oro\Component\DoctrineUtils\ORM\QueryBuilderUtil;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Validator\ValidatorInterface;
 
 class MemberActivityImportStrategy extends BasicImportStrategy implements LoggerAwareInterface
 {

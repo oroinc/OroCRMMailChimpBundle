@@ -4,7 +4,6 @@ namespace Oro\Bundle\MailChimpBundle\ImportExport\Step;
 
 use Akeneo\Bundle\BatchBundle\Item\InvalidItemException;
 use Akeneo\Bundle\BatchBundle\Item\ItemReaderInterface;
-
 use Oro\Bundle\BatchBundle\Step\StepExecutionWarningHandlerInterface;
 use Oro\Bundle\BatchBundle\Step\StepExecutor as BaseStepExecutor;
 use Oro\Bundle\ImportExportBundle\Reader\IteratorBasedReader;

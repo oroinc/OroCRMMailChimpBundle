@@ -2,10 +2,9 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Placeholder;
 
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Placeholder\MarketingListPlaceholderFilter;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;

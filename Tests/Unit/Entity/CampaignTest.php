@@ -2,8 +2,8 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
-use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
+use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;

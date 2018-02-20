@@ -2,17 +2,16 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Autocomplete;
 
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\AbstractQuery;
-use Doctrine\ORM\Query\Expr;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
-
-use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
-use Oro\Bundle\SearchBundle\Query\Result;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
+use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\MailChimpBundle\Autocomplete\TemplateSearchHandler;
 use Oro\Bundle\MailChimpBundle\Entity\Template;
+use Oro\Bundle\SearchBundle\Query\Result;
+use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
 
 class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
 {

@@ -2,8 +2,8 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\Segment;
 
-use Oro\Bundle\SegmentBundle\Entity\Segment;
 use Oro\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList;
+use Oro\Bundle\SegmentBundle\Entity\Segment;
 
 class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
 {

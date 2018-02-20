@@ -7,9 +7,9 @@ use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Oro\Bundle\MailChimpBundle\ImportExport\Writer\MemberWriter;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMemberData;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMemberData;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 class MemberWriterTest extends WebTestCase
 {

@@ -4,7 +4,6 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 
 class LoadSubscribersListData extends AbstractMailChimpFixture implements DependentFixtureInterface

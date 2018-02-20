@@ -3,7 +3,6 @@
 namespace Oro\Bundle\MailChimpBundle\Placeholder;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-
 use Oro\Bundle\MailChimpBundle\Provider\ChannelType;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;

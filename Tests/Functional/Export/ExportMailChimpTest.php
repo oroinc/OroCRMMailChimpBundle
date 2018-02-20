@@ -7,8 +7,8 @@ use Oro\Bundle\IntegrationBundle\Provider\ReverseSyncProcessor;
 use Oro\Bundle\MailChimpBundle\Provider\Connector\StaticSegmentConnector;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadB2bChannelData;
-use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentB2bCustomerData;
 use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadChannelData;
+use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentB2bCustomerData;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 
 /**

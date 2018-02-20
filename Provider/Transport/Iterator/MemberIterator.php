@@ -2,12 +2,11 @@
 
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
-use Psr\Log\LoggerInterface;
-
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 use Oro\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
+use Psr\Log\LoggerInterface;
 
 class MemberIterator extends AbstractSubordinateIterator
 {

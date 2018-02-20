@@ -2,9 +2,9 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\Segment;
 
-use Oro\Bundle\SegmentBundle\Entity\Segment;
 use Oro\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\SegmentBundle\Entity\Segment;
 
 class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
 {

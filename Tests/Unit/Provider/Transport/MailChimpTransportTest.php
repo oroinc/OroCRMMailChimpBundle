@@ -3,13 +3,12 @@
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Psr\Log\NullLogger;
-
 use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport as MailChimpTransportEntity;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Psr\Log\NullLogger;
 
 class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
 {

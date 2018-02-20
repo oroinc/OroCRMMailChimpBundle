@@ -3,9 +3,8 @@
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Guzzle\Http\EntityBodyInterface;
-use Psr\Log\LoggerInterface;
-
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
+use Psr\Log\LoggerInterface;
 
 class ExportIterator implements \Iterator
 {

@@ -3,11 +3,9 @@
 namespace Oro\Bundle\MailChimpBundle\Migrations\Schema\v1_4;
 
 use Doctrine\DBAL\Types\Type;
-
-use Psr\Log\LoggerInterface;
-
 use Oro\Bundle\MigrationBundle\Migration\ArrayLogger;
 use Oro\Bundle\MigrationBundle\Migration\ParametrizedMigrationQuery;
+use Psr\Log\LoggerInterface;
 
 class UpdateActiveCampaignsQuery extends ParametrizedMigrationQuery
 {

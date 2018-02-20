@@ -3,13 +3,13 @@
 namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Model\Action;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
-use Oro\Bundle\WorkflowBundle\Model\ProcessData;
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
 use Oro\Bundle\MailChimpBundle\Model\Action\UpdateEmailCampaignStatistics;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingListItem;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
+use Oro\Bundle\WorkflowBundle\Model\ProcessData;
 
 class UpdateEmailCampaignStatisticsTest extends WebTestCase
 {

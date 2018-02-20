@@ -4,13 +4,12 @@ namespace Oro\Bundle\MailChimpBundle\Acl\Voter;
 
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
-
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use Oro\Bundle\SecurityBundle\Acl\Voter\AbstractEntityVoter;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingListStateItemInterface;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
+use Oro\Bundle\SecurityBundle\Acl\Voter\AbstractEntityVoter;
 
 class MarketingListStateItemVoter extends AbstractEntityVoter
 {

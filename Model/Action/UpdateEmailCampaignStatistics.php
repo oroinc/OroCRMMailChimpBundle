@@ -5,14 +5,13 @@ namespace Oro\Bundle\MailChimpBundle\Model\Action;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
-
-use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
-use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaignStatistics;
 use Oro\Bundle\CampaignBundle\Model\EmailCampaignStatisticsConnector;
+use Oro\Bundle\MailChimpBundle\Entity\MemberActivity;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
+use Oro\Bundle\WorkflowBundle\Model\EntityAwareInterface;
 
 class UpdateEmailCampaignStatistics extends AbstractMarketingListEntitiesAction
 {

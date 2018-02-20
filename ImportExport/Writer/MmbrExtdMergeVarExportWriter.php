@@ -2,12 +2,10 @@
 
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
-use Psr\Log\LoggerInterface;
-
 use Doctrine\Common\Collections\ArrayCollection;
-
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\MemberExtendedMergeVar;
+use Psr\Log\LoggerInterface;
 use ZfrMailChimp\Exception\Ls\NotSubscribedException;
 
 class MmbrExtdMergeVarExportWriter extends AbstractExportWriter

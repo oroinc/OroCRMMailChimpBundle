@@ -3,14 +3,13 @@
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\AbstractQuery;
-
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
-use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
-use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
+use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 use Oro\Bundle\MailChimpBundle\Util\CallbackFilterIteratorCompatible;
+use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
 class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
 {

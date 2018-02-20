@@ -4,7 +4,6 @@ namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
-
 use Oro\Bundle\ImportExportBundle\Writer\AbstractNativeQueryWriter;
 use Oro\Bundle\MailChimpBundle\Entity\MarketingListEmail;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;

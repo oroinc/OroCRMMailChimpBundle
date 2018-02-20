@@ -2,11 +2,11 @@
 
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
-use Oro\Component\PhpUtils\ArrayUtil;
 use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
-use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
+use Oro\Component\PhpUtils\ArrayUtil;
 
 abstract class AbstractExportWriter extends PersistentBatchWriter implements ClearableInterface
 {
