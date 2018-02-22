@@ -35,54 +35,6 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string $attribute
-     * @param bool $expected
-     * @dataProvider supportsAttributeDataProvider
-     */
-    public function testSupportsAttribute($attribute, $expected)
-    {
-        $this->assertEquals($expected, $this->voter->supportsAttribute($attribute));
-    }
-
-    /**
-     * @return array
-     */
-    public function supportsAttributeDataProvider()
-    {
-        return [
-            'VIEW'   => ['VIEW', false],
-            'CREATE' => ['CREATE', false],
-            'EDIT'   => ['EDIT', true],
-            'DELETE' => ['DELETE', false],
-            'ASSIGN' => ['ASSIGN', false],
-        ];
-    }
-
-    /**
-     * @param string $class
-     * @param string $actualClass
-     * @param bool $expected
-     * @dataProvider supportsClassDataProvider
-     */
-    public function testSupportsClass($class, $actualClass, $expected)
-    {
-        $this->voter->setClassName($actualClass);
-
-        $this->assertEquals($expected, $this->voter->supportsClass($class));
-    }
-
-    /**
-     * @return array
-     */
-    public function supportsClassDataProvider()
-    {
-        return [
-            'supported class' => ['stdClass', 'stdClass', true],
-            'not supported class' => ['NotSupportedClass', 'stdClass', false],
-        ];
-    }
-
-    /**
      * @dataProvider attributesDataProvider
      * @param array $attributes
      * @param EmailCampaign $emailCampaign
