@@ -5,6 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Validator;
 use Oro\Bundle\MailChimpBundle\Validator\EmailColumnValidator;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use Oro\Bundle\MarketingListBundle\Validator\Constraints\ContactInformationColumnConstraint;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class EmailColumnValidatorTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,7 +37,7 @@ class EmailColumnValidatorTest extends \PHPUnit_Framework_TestCase
 
     public function testInitialize()
     {
-        $context = $this->getMockForAbstractClass('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->getMockForAbstractClass(ExecutionContextInterface::class);
 
         $this->fieldInformationValidator->expects($this->once())
             ->method('initialize')

@@ -4,6 +4,8 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Validator;
 
 use Oro\Bundle\MailChimpBundle\Validator\Constraints\UniqueStaticSegmentNameConstraint;
 use Oro\Bundle\MailChimpBundle\Validator\UniqueStaticSegmentNameValidator;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 
 class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
 {
@@ -92,7 +94,7 @@ class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
             ->with($list)
             ->will($this->returnValue([['name' => 'some']]));
 
-        $context = $this->createMock('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->createMock(ExecutionContextInterface::class);
         $context->expects($this->never())
             ->method($this->anything());
 
@@ -141,10 +143,18 @@ class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
             ->with($list)
             ->will($this->returnValue([['name' => $name]]));
 
-        $context = $this->createMock('Symfony\Component\Validator\ExecutionContextInterface');
+        $context = $this->createMock(ExecutionContextInterface::class);
+        $builder = $this->createMock(ConstraintViolationBuilderInterface::class);
         $context->expects($this->once())
-            ->method('addViolationAt')
-            ->with('name', $constraint->message);
+            ->method('buildViolation')
+            ->with($constraint->message)
+            ->willReturn($builder);
+        $builder->expects($this->once())
+            ->method('atPath')
+            ->with('name')
+            ->willReturnSelf();
+        $builder->expects($this->once())
+            ->method('addViolation');
 
         $this->validator->initialize($context);
         $this->validator->validate($value, $constraint);

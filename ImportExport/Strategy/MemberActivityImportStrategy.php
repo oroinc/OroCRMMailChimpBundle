@@ -12,7 +12,7 @@ use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
 use Oro\Component\DoctrineUtils\ORM\QueryBuilderUtil;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MemberActivityImportStrategy extends BasicImportStrategy implements LoggerAwareInterface
 {

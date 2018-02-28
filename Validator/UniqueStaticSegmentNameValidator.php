@@ -36,7 +36,9 @@ class UniqueStaticSegmentNameValidator extends ConstraintValidator
             $segments = $this->transport->getListStaticSegments($value->getSubscribersList());
             foreach ($segments as $segment) {
                 if ($segment['name'] === $value->getName()) {
-                    $this->context->addViolationAt('name', $constraint->message);
+                    $this->context->buildViolation($constraint->message)
+                        ->atPath('name')
+                        ->addViolation();
                     break;
                 }
             }
