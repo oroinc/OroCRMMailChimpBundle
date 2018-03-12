@@ -15,9 +15,9 @@
     },
     "require": {
         "php": "7.1.*",
-        "oro/crm": "2.x-dev",
+        "oro/crm": "3.0.x-dev",
         "zfr/zfr-mailchimp": "2.0.*",
-        "oro/marketing": "2.x-dev"
+        "oro/marketing": "3.0.x-dev"
     },
     "repositories": {
         "oro": {
@@ -33,7 +33,7 @@
     "prefer-stable": true,
     "extra": {
         "branch-alias": {
-            "dev-master": "2.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     }
 }
