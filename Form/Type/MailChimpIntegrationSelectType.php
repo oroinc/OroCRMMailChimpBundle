@@ -46,7 +46,7 @@ class MailChimpIntegrationSelectType extends AbstractType
         ];
 
         if (count($integrations) != 1) {
-            $options['empty_value'] = 'oro.mailchimp.emailcampaign.integration.placeholder';
+            $options['placeholder'] = 'oro.mailchimp.emailcampaign.integration.placeholder';
         }
         $resolver->setDefaults($options);
     }
