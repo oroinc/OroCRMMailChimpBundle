@@ -21,6 +21,13 @@ define(function(require) {
             }
         },
 
+        /**
+         * @inheritDoc
+         */
+        constructor: function ConnectButtonComponent() {
+            ConnectButtonComponent.__super__.constructor.apply(this, arguments);
+        },
+
         _bindEnvironmentEvent: function(widget) {
             var message = this.options.message;
 
