@@ -422,7 +422,7 @@ services:
     oro_mailchimp.form.extension.channel_connectors:
         class: '%oro_mailchimp.form.extension.channel_connectors.class%'
         tags:
-            - { name: form.type_extension, alias: oro_integration_channel_form }
+            - { name: form.type_extension, alias: oro_integration_channel_form, extended_type: Oro\Bundle\IntegrationBundle\Form\Type\ChannelType }
 
     oro_mailchimp.form.type.api_key_type:
         class: '%oro_mailchimp.form.type.api_key_type.class%'
