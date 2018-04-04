@@ -180,7 +180,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $this->form->expects($this->once())
-            ->method('submit')
+            ->method('handleRequest')
             ->with($this->request)
             ->will(
                 $this->returnCallback(
@@ -229,7 +229,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->with(Request::METHOD_POST)
             ->will($this->returnValue(true));
         $this->form->expects($this->once())
-            ->method('submit')
+            ->method('handleRequest')
             ->with($this->request);
         $this->form->expects($this->once())
             ->method('isValid')
