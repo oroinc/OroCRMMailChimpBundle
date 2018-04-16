@@ -8,8 +8,7 @@ use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use Oro\Bundle\MarketingListBundle\Validator\Constraints\ContactInformationColumnConstraint;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-// TODO: change to Symfony\Component\Validator\Context\ExecutionContextInterface in scope of BAP-15236
-use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class EmailColumnValidator extends ConstraintValidator
 {
@@ -33,6 +32,9 @@ class EmailColumnValidator extends ConstraintValidator
         $this->registry = $registry;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function initialize(ExecutionContextInterface $context)
     {
         $this->fieldInformationValidator->initialize($context);
