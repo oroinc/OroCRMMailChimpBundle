@@ -40,7 +40,7 @@ class MailChimpTransport implements TransportInterface, VisibilityTransportInter
      */
     public function getSettingsFormType()
     {
-        return MailChimpTransportSettingsType::NAME;
+        return MailChimpTransportSettingsType::class;
     }
 
     /**

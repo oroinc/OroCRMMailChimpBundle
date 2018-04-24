@@ -62,7 +62,7 @@ class MailChimpController extends Controller
     public function manageConnectionAction(MarketingList $marketingList, Request $request)
     {
         $staticSegment = $this->getStaticSegmentByMarketingList($marketingList);
-        $form = $this->createForm(MarketingListConnectionType::NAME, $staticSegment);
+        $form = $this->createForm(MarketingListConnectionType::class, $staticSegment);
         $handler = new ConnectionFormHandler($request, $this->getDoctrine(), $form);
 
         $result = [];

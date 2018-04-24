@@ -2,7 +2,10 @@
 
 namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
+use Oro\Bundle\MailChimpBundle\Form\Type\MailChimpIntegrationSelectType;
+use Oro\Bundle\MailChimpBundle\Form\Type\MailchimpListSelectType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,7 +21,7 @@ class MarketingListConnectionType extends AbstractType
         $builder
             ->add(
                 'name',
-                'text',
+                TextType::class,
                 [
                     'label' => 'oro.mailchimp.connection.segment_name',
                     'required' => true
@@ -26,7 +29,7 @@ class MarketingListConnectionType extends AbstractType
             )
             ->add(
                 'channel',
-                'oro_mailchimp_integration_select',
+                MailChimpIntegrationSelectType::class,
                 [
                     'label' => 'oro.mailchimp.emailcampaign.integration.label',
                     'required' => true
@@ -34,7 +37,7 @@ class MarketingListConnectionType extends AbstractType
             )
             ->add(
                 'subscribersList',
-                'oro_mailchimp_list_select',
+                MailchimpListSelectType::class,
                 [
                     'label' => 'oro.mailchimp.subscriberslist.entity_label',
                     'required' => true,

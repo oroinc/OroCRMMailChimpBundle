@@ -5,6 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Form\Type;
 use Oro\Bundle\MailChimpBundle\Form\Type\StaticSegmentSyncModeType;
 use Oro\Bundle\MailChimpBundle\Provider\StaticSegmentSyncModeChoicesProvider;
 use Oro\Component\Testing\Unit\FormIntegrationTestCase;
+use Oro\Component\Testing\Unit\PreloadedExtension;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -30,11 +31,25 @@ class StaticSegmentSyncModeTypeTest extends FormIntegrationTestCase
      */
     protected function setUp()
     {
-        parent::setUp();
-
         $this->staticSegmentSyncModesProvider = $this->createMock(StaticSegmentSyncModeChoicesProvider::class);
 
         $this->staticSegmentSyncModeType = new StaticSegmentSyncModeType($this->staticSegmentSyncModesProvider);
+        parent::setUp();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getExtensions()
+    {
+        return [
+            new PreloadedExtension(
+                [
+                    StaticSegmentSyncModeType::class => $this->staticSegmentSyncModeType
+                ],
+                []
+            ),
+        ];
     }
 
     public function testSubmitForm()
@@ -43,7 +58,7 @@ class StaticSegmentSyncModeTypeTest extends FormIntegrationTestCase
 
         $submittedData = 'scheduled';
 
-        $form = $this->factory->create($this->staticSegmentSyncModeType, null, []);
+        $form = $this->factory->create(StaticSegmentSyncModeType::class, null, []);
 
         $form->submit($submittedData);
 

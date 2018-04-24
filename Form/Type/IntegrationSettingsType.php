@@ -2,7 +2,9 @@
 
 namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
+use Oro\Bundle\MailChimpBundle\Form\Type\ApiKeyType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,7 +20,7 @@ class IntegrationSettingsType extends AbstractType
         $builder
             ->add(
                 'apiKey',
-                'oro_mailchimp_api_key_type',
+                ApiKeyType::class,
                 [
                     'label' => 'oro.mailchimp.integration_transport.api_key.label',
                     'tooltip' => 'oro.mailchimp.form.api_key.tooltip',
@@ -27,7 +29,7 @@ class IntegrationSettingsType extends AbstractType
             )
             ->add(
                 'activityUpdateInterval',
-                'choice',
+                ChoiceType::class,
                 [
                     'label' => 'oro.mailchimp.integration_transport.activity_update_interval.label',
                     'tooltip' => 'oro.mailchimp.form.activity_update_interval.tooltip',
