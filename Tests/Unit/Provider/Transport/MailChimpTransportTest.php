@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport as MailChimpTransportEntity;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 use Psr\Log\NullLogger;
@@ -53,7 +54,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
     public function testGetSettingsFormType()
     {
         $this->assertEquals(
-            'oro_mailchimp_integration_transport_setting_type',
+            IntegrationSettingsType::class,
             $this->transport->getSettingsFormType()
         );
     }
