@@ -14,6 +14,7 @@ use Oro\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Oro\Bundle\MailChimpBundle\Entity\Template;
 use Oro\Bundle\MailChimpBundle\Exception\RequiredOptionException;
+use Oro\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberAbuseIterator;
@@ -412,7 +413,7 @@ class MailChimpTransport implements TransportInterface
      */
     public function getSettingsFormType()
     {
-        return 'oro_mailchimp_integration_transport_setting_type';
+        return IntegrationSettingsType::class;
     }
 
     /**

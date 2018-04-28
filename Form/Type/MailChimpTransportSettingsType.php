@@ -18,7 +18,7 @@ class MailChimpTransportSettingsType extends AbstractTransportSettingsType
         $builder
             ->add(
                 'channel',
-                'oro_mailchimp_integration_select',
+                MailChimpIntegrationSelectType::class,
                 [
                     'label' => 'oro.mailchimp.emailcampaign.integration.label',
                     'required' => true
