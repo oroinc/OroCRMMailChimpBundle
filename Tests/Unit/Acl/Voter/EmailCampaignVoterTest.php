@@ -55,10 +55,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
             ->with($object, false)
             ->will($this->returnValue(1));
 
-        if ($this->voter->supportsAttribute($attributes[0])) {
-            $this->assertEmailCampaignLoad($emailCampaign);
-        }
-
+        $this->assertEmailCampaignLoad($emailCampaign);
         $this->voter->setClassName('stdClass');
 
         /** @var \PHPUnit_Framework_MockObject_MockObject|TokenInterface $token */
@@ -102,12 +99,12 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $repository
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('find')
             ->will($this->returnValue($emailCampaign));
 
         $this->doctrineHelper
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('getEntityRepository')
             ->will($this->returnValue($repository));
     }
