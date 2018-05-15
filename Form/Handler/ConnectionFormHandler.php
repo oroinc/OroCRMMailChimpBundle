@@ -55,7 +55,7 @@ class ConnectionFormHandler
         if ($this->request->isMethod(Request::METHOD_POST)) {
             $this->form->handleRequest($this->request);
 
-            if ($this->form->isValid()) {
+            if ($this->form->isSubmitted() && $this->form->isValid()) {
                 if ($entity->getId()) {
                     if ($entity->getSubscribersList()
                         && $entity->getSubscribersList()->getId() !== $oldSubscribersListId
