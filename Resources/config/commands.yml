@@ -1,0 +1,6 @@
+services:
+    Oro\Bundle\MailChimpBundle\Command\MailChimpExportCommand:
+        public: false
+        class: Oro\Bundle\MailChimpBundle\Command\MailChimpExportCommand
+        tags:
+            - { name: console.command }
