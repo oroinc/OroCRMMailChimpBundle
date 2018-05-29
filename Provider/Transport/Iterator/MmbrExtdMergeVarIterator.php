@@ -5,6 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Doctrine\ORM\AbstractQuery;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
@@ -133,7 +134,7 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
             return new \EmptyIterator();
         }
 
-        if ($staticSegment->getExtendedMergeVars()->isEmpty()) {
+        if ($this->isEmptyExtendedMergeVars($staticSegment)) {
             return new \EmptyIterator();
         }
 
@@ -164,5 +165,22 @@ class MmbrExtdMergeVarIterator extends AbstractStaticSegmentMembersIterator
         $bufferedIterator->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
 
         return $bufferedIterator;
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     *
+     * @return boolean
+     */
+    private function isEmptyExtendedMergeVars(StaticSegment $staticSegment)
+    {
+        $repository = $this->doctrineHelper->getEntityRepository(ExtendedMergeVar::class);
+        $qb = $repository->createQueryBuilder('emv');
+        $qb->select('emv.id');
+        $qb->where($qb->expr()->eq('emv.staticSegment', ':staticSegment'));
+        $qb->setParameter('staticSegment', $staticSegment);
+        $qb->setMaxResults(1);
+
+        return $qb->getQuery()->getOneOrNullResult() === null;
     }
 }
