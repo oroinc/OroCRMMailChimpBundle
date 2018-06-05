@@ -354,9 +354,9 @@ oro:
                 static_segment_sync_mode:
                     label: 'Static segment synchronization mode'
                     tooltip: |
-                        Scheduled - synchronizations are scheduled only by cron.
-                        On update - synchronizations are scheduled both by cron and as soon as data in static segment changes.
-                        You have to have the process "Schedule MailChimp Static Segment synchronization" to be enabled to make this configuration be respected.
+                        Scheduled synchronizations are scheduled only by cron.
+                        On update synchronizations are scheduled both by cron and as soon as data in static segment changes.
+                        You have to have the Schedule MailChimp Static Segment Synchronization enabled to make this configuration respected.
                     choices:
                         scheduled: 'Scheduled ({{ schedule_definition }})'
                         on_update: 'On data update'
