@@ -15,9 +15,6 @@ use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadStaticSegmentMe
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Psr\Log\LoggerInterface;
 
-/**
- * @dbIsolation
- */
 class StaticSegmentExportWriterTest extends WebTestCase
 {
     /**

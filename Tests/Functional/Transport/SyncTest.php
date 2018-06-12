@@ -7,10 +7,6 @@ use Oro\Bundle\MessageQueueBundle\Test\Functional\MessageQueueExtension;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Component\MessageQueue\Client\MessagePriority;
 
-/**
- * @outputBuffering enabled
- * @dbIsolation
- */
 class SyncTest extends WebTestCase
 {
     use MessageQueueExtension;

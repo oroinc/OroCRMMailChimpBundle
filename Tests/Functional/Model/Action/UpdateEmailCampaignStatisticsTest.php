@@ -11,9 +11,6 @@ use Oro\Bundle\MailChimpBundle\Model\Action\UpdateEmailCampaignStatistics;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingListItem;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
-/**
- * @dbIsolation
- */
 class UpdateEmailCampaignStatisticsTest extends WebTestCase
 {
     /**

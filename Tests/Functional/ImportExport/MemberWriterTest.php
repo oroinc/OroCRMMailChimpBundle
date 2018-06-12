@@ -11,9 +11,6 @@ use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\MailChimpBundle\Tests\Functional\DataFixtures\LoadMemberData;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
-/**
- * @dbIsolation
- */
 class MemberWriterTest extends WebTestCase
 {
     /**
