@@ -10,9 +10,6 @@ use Oro\Bundle\ImportExportBundle\Processor\ProcessorRegistry;
 use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 use Oro\Bundle\MailChimpBundle\Provider\Connector\MemberActivityConnector;
 
-/**
- * @dbIsolation
- */
 class MemberActivityImportTest extends WebTestCase
 {
     /**
