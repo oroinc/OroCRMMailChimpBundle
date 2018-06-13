@@ -152,6 +152,9 @@ connector:
             title: oro.mailchimp.job.member.export.label
             type: export
             steps:
+                #
+                # calculates mailChimp merge vars based on marketing list fields
+                #
                 add_extended_merge_vars:
                     title: export
                     class: Oro\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
@@ -170,6 +173,10 @@ connector:
                         writer: oro_integration.writer.persistent_batch_writer
                     parameters:
                         batch_size: 10
+                #
+                # compares calculated merge vars with existing in mailChimp
+                # exports merge vars diff into mailChimp
+                #
                 export_extended_merge_vars:
                     title: export
                     class: Oro\Bundle\MailChimpBundle\ImportExport\Step\ItemStep
@@ -179,6 +186,9 @@ connector:
                         writer: oro_mailchimp.importexport.writer.extended_merge_var
                     parameters:
                         batch_size: 10
+                #
+                # collect marketing list items and store them as `orocrm_mailchimp_member`
+                #
                 process_data:
                     title: export
                     class: Oro\Bundle\MailChimpBundle\ImportExport\Step\ItemStep

@@ -11,24 +11,19 @@ use Oro\Bundle\MailChimpBundle\Entity\Member;
 
 class MemberSyncWriter extends InsertFromSelectWriter implements CleanUpInterface
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $hasFirstName = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $hasLastName = false;
 
-    /**
-     * @var ManagerRegistry
-     */
+    /** @var ManagerRegistry */
     protected $registry;
 
     /**
      * @param ManagerRegistry $registry
-     * @return StaticSegmentMemberToRemoveWriter
+     *
+     * @return MemberSyncWriter
      */
     public function setRegistry(ManagerRegistry $registry)
     {
@@ -50,7 +45,7 @@ class MemberSyncWriter extends InsertFromSelectWriter implements CleanUpInterfac
      */
     public function getFields()
     {
-        $contactInformationFields = ['email'];
+        $contactInformationFields = ['email', 'phone'];
         if ($this->hasFirstName) {
             $contactInformationFields[] = 'firstName';
         }

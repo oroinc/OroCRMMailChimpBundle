@@ -208,6 +208,18 @@ class ExtendedMergeVar
     }
 
     /**
+     * @param string $tag
+     *
+     * @return ExtendedMergeVar
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getState()

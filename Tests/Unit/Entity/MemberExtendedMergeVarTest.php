@@ -91,7 +91,7 @@ class MemberExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider invalidMergeVarNamesAndValues
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Merge name and value should be not empty strings.
+     * @expectedExceptionMessage Merge variable name should not be empty string.
      *
      * @param string $name
      * @param string $value
@@ -109,7 +109,6 @@ class MemberExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
         return [
             ['', ''],
             ['', 'value'],
-            ['name', ''],
             ['name', []],
             [[], 'value']
         ];

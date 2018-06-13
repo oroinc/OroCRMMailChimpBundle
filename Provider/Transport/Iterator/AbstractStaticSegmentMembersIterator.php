@@ -5,6 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr\Join;
 
+use Oro\Bundle\ImportExportBundle\Exception\InvalidConfigurationException;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
@@ -12,19 +13,13 @@ use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
 
 abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmentIterator
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $memberClassName;
 
-    /**
-     * @var ContactInformationFieldsProvider
-     */
+    /** @var ContactInformationFieldsProvider */
     protected $contactInformationFieldsProvider;
 
-    /**
-     * @var FieldHelper
-     */
+    /** @var FieldHelper */
     protected $fieldHelper;
 
     /**
@@ -62,7 +57,9 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
 
     /**
      * @param StaticSegment $staticSegment
-     * @param QueryBuilder $qb
+     * @param QueryBuilder  $qb
+     *
+     * @throws InvalidConfigurationException
      */
     protected function matchMembersByEmail(StaticSegment $staticSegment, QueryBuilder $qb)
     {
@@ -70,6 +67,7 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
         $contactInformationFields = $this->getContactInformationFields($marketingList);
 
         $expr = $qb->expr()->orX();
+        $contactInformationFields = array_keys($contactInformationFields);
         foreach ($contactInformationFields as $contactInformationField) {
             $contactInformationFieldExpr = $this->fieldHelper
                 ->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField);

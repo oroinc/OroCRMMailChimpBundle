@@ -14,14 +14,10 @@ use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MarketingListEmailIterator extends AbstractStaticSegmentIterator
 {
-    /**
-     * @var ContactInformationFieldsProvider
-     */
+    /** @var ContactInformationFieldsProvider */
     protected $contactInformationFieldsProvider;
 
-    /**
-     * @var FieldHelper
-     */
+    /** @var FieldHelper */
     protected $fieldHelper;
 
     /**
@@ -60,6 +56,7 @@ class MarketingListEmailIterator extends AbstractStaticSegmentIterator
             $marketingList,
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
         );
+        $contactInformationFields = array_keys($contactInformationFields);
         $emailField = reset($contactInformationFields);
         $contactInformationFieldExpr = $this->fieldHelper
             ->getFieldExpr($marketingList->getEntity(), $qb, $emailField);
