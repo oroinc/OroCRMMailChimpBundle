@@ -13,23 +13,18 @@ use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
 
 abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmentIterator
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $memberClassName;
 
-    /**
-     * @var ContactInformationFieldsProvider
-     */
+    /** @var ContactInformationFieldsProvider */
     protected $contactInformationFieldsProvider;
 
-    /**
-     * @var FieldHelper
-     */
+    /** @var FieldHelper */
     protected $fieldHelper;
 
     /**
      * @param string $memberClassName
+     *
      * @return MemberSyncIterator
      */
     public function setMemberClassName($memberClassName)
@@ -41,6 +36,7 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
 
     /**
      * @param ContactInformationFieldsProvider $provider
+     *
      * @return MemberSyncIterator
      */
     public function setContactInformationFieldsProvider(ContactInformationFieldsProvider $provider)
@@ -52,6 +48,7 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
 
     /**
      * @param FieldHelper $fieldHelper
+     *
      * @return MemberSyncIterator
      */
     public function setFieldHelper(FieldHelper $fieldHelper)
@@ -63,7 +60,8 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
 
     /**
      * @param StaticSegment $staticSegment
-     * @param QueryBuilder $qb
+     * @param QueryBuilder  $qb
+     *
      * @throws InvalidConfigurationException
      */
     protected function matchMembersByEmail(StaticSegment $staticSegment, QueryBuilder $qb)
@@ -75,6 +73,7 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
         }
 
         $expr = $qb->expr()->orX();
+        $contactInformationFields = array_keys($contactInformationFields);
         foreach ($contactInformationFields as $contactInformationField) {
             $contactInformationFieldExpr = $this->fieldHelper
                 ->getFieldExpr($marketingList->getEntity(), $qb, $contactInformationField);
@@ -104,6 +103,7 @@ abstract class AbstractStaticSegmentMembersIterator extends AbstractStaticSegmen
 
     /**
      * @param MarketingList $marketingList
+     *
      * @return array
      */
     protected function getContactInformationFields(MarketingList $marketingList)

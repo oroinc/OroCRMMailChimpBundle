@@ -17,18 +17,19 @@ interface MergeVarInterface
     /**#@+
      * @const string Tags of MergeVar
      */
-    const TAG_EMAIL = 'EMAIL';
+    const TAG_EMAIL      = 'EMAIL';
     const TAG_FIRST_NAME = 'FNAME';
-    const TAG_LAST_NAME = 'LNAME';
+    const TAG_LAST_NAME  = 'LNAME';
+    const TAG_PHONE      = 'PHONE';
     /**#@-*/
 
     /**#@+
      * @const string Name of properties of MergeVar
      */
-    const PROPERTY_NAME = 'name';
-    const PROPERTY_REQUIRED = 'req';
+    const PROPERTY_NAME       = 'name';
+    const PROPERTY_REQUIRED   = 'req';
     const PROPERTY_FIELD_TYPE = 'field_type';
-    const PROPERTY_TAG = 'tag';
+    const PROPERTY_TAG        = 'tag';
     /**#@-*/
 
     /**

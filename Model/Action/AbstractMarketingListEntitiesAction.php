@@ -15,19 +15,13 @@ use Oro\Component\ConfigExpression\ContextAccessor;
 
 abstract class AbstractMarketingListEntitiesAction extends AbstractAction
 {
-    /**
-     * @var ContactInformationFieldsProvider
-     */
+    /** @var ContactInformationFieldsProvider */
     protected $contactInformationFieldsProvider;
 
-    /**
-     * @var MarketingListProvider
-     */
+    /** @var MarketingListProvider */
     protected $marketingListProvider;
 
-    /**
-     * @var FieldHelper
-     */
+    /** @var FieldHelper */
     protected $fieldHelper;
 
     /**
@@ -56,10 +50,10 @@ abstract class AbstractMarketingListEntitiesAction extends AbstractAction
      */
     protected function getMarketingListEntitiesByEmailQueryBuilder(MarketingList $marketingList, $email)
     {
-        $emailFields = $this->contactInformationFieldsProvider->getMarketingListTypedFields(
+        $emailFields = array_keys($this->contactInformationFieldsProvider->getMarketingListTypedFields(
             $marketingList,
             ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL
-        );
+        ));
 
         $qb = $this->getEntitiesQueryBuilder($marketingList);
 

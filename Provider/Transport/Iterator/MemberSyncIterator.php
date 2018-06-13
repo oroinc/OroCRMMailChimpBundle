@@ -16,52 +16,38 @@ use Oro\Component\PhpUtils\ArrayUtil;
 
 class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
 {
-    const EMAIL_SEPARATOR = '__E__';
+    const EMAIL_SEPARATOR      = '__E__';
+    const PHONE_SEPARATOR      = '__P__';
     const FIRST_NAME_SEPARATOR = '__F__';
-    const LAST_NAME_SEPARATOR = '__L__';
+    const LAST_NAME_SEPARATOR  = '__L__';
 
-    /**
-     * @var MergeVarProviderInterface
-     */
+    /** @var MergeVarProviderInterface */
     protected $mergeVarsProvider;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $hasFirstName = false;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $hasLastName = false;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $firstNameField;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $lastNameField;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $contactInformationFields;
 
-    /**
-     * @var DQLNameFormatter
-     */
+    /** @var DQLNameFormatter */
     protected $formatter;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $extendMergeVarsClass;
 
     /**
      * @param MergeVarProviderInterface $mergeVarsProvider
+     *
      * @return MemberSyncIterator
      */
     public function setMergeVarsProvider(MergeVarProviderInterface $mergeVarsProvider)
@@ -73,6 +59,7 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
 
     /**
      * @param DQLNameFormatter $formatter
+     *
      * @return MemberSyncIterator
      */
     public function setFormatter(DQLNameFormatter $formatter)
@@ -84,6 +71,7 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
 
     /**
      * @param string $extendMergeVarsClass
+     *
      * @return MemberSyncIterator
      */
     public function setExtendMergeVarsClass($extendMergeVarsClass)
@@ -179,7 +167,8 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
      */
     protected function getContactInformationFields(MarketingList $marketingList)
     {
-        $this->contactInformationFields = parent::getContactInformationFields($marketingList);
+        $this->contactInformationFields = $this->contactInformationFieldsProvider
+            ->getMarketingListTypedFields($marketingList);
 
         return $this->contactInformationFields;
     }
@@ -187,7 +176,7 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
     /**
      * Add merge prepared for insertion merge vars column.
      *
-     * @param QueryBuilder $qb
+     * @param QueryBuilder  $qb
      * @param StaticSegment $staticSegment
      */
     protected function addMergeVars(QueryBuilder $qb, StaticSegment $staticSegment)
@@ -228,10 +217,12 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
         }
 
         $emailFieldExpr = $this->getEmailFieldExpression($qb, $staticSegment);
-        $mergeVars = json_encode($mergeVarsTemplate);
+        $phoneFieldExpr = $this->getPhoneFieldExpression($qb, $staticSegment);
 
         // Prepare template to be SQL used in SQL CONCAT expression.
+        $mergeVars = json_encode($mergeVarsTemplate);
         $mergeVars = $this->replaceSeparator($mergeVars, self::EMAIL_SEPARATOR, $emailFieldExpr);
+        $mergeVars = $this->replaceSeparator($mergeVars, self::PHONE_SEPARATOR, $phoneFieldExpr);
         $mergeVars = $this->replaceSeparator($mergeVars, self::FIRST_NAME_SEPARATOR, $this->firstNameField);
         $mergeVars = $this->replaceSeparator($mergeVars, self::LAST_NAME_SEPARATOR, $this->lastNameField);
         foreach ($extendMergeVars as $mergeVar) {
@@ -262,6 +253,7 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
 
     /**
      * @param StaticSegment $staticSegment
+     *
      * @return array
      */
     protected function getMergeVarsTemplate(StaticSegment $staticSegment)
@@ -270,31 +262,66 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
         $mergeVarsTemplate = [];
 
         // Prepare merge vars template
-        if ($mergeVarFields->getEmail()) {
-            $mergeVarsTemplate[$mergeVarFields->getEmail()->getTag()] = self::EMAIL_SEPARATOR;
+        $emailField = $mergeVarFields->getEmail();
+        if ($emailField) {
+            $mergeVarsTemplate[$emailField->getTag()] = self::EMAIL_SEPARATOR;
         }
-        if ($mergeVarFields->getFirstName()) {
-            $mergeVarsTemplate[$mergeVarFields->getFirstName()->getTag()] = self::FIRST_NAME_SEPARATOR;
+        $phoneField = $mergeVarFields->getPhone();
+        if ($phoneField) {
+            $mergeVarsTemplate[$phoneField->getTag()] = self::PHONE_SEPARATOR;
         }
-        if ($mergeVarFields->getLastName()) {
-            $mergeVarsTemplate[$mergeVarFields->getLastName()->getTag()] = self::LAST_NAME_SEPARATOR;
+        $firstNameField = $mergeVarFields->getFirstName();
+        if ($firstNameField) {
+            $mergeVarsTemplate[$firstNameField->getTag()] = self::FIRST_NAME_SEPARATOR;
+        }
+        $lastNameField = $mergeVarFields->getLastName();
+        if ($lastNameField) {
+            $mergeVarsTemplate[$lastNameField->getTag()] = self::LAST_NAME_SEPARATOR;
         }
 
         return $mergeVarsTemplate;
     }
 
     /**
-     * @param QueryBuilder $qb
+     * @param QueryBuilder  $qb
      * @param StaticSegment $staticSegment
+     *
      * @return string
      */
     protected function getEmailFieldExpression(QueryBuilder $qb, StaticSegment $staticSegment)
     {
-        $emailField = reset($this->contactInformationFields);
-        $emailFieldExpr = $this->fieldHelper
-            ->getFieldExpr($staticSegment->getMarketingList()->getEntity(), $qb, $emailField);
+        return $this->getTypedFieldExpression($qb, $staticSegment, 'email');
+    }
 
-        return $emailFieldExpr;
+    /**
+     * @param QueryBuilder  $qb
+     * @param StaticSegment $staticSegment
+     *
+     * @return string
+     */
+    protected function getPhoneFieldExpression(QueryBuilder $qb, StaticSegment $staticSegment)
+    {
+        return $this->getTypedFieldExpression($qb, $staticSegment, 'phone');
+    }
+
+    /**
+     * @param QueryBuilder  $qb
+     * @param StaticSegment $staticSegment
+     * @param string        $fieldType
+     *
+     * @return string
+     */
+    protected function getTypedFieldExpression(QueryBuilder $qb, StaticSegment $staticSegment, $fieldType)
+    {
+        $fieldExpr = '';
+        $contactInformationFields = array_flip($this->contactInformationFields);
+        if (isset($contactInformationFields[$fieldType])) {
+            $fieldName = $contactInformationFields[$fieldType];
+            $fieldExpr = $this->fieldHelper
+                ->getFieldExpr($staticSegment->getMarketingList()->getEntity(), $qb, $fieldName);
+        }
+
+        return $fieldExpr;
     }
 
     /**
