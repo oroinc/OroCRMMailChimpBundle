@@ -7,10 +7,10 @@ use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\EntityBundle\Provider\VirtualFieldProviderInterface;
 use Oro\Bundle\MailChimpBundle\Model\FieldHelper;
 
-class FieldHelperTest extends \PHPUnit_Framework_TestCase
+class FieldHelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|VirtualFieldProviderInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|VirtualFieldProviderInterface
      */
     protected $virtualFieldProvider;
 
@@ -41,7 +41,7 @@ class FieldHelperTest extends \PHPUnit_Framework_TestCase
             ->method('getAlias')
             ->will($this->returnValue($alias));
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject|QueryBuilder $qb */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|QueryBuilder $qb */
         $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
             ->disableOriginalConstructor()
             ->getMock();
@@ -83,7 +83,7 @@ class FieldHelperTest extends \PHPUnit_Framework_TestCase
             ->method('getAlias')
             ->will($this->returnValue($alias));
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject|QueryBuilder $qb */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|QueryBuilder $qb */
         $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
             ->disableOriginalConstructor()
             ->getMock();

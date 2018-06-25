@@ -4,12 +4,12 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
 
-class CampaignIteratorTest extends \PHPUnit_Framework_TestCase
+class CampaignIteratorTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_BATCH_SIZE = 2;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $client;
 

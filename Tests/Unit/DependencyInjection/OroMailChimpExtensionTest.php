@@ -5,11 +5,11 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\DependencyInjection;
 use Oro\Bundle\MailChimpBundle\DependencyInjection\OroMailChimpExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class OroMailChimpExtensionTest extends \PHPUnit_Framework_TestCase
+class OroMailChimpExtensionTest extends \PHPUnit\Framework\TestCase
 {
     public function testLoad()
     {
-        /** @var \PHPUnit_Framework_MockObject_MockObject|ContainerBuilder $container */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|ContainerBuilder $container */
         $container = $this->getMockBuilder(ContainerBuilder::class)
                           ->disableOriginalConstructor()
                           ->getMock();

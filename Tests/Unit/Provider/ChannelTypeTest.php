@@ -4,7 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider;
 
 use Oro\Bundle\MailChimpBundle\Provider\ChannelType;
 
-class ChannelTypeTest extends \PHPUnit_Framework_TestCase
+class ChannelTypeTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ChannelType */
     protected $channel;

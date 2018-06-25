@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFieldsInterface;
 
-class SubscribersListTest extends \PHPUnit_Framework_TestCase
+class SubscribersListTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var SubscribersList
@@ -130,7 +130,7 @@ class SubscribersListTest extends \PHPUnit_Framework_TestCase
 
     public function testSetMergeVarConfigResetsMergeVarFields()
     {
-        /** @var MergeVarFieldsInterface|\PHPUnit_Framework_MockObject_MockObject $mergeVarsFields */
+        /** @var MergeVarFieldsInterface|\PHPUnit\Framework\MockObject\MockObject $mergeVarsFields */
         $mergeVarsFields = $this->createMock('Oro\\Bundle\\MailChimpBundle\\Model\\MergeVar\\MergeVarFieldsInterface');
 
         $this->target->setMergeVarFields($mergeVarsFields);

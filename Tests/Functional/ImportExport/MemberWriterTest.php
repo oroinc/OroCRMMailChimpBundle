@@ -14,12 +14,12 @@ use Oro\Bundle\TestFrameworkBundle\Test\WebTestCase;
 class MemberWriterTest extends WebTestCase
 {
     /**
-     * @var MailChimpTransport|\PHPUnit_Framework_MockObject_MockObject
+     * @var MailChimpTransport|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $transport;
 
     /**
-     * @var StepExecution|\PHPUnit_Framework_MockObject_MockObject
+     * @var StepExecution|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $stepExecution;
 

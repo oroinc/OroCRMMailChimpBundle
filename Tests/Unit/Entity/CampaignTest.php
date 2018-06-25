@@ -8,7 +8,7 @@ use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 
-class CampaignTest extends \PHPUnit_Framework_TestCase
+class CampaignTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Campaign

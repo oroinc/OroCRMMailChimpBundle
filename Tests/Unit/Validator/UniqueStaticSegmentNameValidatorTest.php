@@ -7,10 +7,10 @@ use Oro\Bundle\MailChimpBundle\Validator\UniqueStaticSegmentNameValidator;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Violation\ConstraintViolationBuilderInterface;
 
-class UniqueStaticSegmentNameValidatorTest extends \PHPUnit_Framework_TestCase
+class UniqueStaticSegmentNameValidatorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $transport;
 

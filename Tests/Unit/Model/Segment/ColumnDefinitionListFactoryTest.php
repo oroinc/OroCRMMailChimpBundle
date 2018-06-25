@@ -6,7 +6,7 @@ use Oro\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionListFactory;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\SegmentBundle\Entity\Segment;
 
-class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
+class ColumnDefinitionListFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ColumnDefinitionListFactory
@@ -14,12 +14,12 @@ class ColumnDefinitionListFactoryTest extends \PHPUnit_Framework_TestCase
     protected $factory;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|MarketingList
+     * @var \PHPUnit\Framework\MockObject\MockObject|MarketingList
      */
     protected $marketingList;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|Segment
+     * @var \PHPUnit\Framework\MockObject\MockObject|Segment
      */
     protected $segment;
 

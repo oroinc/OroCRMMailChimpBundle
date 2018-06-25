@@ -5,13 +5,13 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
-class MemberIteratorTest extends \PHPUnit_Framework_TestCase
+class MemberIteratorTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_LIST_ID = 42;
     const TEST_LIST_ORIGIN_ID = 100;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $client;
 
@@ -25,7 +25,7 @@ class MemberIteratorTest extends \PHPUnit_Framework_TestCase
     /**
      * @param \Iterator $subscriberLists
      * @param array $parameters
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function createIterator(\Iterator $subscriberLists, array $parameters)
     {

@@ -9,10 +9,10 @@ use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingListType;
 use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 
-class DataGridProviderTest extends \PHPUnit_Framework_TestCase
+class DataGridProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|Manager
+     * @var \PHPUnit\Framework\MockObject\MockObject|Manager
      */
     protected $dataGridManager;
 
@@ -43,7 +43,7 @@ class DataGridProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDataGridColumns($type)
     {
-        /** @var \PHPUnit_Framework_MockObject_MockObject|MarketingList $marketingList */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|MarketingList $marketingList */
         $marketingList = $this
             ->getMockBuilder('Oro\Bundle\MarketingListBundle\Entity\MarketingList')
             ->disableOriginalConstructor()

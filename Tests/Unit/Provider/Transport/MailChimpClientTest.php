@@ -4,13 +4,13 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport;
 
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
-class MailChimpClientTest extends \PHPUnit_Framework_TestCase
+class MailChimpClientTest extends \PHPUnit\Framework\TestCase
 {
     const API_KEY = '3024ddceb22913e9f8ff39fe9be157f6-us9';
     const DC = 'us9';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClient
+     * @var \PHPUnit\Framework\MockObject\MockObject|MailChimpClient
      */
     protected $client;
 

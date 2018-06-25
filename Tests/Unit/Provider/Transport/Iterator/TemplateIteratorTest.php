@@ -5,10 +5,10 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\TemplateIterator;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
-class TemplateIteratorTest extends \PHPUnit_Framework_TestCase
+class TemplateIteratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClient
+     * @var \PHPUnit\Framework\MockObject\MockObject|MailChimpClient
      */
     protected $client;
 

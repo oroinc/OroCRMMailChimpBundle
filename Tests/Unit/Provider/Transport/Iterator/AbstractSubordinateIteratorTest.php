@@ -2,10 +2,10 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
-class AbstractSubordinateIteratorTest extends \PHPUnit_Framework_TestCase
+class AbstractSubordinateIteratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $iterator;
 
@@ -18,7 +18,7 @@ class AbstractSubordinateIteratorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param \Iterator $mainIterator
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function createIterator(\Iterator $mainIterator)
     {

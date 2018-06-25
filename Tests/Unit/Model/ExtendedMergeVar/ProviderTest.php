@@ -6,7 +6,7 @@ use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\Provider;
 use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 
-class ProviderTest extends \PHPUnit_Framework_TestCase
+class ProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Provider
@@ -44,13 +44,13 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
         array $externalProviderMergeVars,
         array $inheritedProviderMergeVars
     ) {
-        /** @var \PHPUnit_Framework_MockObject_MockObject|ProviderInterface $externalProvider */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|ProviderInterface $externalProvider */
         $externalProvider = $this
             ->createMock('Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface');
         $externalProvider->expects($this->once())->method('provideExtendedMergeVars')
             ->will($this->returnValue($externalProviderMergeVars));
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject|ProviderInterface $inheritedExternalProvider */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|ProviderInterface $inheritedExternalProvider */
         $inheritedExternalProvider = $this
             ->getMockBuilder('Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface')
             ->setMockClassName('InheritedProvider')

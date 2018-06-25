@@ -22,7 +22,7 @@ class StaticSegmentSyncModeTypeTest extends FormIntegrationTestCase
     private $staticSegmentSyncModeType;
 
     /**
-     * @var StaticSegmentSyncModeChoicesProvider|\PHPUnit_Framework_MockObject_MockObject
+     * @var StaticSegmentSyncModeChoicesProvider|\PHPUnit\Framework\MockObject\MockObject
      */
     private $staticSegmentSyncModesProvider;
 

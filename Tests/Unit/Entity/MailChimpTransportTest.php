@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
+class MailChimpTransportTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MailChimpTransport

@@ -8,7 +8,7 @@ use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVar;
 use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFields;
 use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProvider;
 
-class MergeVarProviderTest extends \PHPUnit_Framework_TestCase
+class MergeVarProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MergeVarProvider

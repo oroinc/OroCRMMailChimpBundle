@@ -7,7 +7,7 @@ use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Acl\Voter\EmailCampaignVoter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
+class EmailCampaignVoterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var EmailCampaignVoter
@@ -15,7 +15,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
     protected $voter;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|DoctrineHelper
+     * @var \PHPUnit\Framework\MockObject\MockObject|DoctrineHelper
      */
     protected $doctrineHelper;
 
@@ -58,7 +58,7 @@ class EmailCampaignVoterTest extends \PHPUnit_Framework_TestCase
         $this->assertEmailCampaignLoad($emailCampaign);
         $this->voter->setClassName('stdClass');
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject|TokenInterface $token */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|TokenInterface $token */
         $token = $this->createMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $this->assertEquals(
             $expected,

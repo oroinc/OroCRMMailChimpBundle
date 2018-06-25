@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\MergeVar;
 use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarFields;
 use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarInterface;
 
-class MergeVarFieldsTest extends \PHPUnit_Framework_TestCase
+class MergeVarFieldsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param MergeVarInterface[] $mergeVars

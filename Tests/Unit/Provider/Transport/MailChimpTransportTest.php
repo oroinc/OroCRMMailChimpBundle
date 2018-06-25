@@ -11,15 +11,15 @@ use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClientFactory;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 use Psr\Log\NullLogger;
 
-class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
+class MailChimpTransportTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|MailChimpClientFactory
+     * @var \PHPUnit\Framework\MockObject\MockObject|MailChimpClientFactory
      */
     protected $clientFactory;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ManagerRegistry
+     * @var \PHPUnit\Framework\MockObject\MockObject|ManagerRegistry
      */
     protected $managerRegistry;
 
@@ -67,7 +67,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function initTransport()
     {
@@ -142,7 +142,7 @@ class MailChimpTransportTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     protected function getStaticSegmentMock()
     {

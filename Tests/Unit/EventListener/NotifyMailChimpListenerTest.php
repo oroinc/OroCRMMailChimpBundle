@@ -11,7 +11,7 @@ use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Event\UpdateMarketingListEvent;
 use Oro\Component\Testing\Unit\EntityTrait;
 
-class NotifyMailChimpListenerTest extends \PHPUnit_Framework_TestCase
+class NotifyMailChimpListenerTest extends \PHPUnit\Framework\TestCase
 {
     use EntityTrait;
 
@@ -21,17 +21,17 @@ class NotifyMailChimpListenerTest extends \PHPUnit_Framework_TestCase
     private $listener;
 
     /**
-     * @var DoctrineHelper|\PHPUnit_Framework_MockObject_MockObject
+     * @var DoctrineHelper|\PHPUnit\Framework\MockObject\MockObject
      */
     private $doctrineHelper;
 
     /**
-     * @var EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var EntityManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $entityManager;
 
     /**
-     * @var EntityRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var EntityRepository|\PHPUnit\Framework\MockObject\MockObject
      */
     private $repository;
 

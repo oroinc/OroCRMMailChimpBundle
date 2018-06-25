@@ -9,20 +9,20 @@ use Oro\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
+class ConnectionFormHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|FormInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|FormInterface
      */
     protected $form;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|Request
+     * @var \PHPUnit\Framework\MockObject\MockObject|Request
      */
     protected $request;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject|ManagerRegistry
+     * @var \PHPUnit\Framework\MockObject\MockObject|ManagerRegistry
      */
     protected $registry;
 
@@ -46,7 +46,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessGet()
     {
-        /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
+        /** @var StaticSegment|\PHPUnit\Framework\MockObject\MockObject $staticSegment */
         $staticSegment = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
@@ -71,7 +71,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testProcessNewEntity()
     {
-        /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
+        /** @var StaticSegment|\PHPUnit\Framework\MockObject\MockObject $staticSegment */
         $staticSegment = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
@@ -100,7 +100,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('getId')
             ->will($this->returnValue(2));
 
-        /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
+        /** @var StaticSegment|\PHPUnit\Framework\MockObject\MockObject $staticSegment */
         $staticSegment = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->getMock();
@@ -139,7 +139,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
             ->method('getId')
             ->will($this->returnValue(2));
 
-        /** @var StaticSegment|\PHPUnit_Framework_MockObject_MockObject $staticSegment */
+        /** @var StaticSegment|\PHPUnit\Framework\MockObject\MockObject $staticSegment */
         $staticSegment = $this->getMockBuilder('Oro\Bundle\MailChimpBundle\Entity\StaticSegment')
             ->disableOriginalConstructor()
             ->setMethods(['getId'])
@@ -243,7 +243,7 @@ class ConnectionFormHandlerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param \PHPUnit_Framework_MockObject_MockObject $staticSegmentManager
+     * @param \PHPUnit\Framework\MockObject\MockObject $staticSegmentManager
      * @param StaticSegment $staticSegment
      */
     protected function assertSave($staticSegmentManager, $staticSegment)

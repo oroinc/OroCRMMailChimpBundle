@@ -4,10 +4,10 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ExportIterator;
 
-class ExportIteratorTest extends \PHPUnit_Framework_TestCase
+class ExportIteratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     protected $client;
 

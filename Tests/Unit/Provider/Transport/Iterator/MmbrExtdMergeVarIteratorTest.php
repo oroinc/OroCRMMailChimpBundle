@@ -9,18 +9,18 @@ use Oro\Bundle\MarketingListBundle\Provider\MarketingListProvider;
 use Oro\Bundle\SecurityBundle\Owner\Metadata\OwnershipMetadataProviderInterface;
 use Oro\Component\Testing\Unit\EntityTrait;
 
-class MmbrExtdMergeVarIteratorTest extends \PHPUnit_Framework_TestCase
+class MmbrExtdMergeVarIteratorTest extends \PHPUnit\Framework\TestCase
 {
     use EntityTrait;
 
     /**
      * @param \Iterator $mainIterator
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|MmbrExtdMergeVarIterator
+     * @return \PHPUnit\Framework\MockObject\MockObject|MmbrExtdMergeVarIterator
      */
     protected function createIterator(\Iterator $mainIterator)
     {
-        /** @var \PHPUnit_Framework_MockObject_MockObject|MmbrExtdMergeVarIterator $iterator */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|MmbrExtdMergeVarIterator $iterator */
         $iterator = $this->getMockBuilder(MmbrExtdMergeVarIterator::class)
             ->setMethods(['createBufferedIterator'])
             ->setConstructorArgs(

@@ -8,20 +8,20 @@ use Oro\Bundle\MailChimpBundle\Model\ExtendedMergeVar\ProviderInterface;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
-class FilterMergeVarsProviderTest extends \PHPUnit_Framework_TestCase
+class FilterMergeVarsProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var ProviderInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $provider;
 
     /**
-     * @var DQLNameFormatter|\PHPUnit_Framework_MockObject_MockObject
+     * @var DQLNameFormatter|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $nameFormatter;
 
     /**
-     * @var ContactInformationFieldsProvider|\PHPUnit_Framework_MockObject_MockObject
+     * @var ContactInformationFieldsProvider|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $contactInformationFieldsProvider;
 

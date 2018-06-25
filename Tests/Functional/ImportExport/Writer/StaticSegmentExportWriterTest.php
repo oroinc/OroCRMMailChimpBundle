@@ -18,17 +18,17 @@ use Psr\Log\LoggerInterface;
 class StaticSegmentExportWriterTest extends WebTestCase
 {
     /**
-     * @var MailChimpTransport|\PHPUnit_Framework_MockObject_MockObject
+     * @var MailChimpTransport|\PHPUnit\Framework\MockObject\MockObject
      */
     private $transport;
 
     /**
-     * @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var LoggerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $logger;
 
     /**
-     * @var ContextInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var ContextInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $context;
 
@@ -42,7 +42,7 @@ class StaticSegmentExportWriterTest extends WebTestCase
         $this->initClient();
         $this->loadFixtures([LoadStaticSegmentMemberData::class]);
 
-        /** @var StepExecution|\PHPUnit_Framework_MockObject_MockObject $stepExecution */
+        /** @var StepExecution|\PHPUnit\Framework\MockObject\MockObject $stepExecution */
         $stepExecution = $this->createMock(StepExecution::class);
         $stepExecution->expects($this->any())
             ->method('getJobExecution')

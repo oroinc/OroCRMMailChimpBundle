@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class ExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
+class ExtendedMergeVarTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ExtendedMergeVar

@@ -13,7 +13,7 @@ use Oro\Bundle\MailChimpBundle\Entity\Template;
 use Oro\Bundle\SearchBundle\Query\Result;
 use Oro\Bundle\SecurityBundle\ORM\Walker\AclHelper;
 
-class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
+class TemplateSearchHandlerTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_ENTITY_CLASS = 'FooEntityClass';
     const ID = 'id';
@@ -29,37 +29,37 @@ class TemplateSearchHandlerTest extends \PHPUnit_Framework_TestCase
     protected $searchHandler;
 
     /**
-     * @var ManagerRegistry|\PHPUnit_Framework_MockObject_MockObject
+     * @var ManagerRegistry|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $managerRegistry;
 
     /**
-     * @var EntityManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var EntityManager|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityManager;
 
     /**
-     * @var EntityRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var EntityRepository|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityRepository;
 
     /**
-     * @var QueryBuilder|\PHPUnit_Framework_MockObject_MockObject
+     * @var QueryBuilder|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $queryBuilder;
 
     /**
-     * @var AbstractQuery|\PHPUnit_Framework_MockObject_MockObject
+     * @var AbstractQuery|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $query;
 
     /**
-     * @var AclHelper|\PHPUnit_Framework_MockObject_MockObject
+     * @var AclHelper|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $aclHelper;
 
     /**
-     * @var Expr|\PHPUnit_Framework_MockObject_MockObject
+     * @var Expr|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $expr;
 

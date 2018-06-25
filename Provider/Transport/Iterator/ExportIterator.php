@@ -138,7 +138,7 @@ class ExportIterator implements \Iterator
         if (!$this->body) {
             $response = $this->client->export($this->methodName, $this->parameters);
             $this->body = $response->getBody();
-            $this->body->seek(0);
+            $this->body->seek(0, \SEEK_SET);
 
             if ($this->useFirstLineAsHeader) {
                 $line = $this->getLineData();

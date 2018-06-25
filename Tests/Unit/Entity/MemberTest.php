@@ -4,7 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Oro\Bundle\MailChimpBundle\Entity\Member;
 
-class MemberTest extends \PHPUnit_Framework_TestCase
+class MemberTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Member

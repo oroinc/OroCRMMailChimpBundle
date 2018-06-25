@@ -24,14 +24,14 @@ use Oro\Component\MessageQueue\Job\JobRunner;
 use Oro\Component\MessageQueue\Transport\Null\NullMessage;
 use Oro\Component\MessageQueue\Transport\Null\NullSession;
 use Oro\Component\Testing\ClassExtensionTrait;
-use PHPUnit_Framework_MockObject_Matcher_Invocation;
+use PHPUnit\Framework\MockObject\Matcher\Invocation;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @dbIsolationPerTest
  */
-class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
+class ExportMailChimpProcessorTest extends \PHPUnit\Framework\TestCase
 {
     use ClassExtensionTrait;
 
@@ -319,7 +319,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|DoctrineHelper
+     * @return \PHPUnit\Framework\MockObject\MockObject|DoctrineHelper
      */
     private function createDoctrineHelperStub($integration = null)
     {
@@ -336,7 +336,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|ReverseSyncProcessor
+     * @return \PHPUnit\Framework\MockObject\MockObject|ReverseSyncProcessor
      */
     private function createReverseSyncProcessorMock()
     {
@@ -351,7 +351,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|StaticSegmentsMemberStateManager
+     * @return \PHPUnit\Framework\MockObject\MockObject|StaticSegmentsMemberStateManager
      */
     private function createStaticSegmentsMemberStateManagerMock()
     {
@@ -359,7 +359,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|JobRunner
+     * @return \PHPUnit\Framework\MockObject\MockObject|JobRunner
      */
     private function createJobRunnerMock()
     {
@@ -367,7 +367,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|EntityManagerInterface
+     * @return \PHPUnit\Framework\MockObject\MockObject|EntityManagerInterface
      */
     private function createEntityManagerStub()
     {
@@ -391,7 +391,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|TokenStorageInterface
+     * @return \PHPUnit\Framework\MockObject\MockObject|TokenStorageInterface
      */
     private function createTokenStorageMock()
     {
@@ -399,7 +399,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|LoggerInterface
+     * @return \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
      */
     private function createLoggerMock()
     {
@@ -408,13 +408,13 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param Integration|null                                 $integration
-     * @param PHPUnit_Framework_MockObject_Matcher_Invocation  $invokeCountMatcher
+     * @param \PHPUnit\Framework\MockObject\Matcher\Invocation  $invokeCountMatcher
      *
-     * @return EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return EntityManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private function getIntegrationEntityManager(
         Integration $integration = null,
-        PHPUnit_Framework_MockObject_Matcher_Invocation $invokeCountMatcher
+        Invocation $invokeCountMatcher
     ) {
         $integrationEntityManager = $this->createEntityManagerStub();
         $integrationEntityManager
@@ -428,13 +428,13 @@ class ExportMailChimpProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param StaticSegment                                   $staticSegment
-     * @param PHPUnit_Framework_MockObject_Matcher_Invocation $invokeCountMatcher
+     * @param PHPUnit\Framework\MockObject\Matcher\Invocation $invokeCountMatcher
      *
-     * @return EntityManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return EntityManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getStaticSegmentEntityManager(
         StaticSegment $staticSegment,
-        PHPUnit_Framework_MockObject_Matcher_Invocation $invokeCountMatcher
+        Invocation $invokeCountMatcher
     ) {
         $segmentEntityManager = $this->createMock(EntityManagerInterface::class);
         $segmentEntityManager

@@ -7,7 +7,7 @@ use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 use Oro\Bundle\MailChimpBundle\Entity\Template;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
+class MailChimpTransportSettingsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MailChimpTransportSettings
@@ -54,7 +54,7 @@ class MailChimpTransportSettingsTest extends \PHPUnit_Framework_TestCase
 
     public function testSettingsBag()
     {
-        /** @var Channel|\PHPUnit_Framework_MockObject_MockObject $channel */
+        /** @var Channel|\PHPUnit\Framework\MockObject\MockObject $channel */
         $channel = $this->createMock('Oro\\Bundle\\IntegrationBundle\\Entity\\Channel');
         $template = new Template();
         $this->target->setChannel($channel);

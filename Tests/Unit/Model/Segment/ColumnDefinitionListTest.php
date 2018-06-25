@@ -5,7 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\Segment;
 use Oro\Bundle\MailChimpBundle\Model\Segment\ColumnDefinitionList;
 use Oro\Bundle\SegmentBundle\Entity\Segment;
 
-class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
+class ColumnDefinitionListTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetColumnsWhenJsonRepresentationIsIncorrect()
     {
@@ -54,7 +54,7 @@ class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
 
     public function testGetColumns()
     {
-        /** @var \PHPUnit_Framework_MockObject_MockObject|Segment $segment */
+        /** @var \PHPUnit\Framework\MockObject\MockObject|Segment $segment */
         $segment = $this->getMockBuilder('Oro\Bundle\SegmentBundle\Entity\Segment')->getMock();
 
         $definition = json_encode($this->getCorrectSegmentDefinition());
@@ -79,7 +79,7 @@ class ColumnDefinitionListTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|Segment
+     * @return \PHPUnit\Framework\MockObject\MockObject|Segment
      */
     protected function getSegment()
     {

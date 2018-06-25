@@ -4,7 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Model\MergeVar;
 
 use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVar;
 
-class MergeVarTest extends \PHPUnit_Framework_TestCase
+class MergeVarTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider mergeVarDataProvider

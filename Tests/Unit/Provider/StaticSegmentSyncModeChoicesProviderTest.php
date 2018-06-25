@@ -8,7 +8,7 @@ use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\MailChimpBundle\Provider\StaticSegmentSyncModeChoicesProvider;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class StaticSegmentSyncModeChoicesProviderTest extends \PHPUnit_Framework_TestCase
+class StaticSegmentSyncModeChoicesProviderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var StaticSegmentSyncModeChoicesProvider
@@ -16,12 +16,12 @@ class StaticSegmentSyncModeChoicesProviderTest extends \PHPUnit_Framework_TestCa
     private $staticSegmentSyncModeChoicesProvider;
 
     /**
-     * @var DoctrineHelper|\PHPUnit_Framework_MockObject_MockObject
+     * @var DoctrineHelper|\PHPUnit\Framework\MockObject\MockObject
      */
     private $doctrineHelper;
 
     /**
-     * @var TranslatorInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var TranslatorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $translator;
 

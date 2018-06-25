@@ -4,7 +4,7 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Entity;
 
 use Oro\Bundle\MailChimpBundle\Entity\Template;
 
-class TemplateTest extends \PHPUnit_Framework_TestCase
+class TemplateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Template
