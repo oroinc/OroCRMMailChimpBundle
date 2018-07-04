@@ -12,6 +12,7 @@ use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Model\MergeVar\MergeVarProviderInterface;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 use Oro\Component\PhpUtils\ArrayUtil;
 
 class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
@@ -20,6 +21,11 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
     const PHONE_SEPARATOR      = '__P__';
     const FIRST_NAME_SEPARATOR = '__F__';
     const LAST_NAME_SEPARATOR  = '__L__';
+
+    const REQUIRED_FIELDS      = [
+        ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL,
+        ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_PHONE,
+    ];
 
     /** @var MergeVarProviderInterface */
     protected $mergeVarsProvider;
@@ -160,6 +166,18 @@ class MemberSyncIterator extends AbstractStaticSegmentMembersIterator
             $this->lastNameField = $parts['last_name'];
             $qb->addSelect($this->lastNameField . ' as last_name');
         }
+    }
+
+    public function current()
+    {
+        if (!empty($this->contactInformationFields)) {
+            $contactInformationFieldNames = array_flip($this->contactInformationFields);
+            foreach (self::REQUIRED_FIELDS as $requiredField) {
+                $this->current['has_' . $requiredField] = isset($contactInformationFieldNames[$requiredField]);
+            }
+        }
+
+        return parent::current();
     }
 
     /**

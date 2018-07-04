@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Oro\Bundle\ImportExportBundle\Writer\CleanUpInterface;
 use Oro\Bundle\ImportExportBundle\Writer\InsertFromSelectWriter;
 use Oro\Bundle\MailChimpBundle\Entity\Member;
+use Oro\Bundle\MarketingListBundle\Provider\ContactInformationFieldsProvider;
 
 class MemberSyncWriter extends InsertFromSelectWriter implements CleanUpInterface
 {
@@ -17,8 +18,17 @@ class MemberSyncWriter extends InsertFromSelectWriter implements CleanUpInterfac
     /** @var bool */
     protected $hasLastName = false;
 
+    /** @var bool */
+    protected $hasEmail = false;
+
+    /** @var bool */
+    protected $hasPhone = false;
+
     /** @var ManagerRegistry */
     protected $registry;
+
+    /** @var ContactInformationFieldsProvider */
+    protected $contactInformationFieldsProvider;
 
     /**
      * @param ManagerRegistry $registry
@@ -30,6 +40,14 @@ class MemberSyncWriter extends InsertFromSelectWriter implements CleanUpInterfac
         $this->registry = $registry;
 
         return $this;
+    }
+
+    /**
+     * @param ContactInformationFieldsProvider $fieldsProvider
+     */
+    public function setFieldsProvider(ContactInformationFieldsProvider $fieldsProvider)
+    {
+        $this->contactInformationFieldsProvider = $fieldsProvider;
     }
 
     /**
@@ -45,7 +63,13 @@ class MemberSyncWriter extends InsertFromSelectWriter implements CleanUpInterfac
      */
     public function getFields()
     {
-        $contactInformationFields = ['email', 'phone'];
+        $contactInformationFields = [];
+        if ($this->hasEmail) {
+            $contactInformationFields[] = 'email';
+        }
+        if ($this->hasPhone) {
+            $contactInformationFields[] = 'phone';
+        }
         if ($this->hasFirstName) {
             $contactInformationFields[] = 'firstName';
         }
@@ -63,6 +87,9 @@ class MemberSyncWriter extends InsertFromSelectWriter implements CleanUpInterfac
     {
         $this->hasFirstName = !empty($item['has_first_name']);
         $this->hasLastName = !empty($item['has_last_name']);
+
+        $this->hasEmail = !empty($item['has_' . ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_EMAIL]);
+        $this->hasPhone = !empty($item['has_' . ContactInformationFieldsProvider::CONTACT_INFORMATION_SCOPE_PHONE]);
 
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->delete($this->entityName, 'e')
