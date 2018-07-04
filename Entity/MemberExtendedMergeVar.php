@@ -165,8 +165,12 @@ class MemberExtendedMergeVar
      */
     public function addMergeVarValue($name, $value)
     {
-        if (!is_string($name) || !is_string($value) || empty($name)) {
+        if (!is_string($name) || empty($name)) {
             throw new \InvalidArgumentException('Merge variable name should not be empty string.');
+        }
+
+        if (!is_null($value) && !is_string($value)) {
+            throw new \InvalidArgumentException('Merge variable value should be empty or string.');
         }
 
         if (!empty($this->mergeVarValues[$name]) && $this->mergeVarValues[$name] === $value) {

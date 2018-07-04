@@ -89,14 +89,27 @@ class MemberExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider invalidMergeVarNamesAndValues
+     * @dataProvider invalidMergeVarNames
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Merge variable name should not be empty string.
      *
      * @param string $name
      * @param string $value
      */
-    public function testAddMergeVarValueWhenNameOrValueIsInvalid($name, $value)
+    public function testAddMergeVarValueWhenNameIsInvalid($name, $value)
+    {
+        $this->entity->addMergeVarValue($name, $value);
+    }
+
+    /**
+     * @dataProvider invalidMergeVarValues
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Merge variable value should be empty or string.
+     *
+     * @param string $name
+     * @param string $value
+     */
+    public function testAddMergeVarValueWhenValueIsInvalid($name, $value)
     {
         $this->entity->addMergeVarValue($name, $value);
     }
@@ -104,13 +117,22 @@ class MemberExtendedMergeVarTest extends \PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function invalidMergeVarNamesAndValues()
+    public function invalidMergeVarNames()
     {
         return [
             ['', ''],
             ['', 'value'],
-            ['name', []],
             [[], 'value']
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function invalidMergeVarValues()
+    {
+        return [
+            ['name', []]
         ];
     }
 
