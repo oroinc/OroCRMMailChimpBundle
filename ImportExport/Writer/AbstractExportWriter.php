@@ -6,8 +6,12 @@ use Oro\Bundle\IntegrationBundle\ImportExport\Writer\PersistentBatchWriter;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
-use Oro\Component\PhpUtils\ArrayUtil;
 
+/**
+ * Forces to set MailChimpTransport
+ * adds method handleResponse to filter Mailchimp response errors
+ * adds methods to extract 'merge_vars' from Mailchimp response
+ */
 abstract class AbstractExportWriter extends PersistentBatchWriter implements ClearableInterface
 {
     /**
@@ -46,7 +50,7 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Cle
     {
         if (!empty($response[$container])) {
             if ($key) {
-                return ArrayUtil::arrayColumn($response[$container], $key);
+                return \array_column($response[$container], $key);
             }
 
             return $response[$container];
