@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\EventListener;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
@@ -64,6 +65,7 @@ class NotifyMailChimpListenerTest extends \PHPUnit\Framework\TestCase
 
         /** @var StaticSegment $staticSegment */
         $staticSegment = $this->getEntity(StaticSegment::class, ['id' => 1]);
+        $staticSegment->setSegmentMembers(new ArrayCollection());
 
         $event = new UpdateMarketingListEvent();
         $event->addMarketingList($marketingList);

@@ -30,7 +30,8 @@ class ChannelListenerTest extends WebTestCase
         $channel = $this->getReference('mailchimp:channel_1');
         $channelManager->remove($channel);
 
-        $emails = $registry->getManagerForClass(MarketingListEmail::class)
+        $emails = $registry
+            ->getManagerForClass(MarketingListEmail::class)
             ->getRepository(MarketingListEmail::class)->findAll();
 
         self::assertEmpty($emails);

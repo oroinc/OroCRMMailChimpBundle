@@ -2,7 +2,10 @@
 
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport;
 
+use DateTime;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Exception;
+use Iterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
 use Oro\Bundle\IntegrationBundle\Entity\Transport;
 use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
@@ -13,6 +16,7 @@ use Oro\Bundle\MailChimpBundle\Entity\Repository\StaticSegmentRepository;
 use Oro\Bundle\MailChimpBundle\Entity\Repository\SubscribersListRepository;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Oro\Bundle\MailChimpBundle\Entity\Template;
+use Oro\Bundle\MailChimpBundle\Exception\MailChimpClientException;
 use Oro\Bundle\MailChimpBundle\Exception\RequiredOptionException;
 use Oro\Bundle\MailChimpBundle\Form\Type\IntegrationSettingsType;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\CampaignIterator;
@@ -100,20 +104,11 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
-     * @link http://apidocs.mailchimp.com/api/2.0/helper/ping.php
-     * @return array
-     */
-    public function ping()
-    {
-        return $this->client->ping();
-    }
-
-    /**
      * @link http://apidocs.mailchimp.com/api/2.0/campaigns/list.php
      * @param Channel $channel
      * @param string|null $status Constant of \Oro\Bundle\MailChimpBundle\Entity\Campaign::STATUS_XXX
      * @param bool|null $usesSegment
-     * @return \Iterator
+     * @return Iterator
      */
     public function getCampaigns(Channel $channel, $status = null, $usesSegment = null)
     {
@@ -140,7 +135,7 @@ class MailChimpTransport implements TransportInterface
             return new \ArrayIterator();
         }
 
-        $filters['list_id'] = implode(',', $listsToSynchronize);
+        $filters['list_ids'] = $listsToSynchronize;
         $filters['exact'] = false;
 
         return new CampaignIterator($this->client, $filters);
@@ -148,11 +143,173 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @link http://apidocs.mailchimp.com/api/2.0/lists/list.php
-     * @return \Iterator
+     * @return Iterator
      */
     public function getLists()
     {
         return new ListIterator($this->client);
+    }
+
+    /**
+     * Get list of MailChimp Templates.
+     *
+     * @link http://apidocs.mailchimp.com/api/2.0/templates/list.php
+     * @return Iterator
+     */
+    public function getTemplates()
+    {
+        $parameters = [
+            'types' => [
+                Template::TYPE_USER => true,
+                Template::TYPE_GALLERY => true,
+                Template::TYPE_BASE => true,
+            ],
+            'filters' => [
+                'include_drag_and_drop' => true,
+            ],
+        ];
+
+        return new TemplateIterator($this->client, $parameters);
+    }
+
+    /**
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segments.php
+     * @param SubscribersList $list
+     * @return StaticSegmentIterator
+     */
+    public function getListStaticSegments(SubscribersList $list)
+    {
+        $iterator = new StaticSegmentIterator($this->client);
+        $iterator->setSubscriberListId($list->getOriginId());
+
+        return $iterator;
+    }
+
+    /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-vars.php
+     *
+     * @param string $listId
+     * @return array
+     * @throws MailChimpClientException
+     */
+    public function getListMergeVars(string $listId)
+    {
+        return $this->client->getListMergeVars($listId);
+    }
+
+    /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-var-add.php
+     *
+     * @param array $args
+     * @return array
+     * @throws MailChimpClientException
+     */
+    public function addListMergeVar(array $args)
+    {
+        return $this->client->addListMergeVar($args);
+    }
+
+    /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-var-del.php
+     *
+     * @param array $args
+     * @return array
+     * @throws MailChimpClientException
+     */
+    public function deleteListMergeVar(array $args)
+    {
+        return $this->client->deleteListMergeVar($args);
+    }
+
+    /**
+     * @link http://developer.mailchimp.com/documentation/mailchimp/reference/lists/#create-post_lists_list_id
+     *
+     * @param array $args
+     *
+     * @return array
+     * @throws MailChimpClientException
+     */
+    public function batchSubscribe(array $args)
+    {
+        return $this->client->batchSubscribe($args);
+    }
+
+    /**
+     * @link http://developer.mailchimp.com/documentation/mailchimp/reference/lists/#create-post_lists_list_id
+     * @param array $args
+     *
+     * @return array
+     * @throws MailChimpClientException
+     */
+    public function batchUnsubscribe(array $args)
+    {
+        return $this->client->batchUnsubscribe($args);
+    }
+
+    /**
+     * @link http://developer.mailchimp.com/documentation/mailchimp/reference/lists/segments/#create-post_lists_list_id_segments
+     *
+     * @param array $args
+     *
+     * @return array
+     * @throws MailChimpClientException
+     */
+    public function addStaticListSegment(array $args)
+    {
+        return $this->client->addStaticListSegment($args);
+    }
+
+    /**
+     * @link https://apidocs.mailchimp.com/api/2.0/lists/update-member.php
+     *
+     * @param array $args
+     * @return array
+     * @throws MailChimpClientException
+     */
+    public function updateListMember(array $args)
+    {
+        return $this->client->updateListMember($args);
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param DateTime $since
+     * @param string $interval
+     * @return string
+     * @throws Exception
+     */
+    protected function getSinceForApi(DateTime $since, $interval = 'PT1S')
+    {
+        if ($interval) {
+            $since = clone $since;
+            $since->setTimezone(new \DateTimeZone('UTC'));
+            $since->sub(new \DateInterval($interval));
+        }
+
+        return $since->format(self::DATETIME_FORMAT);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSettingsFormType()
+    {
+        return IntegrationSettingsType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSettingsEntityFQCN()
+    {
+        return \Oro\Bundle\MailChimpBundle\Entity\MailChimpTransport::class;
     }
 
     /**
@@ -161,10 +318,11 @@ class MailChimpTransport implements TransportInterface
      * @link http://apidocs.mailchimp.com/export/1.0/list.func.php
      *
      * @param Channel $channel
-     * @param \DateTime|null $since
-     * @return \Iterator
+     * @param DateTime|null $since
+     * @return Iterator
+     * @throws Exception
      */
-    public function getMembersToSync(Channel $channel, \DateTime $since = null)
+    public function getMembersToSync(Channel $channel, DateTime $since = null)
     {
         /** @var SubscribersListRepository $subscribersListRepository */
         $subscribersListRepository = $this->managerRegistry->getRepository('OroMailChimpBundle:SubscribersList');
@@ -186,58 +344,10 @@ class MailChimpTransport implements TransportInterface
     }
 
     /**
-     * Get list of MailChimp Templates.
-     *
-     * @link http://apidocs.mailchimp.com/api/2.0/templates/list.php
-     * @return \Iterator
-     */
-    public function getTemplates()
-    {
-        $parameters = [
-            'types' => [
-                Template::TYPE_USER => true,
-                Template::TYPE_GALLERY => true,
-                Template::TYPE_BASE => true,
-            ],
-            'filters' => [
-                'include_drag_and_drop' => true,
-            ],
-        ];
-
-        return new TemplateIterator($this->client, $parameters);
-    }
-
-    /**
-     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segments.php
-     * @param Channel $channel
-     * @return StaticSegmentListIterator
-     */
-    public function getSegmentsToSync(Channel $channel)
-    {
-        /** @var SubscribersListRepository $subscribersListRepository */
-        $subscribersListRepository = $this->managerRegistry->getRepository('OroMailChimpBundle:SubscribersList');
-        $subscribersLists = $subscribersListRepository->getUsedSubscribersListIterator($channel);
-
-        return new StaticSegmentListIterator($subscribersLists, $this->client);
-    }
-
-    /**
-     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segments.php
-     * @param SubscribersList $list
-     * @return StaticSegmentIterator
-     */
-    public function getListStaticSegments(SubscribersList $list)
-    {
-        $iterator = new StaticSegmentIterator($this->client);
-        $iterator->setSubscriberListId($list->getOriginId());
-
-        return $iterator;
-    }
-
-    /**
      * @param Channel $channel
      * @param array[] $sinceMap
      * @return MemberActivityIterator
+     * @throws Exception
      */
     public function getMemberActivitiesToSync(Channel $channel, array $sinceMap = null)
     {
@@ -264,9 +374,27 @@ class MailChimpTransport implements TransportInterface
         );
     }
 
+
+
+    // ** NOT CALLED ** //
+
+
+    // CAMPAIGNS
+
     /**
      * @param Channel $channel
-     * @return \Iterator
+     * @return Iterator
+     */
+    protected function getSentCampaignsIterator(Channel $channel)
+    {
+        /** @var CampaignRepository $repository */
+        $repository = $this->managerRegistry->getRepository('OroMailChimpBundle:Campaign');
+        return $repository->getSentCampaigns($channel);
+    }
+
+    /**
+     * @param Channel $channel
+     * @return Iterator
      */
     public function getCampaignUnsubscribesReport(Channel $channel)
     {
@@ -275,7 +403,7 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @param Channel $channel
-     * @return \Iterator
+     * @return Iterator
      */
     public function getCampaignSentToReport(Channel $channel)
     {
@@ -284,10 +412,11 @@ class MailChimpTransport implements TransportInterface
 
     /**
      * @param Channel $channel
-     * @param \DateTime $since
-     * @return \Iterator
+     * @param DateTime $since
+     * @return Iterator
+     * @throws Exception
      */
-    public function getCampaignAbuseReport(Channel $channel, \DateTime $since = null)
+    public function getCampaignAbuseReport(Channel $channel, DateTime $since = null)
     {
         if ($since) {
             $since = $this->getSinceForApi($since);
@@ -296,84 +425,21 @@ class MailChimpTransport implements TransportInterface
         return new MemberAbuseIterator($this->getSentCampaignsIterator($channel), $since, $this->client);
     }
 
-    /**
-     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-vars.php
-     *
-     * @param array $args
-     * @return array
-     */
-    public function getListMergeVars(array $args)
-    {
-        return $this->client->getListMergeVars($args);
-    }
+
+    // SEGMENTS
 
     /**
-     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-var-add.php
-     *
-     * @param array $args
-     * @return array
+     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segments.php
+     * @param Channel $channel
+     * @return StaticSegmentListIterator
      */
-    public function addListMergeVar(array $args)
+    public function getSegmentsToSync(Channel $channel)
     {
-        return $this->client->addListMergeVar($args);
-    }
+        /** @var SubscribersListRepository $subscribersListRepository */
+        $subscribersListRepository = $this->managerRegistry->getRepository('OroMailChimpBundle:SubscribersList');
+        $subscribersLists = $subscribersListRepository->getUsedSubscribersListIterator($channel);
 
-    /**
-     * @link https://apidocs.mailchimp.com/api/2.0/lists/merge-var-del.php
-     *
-     * @param array $args
-     * @return array
-     */
-    public function deleteListMergeVar(array $args)
-    {
-        return $this->client->deleteListMergeVar($args);
-    }
-
-    /**
-     * @link https://apidocs.mailchimp.com/api/2.0/lists/update-member.php
-     *
-     * @param array $args
-     * @return array
-     */
-    public function updateListMember(array $args)
-    {
-        return $this->client->updateListMember($args);
-    }
-
-    /**
-     * @link http://apidocs.mailchimp.com/api/2.0/lists/batch-subscribe.php
-     *
-     * @param array $args
-     *
-     * @return array
-     */
-    public function batchSubscribe(array $args)
-    {
-        return $this->client->batchSubscribe($args);
-    }
-
-    /**
-     * @link http://apidocs.mailchimp.com/api/2.0/lists/batch-unsubscribe.php
-     *
-     * @param array $args
-     *
-     * @return array
-     */
-    public function batchUnsubscribe(array $args)
-    {
-        return $this->client->batchUnsubscribe($args);
-    }
-
-    /**
-     * @link http://apidocs.mailchimp.com/api/2.0/lists/static-segment-add.php
-     *
-     * @param array $args
-     *
-     * @return array
-     */
-    public function addStaticListSegment(array $args)
-    {
-        return $this->client->addStaticListSegment($args);
+        return new StaticSegmentListIterator($subscribersLists, $this->client);
     }
 
     /**
@@ -382,6 +448,7 @@ class MailChimpTransport implements TransportInterface
      * @param array $args
      *
      * @return array
+     * @throws MailChimpClientException
      */
     public function addStaticSegmentMembers(array $args)
     {
@@ -394,11 +461,16 @@ class MailChimpTransport implements TransportInterface
      * @param array $args
      *
      * @return array
+     * @throws MailChimpClientException
      */
     public function deleteStaticSegmentMembers(array $args)
     {
         return $this->client->deleteStaticSegmentMembers($args);
     }
+
+
+
+    // TEMPLATES
 
     /**
      * {@inheritdoc}
@@ -406,56 +478,5 @@ class MailChimpTransport implements TransportInterface
     public function getLabel()
     {
         return 'oro.mailchimp.integration_transport.label';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSettingsFormType()
-    {
-        return IntegrationSettingsType::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSettingsEntityFQCN()
-    {
-        return 'Oro\\Bundle\\MailChimpBundle\\Entity\\MailChimpTransport';
-    }
-
-    /**
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * @param \DateTime $since
-     * @param string $interval
-     * @return string
-     */
-    protected function getSinceForApi(\DateTime $since, $interval = 'PT1S')
-    {
-        if ($interval) {
-            $since = clone $since;
-            $since->setTimezone(new \DateTimeZone('UTC'));
-            $since->sub(new \DateInterval($interval));
-        }
-
-        return $since->format(self::DATETIME_FORMAT);
-    }
-
-    /**
-     * @param Channel $channel
-     * @return \Iterator
-     */
-    protected function getSentCampaignsIterator(Channel $channel)
-    {
-        /** @var CampaignRepository $repository */
-        $repository = $this->managerRegistry->getRepository('OroMailChimpBundle:Campaign');
-        return $repository->getSentCampaigns($channel);
     }
 }

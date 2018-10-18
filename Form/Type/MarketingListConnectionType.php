@@ -2,8 +2,7 @@
 
 namespace Oro\Bundle\MailChimpBundle\Form\Type;
 
-use Oro\Bundle\MailChimpBundle\Form\Type\MailChimpIntegrationSelectType;
-use Oro\Bundle\MailChimpBundle\Form\Type\MailchimpListSelectType;
+use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -51,11 +50,9 @@ class MarketingListConnectionType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'data_class' => 'Oro\Bundle\MailChimpBundle\Entity\StaticSegment'
-            ]
-        );
+        $resolver->setDefaults([
+            'data_class' => StaticSegment::class,
+        ]);
     }
 
     /**

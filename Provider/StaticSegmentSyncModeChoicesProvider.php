@@ -24,7 +24,7 @@ class StaticSegmentSyncModeChoicesProvider
     private $translator;
 
     /**
-     * @param DoctrineHelper      $doctrineHelper
+     * @param DoctrineHelper $doctrineHelper
      * @param TranslatorInterface $translator
      */
     public function __construct(DoctrineHelper $doctrineHelper, TranslatorInterface $translator)

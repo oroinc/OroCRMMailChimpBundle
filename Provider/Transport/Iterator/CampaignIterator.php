@@ -27,10 +27,36 @@ class CampaignIterator extends AbstractMailChimpIterator
      */
     protected function getResult()
     {
-        $arguments = ['start' => (int)$this->offset / $this->batchSize, 'limit' => $this->batchSize];
+        $arguments = [
+            'offset' => (int)$this->offset / $this->batchSize,
+            'count' => $this->batchSize
+        ];
+
         if ($this->filters) {
-            $arguments['filters'] = $this->filters;
+            $arguments = array_merge($arguments, $this->filters);
         }
-        return $this->client->getCampaigns($arguments);
+        $result = $this->client->getCampaigns($arguments);
+
+        $list_ids = isset($arguments['list_ids']) && is_array($arguments['list_ids']) ? $arguments['list_ids'] : [];
+
+        $campaigns = array_reduce($result['campaigns'], function ($result, array $campaign) use ($list_ids) {
+            if (array_key_exists('recipients', $campaign) &&
+                array_key_exists('list_id', $campaign['recipients']) &&
+                count($list_ids) > 0 &&
+                false === in_array($campaign['recipients']['list_id'], $list_ids, true)
+            ) {
+                return $result;
+            }
+
+            $campaign['report'] = $this->client->getCampaignReport($campaign['id']);
+
+            $result[] = $campaign;
+            return $result;
+        }, []);
+
+        return [
+            'data' => $campaigns,
+            'total' => $result['total_items'],
+        ];
     }
 }

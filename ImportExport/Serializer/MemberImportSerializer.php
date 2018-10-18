@@ -174,6 +174,6 @@ class MemberImportSerializer implements DenormalizerInterface
         return is_array($data)
             && array_key_exists(MemberDataConverter::IMPORT_DATA, $data)
             && !empty($context['channel'])
-            && is_a($type, 'Oro\Bundle\MailChimpBundle\Entity\Member', true);
+            && is_a($type, Member::class, true);
     }
 }

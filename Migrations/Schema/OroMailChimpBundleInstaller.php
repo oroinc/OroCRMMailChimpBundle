@@ -3,6 +3,7 @@
 namespace Oro\Bundle\MailChimpBundle\Migrations\Schema;
 
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Schema\SchemaException;
 use Oro\Bundle\MigrationBundle\Migration\Installation;
 use Oro\Bundle\MigrationBundle\Migration\QueryBag;
 
@@ -19,11 +20,12 @@ class OroMailChimpBundleInstaller implements Installation
      */
     public function getMigrationVersion()
     {
-        return 'v1_7';
+        return 'v1_8';
     }
 
     /**
      * {@inheritdoc}
+     * @throws SchemaException
      */
     public function up(Schema $schema, QueryBag $queries)
     {
@@ -61,6 +63,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Create oro_integration_transport table
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function createOroIntegrationTransportTable(Schema $schema)
     {
@@ -73,6 +76,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Create orocrm_cmpgn_transport_stngs table
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function createOrocrmCmpgnTransportStngsTable(Schema $schema)
     {
@@ -195,7 +199,7 @@ class OroMailChimpBundleInstaller implements Installation
         $table->addColumn('owner_id', 'integer', ['notnull' => false]);
         $table->addColumn('subscribers_list_id', 'integer', ['notnull' => false]);
         $table->addColumn('channel_id', 'integer', ['notnull' => true]);
-        $table->addColumn('origin_id', 'bigint', ['notnull' => false]);
+        $table->addColumn('origin_id', 'string', ['length' => 32, 'notnull' => false]);
         $table->addColumn('email', 'string', ['length' => 255]);
         $table->addColumn('phone', 'string', ['notnull' => false, 'length' => 255]);
         $table->addColumn('status', 'string', ['length' => 16]);
@@ -214,6 +218,7 @@ class OroMailChimpBundleInstaller implements Installation
         $table->addColumn('cc', 'string', ['notnull' => false, 'length' => 2]);
         $table->addColumn('region', 'string', ['notnull' => false, 'length' => 255]);
         $table->addColumn('last_changed_at', 'datetime', ['notnull' => false, 'comment' => '(DC2Type:datetime)']);
+        $table->addColumn('leid', 'bigint', ['notnull' => false]);
         $table->addColumn('euid', 'string', ['notnull' => false, 'length' => 255]);
         $table->addColumn('merge_var_values', 'json_array', ['notnull' => false, 'comment' => '(DC2Type:json_array)']);
         $table->addColumn('created_at', 'datetime', ['comment' => '(DC2Type:datetime)']);
@@ -384,6 +389,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_cmpgn_transport_stngs foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmCmpgnTransportStngsForeignKeys(Schema $schema)
     {
@@ -406,6 +412,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mc_mmbr_activity foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMailchimpMemberActivityForeignKeys(Schema $schema)
     {
@@ -440,6 +447,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mailchimp_campaign foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMailchimpCampaignForeignKeys(Schema $schema)
     {
@@ -486,6 +494,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mailchimp_template foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMailchimpTemplateForeignKeys(Schema $schema)
     {
@@ -508,6 +517,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mailchimp_member foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMailchimpMemberForeignKeys(Schema $schema)
     {
@@ -536,6 +546,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mc_static_segment_mmbr foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMailchimpStaticSegmentMemberForeignKeys(Schema $schema)
     {
@@ -558,6 +569,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mc_static_segment foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMailchimpStaticSegmentForeignKeys(Schema $schema)
     {
@@ -592,6 +604,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mc_subscribers_list foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMailchimpSubscribersListForeignKeys(Schema $schema)
     {
@@ -614,6 +627,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mc_extended_merge_var foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMcExtendedMergeVarForeignKeys(Schema $schema)
     {
@@ -630,6 +644,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mc_mmbr_extd_merge_var foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMcMmbrExtdMergeVarForeignKeys(Schema $schema)
     {
@@ -652,6 +667,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mc_tmp_mmbr_to_remove foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMcTmpMmbrToRemoveForeignKeys(Schema $schema)
     {
@@ -674,6 +690,7 @@ class OroMailChimpBundleInstaller implements Installation
      * Add orocrm_mailchimp_ml_email foreign keys.
      *
      * @param Schema $schema
+     * @throws SchemaException
      */
     protected function addOrocrmMailchimpMlEmailForeignKeys(Schema $schema)
     {

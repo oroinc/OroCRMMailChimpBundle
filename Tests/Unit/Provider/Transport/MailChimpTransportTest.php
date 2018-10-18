@@ -179,7 +179,7 @@ class MailChimpTransportTest extends \PHPUnit\Framework\TestCase
                 'status' => null,
                 'usesSegment' => null,
                 'filters' => [
-                    'list_id' => 'originId',
+                    'list_ids' => ['originId'],
                     'exact' => false,
                 ],
             ],
@@ -188,7 +188,7 @@ class MailChimpTransportTest extends \PHPUnit\Framework\TestCase
                 'usesSegment' => null,
                 'filters' => [
                     'status' => Campaign::STATUS_SENT,
-                    'list_id' => 'originId',
+                    'list_ids' => ['originId'],
                     'exact' => false,
                 ],
             ],
@@ -197,7 +197,7 @@ class MailChimpTransportTest extends \PHPUnit\Framework\TestCase
                 'usesSegment' => true,
                 'filters' => [
                     'uses_segment' => true,
-                    'list_id' => 'originId',
+                    'list_ids' => ['originId'],
                     'exact' => false,
                 ],
             ],
@@ -207,7 +207,7 @@ class MailChimpTransportTest extends \PHPUnit\Framework\TestCase
                 'filters' => [
                     'status' => Campaign::STATUS_SENT,
                     'uses_segment' => true,
-                    'list_id' => 'originId',
+                    'list_ids' => ['originId'],
                     'exact' => false,
                 ],
             ],

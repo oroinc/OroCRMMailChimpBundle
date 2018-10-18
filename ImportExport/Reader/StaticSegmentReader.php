@@ -76,6 +76,7 @@ class StaticSegmentReader extends AbstractIteratorBasedReader implements Closabl
         );
 
         $iterator = $this->getSourceIterator();
+
         if ($iterator) {
             /** @var MemberSyncIterator $iterator */
             $iterator->setMainIterator(
@@ -92,7 +93,7 @@ class StaticSegmentReader extends AbstractIteratorBasedReader implements Closabl
     }
 
     /**
-     * @param Channel    $channel
+     * @param Channel $channel
      * @param array|null $segments
      *
      * @return \Iterator

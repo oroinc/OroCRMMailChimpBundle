@@ -1,4 +1,5 @@
 <?php
+
 namespace Oro\Bundle\MailChimpBundle\Async;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,28 +27,38 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
 {
     use IntegrationTokenAwareTrait;
 
-    /** @var DoctrineHelper */
+    /**
+     * @var DoctrineHelper
+     */
     private $doctrineHelper;
 
-    /** @var ReverseSyncProcessor */
+    /**
+     * @var ReverseSyncProcessor
+     */
     private $reverseSyncProcessor;
 
-    /** @var StaticSegmentsMemberStateManager */
+    /**
+     * @var StaticSegmentsMemberStateManager
+     */
     private $staticSegmentsMemberStateManager;
 
-    /** @var JobRunner */
+    /**
+     * @var JobRunner
+     */
     private $jobRunner;
 
-    /** @var LoggerInterface */
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
     /**
-     * @param DoctrineHelper                   $doctrineHelper
-     * @param ReverseSyncProcessor             $reverseSyncProcessor
+     * @param DoctrineHelper $doctrineHelper
+     * @param ReverseSyncProcessor $reverseSyncProcessor
      * @param StaticSegmentsMemberStateManager $staticSegmentsMemberStateManager
-     * @param JobRunner                        $jobRunner
-     * @param TokenStorageInterface            $tokenStorage
-     * @param LoggerInterface                  $logger
+     * @param JobRunner $jobRunner
+     * @param TokenStorageInterface $tokenStorage
+     * @param LoggerInterface $logger
      */
     public function __construct(
         DoctrineHelper $doctrineHelper,
@@ -74,7 +85,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         $body = JSON::decode($message->getBody());
         $body = array_replace_recursive([
             'integrationId' => null,
-            'segmentsIds'   => [],
+            'segmentsIds' => [],
         ], $body);
 
         if (!$body['integrationId']) {
@@ -123,7 +134,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
     }
 
     /**
-     * @param array       $body
+     * @param array $body
      * @param Integration $integration
      *
      * @return bool
@@ -155,9 +166,10 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         }
 
         $parameters = [
-            'segments'                               => $segmentsIdsToSync,
+            'segments' => $segmentsIdsToSync,
             JobExecutor::JOB_CONTEXT_AGGREGATOR_TYPE => SelectiveContextAggregator::TYPE
         ];
+
         $this->reverseSyncProcessor->process($integration, MemberConnector::TYPE, $parameters);
         $this->reverseSyncProcessor->process($integration, StaticSegmentConnector::TYPE, $parameters);
 
@@ -165,6 +177,7 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
         foreach ($segmentsIdsToSync as $segmentId) {
             /** @var StaticSegment $staticSegment */
             $staticSegment = $staticSegmentRepository->find($segmentId);
+
             if ($staticSegment) {
                 $this->setStaticSegmentStatus($staticSegment, StaticSegment::STATUS_SYNCED, true);
             }
@@ -175,8 +188,8 @@ class ExportMailChimpProcessor implements MessageProcessorInterface, TopicSubscr
 
     /**
      * @param StaticSegment $staticSegment
-     * @param string        $status
-     * @param bool          $lastSynced
+     * @param string $status
+     * @param bool $lastSynced
      */
     protected function setStaticSegmentStatus(StaticSegment $staticSegment, $status, $lastSynced = false)
     {

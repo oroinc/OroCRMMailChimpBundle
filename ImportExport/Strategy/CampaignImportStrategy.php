@@ -21,6 +21,7 @@ class CampaignImportStrategy extends AbstractImportStrategy
         $entity = $this->beforeProcessEntity($entity);
 
         $existingEntity = $this->findExistingEntity($entity);
+
         if ($existingEntity) {
             if ($this->logger) {
                 $this->logger->info('Syncing Existing MailChimp Campaign [origin_id=' . $entity->getOriginId() . ']');

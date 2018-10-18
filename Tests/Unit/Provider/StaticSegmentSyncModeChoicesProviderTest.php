@@ -43,7 +43,7 @@ class StaticSegmentSyncModeChoicesProviderTest extends \PHPUnit\Framework\TestCa
      * @dataProvider  getChoicesDataProvider
      *
      * @param Schedule|null $schedule
-     * @param string        $scheduleDefinition
+     * @param string $scheduleDefinition
      */
     public function testGetChoices(Schedule $schedule = null, string $scheduleDefinition)
     {

@@ -7,11 +7,6 @@ use Oro\Bundle\IntegrationBundle\Provider\TransportInterface;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpTransport;
 
-/**
- * Forces to set MailChimpTransport
- * adds method handleResponse to filter Mailchimp response errors
- * adds methods to extract 'merge_vars' from Mailchimp response
- */
 abstract class AbstractExportWriter extends PersistentBatchWriter implements ClearableInterface
 {
     /**
@@ -50,7 +45,7 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Cle
     {
         if (!empty($response[$container])) {
             if ($key) {
-                return \array_column($response[$container], $key);
+                return array_column($response[$container], $key);
             }
 
             return $response[$container];
@@ -75,13 +70,31 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Cle
         if ($func) {
             $func($response, $this->logger);
         }
-
         if (!empty($response['errors']) && is_array($response['errors'])) {
             foreach ($response['errors'] as $error) {
-                $this->logger->error(
-                    'Mailchimp returns error from the server: code: "{code}", message: "{message}"',
-                    ['code' => $error['code'], 'message' => $error['error'], 'errorData' => $error]
-                );
+                $message = '';
+                if (array_key_exists('error', $error)) {
+                    $message = $error['error'];
+                } elseif (array_key_exists('message', $error)) {
+                    $message = $error['message'];
+                }
+
+                if (false !== strpos($message, 'fake') ||
+                    false !== strpos($message, 'valid') ||
+                    false !== strpos($message, 'already exist') ||
+                    false !== stripos($message, 'none of the emails provided')
+                ) {
+                    $this->logger->warning('Mailchimp returns error from the server: message: "{message}"', [
+                        'message' => $message,
+                        'errorData' => $error,
+                    ]);
+                    continue;
+                }
+
+                $this->logger->error('Mailchimp returns error from the server: message: "{message}"', [
+                    'message' => $message,
+                    'errorData' => $error,
+                ]);
             }
         }
     }
@@ -108,16 +121,11 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Cle
     /**
      * @param SubscribersList $subscribersList
      * @return array
+     * @throws \Exception
      */
     protected function getSubscribersListMergeVars(SubscribersList $subscribersList)
     {
-        $response = $this->transport->getListMergeVars(
-            [
-                'id' => [
-                    $subscribersList->getOriginId()
-                ]
-            ]
-        );
+        $response = $this->transport->getListMergeVars($subscribersList->getOriginId());
 
         $this->handleResponse($response);
 
@@ -134,13 +142,9 @@ abstract class AbstractExportWriter extends PersistentBatchWriter implements Cle
      */
     protected function extractMergeVarsFromResponse(array $response)
     {
-        if (!isset($response['data'])) {
-            throw new \RuntimeException('Can not extract merge vars data from response.');
-        }
-        $data = reset($response['data']);
-        if (!is_array($data) || !isset($data['merge_vars']) || !is_array($data['merge_vars'])) {
+        if (!is_array($response) || !isset($response['merge_fields']) || !is_array($response['merge_fields'])) {
             return [];
         }
-        return $data['merge_vars'];
+        return $response['merge_fields'];
     }
 }

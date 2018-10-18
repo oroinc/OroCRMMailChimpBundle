@@ -28,6 +28,7 @@ class MemberImportStrategy extends AbstractImportStrategy
             return null;
         }
         $entity->setSubscribersList($subscribersList);
+
         /** @var Member $existingEntity */
         $existingEntity = $this->findExistingEntity($entity);
         if ($existingEntity) {
@@ -67,6 +68,7 @@ class MemberImportStrategy extends AbstractImportStrategy
         } else {
             $subscribersList = $this->findExistingEntity($subscribersList);
         }
+
         if (!$subscribersList) {
             return null;
         }
@@ -134,7 +136,6 @@ class MemberImportStrategy extends AbstractImportStrategy
     protected function assignMergeVarValues(Member $member)
     {
         $subscribersList = $member->getSubscribersList();
-
         if (!$subscribersList) {
             return;
         }

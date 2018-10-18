@@ -98,6 +98,7 @@ class MemberIterator extends AbstractSubordinateIterator
                     $current['list_id'] = $subscribersList->getOriginId();
                     $current['status'] = $parameters['status'];
                 }
+
                 return true;
             }
         );

@@ -3,6 +3,7 @@
 namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
 use Oro\Bundle\IntegrationBundle\Entity\Channel;
@@ -44,5 +45,17 @@ class CampaignRepository extends EntityRepository
         }
 
         return new BufferedIdentityQueryResultIterator($qb);
+    }
+
+    /**
+     * @return int
+     * @throws NonUniqueResultException
+     */
+    public function countCampaign()
+    {
+        $qb = $this->createQueryBuilder('campaign');
+        $qb->select('COUNT(campaign.id)');
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

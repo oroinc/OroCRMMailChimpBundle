@@ -104,11 +104,13 @@ abstract class AbstractSubordinateIterator implements \Iterator
             // Read for next List
             $this->subordinateIterator = null;
             $this->mainIterator->next();
+
             return $this->read();
         }
 
         $result = $this->subordinateIterator->current();
         $this->subordinateIterator->next();
+
         return $result;
     }
 

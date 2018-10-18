@@ -121,7 +121,10 @@ class StaticSegmentMemberAddStateIterator extends AbstractSubordinateIterator
                     $qb->expr()->eq('mmb.subscribersList', ':subscribersList')
                 )
             )
-            ->setParameter('exclude_statuses', [Member::STATUS_EXPORT_FAILED, Member::STATUS_DROPPED])
+            ->setParameter('exclude_statuses', [
+                Member::STATUS_EXPORT_FAILED,
+                Member::STATUS_DROPPED,
+            ])
             ->setParameter('state', MarketingListEmail::STATE_IN_LIST)
             ->setParameter('marketingList', $staticSegment->getMarketingList())
             ->setParameter('subscribersList', $staticSegment->getSubscribersList());

@@ -14,37 +14,36 @@ class CampaignDataConverter extends IntegrationAwareDataConverter
             'id' => 'originId',
             'web_id' => 'webId',
             'title' => 'title',
-            'subject' => 'subject',
+            'subject_line' => 'subject',
             'type' => 'type',
-            // 'template_id' => 'template:originId',
             'list_id' => 'subscribersList:originId',
             'content_type' => 'contentType',
             'create_time' => 'createdAt',
-            'content_updated_time' => 'updatedAt',
             'archive_url' => 'archiveUrl',
-            'archive_url_long' => 'archiveUrlLong',
-            'tests_sent' => 'testsSent',
-            'tests_remain' => 'testsRemain',
+            'long_archive_url' => 'archiveUrlLong',
 
             // Email campaign related
             'send_time' => 'sendTime',
             'from_name' => 'fromName',
-            'from_email' => 'fromEmail',
+            'reply_to' => 'fromEmail',
 
             // MailChimp campaign Summary
+            'emails_sent' => 'emailsSent',
             'last_open' => 'lastOpenDate',
             'syntax_errors' => 'syntaxErrors',
             'hard_bounces' => 'hardBounces',
             'soft_bounces' => 'softBounces',
             'abuse_reports' => 'abuseReports',
+            'forwards_count' => 'forwards',
             'forwards_opens' => 'forwardsOpens',
             'unique_opens' => 'uniqueOpens',
             'unique_clicks' => 'uniqueClicks',
-            'users_who_clicked' => 'usersWhoClicked',
+            'clicks' => 'usersWhoClicked',
+            'clicks_total' => 'clicks',
             'unique_likes' => 'uniqueLikes',
             'recipient_likes' => 'recipientLikes',
             'facebook_likes' => 'facebookLikes',
-            'emails_sent' => 'emailsSent',
+            'unsubscribed' => 'unsubscribes',
         ];
     }
 
@@ -53,19 +52,78 @@ class CampaignDataConverter extends IntegrationAwareDataConverter
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        if (is_array($importedRecord['summary'])) {
-            $importedRecord = array_merge($importedRecord, $importedRecord['summary']);
-            unset($importedRecord['summary']);
-        }
         $channel = $this->context->getOption('channel');
-        $importedRecord['template:channel:id'] = $channel;
-        $importedRecord['subscribersList:channel:id'] = $channel;
-        if (isset($importedRecord['saved_segment']['id'])) {
-            $importedRecord['staticSegment:originId'] = $importedRecord['saved_segment']['id'];
+        if (array_key_exists('_links', $importedRecord)) {
+            unset($importedRecord['_links']);
+        }
+        if (is_array($importedRecord['report_summary'])) {
+            $importedRecord = array_merge($importedRecord, $importedRecord['report_summary']);
+            unset($importedRecord['report_summary']);
+        }
+
+        if (is_array($importedRecord['settings'])) {
+            $importedRecord = array_merge($importedRecord, $importedRecord['settings']);
+            unset($importedRecord['settings']);
+        }
+
+        if (is_array($importedRecord['recipients'])) {
+            $importedRecord = array_merge($importedRecord, $importedRecord['recipients']);
+            unset($importedRecord['recipients']);
+        }
+
+        $importedRecord = $this->mergeReport($importedRecord);
+
+        if (isset($importedRecord['segment_opts']['saved_segment_id'])) {
+            $importedRecord['staticSegment:originId'] = $importedRecord['segment_opts']['saved_segment_id'];
             $importedRecord['staticSegment:channel:id'] = $channel;
         }
 
+        $importedRecord['subscribersList:channel:id'] = $channel;
         return parent::convertToImportFormat($importedRecord, $skipNullValues);
+    }
+
+    /**
+     * @param array $importedRecord
+     * @return array
+     */
+    public function mergeReport(array $importedRecord)
+    {
+        if (false === array_key_exists('report', $importedRecord) ||
+            false === is_array($importedRecord['report'])
+        ) {
+            return $importedRecord;
+        }
+
+        $report = $importedRecord['report'];
+        unset($importedRecord['report']);
+        if (array_key_exists('_links', $report)) {
+            unset($report['_links']);
+        }
+
+        $keys = [
+            'opens',
+            'clicks',
+            'facebook_likes',
+            'bounces',
+            'forwards',
+            'abuse_reports',
+            'unsubscribed',
+        ];
+
+        foreach ($keys as $key) {
+            if (false === array_key_exists($key, $report)) {
+                continue;
+            }
+
+            if (is_array($report[$key])) {
+                $importedRecord = array_merge($importedRecord, $report[$key]);
+            } else {
+                $importedRecord[$key] = $report[$key];
+            }
+            unset($report[$key]);
+        }
+
+        return $importedRecord;
     }
 
 

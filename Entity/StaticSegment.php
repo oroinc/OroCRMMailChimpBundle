@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\MailChimpBundle\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -135,7 +136,7 @@ class StaticSegment implements OriginAwareInterface
     protected $syncStatus;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="last_synced", type="datetime", nullable=true)
      */
@@ -149,28 +150,28 @@ class StaticSegment implements OriginAwareInterface
     protected $remoteRemove = false;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
      */
     protected $createdAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     protected $updatedAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="last_reset", type="datetime", nullable=true)
      */
     protected $lastReset;
 
     /**
-     * @var \DateTime
+     * @var integer
      *
      * @ORM\Column(name="member_count", type="integer", nullable=true)
      */
@@ -240,7 +241,7 @@ class StaticSegment implements OriginAwareInterface
     /**
      * Set lastSynced
      *
-     * @param \DateTime $lastSynced
+     * @param DateTime $lastSynced
      * @return StaticSegment
      */
     public function setLastSynced($lastSynced)
@@ -253,7 +254,7 @@ class StaticSegment implements OriginAwareInterface
     /**
      * Get lastSynced
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLastSynced()
     {
@@ -387,7 +388,7 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -395,10 +396,10 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      * @return StaticSegment
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -406,7 +407,7 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdatedAt()
     {
@@ -414,10 +415,10 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
-     * @param \DateTime $updatedAt
+     * @param DateTime $updatedAt
      * @return StaticSegment
      */
-    public function setUpdatedAt(\DateTime $updatedAt = null)
+    public function setUpdatedAt(DateTime $updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
 
@@ -430,11 +431,11 @@ class StaticSegment implements OriginAwareInterface
     public function prePersist()
     {
         if (!$this->createdAt) {
-            $this->createdAt = new \DateTime('now', new \DateTimeZone('UTC'));
+            $this->createdAt = new DateTime('now', new \DateTimeZone('UTC'));
         }
 
         if (!$this->updatedAt) {
-            $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+            $this->updatedAt = new DateTime('now', new \DateTimeZone('UTC'));
         }
     }
 
@@ -443,11 +444,11 @@ class StaticSegment implements OriginAwareInterface
      */
     public function preUpdate()
     {
-        $this->updatedAt = new \DateTime('now', new \DateTimeZone('UTC'));
+        $this->updatedAt = new DateTime('now', new \DateTimeZone('UTC'));
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLastReset()
     {
@@ -455,11 +456,11 @@ class StaticSegment implements OriginAwareInterface
     }
 
     /**
-     * @param \DateTime $lastReset
+     * @param DateTime $lastReset
      *
      * @return StaticSegment
      */
-    public function setLastReset(\DateTime $lastReset = null)
+    public function setLastReset(DateTime $lastReset = null)
     {
         $this->lastReset = $lastReset;
 
@@ -528,6 +529,7 @@ class StaticSegment implements OriginAwareInterface
 
     /**
      * @param Collection $segmentMembers
+     * @return StaticSegment
      */
     public function setSegmentMembers(Collection $segmentMembers)
     {
@@ -538,7 +540,7 @@ class StaticSegment implements OriginAwareInterface
 
     /**
      * @param ExtendedMergeVar $extendedMergeVar
-     * @return ExtendedMergeVar
+     * @return StaticSegment
      */
     public function addExtendedMergeVar(ExtendedMergeVar $extendedMergeVar)
     {
@@ -551,7 +553,7 @@ class StaticSegment implements OriginAwareInterface
 
     /**
      * @param ExtendedMergeVar $extendedMergeVar
-     * @return ExtendedMergeVar
+     * @return StaticSegment
      */
     public function removeExtendedMergeVar(ExtendedMergeVar $extendedMergeVar)
     {
@@ -589,6 +591,7 @@ class StaticSegment implements OriginAwareInterface
 
     /**
      * @param Collection $collection
+     * @return StaticSegment
      */
     public function setSyncedExtendedMergeVars(Collection $collection)
     {

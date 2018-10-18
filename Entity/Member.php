@@ -91,11 +91,9 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     protected $id;
 
     /**
-     * Mapped to field "leid": The Member id used in our web app, allows you to create a link directly to it
-     *
      * @var integer
      *
-     * @ORM\Column(name="origin_id", type="bigint", nullable=true)
+     * @ORM\Column(name="origin_id", type="string", length=32, nullable=true)
      * @ConfigField(
      *      defaultValues={
      *          "importexport"={
@@ -280,6 +278,15 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      * @ORM\Column(name="euid", type="string", length=255, nullable=true)
      */
     protected $euid;
+
+    /**
+     * Id used from the old v2 api. Also added on the export api v1.
+     *
+     * @var int
+     *
+     * @ORM\Column(name="leid", type="bigint", nullable=true)
+     */
+    protected $leid;
 
     /**
      * @var array
@@ -479,6 +486,10 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
     {
         $this->email = $email;
 
+        if (null === $this->originId) {
+            $this->originId = md5(strtolower($email));
+        }
+
         return $this;
     }
 
@@ -620,7 +631,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      */
     public function getLeid()
     {
-        return $this->getOriginId();
+        return $this->leid;
     }
 
     /**
@@ -629,7 +640,7 @@ class Member implements OriginAwareInterface, FirstNameInterface, LastNameInterf
      */
     public function setLeid($leid)
     {
-        $this->setOriginId($leid);
+        $this->leid = $leid;
 
         return $this;
     }

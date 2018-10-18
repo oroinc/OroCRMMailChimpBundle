@@ -19,11 +19,8 @@ abstract class AbstractMemberActivityDataConverter extends IntegrationAwareDataC
      */
     public function convertToImportFormat(array $importedRecord, $skipNullValues = true)
     {
-        $memberData = $importedRecord['member'];
-        unset($importedRecord['member']);
-
-        $importedRecord['member:originId'] = $memberData['web_id'];
-        $importedRecord['email'] = $memberData['email'];
+        $importedRecord['member:originId'] = $importedRecord['email_id'];
+        $importedRecord['email'] = $importedRecord['email_address'];
 
         return parent::convertToImportFormat($importedRecord, $skipNullValues);
     }

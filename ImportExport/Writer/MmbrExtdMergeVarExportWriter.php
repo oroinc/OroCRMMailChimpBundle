@@ -55,8 +55,8 @@ class MmbrExtdMergeVarExportWriter extends AbstractExportWriter
         foreach ($items as $mmbrExtendedMergeVar) {
             $requestParams = [
                 'id' => $mmbrExtendedMergeVar->getStaticSegment()->getSubscribersList()->getOriginId(),
-                'email' => ['email' => $mmbrExtendedMergeVar->getMember()->getEmail()],
-                'merge_vars' => $mmbrExtendedMergeVar->getMergeVarValues()
+                'email' => $mmbrExtendedMergeVar->getMember()->getEmail(),
+                'merge_fields' => $mmbrExtendedMergeVar->getMergeVarValues()
             ];
 
             try {

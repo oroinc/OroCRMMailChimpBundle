@@ -1,6 +1,6 @@
 <?php
 
-namespace Oro\Bundle\MailChimpBundle\Tests\Functional\Export;
+namespace Oro\Bundle\MailChimpBundle\Tests\Functional\ImportExport;
 
 use Akeneo\Bundle\BatchBundle\Entity\JobExecution;
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
@@ -54,37 +54,37 @@ class MemberWriterTest extends WebTestCase
         $this->transport->expects($this->atLeastOnce())->method('init');
         $this->transport->expects($this->atLeastOnce())
             ->method('getListMergeVars')
-            ->with(['id' => [$subscribersList->getOriginId()]])
+            ->with($subscribersList->getOriginId())
             ->willReturn([
-                'data' => [[
-                    'merge_vars' => [
-                        ['name' => 'email', 'tag' => 'EMAIL', 'id' => 1],
-                        ['name' => 'id', 'tag' => 'E_ID', 'id' => 2],
-                        ['name' => 'firstName', 'tag' => 'FIRSTNAME', 'id' => 3],
-                    ]
-                ]]
+                'merge_fields' => [
+                    ['name' => 'email', 'tag' => 'EMAIL', 'id' => 1],
+                    ['name' => 'id', 'tag' => 'E_ID', 'id' => 2],
+                    ['name' => 'firstName', 'tag' => 'FIRSTNAME', 'id' => 3],
+                ],
             ]);
         $this->transport->expects($this->atLeastOnce())
             ->method('batchSubscribe')
             ->with([
-                'id' => $subscribersList->getOriginId(),
-                'batch' => [
+                'list_id' => $subscribersList->getOriginId(),
+                'members' => [
                     [
-                        'email' => ['email' => 'member1@example.com'],
-                        'merge_vars' => ['EMAIL' => 'member1@example.com', 'FIRSTNAME' => 'Antonio'],
+                        'email_address' => 'member1@example.com',
+                        'status' => 'subscribed',
+                        'merge_fields' => ['EMAIL' => 'member1@example.com', 'FIRSTNAME' => 'Antonio'],
 
                     ],
                     [
-                        'email' => ['email' => 'member2@example.com'],
-                        'merge_vars' => ['EMAIL' => 'member2@example.com', 'FIRSTNAME' => 'Michael'],
+                        'email_address' => 'member2@example.com',
+                        'status' => 'subscribed',
+                        'merge_fields' => ['EMAIL' => 'member2@example.com', 'FIRSTNAME' => 'Michael'],
                     ],
                 ],
                 'double_optin' => false,
                 'update_existing' => true,
             ])
             ->willReturn([
-                'add_count' => 0,
-                'update_count' => 2,
+                'total_created' => 0,
+                'total_updated' => 2,
                 'error_count' => 0
             ]);
 

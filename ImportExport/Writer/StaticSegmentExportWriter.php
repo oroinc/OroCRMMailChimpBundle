@@ -3,6 +3,7 @@
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Akeneo\Bundle\BatchBundle\Entity\StepExecution;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -19,7 +20,7 @@ use Psr\Log\LoggerInterface;
 class StaticSegmentExportWriter extends AbstractExportWriter implements ContextAwareInterface
 {
     const DROPPED_EMAILS_ERROR_CODE = 215;
-    const BATCH_SIZE = 2000;
+    const BATCH_SIZE = 500;
 
     /**
      * @var string
@@ -142,16 +143,15 @@ class StaticSegmentExportWriter extends AbstractExportWriter implements ContextA
 
     /**
      * @param StaticSegment $staticSegment
+     * @throws \Exception
      */
     protected function addStaticListSegment(StaticSegment $staticSegment)
     {
         if (!$staticSegment->getOriginId()) {
-            $response = $this->transport->addStaticListSegment(
-                [
-                    'id' => $staticSegment->getSubscribersList()->getOriginId(),
-                    'name' => $staticSegment->getName(),
-                ]
-            );
+            $response = $this->transport->addStaticListSegment([
+                'list_id' => $staticSegment->getSubscribersList()->getOriginId(),
+                'name' => $staticSegment->getName(),
+            ]);
 
             if (!empty($response['id'])) {
                 $staticSegment->setOriginId($response['id']);
@@ -233,8 +233,6 @@ class StaticSegmentExportWriter extends AbstractExportWriter implements ContextA
         }
 
         $emailsToUpdate = array_diff($emailsToProcess, $this->getEmailsWithErrors($response));
-        $droppedEmails = array_intersect($emailsToProcess, $this->getDroppedEmails($response));
-        $emailsToProcess = array_diff($emailsToProcess, $droppedEmails);
 
         if ($emailsToUpdate) {
             $this->updateStaticSegmentMembersState($emailsToUpdate, $itemState);
@@ -246,15 +244,6 @@ class StaticSegmentExportWriter extends AbstractExportWriter implements ContextA
                     $memberStatus
                 );
             }
-        }
-
-        if ($droppedEmails) {
-            // Mark members with dropped emails (which are absent in Mailchimp subscribers list) as 'dropped'.
-            $this->updateMembersStatus(
-                $staticSegment->getSubscribersList(),
-                $droppedEmails,
-                Member::STATUS_DROPPED
-            );
         }
     }
 
@@ -419,70 +408,85 @@ class StaticSegmentExportWriter extends AbstractExportWriter implements ContextA
         );
     }
 
-    /**
-     * @param array $response
-     * @return array
-     */
-    protected function getDroppedEmails(array $response)
-    {
-        return array_reduce(
-            $this->getArrayData($response, 'errors'),
-            function ($items, $item) {
-                if (isset($item['email']) && $item['code'] === static::DROPPED_EMAILS_ERROR_CODE) {
-                    $items[] = $item['email']['email'];
-                }
-
-                return $items;
-            },
-            []
-        );
-    }
-
-    /**
-     * @param StaticSegment $staticSegment
-     * @param string        $method
-     * @param array         $emailsToProcess
-     * @param bool          $deleteMember
-     *
-     * @return array
-     */
-    protected function makeRequest(StaticSegment $staticSegment, $method, array $emailsToProcess, $deleteMember)
+    protected function buildBatchParams(StaticSegment $staticSegment, $method, array $emailsToProcess, $deleteMember)
     {
         $batchParameters = [
             'id' => $staticSegment->getSubscribersList()->getOriginId(),
-            'batch' => array_map(
-                function ($email) {
-                    return ['email' => $email];
-                },
-                $emailsToProcess
-            ),
         ];
 
+        if ($method === 'addStaticSegmentMembers') {
+            $batchParameters['members_to_add'] = array_values($emailsToProcess);
+        }
+
+        if ($method === 'deleteStaticSegmentMembers') {
+            $batchParameters['members_to_remove'] = array_values($emailsToProcess);
+        }
+
+        if ($method === 'batchUnsubscribe') {
+            $batchParameters['members'] = array_map(
+                function ($email) {
+                    return [
+                        'email_address' => $email,
+                        'status' => 'unsubscribed',
+                    ];
+                },
+                array_values($emailsToProcess)
+            );
+
+            $batchParameters['update_existing'] = true;
+        }
+
         if ($method === 'addStaticSegmentMembers' || $method === 'deleteStaticSegmentMembers') {
-            $batchParameters['seg_id'] = (integer)$staticSegment->getOriginId();
+            $batchParameters['static_segment_id'] = (integer)$staticSegment->getOriginId();
         }
 
         if ($deleteMember) {
             $batchParameters['delete_member'] = true;
         }
+        return $batchParameters;
+    }
+
+    /**
+     * @param StaticSegment $staticSegment
+     * @param string $method
+     * @param array $emailsToProcess
+     * @param bool $deleteMember
+     *
+     * @return array
+     */
+    protected function makeRequest(StaticSegment $staticSegment, $method, array $emailsToProcess, $deleteMember)
+    {
+        $batchParameters = $this->buildBatchParams($staticSegment, $method, $emailsToProcess, $deleteMember);
 
         $response = $this->transport->$method($batchParameters);
 
         $this->handleResponse(
             $response,
             function ($response, LoggerInterface $logger) use ($staticSegment, $method, $batchParameters) {
+                $total = 0;
+                $error = 0;
+                if (isset($response['total_created'])) {
+                    $total = $response['total_created'];
+                } elseif (isset($response['total_added'])) {
+                    $total = $response['total_added'];
+                }
+
+                if (isset($response['error_count'])) {
+                    $error = $response['error_count'];
+                }
+
                 $logger->info(
                     sprintf(
                         'Segment #%s [origin_id=%s] Members: [%s] add, [%s] error',
                         $staticSegment->getId(),
                         $staticSegment->getOriginId(),
-                        $response['success_count'],
-                        $response['error_count']
+                        $total,
+                        $error
                     )
                 );
 
                 if (!empty($response['errors']) && is_array($response['errors'])) {
-                    $logger->error(
+                    $logger->notice(
                         'Mailchimp error occurs during execution "{method}" method for ' .
                         'static segment "{static_segment_name}" (id: {static_segment_id})',
                         [

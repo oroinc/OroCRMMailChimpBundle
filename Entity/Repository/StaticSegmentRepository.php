@@ -3,6 +3,7 @@
 namespace Oro\Bundle\MailChimpBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\BatchBundle\ORM\Query\BufferedIdentityQueryResultIterator;
@@ -44,6 +45,7 @@ class StaticSegmentRepository extends EntityRepository
      * @param Channel|null $channel
      *
      * @return int
+     * @throws NonUniqueResultException
      */
     public function countStaticSegments($segments = [], Channel $channel = null)
     {

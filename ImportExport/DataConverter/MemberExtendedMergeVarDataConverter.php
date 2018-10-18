@@ -35,6 +35,7 @@ class MemberExtendedMergeVarDataConverter extends AbstractTableDataConverter
         if (empty($itemData['mergeVarValues'])) {
             $itemData['mergeVarValues'] = [];
         }
+
         return $itemData;
     }
 }

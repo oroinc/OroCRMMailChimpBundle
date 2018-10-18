@@ -2,6 +2,11 @@
 
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Exception;
+
+/**
+ * class ListIterator
+ */
 class ListIterator extends AbstractMailChimpIterator
 {
     /**
@@ -9,13 +14,45 @@ class ListIterator extends AbstractMailChimpIterator
      */
     protected function getResult()
     {
-        $result = $this->client->getLists(
-            ['start' => (int)$this->offset / $this->batchSize, 'limit' => $this->batchSize]
-        );
+        $listData = $this->client->getLists([
+            'offset' => (int)$this->offset / $this->batchSize,
+            'count' => $this->batchSize,
+        ]);
+
+        $result = [
+            'data' => $listData['lists'],
+            'total' => $listData['total_items']
+        ];
 
         $this->loadMergeVarsData($result);
 
         return $result;
+    }
+
+    /**
+     * @param array $lists
+     * @return array
+     */
+    protected function normalizeList(array $lists)
+    {
+        $data = [];
+        foreach ($lists as $list) {
+            $result = [];
+            foreach ($list as $item => $value) {
+                if (is_array($value)) {
+                    if (in_array($item, ['contact', 'campaign_defaults', 'stats'])) {
+                        foreach ($value as $key => $val) {
+                            $result[$item . '_' . $key] = $val;
+                        }
+                    }
+                } else {
+                    $result[$item] = $value;
+                }
+            }
+            $data[] = $result;
+        }
+
+        return $data;
     }
 
     /**
@@ -32,10 +69,10 @@ class ListIterator extends AbstractMailChimpIterator
         $mergeVars = $this->getMergeVarsByListIds($listIds);
 
         foreach ($data['data'] as &$listData) {
-            if (isset($listData['id']) && isset($mergeVars[$listData['id']])) {
-                $listData['merge_vars'] = $mergeVars[$listData['id']];
+            if (isset($listData['id'], $mergeVars[$listData['id']])) {
+                $listData['merge_fields'] = $mergeVars[$listData['id']];
             } else {
-                $listData['merge_vars'] = [];
+                $listData['merge_fields'] = [];
             }
         }
     }
@@ -63,17 +100,16 @@ class ListIterator extends AbstractMailChimpIterator
      *
      * @param array $listIds
      * @return array
+     * @throws Exception
      */
     protected function getMergeVarsByListIds(array $listIds)
     {
         $result = [];
-        $data = $this->client->getListMergeVars(['id' => $listIds]);
+        foreach ($listIds as $listId) {
+            $mergeVars = $this->client->getListMergeVars($listId);
 
-        if (isset($data['data']) && is_array($data['data'])) {
-            foreach ($data['data'] as $listData) {
-                if (isset($listData['id']) && isset($listData['merge_vars']) && is_array($listData['merge_vars'])) {
-                    $result[$listData['id']] = $listData['merge_vars'];
-                }
+            if (isset($mergeVars['merge_fields']) && is_array($mergeVars['merge_fields'])) {
+                $result[$listId] = $mergeVars['merge_fields'];
             }
         }
 

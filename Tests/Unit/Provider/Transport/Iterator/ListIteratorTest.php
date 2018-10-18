@@ -3,6 +3,7 @@
 namespace Oro\Bundle\MailChimpBundle\Tests\Unit\Provider\Transport\Iterator;
 
 use Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\ListIterator;
+use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
 class ListIteratorTest extends \PHPUnit\Framework\TestCase
 {
@@ -21,7 +22,7 @@ class ListIteratorTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $this->client = $this->getMockBuilder(
-            'Oro\\Bundle\\MailChimpBundle\\Provider\\Transport\\MailChimpClient'
+            MailChimpClient::class
         )->setMethods(['getLists', 'getListMergeVars'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -40,6 +41,7 @@ class ListIteratorTest extends \PHPUnit\Framework\TestCase
         $this->client->expects($this->exactly(count($listValueMap)))
             ->method('getLists')
             ->will($this->returnValueMap($listValueMap));
+
 
         $this->client->expects($this->exactly(count($mergeVarValueMap)))
             ->method('getListMergeVars')
@@ -63,20 +65,20 @@ class ListIteratorTest extends \PHPUnit\Framework\TestCase
             'two pages' => [
                 'listValueMap' => [
                     [
-                        ['start' => 0, 'limit' => 2],
+                        ['offset' => 0, 'count' => 2],
                         [
-                            'total' => 3,
-                            'data' => [
+                            'total_items' => 3,
+                            'lists' => [
                                 ['id' => '3d21b11eb1', 'name' => 'List 1'],
                                 ['id' => '3d21b11eb2', 'name' => 'List 2'],
                             ]
                         ]
                     ],
                     [
-                        ['start' => 1, 'limit' => 2],
+                        ['offset' => 1, 'count' => 2],
                         [
-                            'total' => 3,
-                            'data' => [
+                            'total_items' => 3,
+                            'lists' => [
                                 ['id' => '3d21b11eb3', 'name' => 'List 3'],
                             ]
                         ]
@@ -84,27 +86,31 @@ class ListIteratorTest extends \PHPUnit\Framework\TestCase
                 ],
                 'mergeVarValueMap' => [
                     [
-                        ['id' => ['3d21b11eb1', '3d21b11eb2']],
-                        ['success_count' => 0, 'data' => []]
+                        ['id' => '3d21b11eb1'],
+                        ['success_count' => 0, 'merge_fields' => []]
                     ],
                     [
-                        ['id' => ['3d21b11eb3']],
-                        ['total' => 0, 'data' => []]
+                        ['id' => '3d21b11eb2'],
+                        ['total_items' => 0, 'merge_fields' => []]
+                    ],
+                    [
+                        ['id' => '3d21b11eb3'],
+                        ['total_items' => 0, 'merge_fields' => []]
                     ]
                 ],
                 'expected' => [
-                    ['id' => '3d21b11eb1', 'name' => 'List 1', 'merge_vars' => []],
-                    ['id' => '3d21b11eb2', 'name' => 'List 2', 'merge_vars' => []],
-                    ['id' => '3d21b11eb3', 'name' => 'List 3', 'merge_vars' => []]
+                    ['id' => '3d21b11eb1', 'name' => 'List 1', 'merge_fields' => []],
+                    ['id' => '3d21b11eb2', 'name' => 'List 2', 'merge_fields' => []],
+                    ['id' => '3d21b11eb3', 'name' => 'List 3', 'merge_fields' => []]
                 ]
             ],
             'with merge vars' => [
                 'listValueMap' => [
                     [
-                        ['start' => 0, 'limit' => 2],
+                        ['offset' => 0, 'count' => 2],
                         [
-                            'total' => 2,
-                            'data' => [
+                            'total_items' => 2,
+                            'lists' => [
                                 ['id' => '3d21b11eb1', 'name' => 'List 1'],
                                 ['id' => '3d21b11eb2', 'name' => 'List 2'],
                             ]
@@ -113,25 +119,35 @@ class ListIteratorTest extends \PHPUnit\Framework\TestCase
                 ],
                 'mergeVarValueMap' => [
                     [
-                        ['id' => ['3d21b11eb1', '3d21b11eb2']],
+                        '3d21b11eb1',
                         [
-                            'success_count' => 2,
-                            'data' => [
+                            'total_items' => 2,
+                            'merge_fields' => [
                                 [
-                                    'id' => '3d21b11eb1', 'name' => 'List 1',
-                                    'merge_vars' => [
-                                        ['name' => 'Email Address', 'tag' => 'EMAIL']
-                                    ],
-                                ],
-                                [
-                                    'id' => '3d21b11eb2', 'name' => 'List 2',
-                                    'merge_vars' => [
-                                        ['name' => 'Email Address', 'tag' => 'EMAIL'],
-                                        ['name' => 'First Name', 'tag' => 'FNAME'],
-                                        ['name' => 'Last Name', 'tag' => 'LNAME'],
-                                    ],
+                                    'name' => 'Email Address',
+                                    'tag' => 'EMAIL',
                                 ],
                             ]
+                        ],
+                    ],
+                    [
+                        '3d21b11eb2',
+                        [
+                            'total_items' => 2,
+                            'merge_fields' => [
+                                [
+                                    'name' => 'Email Address',
+                                    'tag' => 'EMAIL'
+                                ],
+                                [
+                                    'name' => 'First Name',
+                                    'tag' => 'FNAME'
+                                ],
+                                [
+                                    'name' => 'Last Name',
+                                    'tag' => 'LNAME'
+                                ],
+                            ],
                         ]
                     ]
                 ],
@@ -139,17 +155,29 @@ class ListIteratorTest extends \PHPUnit\Framework\TestCase
                     [
                         'id' => '3d21b11eb1',
                         'name' => 'List 1',
-                        'merge_vars' => [
-                            ['name' => 'Email Address', 'tag' => 'EMAIL']
+                        'merge_fields' => [
+                            [
+                                'name' => 'Email Address',
+                                'tag' => 'EMAIL'
+                            ]
                         ],
                     ],
                     [
                         'id' => '3d21b11eb2',
                         'name' => 'List 2',
-                        'merge_vars' => [
-                            ['name' => 'Email Address', 'tag' => 'EMAIL'],
-                            ['name' => 'First Name', 'tag' => 'FNAME'],
-                            ['name' => 'Last Name', 'tag' => 'LNAME'],
+                        'merge_fields' => [
+                            [
+                                'name' => 'Email Address',
+                                'tag' => 'EMAIL'
+                            ],
+                            [
+                                'name' => 'First Name',
+                                'tag' => 'FNAME'
+                            ],
+                            [
+                                'name' => 'Last Name',
+                                'tag' => 'LNAME'
+                            ],
                         ],
                     ],
                 ]
@@ -157,10 +185,10 @@ class ListIteratorTest extends \PHPUnit\Framework\TestCase
             'empty' => [
                 'listValueMap' => [
                     [
-                        ['start' => 0, 'limit' => 2],
+                        ['offset' => 0, 'count' => 2],
                         [
-                            'total' => 0,
-                            'data' => []
+                            'total_items' => 0,
+                            'lists' => []
                         ]
                     ]
                 ],

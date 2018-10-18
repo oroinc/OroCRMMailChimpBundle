@@ -2,7 +2,10 @@
 
 namespace Oro\Bundle\MailChimpBundle\EventListener;
 
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MarketingListBundle\Event\UpdateMarketingListEvent;
 
@@ -23,6 +26,8 @@ class NotifyMailChimpListener
 
     /**
      * @param UpdateMarketingListEvent $event
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function onMarketingListChange(UpdateMarketingListEvent $event)
     {
@@ -31,7 +36,8 @@ class NotifyMailChimpListener
         $changedStaticSegments = [];
 
         foreach ($marketingLists as $marketingList) {
-            $staticSegments = $em->getRepository(StaticSegment::class)
+            $staticSegments = $em
+                ->getRepository(StaticSegment::class)
                 ->findBy(['marketingList' => $marketingList]);
 
             foreach ($staticSegments as $staticSegment) {

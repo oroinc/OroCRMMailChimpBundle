@@ -31,19 +31,21 @@ class MailChimpController extends Controller
      */
     public function pingAction(Request $request)
     {
-        $apiKey = $request->get('api_key');
-
-        $mailChimpClientFactory = $this->get('oro_mailchimp.client.factory');
-        $client = $mailChimpClientFactory->create($apiKey);
         try {
-            $result = $client->ping();
+            $apiKey = $request->get('api_key');
+            $mailChimpClientFactory = $this->get('oro_mailchimp.client.factory');
+            $client = $mailChimpClientFactory->create($apiKey);
+            $ping = $client->ping();
         } catch (\Exception $e) {
-            $result = [
-                'error' => $e->getMessage()
-            ];
+            return new JsonResponse([
+                'error' => $e->getMessage(),
+            ]);
         }
 
-        return new JsonResponse($result);
+        return new JsonResponse([
+            'result' => $ping,
+            'msg' => array_key_exists('health_status', $ping) ? $ping['health_status'] : 'Connection successful',
+        ]);
     }
 
     /**
@@ -212,7 +214,7 @@ class MailChimpController extends Controller
     protected function findStaticSegmentByMarketingList(MarketingList $marketingList)
     {
         return $this->getDoctrine()
-            ->getRepository('OroMailChimpBundle:StaticSegment')
+            ->getRepository(StaticSegment::class)
             ->findOneBy(['marketingList' => $marketingList]);
     }
 
@@ -223,7 +225,7 @@ class MailChimpController extends Controller
     protected function getCampaignByEmailCampaign(EmailCampaign $emailCampaign)
     {
         $campaign = $this->getDoctrine()
-            ->getRepository('OroMailChimpBundle:Campaign')
+            ->getRepository(Campaign::class)
             ->findOneBy(['emailCampaign' => $emailCampaign]);
 
         return $campaign;

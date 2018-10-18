@@ -103,7 +103,7 @@ class ExportIterator implements \Iterator
      */
     public function valid()
     {
-        return !is_null($this->current);
+        return $this->current !== null;
     }
 
     /**
@@ -138,6 +138,7 @@ class ExportIterator implements \Iterator
         if (!$this->body) {
             $response = $this->client->export($this->methodName, $this->parameters);
             $this->body = $response->getBody();
+
             $this->body->seek(0, \SEEK_SET);
 
             if ($this->useFirstLineAsHeader) {

@@ -11,7 +11,7 @@ response:
             folder_id: 0
             template_id: 91
             content_type: template
-            content_edited_by: OroCRM
+            content_edited_by: Oro CRM
             title: Test C ML
             type: regular
             create_time: '2014-11-10 17:38:55'
@@ -101,7 +101,7 @@ response:
             folder_id: 0
             template_id: 91
             content_type: template
-            content_edited_by: OroCRM
+            content_edited_by: Oro CRM
             title: Test C ML
             type: regular
             create_time: '2014-11-10 17:38:55'

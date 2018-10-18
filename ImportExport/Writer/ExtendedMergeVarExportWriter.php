@@ -3,6 +3,7 @@
 namespace Oro\Bundle\MailChimpBundle\ImportExport\Writer;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 use Oro\Bundle\MailChimpBundle\Entity\ExtendedMergeVar;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Psr\Log\LoggerInterface;
@@ -37,8 +38,8 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
             }
 
             $itemsToWrite = array_merge($itemsToWrite, $addedItems, $removedItems);
-        } catch (\Exception $e) {
-            $this->logger->error('Extended merge vars error occurs', ['exception'=> $e]);
+        } catch (Exception $e) {
+            $this->logger->error('Extended merge vars error occurs', ['exception' => $e]);
         }
 
         parent::write($itemsToWrite);
@@ -47,6 +48,7 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
     /**
      * @param ArrayCollection $items
      * @return array
+     * @throws Exception
      */
     protected function add(ArrayCollection $items)
     {
@@ -68,41 +70,37 @@ class ExtendedMergeVarExportWriter extends AbstractExportWriter
             $exists = array_filter($mergeVars, function ($var) use ($each) {
                 return $var['tag'] === $each->getTag();
             });
+
             $response = [];
             if (empty($exists)) {
-                $response = $this->transport->addListMergeVar(
-                    [
-                        'id' => $each->getStaticSegment()->getSubscribersList()->getOriginId(),
-                        'tag' => $each->getTag(),
-                        'name' => $each->getLabel(),
-                        'options' => [
-                            'field_type' => $each->getFieldType(),
-                            'require' => $each->isRequired()
-                        ]
-                    ]
-                );
+                $response = $this->transport->addListMergeVar([
+                    'list_id' => $each->getStaticSegment()->getSubscribersList()->getOriginId(),
+                    'tag' => $each->getTag(),
+                    'name' => $each->getLabel(),
+                    'type' => $each->getFieldType(),
+                    'required' => $each->isRequired()
+                ]);
             }
 
-            $this
-                ->handleResponse(
-                    $response,
-                    function ($response, LoggerInterface $logger) use (&$successItems, $each) {
-                        if (empty($response['errors'])) {
-                            $each->markSynced();
-                            $successItems[] = $each;
-                        }
-
-                        if (!empty($response['errors']) && is_array($response['errors'])) {
-                            $logger->error(
-                                'Mailchimp error occurs during execution "addListMergeVar" method',
-                                [
-                                    'each_id' => $each->getId(),
-                                    'each_label' => $each->getLabel(),
-                                ]
-                            );
-                        }
+            $this->handleResponse(
+                $response,
+                function ($response, LoggerInterface $logger) use (&$successItems, $each) {
+                    if (empty($response['errors'])) {
+                        $each->markSynced();
+                        $successItems[] = $each;
                     }
-                );
+
+                    if (!empty($response['errors']) && is_array($response['errors'])) {
+                        $logger->error(
+                            'Mailchimp error occurs during execution "addListMergeVar" method',
+                            [
+                                'each_id' => $each->getId(),
+                                'each_label' => $each->getLabel(),
+                            ]
+                        );
+                    }
+                }
+            );
         }
 
         return $successItems;

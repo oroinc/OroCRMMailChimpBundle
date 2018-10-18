@@ -1,5 +1,5 @@
 {
-    "name": "oro/crm-mail-chimp",
+    "name": "oro/mailchimp",
     "description": "OroCRM MailChimp integration",
     "homepage": "https://github.com/oroinc/OroCRMMailChimpBundle.git",
     "license": "OSL-3.0",
@@ -14,8 +14,8 @@
         "exclude-from-classmap": ["/Tests/"]
     },
     "require": {
+        "drewm/mailchimp-api": "^2.5",
         "oro/crm": "3.1.*",
-        "zfr/zfr-mailchimp": "2.0.*",
         "oro/marketing": "3.1.*"
     },
     "repositories": {

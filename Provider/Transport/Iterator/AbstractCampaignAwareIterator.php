@@ -30,11 +30,9 @@ abstract class AbstractCampaignAwareIterator extends AbstractMailChimpIterator
     protected function getArguments()
     {
         return [
-            'cid' => $this->campaign->getOriginId(),
-            'opts' => [
-                'start' => (int)$this->offset / $this->batchSize,
-                'limit' => $this->batchSize,
-            ]
+            'campaign_id' => $this->campaign->getOriginId(),
+            'offset' => (int)$this->offset / $this->batchSize,
+            'count' => $this->batchSize,
         ];
     }
 }

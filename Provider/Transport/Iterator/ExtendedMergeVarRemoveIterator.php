@@ -55,7 +55,7 @@ class ExtendedMergeVarRemoveIterator extends AbstractSubordinateIterator
 
     /**
      * @param StaticSegment $staticSegment
-     * {@inheritdoc}
+     *                                     {@inheritdoc}
      */
     protected function createSubordinateIterator($staticSegment)
     {

@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator;
 
+use Exception;
 use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 use Oro\Bundle\MailChimpBundle\Provider\Transport\MailChimpClient;
 
@@ -26,14 +27,17 @@ class CampaignAbuseIterator extends AbstractCampaignAwareIterator
 
     /**
      * @return array
+     * @throws Exception
      */
     protected function getResult()
     {
         $arguments = $this->getArguments();
-        if ($this->since) {
-            $arguments['opts']['since'] = $this->since;
-        }
 
-        return $this->client->getCampaignAbuseReport($arguments);
+        $abuseReports = $this->client->getCampaignAbuseReport($arguments);
+
+        return [
+            'data' => $abuseReports['abuse_reports'],
+            'total' => $abuseReports['total_items']
+        ];
     }
 }

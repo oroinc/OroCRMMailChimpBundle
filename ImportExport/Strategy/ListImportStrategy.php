@@ -20,6 +20,7 @@ class ListImportStrategy extends AbstractImportStrategy
 
         /** @var SubscribersList $existingEntity */
         $existingEntity = $this->findExistingEntity($entity);
+
         if ($existingEntity) {
             if ($this->logger) {
                 $this->logger->info('Syncing Existing MailChimp List [origin_id=' . $entity->getOriginId() . ']');

@@ -5,6 +5,7 @@ namespace Oro\Bundle\MailChimpBundle\Transport;
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use Oro\Bundle\CampaignBundle\Transport\TransportInterface;
 use Oro\Bundle\CampaignBundle\Transport\VisibilityTransportInterface;
+use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
 use Oro\Bundle\MailChimpBundle\Form\Type\MailChimpTransportSettingsType;
 
 class MailChimpTransport implements TransportInterface, VisibilityTransportInterface
@@ -16,7 +17,7 @@ class MailChimpTransport implements TransportInterface, VisibilityTransportInter
      */
     public function send(EmailCampaign $campaign, $entity, array $from, array $to)
     {
-        // TODO: Implement send CRM-1980
+        // Implement send CRM-1980
     }
 
     /**
@@ -48,7 +49,7 @@ class MailChimpTransport implements TransportInterface, VisibilityTransportInter
      */
     public function getSettingsEntityFQCN()
     {
-        return 'Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings';
+        return MailChimpTransportSettings::class;
     }
 
     /**

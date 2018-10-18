@@ -16,7 +16,8 @@ define(function(require) {
             message = message || __('oro.mailchimp.integration_transport.api_key.check.message');
             $status.removeClass('alert-info')
                 .addClass('alert-error')
-                .html(message);
+                .html(message)
+                .show();
         };
 
         var localCheckApiKey = function() {
@@ -32,31 +33,27 @@ define(function(require) {
             localCheckApiKey();
         });
 
-        $btn.on('click', function() {
+        $btn.on('click', function(e) {
+            e.preventDefault();
             if ($apiKeyEl.valid()) {
-                $.getJSON(
-                    options.pingUrl,
-                    {api_key: $apiKeyEl.val()},
-                    function(response) {
+                $.getJSON(options.pingUrl, {api_key: $apiKeyEl.val()})
+                    .then(function(response) {
                         if (_.isUndefined(response.error)) {
                             $status.removeClass('alert-error')
                                 .addClass('alert-info')
-                                .html(response.msg);
+                                .html(response.msg)
+                                .show();
                         } else {
                             onError(response.error);
                         }
-                    }
-                ).always(
-                    function() {
-                        $status.show();
-                    }
-                ).fail(
-                    onError
-                );
-            } else {
-                $status.show();
-                onError();
+                    })
+                    .catch(function(response) {
+                        onError(response.responseJSON.error);
+                    });
+
+                return;
             }
+            onError();
         });
     };
 });

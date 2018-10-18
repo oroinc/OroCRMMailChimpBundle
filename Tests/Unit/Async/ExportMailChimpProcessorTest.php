@@ -407,8 +407,8 @@ class ExportMailChimpProcessorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param Integration|null                                 $integration
-     * @param \PHPUnit\Framework\MockObject\Matcher\Invocation  $invokeCountMatcher
+     * @param Integration|null $integration
+     * @param \PHPUnit\Framework\MockObject\Matcher\Invocation $invokeCountMatcher
      *
      * @return EntityManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
@@ -427,7 +427,7 @@ class ExportMailChimpProcessorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param StaticSegment                                   $staticSegment
+     * @param StaticSegment $staticSegment
      * @param PHPUnit\Framework\MockObject\Matcher\Invocation $invokeCountMatcher
      *
      * @return EntityManagerInterface|\PHPUnit\Framework\MockObject\MockObject

@@ -52,7 +52,9 @@ class MergeVarProvider implements MergeVarProviderInterface
     {
         $values = $member->getMergeVarValues();
 
-        $member->setEmail($this->getMergeVarValue($values, $fields->getEmail()));
+        if (null === $member->getEmail()) {
+            $member->setEmail($this->getMergeVarValue($values, $fields->getEmail()));
+        }
         $member->setPhone($this->getMergeVarValue($values, $fields->getPhone()));
         $member->setFirstName($this->getMergeVarValue($values, $fields->getFirstName()));
         $member->setLastName($this->getMergeVarValue($values, $fields->getLastName()));
