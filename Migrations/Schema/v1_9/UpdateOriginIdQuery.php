@@ -1,6 +1,6 @@
 <?php
 
-namespace Oro\Bundle\MailChimpBundle\Migrations\Schema\v1_8;
+namespace Oro\Bundle\MailChimpBundle\Migrations\Schema\v1_9;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Oro\Bundle\EntityBundle\ORM\DatabasePlatformInterface;

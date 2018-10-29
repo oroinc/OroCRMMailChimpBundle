@@ -2,62 +2,47 @@
 
 namespace Oro\Bundle\MailChimpBundle\Migrations\Schema\v1_8;
 
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Schema;
-use Doctrine\DBAL\Schema\SchemaException;
-use Doctrine\DBAL\Types\Type;
-use Oro\Bundle\MigrationBundle\Migration\Extension\DatabasePlatformAwareInterface;
 use Oro\Bundle\MigrationBundle\Migration\Migration;
-use Oro\Bundle\MigrationBundle\Migration\MigrationConstraintTrait;
 use Oro\Bundle\MigrationBundle\Migration\QueryBag;
 
-class OroMailChimpBundle implements Migration, DatabasePlatformAwareInterface
+class OroMailChimpBundle implements Migration
 {
-    use MigrationConstraintTrait;
-
-    /**
-     * @var AbstractPlatform $platform
-     */
-    private $platform;
-
-    /**
-     * Sets the database platform
-     *
-     * @param AbstractPlatform $platform
-     */
-    public function setDatabasePlatform(AbstractPlatform $platform)
-    {
-        $this->platform = $platform;
-    }
-
-
     /**
      * {@inheritdoc}
      */
     public function up(Schema $schema, QueryBag $queries)
     {
-        $this->changeOriginIdOnMailchimpMember($schema);
-        $queries->addPostQuery(new UpdateOriginIdQuery($this->platform));
-    }
+        $table = $schema->getTable('oro_integration_transport');
+        if (!$table->hasColumn('orocrm_mailchimp_apikey')) {
+            $table->addColumn('orocrm_mailchimp_apikey', 'string', ['notnull' => false, 'length' => 255]);
+        }
 
-    /**
-     * @param Schema $schema
-     * @throws SchemaException
-     * @throws DBALException
-     */
-    private function changeOriginIdOnMailchimpMember(Schema $schema)
-    {
-        $mailChimpMemberTable = $schema->getTable('orocrm_mailchimp_member');
+        if (!$table->hasColumn('orocrm_mailchimp_act_up_int')) {
+            $table->addColumn('orocrm_mailchimp_act_up_int', 'integer', ['notnull' => false]);
+        }
 
-        $mailChimpMemberTable
-            ->addColumn('leid', Type::BIGINT)
-            ->setNotnull(false);
-
-        $mailChimpMemberTable
-            ->getColumn('origin_id')
-            ->setType(Type::getType(Type::STRING))
-            ->setNotnull(false)
-            ->setLength(32);
+        $table = $schema->getTable('orocrm_cmpgn_transport_stngs');
+        if (!$table->hasColumn('mailchimp_template_id')) {
+            $table->addColumn('mailchimp_template_id', 'integer', ['notnull' => false]);
+            $table->addForeignKeyConstraint(
+                $schema->getTable('orocrm_mailchimp_template'),
+                ['mailchimp_template_id'],
+                ['id'],
+                ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            );
+        }
+        if (!$table->hasColumn('mailchimp_channel_id')) {
+            $table->addColumn('mailchimp_channel_id', 'integer', ['notnull' => false]);
+            $table->addForeignKeyConstraint(
+                $schema->getTable('oro_integration_channel'),
+                ['mailchimp_channel_id'],
+                ['id'],
+                ['onUpdate' => null, 'onDelete' => 'SET NULL']
+            );
+        }
+        if (!$table->hasColumn('mailchimp_receive_activities')) {
+            $table->addColumn('mailchimp_receive_activities', 'boolean', ['notnull' => false]);
+        }
     }
 }
