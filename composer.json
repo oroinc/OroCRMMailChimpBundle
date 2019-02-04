@@ -15,8 +15,8 @@
     },
     "require": {
         "drewm/mailchimp-api": "^2.5",
-        "oro/crm": "3.1.*",
-        "oro/marketing": "3.1.*"
+        "oro/crm": "~3.1.1",
+        "oro/marketing": "~3.1.1"
     },
     "repositories": {
         "oro": {
