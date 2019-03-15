@@ -3,10 +3,12 @@
 namespace Oro\Bundle\MailChimpBundle\EventListener;
 
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MarketingListBundle\Event\UpdateMarketingListEvent;
 
+/**
+ * Schedule MailChimp static segment update on changes in linked Marketing List.
+ */
 class NotifyMailChimpListener
 {
     /**
@@ -38,13 +40,6 @@ class NotifyMailChimpListener
             foreach ($staticSegments as $staticSegment) {
                 $staticSegment->setSyncStatus(StaticSegment::STATUS_SCHEDULED_BY_CHANGE);
                 $changedStaticSegments[] = $staticSegment;
-
-                $segmentMembers = $staticSegment->getSegmentMembers();
-                foreach ($segmentMembers as $segmentMember) {
-                    if ($segmentMember->getMember()->getStatus() === Member::STATUS_SUBSCRIBED) {
-                        $segmentMember->getMember()->setStatus(Member::STATUS_EXPORT);
-                    }
-                }
             }
         }
 

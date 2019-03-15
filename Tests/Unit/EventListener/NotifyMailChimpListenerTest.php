@@ -5,11 +5,8 @@ namespace Oro\Bundle\MailChimpBundle\Tests\Unit\EventListener;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
-use Oro\Bundle\MailChimpBundle\Entity\Member;
 use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
-use Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use Oro\Bundle\MailChimpBundle\EventListener\NotifyMailChimpListener;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
 use Oro\Bundle\MarketingListBundle\Event\UpdateMarketingListEvent;
@@ -73,45 +70,5 @@ class NotifyMailChimpListenerTest extends \PHPUnit_Framework_TestCase
         $this->listener->onMarketingListChange($event);
 
         $this->assertSame(StaticSegment::STATUS_SCHEDULED_BY_CHANGE, $staticSegment->getSyncStatus());
-    }
-
-    public function testUpdateStaticSegmentMemberStatus()
-    {
-        /** @var MarketingList $marketingList */
-        $marketingList = $this->getEntity(MarketingList::class, ['id' => 1]);
-
-        /** @var StaticSegment $staticSegment */
-        $staticSegment = $this->getEntity(StaticSegment::class, ['id' => 1]);
-        $staticSegment->setSegmentMembers(new ArrayCollection());
-
-        /** @var Member $member */
-        $member = $this->getEntity(Member::class, ['id' => 1, 'status' => Member::STATUS_SUBSCRIBED]);
-
-        /** @var StaticSegmentMember $staticSegmentMember */
-        $staticSegmentMember = $this->getEntity(
-            StaticSegmentMember::class,
-            [
-                'id'            => 1,
-                'staticSegment' => $staticSegment,
-                'state'         => StaticSegmentMember::STATE_SYNCED,
-                'member'        => $member
-            ]
-        );
-        $staticSegment->addSegmentMember($staticSegmentMember);
-
-        $event = new UpdateMarketingListEvent();
-        $event->addMarketingList($marketingList);
-
-        $this->repository->expects($this->once())
-            ->method('findBy')
-            ->with(['marketingList' => $marketingList])
-            ->willReturn([$staticSegment]);
-
-        $this->listener->onMarketingListChange($event);
-
-        $this->assertSame(
-            Member::STATUS_EXPORT,
-            $staticSegment->getSegmentMembers()->first()->getMember()->getStatus()
-        );
     }
 }
