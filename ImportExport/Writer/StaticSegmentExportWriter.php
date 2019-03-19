@@ -16,6 +16,10 @@ use Oro\Bundle\MailChimpBundle\Entity\StaticSegmentMember;
 use Oro\Bundle\MailChimpBundle\Entity\SubscribersList;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Add/Delete members to Static Segment (Tag)
+ * Batch unsubscribe members at MailChimp
+ */
 class StaticSegmentExportWriter extends AbstractExportWriter implements ContextAwareInterface
 {
     const DROPPED_EMAILS_ERROR_CODE = 215;
@@ -110,7 +114,9 @@ class StaticSegmentExportWriter extends AbstractExportWriter implements ContextA
                 'deleteStaticSegmentMembers'
             );
 
-            // Set unsubscribe to member
+            // Set unsubscribe to member.
+            // Member will be unsubscribed from MailChimp list even if it subscriber to other Marketing Lists
+            // connected to the same MailChimp list.
             $this->handleMembersUpdate(
                 $staticSegment,
                 StaticSegmentMember::STATE_UNSUBSCRIBE,
@@ -118,14 +124,6 @@ class StaticSegmentExportWriter extends AbstractExportWriter implements ContextA
                 StaticSegmentMember::STATE_DROP,
                 false,
                 Member::STATUS_UNSUBSCRIBED
-            );
-
-            $this->handleMembersUpdate(
-                $staticSegment,
-                StaticSegmentMember::STATE_UNSUBSCRIBE_DELETE,
-                'batchUnsubscribe',
-                null,
-                true
             );
 
             // Set "dropped" status to members which have been dropped from Mailchimp subscribers list.
