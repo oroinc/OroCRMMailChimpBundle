@@ -3,16 +3,6 @@
 namespace Oro\Bundle\MailChimpBundle\Controller;
 
 use Doctrine\Common\Util\ClassUtils;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-
-use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
 use Oro\Bundle\CampaignBundle\Entity\EmailCampaign;
 use Oro\Bundle\MailChimpBundle\Entity\Campaign;
 use Oro\Bundle\MailChimpBundle\Entity\MailChimpTransportSettings;
@@ -20,8 +10,18 @@ use Oro\Bundle\MailChimpBundle\Entity\StaticSegment;
 use Oro\Bundle\MailChimpBundle\Form\Handler\ConnectionFormHandler;
 use Oro\Bundle\MailChimpBundle\Form\Type\MarketingListConnectionType;
 use Oro\Bundle\MarketingListBundle\Entity\MarketingList;
+use Oro\Bundle\SecurityBundle\Annotation\AclAncestor;
+use Oro\Bundle\SecurityBundle\Annotation\CsrfProtection;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * MailChimp Controller
  * @Route("/mailchimp")
  */
 class MailChimpController extends Controller
@@ -167,6 +167,8 @@ class MailChimpController extends Controller
      *      name="oro_mailchimp_email_campaign_activity_update_toggle",
      *      requirements={"id"="\d+"})
      * @AclAncestor("oro_mailchimp")
+     * @Method("POST")
+     * @CsrfProtection()
      *
      * @param EmailCampaign $emailCampaign
      * @return JsonResponse

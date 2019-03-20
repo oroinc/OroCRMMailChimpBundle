@@ -1,3 +1,9 @@
+## 2.6.40
+### Changed
+* In `Oro\Bundle\MailChimpBundle\Controller\MailChimpController::toggleUpdateStateAction` 
+ (`oro_mailchimp_email_campaign_activity_update_toggle` route)
+ action the request method was changed to POST. 
+ 
 ## 2.3.0 (2017-07-28)
 [Show detailed list of changes](incompatibilities-2-3.md)
 
