@@ -8,6 +8,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Mailchimp integration settings form type.
+ */
 class IntegrationSettingsType extends AbstractType
 {
     const NAME = 'oro_mailchimp_integration_transport_setting_type';
@@ -24,7 +27,8 @@ class IntegrationSettingsType extends AbstractType
                 [
                     'label' => 'oro.mailchimp.integration_transport.api_key.label',
                     'tooltip' => 'oro.mailchimp.form.api_key.tooltip',
-                    'required' => true
+                    'required' => true,
+                    'attr' => ['autocomplete' => 'off'],
                 ]
             )
             ->add(
