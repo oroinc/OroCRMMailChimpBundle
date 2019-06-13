@@ -651,7 +651,7 @@ services:
 
     oro_mailchimp.importexport.strategy.member_activity:
         class: %oro_mailchimp.importexport.strategy.member_activity.class%
-        parent: oro_importexport.strategy.configurable_add_or_replace
+        parent: oro_importexport.strategy.abstract_import_strategy
         calls:
             - [setLogger, ["@oro_integration.logger.strategy"]]
 
