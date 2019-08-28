@@ -14,6 +14,7 @@ trusted_data:
         Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSyncIterator:
             addMergeVars:
                 mergeVarsExpr: true
+                groupBy: true
     properties:
         Oro\Bundle\MailChimpBundle\Provider\Transport\Iterator\MemberSyncIterator:
             addNameFields:

@@ -174,6 +174,9 @@ class MemberExtendedMergeVarSerializer extends ConfigurableEntityNormalizer
             case PropertyInterface::TYPE_INTEGER:
                 $value = $this->numberFormatter->formatDecimal($value);
                 break;
+            case PropertyInterface::TYPE_TAGS:
+                $value = $this->numberFormatter->formatDecimal($value);
+                break;
             case PropertyInterface::TYPE_BOOLEAN:
                 $value = $this->translator->trans((bool)$value ? self::YES_LABEL_KEY : self::NO_LABEL_KEY);
                 break;
