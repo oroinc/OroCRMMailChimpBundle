@@ -51,12 +51,14 @@ oro:
         mailchimptransport:
             entity_label: MailChimp Transport
             entity_plural_label: MailChimp Transports
+            all_grid_view_label: All %entity_plural_label%
             id.label: Id
             api_key.label: API Key
 
         mailchimptransportsettings:
             entity_label: MailChimp Transport Settings
             entity_plural_label: MailChimp Transports Settings
+            all_grid_view_label: All %entity_plural_label%
             channel.label: Channel
             id.label: Id
             template.label: Template
@@ -64,6 +66,7 @@ oro:
         template:
             entity_label: MailChimp Template
             entity_plural_label: MailChimp Templates
+            all_grid_view_label: All %entity_plural_label%
             active.label: Active
             category.label: Category
             channel.label: Channel
@@ -80,6 +83,7 @@ oro:
         campaign:
             entity_label: MailChimp Campaign
             entity_plural_label: MailChimp Campaigns
+            all_grid_view_label: All %entity_plural_label%
             abuse_reports.label: Abuse Reports
             archive_url.label: Archive URL
             archive_url_long.label: Archive URL Long
@@ -124,6 +128,7 @@ oro:
         subscriberslist:
             entity_label: MailChimp Subscribers List
             entity_plural_label: MailChimp Subscribers Lists
+            all_grid_view_label: All %entity_plural_label%
             avg_sub_rate.label: Average Subscribe Rate
             avg_usub_rate.label: Average Unsubscribe Rate
             beamer_address.label: Beamer Address
@@ -166,6 +171,7 @@ oro:
         member:
             entity_label: MailChimp Member
             entity_plural_label: MailChimp Members
+            all_grid_view_label: All %entity_plural_label%
             cc.label: Country Code
             channel.label: Channel
             company.label: Company
@@ -241,6 +247,7 @@ oro:
         staticsegment:
             entity_label: MailChimp Static Segment
             entity_plural_label: MailChimp Static Segments
+            all_grid_view_label: All %entity_plural_label%
             channel.label: Channel
             created_at.label: Created At
             id.label: Id
@@ -262,6 +269,7 @@ oro:
         staticsegmentmember:
             entity_label: MailChimp Static Segment Member
             entity_plural_label: MailChimp Static Segment Members
+            all_grid_view_label: All %entity_plural_label%
             id.label: Id
             member.label: Member
             state.label: State
@@ -270,6 +278,7 @@ oro:
         memberextendedmergevar:
             entity_label: Member Extended Merge Var
             entity_plural_label: Member Extended Merge Var
+            all_grid_view_label: All %entity_plural_label%
             id.label: Id
             merge_var_values.label: Member Merge Var Values
             state.label: State
@@ -279,6 +288,7 @@ oro:
         extendedmergevar:
             entity_label: Extended Merge Var
             entity_plural_label: Extended Merge Var
+            all_grid_view_label: All %entity_plural_label%
             field_type.label: Field Type
             id.label: Id
             label.label: Label
@@ -291,6 +301,7 @@ oro:
         memberactivity:
             entity_label: MailChimp Member Activity
             entity_plural_label: MailChimp Member Activities
+            all_grid_view_label: All %entity_plural_label%
             id.label: Id
             action.label: Action
             activity_time.label: Activity Time
