@@ -16,7 +16,7 @@ parameters:
     oro_mailchimp.model.field_helper.class: Oro\Bundle\MailChimpBundle\Model\FieldHelper
     oro_mailchimp.validator.email_column.class: Oro\Bundle\MailChimpBundle\Validator\EmailColumnValidator
     oro_mailchimp.validator.unique_static_segment_name.class: Oro\Bundle\MailChimpBundle\Validator\UniqueStaticSegmentNameValidator
-    oro_mailchimp.placeholder.filter.buttons_filder.class: Oro\Bundle\MailChimpBundle\Placeholder\ButtonsPlaceholderFilter
+    oro_mailchimp.placeholder.filter.buttons_filter.class: Oro\Bundle\MailChimpBundle\Placeholder\ButtonsPlaceholderFilter
 
     # Forms and extensions
     oro_mailchimp.form.extension.channel_connectors.class: Oro\Bundle\MailChimpBundle\Form\Extension\ChannelConnectorsExtension
@@ -175,8 +175,8 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: oro_mailchimp.validator.unique_static_segment_name }
 
-    oro_mailchimp.placeholder.filter.buttons_filder:
-        class: '%oro_mailchimp.placeholder.filter.buttons_filder.class%'
+    oro_mailchimp.placeholder.filter.buttons_filter:
+        class: '%oro_mailchimp.placeholder.filter.buttons_filter.class%'
         arguments:
             - "@oro_marketing_list.provider.contact_information_fields"
             - "@doctrine"
@@ -627,7 +627,7 @@ services:
     oro_mailchimp.importexport.strategy.abstract.add_or_replace:
         class: '%oro_mailchimp.importexport.strategy.abstract.class%'
         parent: oro_importexport.strategy.configurable_add_or_replace
-        absract: true
+        abstract: true
         calls:
             - [setLogger, ["@oro_integration.logger.strategy"]]
             - [setOwnerHelper, ["@oro_integration.helper.default_owner_helper"]]
@@ -853,7 +853,7 @@ services:
     # Workflow actions and conditions
     oro_mailchimp.workflow.action.abstract_marketing_list_entities:
         class: '%oro_mailchimp.workflow.action.abstract_marketing_list_entities.class%'
-        astract: true
+        abstract: true
         arguments:
             - "@oro_action.expression.context_accessor"
             - "@oro_marketing_list.provider.contact_information_fields"
