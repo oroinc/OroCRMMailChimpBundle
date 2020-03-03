@@ -6,9 +6,11 @@
          data-page-component-options="{{ options|json_encode }}">
         {{ form_widget(form) }}
 
-        <div style="display: none;" class="ping-holder">
-            <button type="button" class="btn btn-primary">{{ 'oro.mailchimp.integration_transport.api_key.check.label'|trans }}</button>
-            <div class="connection-status alert" style="display: none"></div>
+        <div class="mailchimp-connection-status-container">
+            <div style="display: none;" class="ping-holder">
+                <button type="button" class="btn btn-primary">{{ 'oro.mailchimp.integration_transport.api_key.check.label'|trans }}</button>
+                <div class="connection-status alert" style="display: none"></div>
+            </div>
         </div>
     </div>
 {% endblock %}
