@@ -34,3 +34,7 @@
 .connection-form .control-label {
     width: 170px !important;
 }
+
+.mailchimp-connection-status-container .ping-holder {
+    margin-top: 10px;
+}

@@ -16,7 +16,7 @@ placeholders:
     items:
         oro_marketing_list_mailchimp_buttons:
             action: OroMailChimpBundle:MailChimp:connectionButtons
-            applicable: "@oro_mailchimp.placeholder.filter.buttons_filder->isApplicable($entity$)"
+            applicable: "@oro_mailchimp.placeholder.filter.buttons_filter->isApplicable($entity$)"
         oro_mailchimp_email_campaign_buttons:
             action: OroMailChimpBundle:MailChimp:emailCampaignActivityUpdateButtons
             applicable: "@oro_mailchimp.placeholder.filter.email_campaign->isApplicableOnEmailCampaign($entity$)"
